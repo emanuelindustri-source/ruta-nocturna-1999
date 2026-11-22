@@ -52,6 +52,8 @@ try {
             Write-Host "[INFO] Creando repositorio público $repoSlug y subiendo main."
             & $gh repo create $repoSlug --public --source . --remote origin --push
             if ($LASTEXITCODE -ne 0) { throw 'No se pudo crear el repositorio remoto.' }
+            git push origin main --tags
+            if ($LASTEXITCODE -ne 0) { throw 'No se pudieron subir los tags.' }
         }
     } else {
         Write-Host "[INFO] Origin existente: $remote"

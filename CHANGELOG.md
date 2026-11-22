@@ -29,8 +29,14 @@ Todas las fechas usan ISO 8601. Las versiones siguen SemVer.
 - Bootstrap sin fallos críticos; advertencias: autenticación de GitHub y Android 36.
 - ADB reconoce el Redmi 22101316G.
 
+### Publicación
+
+- Repositorio público creado en `emanuelindustri-source/ruta-nocturna-1999`.
+- `main`, workflows y tag `v0.1.0` publicados.
+- GitHub Pages configurado para publicar desde GitHub Actions.
+- Web: https://emanuelindustri-source.github.io/ruta-nocturna-1999/
+
 ### Estado
 
-- Fundación técnica local validada. Sin mecánicas jugables todavía.
-- La publicación remota en GitHub queda pendiente de autenticación de la cuenta.
-- No se ha creado tag ni se ha declarado completada la subfase hasta publicar.
+- Fase 1.1 completada. Sin mecánicas jugables todavía.
+- Siguiente: Fase 1.2, autoloads base, CrashReporter y CreatorQAMenu inicial.

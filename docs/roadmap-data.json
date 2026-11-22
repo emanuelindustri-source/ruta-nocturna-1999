@@ -2,11 +2,11 @@
   "project": "Ruta Nocturna: 1999",
   "repository": "emanuelindustri-source/ruta-nocturna-1999",
   "generated_from": "ROADMAP.md",
-  "source_sha256": "d1c5648afceb6be23b25e40c987bb4df9e6f6b24d6448e4ea2b030af8e8f8480",
+  "source_sha256": "c6b0e0c92cce7fcb1ca02cfac5e319a7b1b83439ada53f913e5b5b6a0a2d7f5e",
   "current_version": "v0.1.0",
   "version_file": "0.1.0",
-  "current_subphase": "1.1",
-  "global_status": "en curso — Fase 1.1 validada localmente; publicación remota pendiente de `gh auth login`",
+  "current_subphase": "1.2",
+  "global_status": "Fase 1.1 completada y publicada; siguiente gate 1.2",
   "models": {
     "DS-R": "DeepSeek V4.1 Flash 1017 · Razonamiento",
     "DS-S": "DeepSeek V4.1 Flash 1017 · Estándar",
@@ -14,11 +14,11 @@
     "MiMo Flash": "MiMo-V2.6-Flash"
   },
   "summary": {
-    "completed": 0,
-    "in_progress": 1,
+    "completed": 1,
+    "in_progress": 0,
     "pending": 44,
     "total": 45,
-    "percent": 0.0
+    "percent": 2.2
   },
   "phases": [
     {
@@ -31,9 +31,9 @@
           "version": "v0.1.0",
           "model": "DS-S",
           "model_label": "DeepSeek V4.1 Flash 1017 · Estándar",
-          "summary": "Crear proyecto, AGENTS, ROADMAP, docs, contratos JSON, arquitectura, web Pages, herramientas de salud, referencias y bootstrap. Validado localmente; falta push remoto/Pages.",
-          "status": "in_progress",
-          "status_label": "En curso"
+          "summary": "Proyecto, AGENTS, ROADMAP, contratos JSON, arquitectura, web Pages, herramientas de salud, referencias y bootstrap. Validado y publicado.",
+          "status": "completed",
+          "status_label": "Completada"
         },
         {
           "id": "1.2",
@@ -67,8 +67,8 @@
       "status": "in_progress",
       "status_label": "En curso",
       "progress": {
-        "completed": 0,
-        "in_progress": 1,
+        "completed": 1,
+        "in_progress": 0,
         "pending": 3,
         "total": 4
       }

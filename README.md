@@ -4,9 +4,11 @@ Terror psicológico, conducción de supervivencia y exploración en una Venezuel
 nocturna de diciembre de 1999. El protagonista cruza el país en un sedán beige
 de 1999, con su mecánica, su radio y sus carreteras como sistema de supervivencia.
 
-> **Estado actual:** Fase 1.1 — fundación técnica y contratos de datos.  
-> **Versión local:** `0.1.0`  
-> **No hay todavía una build jugable.** La primera vertical slice llega en Fase 1.2.
+> **Estado actual:** Fase 1.1 completada y publicada.  
+> **Versión:** `0.1.0`  
+> **Web:** https://emanuelindustri-source.github.io/ruta-nocturna-1999/  
+> **Repositorio:** https://github.com/emanuelindustri-source/ruta-nocturna-1999  
+> **No hay todavía una build jugable.** La base del boot y los servicios llega en Fase 1.2.
 
 ## Objetivo técnico
 
@@ -84,16 +86,11 @@ La web de `docs/` es una base estática sin imágenes de terceros. Presenta el
 roadmap sincronizado con `ROADMAP.md`, el estado y los enlaces de privacidad.
 Las capturas reales se incorporarán cuando exista una build visual.
 
-La publicación remota está pendiente de autenticación. Después de iniciar sesión:
+- Web: https://emanuelindustri-source.github.io/ruta-nocturna-1999/
+- Repositorio: https://github.com/emanuelindustri-source/ruta-nocturna-1999
 
-```powershell
-gh auth login
-.\tools\release\publish_github.cmd
-```
-
-El primer comando es interactivo y Khristyan debe autorizar la cuenta
-`emanuelindustri-source`. El segundo crea el repositorio público, sube `main` y los
-tags, y configura GitHub Pages. No se guardan tokens en el repositorio.
+El script `tools/release/publish_github.cmd` documenta y automatiza la creación
+del repositorio, el push y la configuración de Pages. No guarda tokens en Git.
 
 ## Biblioteca de referencias
 
