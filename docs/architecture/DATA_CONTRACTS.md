@@ -164,3 +164,17 @@ contratos de sistemas:
 Detalle completo en `docs/architecture/ASSET_FACTORY.md`. Las cotas del bloqueo
 son provisionales hasta verificarlas contra manual o medición (ver
 `docs/reference/ESTEEM_MECHANICAL_NOTES.md`).
+
+## 12. Export y localización en builds (Fase 1.4)
+
+- `export_presets.cfg` declara los presets Windows y Android; el pipeline de build
+  está documentado en `docs/architecture/BUILD_AND_RELEASE.md`.
+- El CSV de localización sigue siendo la fuente de verdad. El importador genera
+  `localization/strings.<locale>.translation`; esos artefactos no se versionan
+  (`*.translation` está en `.gitignore`).
+- En el código fuente, `LocalizationManager` lee el CSV. En una build exportada,
+  carga los `.translation` importados por locale; si faltara alguno, advierte y
+  conserva el fallback `es_VE`.
+- Los JSON de `data/` se incluyen en el export para que el runtime pueda validar
+  contratos más adelante; los tests, herramientas y documentación quedan fuera.
+- Los binarios de export no son contratos: van a `build/exports/` y nunca a Git.

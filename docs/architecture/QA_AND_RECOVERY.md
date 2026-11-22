@@ -211,3 +211,22 @@ documentado.
   siguiente arranque. Un warning no escribe reporte; un error de GDScript sí.
   La detección de un cierre nativo real se probará con una build Android en la
   Fase 1.4.
+
+## 12. Implementación de la Fase 1.4
+
+- `tools/test_android_adb.ps1` implementa el protocolo de la sección 7: dispositivo
+  autorizado, APK debug, `adb install -r`, `pm clear`, arranque con `monkey`,
+  marcador de sesión local/`BOOT_READY`, 15 s de `logcat`, captura, PSS y logs.
+- Godot 4.7.2 no publica `print()` en `logcat` en esta build Android; el script
+  acepta el marcador `files/sesion_activa.json` (vía `run-as`) como evidencia de
+  arranque y complementa con proceso vivo, captura y ausencia de errores fatales.
+- En MIUI/HyperOS el paquete necesita el permiso "Instalar vía USB"; sin él,
+  `adb install` falla con `INSTALL_FAILED_USER_RESTRICTED`.
+- La APK de referencia es debug y se firma con el keystore de depuración local; no
+  se versiona. Los artefactos viven en `build/exports/` y `build/logs/`.
+- El presupuesto de PSS se comprueba con `dumpsys meminfo` contra 1,2 GB. La
+  rebanada vertical no es una prueba de rendimiento de gameplay, solo un control
+  de arranque y memoria base.
+- `health_check.py --end` añade validación de presets, toolchain de build,
+  dispositivo ADB y secretos/binarios en el índice de Git.
+- Detalle operativo en `docs/architecture/BUILD_AND_RELEASE.md`.

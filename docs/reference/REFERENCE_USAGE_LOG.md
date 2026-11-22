@@ -96,6 +96,38 @@ No se copió ningún archivo de la biblioteca externa.
 - Cualquier emblema, marca o logotipo visible (Chevrolet, PDV y otros).
 - Copia de imágenes o PDFs al repositorio.
 
+## 2026-11-22 — Fase 1.4 — CI, export y rebanada vertical
+
+**Alcance:** subfase de infraestructura. No se modeló ni texturizó nada nuevo. Se
+consultaron solo las fichas de metadatos del catálogo (`ai_generated_concept` y
+`motion_reference`) y `UI_ART_DIRECTION_NOTES.md` para confirmar que la pantalla de
+boot, el panel QA y la nueva escena estática siguen la paleta aprobada. No se abrió
+ninguna imagen a tamaño real y no se copió ningún archivo de la biblioteca externa.
+
+### Referencias utilizadas
+
+| Referencia | Uso | Resultado |
+|---|---|---|
+| Fichas del catálogo de conceptos de UI (`ui`, `art_direction`) | Confirmar que la rebanada vertical no introduce una dirección de arte nueva | Se mantienen verde petróleo, ámbar, hueso y gris de greybox; sin botones flotantes ni HUD adicional |
+| `UI_ART_DIRECTION_NOTES.md` | Revisar contraste y tamaño mínimo del botón de retorno (48 px) | Botón de 48 px de alto y texto localizado; sin duplicar controles de cabina porque aún no existen |
+| Metadatos del catálogo de vehículo (sin abrir imágenes) | Confirmar que la rebanada usa el bloqueo ya generado y no una foto | La escena instancia `EsteemBlockout.tscn`; no hay texturas ni colores derivados de fotografías |
+
+### Decisiones
+
+- La rebanada vertical es una escena estática: coche gris, carretera gris, cámara y
+  un panel informativo. No contiene `VehicleBody3D`, física, tráfico ni entidades.
+- Los artefactos de export viven en `build/exports/` (ignorados por Git); nunca se
+  versionan APK, EXE, PCK ni capturas intermedias.
+- La APK de prueba es una build debug firmada con el keystore de depuración local;
+  no se publica en el repositorio.
+- No se añadió ninguna captura de la biblioteca externa a la web ni a la galería.
+
+### Descartado
+
+- Usar imágenes de referencia como capturas de la rebanada vertical.
+- Presentar la rebanada como gameplay o como build jugable.
+- Añadir una captura de tienda en esta fase.
+
 ## Próxima revisión
 
 - Revisión rápida: inicio y cierre de cada subfase.

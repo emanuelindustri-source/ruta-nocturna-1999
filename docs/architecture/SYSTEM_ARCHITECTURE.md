@@ -204,3 +204,22 @@ Reglas aplicadas:
 - El smoke test `tests/smoke/SmokeTest.tscn` valida los once autoloads, EventBus,
   ajustes, localización, guardado, clima, audio, actualizaciones, diagnóstico,
   caja negra, panel QA y SceneRouter sin mecánicas de conducción.
+
+## 9. Rebanada vertical y arranque (Fase 1.4)
+
+- `scenes/boot/Boot.tscn` sigue siendo la escena principal: verifica servicios y
+  ofrece un botón localizado para abrir la rebanada vertical.
+- `scenes/vertical_slice/VerticalSlice.tscn` es una escena **estática** de
+  presentación: terreno, carretera gris, marcas de carril generadas al arrancar,
+  cámara y el bloqueo del Esteem. No contiene `VehicleBody3D`, `RigidBody3D`,
+  `CharacterBody3D`, tráfico, clima simulado ni entidades.
+- La escena solo instancia `EsteemBlockout.tscn`; no importa imágenes de la
+  biblioteca externa ni introduce texturas nuevas.
+- El botón de retorno y el botón de acceso cumplen 48 px de alto y usan claves de
+  localización (`UI_VIEW_SLICE`, `SLICE_TITLE`, `SLICE_SUBTITLE`, `UI_BACK`).
+- `LocalizationManager` intenta primero los objetos de traducción registrados y,
+  si no están, carga los `.translation` importados por locale. El CSV sigue siendo
+  la fuente de verdad en el código fuente.
+- El export de Windows y la APK Android se generan con `tools/dev/export.ps1`;
+  la prueba de dispositivo está en `tools/test_android_adb.ps1` y el detalle en
+  `docs/architecture/BUILD_AND_RELEASE.md`.

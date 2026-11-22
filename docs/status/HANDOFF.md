@@ -1,27 +1,28 @@
-# Handoff — Fase 1.4
+# Handoff — Fase 2.1
 
 ## Estado de partida
 
-La Fase 1.3 quedó completada, validada y publicada.
+La Fase 1.4 quedó completada, validada y publicada. La Fase 1 está cerrada.
 
 - Web: https://emanuelindustri-source.github.io/ruta-nocturna-1999/
 - Repositorio: https://github.com/emanuelindustri-source/ruta-nocturna-1999
-- Versión: `v0.1.2`
-- La fábrica Blender headless genera el bloqueo del Esteem de forma reproducible:
-  LOD0 1.192 triángulos, LOD1 440, LOD2 184 (presupuestos 8.000/4.000/1.500).
-- El ancla de rig importa en Godot como `Skeleton3D` con 17 huesos `anchor_*`.
-- `tools/validate_assets.py` vigila manifiestos, hashes y política de LOD dentro
-  de `health_check.py`.
-- El smoke test pasa con 118/118 comprobaciones.
-- No hay conducción ni física todavía: el bloqueo es geometría estática con
-  cotas provisionales verificables en `data/vehicle/blockout_spec.json`.
+- Versión: `v0.1.3`
+- Rebanada vertical: Boot abre `VerticalSlice.tscn` con el bloqueo gris del Esteem
+  sobre una carretera gris, sin física ni conducción.
+- Export: `build/exports/windows/RutaNocturna1999.exe` y
+  `build/exports/android/RutaNocturna1999.apk` (debug, no versionados).
+- Android: APK instalada y arrancada por ADB; logs, captura y PSS en
+  `build/logs/android-smoke/`.
+- Smoke test: 138/138 comprobaciones; health check de cierre sin errores.
+- La localización exportada carga los `.translation` importados; el CSV sigue
+  siendo la fuente de verdad.
 
 ## Prompt para el siguiente chat
 
 ```text
-[RN1999 · Subfase 1.4]
+[RN1999 · Subfase 2.1]
 CWD: C:\Dev\RutaNocturna1999
-Modelo asignado: DS-S (opencode-go/deepseek-v4.1-flash#low)
+Modelo asignado: DS-R (opencode-go/deepseek-v4.1-flash#max)
 
 Lee completos:
 - AGENTS.md
@@ -30,18 +31,21 @@ Lee completos:
 - docs/status/HANDOFF.md
 - docs/architecture/SYSTEM_ARCHITECTURE.md
 - docs/architecture/DATA_CONTRACTS.md
+- docs/architecture/STATE_MACHINES.md
 - docs/architecture/QA_AND_RECOVERY.md
+- data/schemas/vehicle_components.json
 
-Ejecuta únicamente la Subfase 1.4 (tag v0.1.3):
-CI (GitHub Actions), test Android/ADB, export Windows/APK, health check completo,
-Pages y tag de vertical slice. Sin mecánicas de conducción.
+Ejecuta únicamente la Subfase 2.1 (tag v0.2.0):
+motor, caja automática P-R-N-D-2-L, O/D, frenos, combustible, térmica,
+electroventilador y tests. Sin cabina, IK, espejos ni conducción narrativa.
 
 Al iniciar:
   python tools/health_check.py --start
   python tools/scan_reference_library.py --quick
 
-Revisa solo las referencias del catálogo relevantes para esta subfase y registra
-su uso. No copies archivos de C:\Dev\fotos de ejemplo al repositorio.
+Revisa solo las referencias del catálogo relevantes para la mecánica del Esteem y
+registra su uso. No copies archivos de C:\Dev\fotos de ejemplo al repositorio.
+No inventes cotas ni valores: usa el manual y marca lo provisional.
 
 Al cerrar:
 - valida esquemas, localización y roadmap
@@ -54,23 +58,22 @@ Al cerrar:
 - haz commit, tag y push solo si todo pasa
 - entrega el prompt del siguiente /new
 
-No avances a la Fase 2.1.
+No avances a la Fase 2.2.
 ```
 
 ## Recordatorios
 
 - La biblioteca de referencias externa sigue fuera del repositorio.
 - La ExecutionPolicy de PowerShell está restringida: usar wrappers `.cmd`.
-- Todo modelo 3D sale de scripts `bpy` reproducibles con manifiesto; la fábrica
-  está documentada en `docs/architecture/ASSET_FACTORY.md`.
-- Ningún modelo entra sin LOD0/LOD1/LOD2; el validador falla si un manifiesto
-  queda obsoleto (regenerar con `tools\blender\build_assets.cmd`).
+- El export se hace con `tools\dev\export.cmd`; los binarios van a `build/` y
+  nunca a Git.
+- Todo modelo 3D sale de scripts `bpy` reproducibles con manifiesto.
+- Ningún modelo entra sin LOD0/LOD1/LOD2.
+- El smoke test cubre servicios, bloqueo, rebanada vertical y presets; no
+  sustituye la revisión visual ni las pruebas de dispositivo.
+- La APK de referencia es debug y usa el keystore local; no es una build de tienda.
 - Las cotas del bloqueo son provisionales: verificar antes de Fase 2/Fase 5.
-- El smoke test cubre servicios base y el bloqueo; no sustituye la revisión
-  visual del Esteem ni las pruebas de dispositivo.
-- No se sube ningún token, keystore, APK o AAB a Git; los binarios van a Releases.
-- El export debe incluir `localization/strings.csv` (pendiente desde F1.2).
-- `tools/test_android_adb.ps1` es obligatorio para el hito Android de la 1.4.
+- No se sube ningún token, keystore, APK o AAB a Git.
 
 ## Seguridad
 

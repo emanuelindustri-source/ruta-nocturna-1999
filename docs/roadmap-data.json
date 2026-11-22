@@ -2,11 +2,11 @@
   "project": "Ruta Nocturna: 1999",
   "repository": "emanuelindustri-source/ruta-nocturna-1999",
   "generated_from": "ROADMAP.md",
-  "source_sha256": "7ee8a5887bbde7f6a38d53f0355ba2582be8aa36b53f1404d379956a8691cc6d",
-  "current_version": "v0.1.2",
-  "version_file": "0.1.2",
-  "current_subphase": "1.4",
-  "global_status": "Fase 1.3 completada y publicada; siguiente gate 1.4",
+  "source_sha256": "2bf2b182a6d09e44835d835112a0ffbbcb46e069a8d0df75706ea5a369171369",
+  "current_version": "v0.1.3",
+  "version_file": "0.1.3",
+  "current_subphase": "2.1",
+  "global_status": "Fase 1 completada y publicada; siguiente gate 2.1",
   "models": {
     "DS-R": "DeepSeek V4.1 Flash 1017 · Razonamiento",
     "DS-S": "DeepSeek V4.1 Flash 1017 · Estándar",
@@ -14,11 +14,11 @@
     "MiMo Flash": "MiMo-V2.6-Flash"
   },
   "summary": {
-    "completed": 3,
+    "completed": 4,
     "in_progress": 0,
-    "pending": 42,
+    "pending": 41,
     "total": 45,
-    "percent": 6.7
+    "percent": 8.9
   },
   "phases": [
     {
@@ -58,18 +58,18 @@
           "version": "v0.1.3",
           "model": "DS-S",
           "model_label": "DeepSeek V4.1 Flash 1017 · Estándar",
-          "summary": "CI, test Android/ADB, export Windows/APK, health check completo, Pages y tag de vertical slice.",
-          "status": "pending",
-          "status_label": "Pendiente"
+          "summary": "CI, test Android/ADB, export Windows/APK, health check completo, Pages y tag de vertical slice. Validado y publicado.",
+          "status": "completed",
+          "status_label": "Completada"
         }
       ],
       "version_range": "v0.1.0 → v0.1.3",
-      "status": "in_progress",
-      "status_label": "En curso",
+      "status": "completed",
+      "status_label": "Completada",
       "progress": {
-        "completed": 3,
+        "completed": 4,
         "in_progress": 0,
-        "pending": 1,
+        "pending": 0,
         "total": 4
       }
     },

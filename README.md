@@ -4,11 +4,11 @@ Terror psicológico, conducción de supervivencia y exploración en una Venezuel
 nocturna de diciembre de 1999. El protagonista cruza el país en un sedán beige
 de 1999, con su mecánica, su radio y sus carreteras como sistema de supervivencia.
 
-> **Estado actual:** Fase 1.2 completada y publicada.  
-> **Versión:** `0.1.1`  
+> **Estado actual:** Fase 1.4 completada y publicada (rebanada vertical).  
+> **Versión:** `0.1.3`  
 > **Web:** https://emanuelindustri-source.github.io/ruta-nocturna-1999/  
 > **Repositorio:** https://github.com/emanuelindustri-source/ruta-nocturna-1999  
-> **No hay todavía una build jugable.** Los servicios base, la caja negra y el panel QA ya funcionan; el coche llega en la Fase 2.
+> **No hay todavía una build jugable.** La rebanada vertical muestra el bloqueo gris del Esteem sobre una carretera gris; la conducción llega en la Fase 2.
 
 ## Objetivo técnico
 
@@ -51,6 +51,12 @@ Godot tenía una marca de compatibilidad “Ejecutar como administrador” que i
 
 # Smoke test de los servicios base (sin mecánicas).
 .\tools\dev\smoke_test.cmd
+
+# Export de referencia (Windows y Android) a build/exports/.
+.\tools\dev\export.cmd -Target all
+
+# Prueba Android en el dispositivo autorizado por ADB.
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\test_android_adb.ps1
 
 # Validar todo lo anterior.
 .\tools\dev\validate.cmd

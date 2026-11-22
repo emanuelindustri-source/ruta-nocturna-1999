@@ -48,7 +48,7 @@ theme_override_constants/separation = 12
 layout_mode = 2
 theme_override_colors/font_color = Color(0.408, 0.718, 0.71, 1)
 theme_override_font_sizes/font_size = 16
-text = "FUNDACIÓN TÉCNICA  /  FASE 1.2"
+text = "FUNDACIÓN TÉCNICA  /  FASE 1.4"
 horizontal_alignment = 1
 
 [node name="Title" type="Label" parent="Center/VBox"]
@@ -100,5 +100,11 @@ theme_override_font_sizes/font_size = 13
 text = "Se detectó un cierre anormal anterior."
 horizontal_alignment = 1
 autowrap_mode = 3
+
+[node name="ViewSlice" type="Button" parent="Center/VBox"]
+custom_minimum_size = Vector2(240, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Ver rebanada vertical"
 
 [node name="CreatorQAMenu" parent="." instance=ExtResource("2_qa")]

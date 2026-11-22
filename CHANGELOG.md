@@ -4,6 +4,72 @@ Todas las fechas usan ISO 8601. Las versiones siguen SemVer.
 
 ## [Unreleased]
 
+## [0.1.3] — 2026-11-22
+
+### Añadido
+
+- Rebanada vertical estática `scenes/vertical_slice/VerticalSlice.tscn`: bloqueo
+  gris del Esteem sobre una carretera gris con terreno, marcas de carril, cámara,
+  niebla y panel informativo. Sin física, tráfico ni conducción.
+- Acceso localizado desde el boot con el botón `UI_VIEW_SLICE` y retorno con
+  `UI_BACK`; claves nuevas `SLICE_TITLE` y `SLICE_SUBTITLE` en los once idiomas.
+- `export_presets.cfg` con presets `Windows Desktop` (x86_64) y `Android`
+  (arm64-v8a, APK debug firmada, paquete
+  `com.emanuelindustri.rutanoucturna1999`).
+- `tools/dev/export.ps1` y `tools/dev/export.cmd`: importación headless, export
+  de Windows/Android, log y manifiesto con tamaños y SHA-256 en
+  `build/logs/export/`.
+- `tools/test_android_adb.ps1`: instalación `adb install -r`, arranque con
+  `monkey`, marcador `BOOT_READY`, 15 s de `logcat`, captura, PSS y logs en
+  `build/logs/android-smoke/`.
+- `tools/validate_export.py`: valida presets, rutas, arquitectura, paquete,
+  versión, inclusión del CSV y ausencia de secretos; integrado en
+  `health_check.py` y en CI.
+- Chequeos nuevos de salud: `export_presets`, `build_toolchain`,
+  `android_device` y `tracked_secrets`.
+- Workflow de CI con trabajo `godot` (descarga Godot 4.7.2 Linux, import headless,
+  smoke test y detección de errores de script) y validación de presets.
+- `docs/architecture/BUILD_AND_RELEASE.md` con el pipeline de build, ADB y CI.
+
+### Cambiado
+
+- Versión del proyecto a `0.1.3`.
+- `project.godot` activa `textures/vram_compression/import_etc2_astc` para que el
+  export Android genere la APK.
+- `LocalizationManager` carga los `.translation` importados cuando el CSV no está
+  presente en una build exportada; el CSV sigue siendo la fuente de verdad.
+- Boot imprime el marcador estable `[RN1999] BOOT_READY` para las pruebas ADB.
+- Smoke test ampliado a 138 comprobaciones: rebanada vertical, presupuesto móvil,
+  ausencia de cuerpos de física, presets de export y versión.
+- README, web de Pages y documentación de arquitectura actualizados a `v0.1.3`.
+
+### Validación
+
+- 5 contratos JSON válidos; advertencia previa de claves de contenido para F8.4.
+- Localización de 11 idiomas y 62 claves sin errores; fuentes CJK pendientes de F8.4.
+- Roadmap 4/45 subfases completadas (8,9%), JSON sincronizado con la web.
+- Importación de Godot 4.7.2 headless con exit 0.
+- Smoke test con 138/138 comprobaciones y exit 0.
+- Export Windows debug verificado; el ejecutable arranca headless con 11/11
+  servicios y localización en los 11 idiomas.
+- APK Android debug compilada y firmada; instalada en el Redmi 22101316G y
+  arrancada por ADB. Sin errores fatales en 15 s de logcat, PSS 376,5 MB y
+  captura de la rebanada vertical en `build/logs/android-smoke/`.
+- En MIUI/HyperOS fue necesario conceder "Instalar vía USB" al paquete; el
+  intento inicial falló con `INSTALL_FAILED_USER_RESTRICTED`.
+- `health_check.py --end`: 15 OK, 3 advertencias esperadas, 0 errores.
+- Escaneo rápido de 94 referencias sin cambios.
+
+### Publicación
+
+- Commit convencional, tag `v0.1.3` y push a `origin/main`.
+
+### Estado
+
+- Fase 1 completada: vertical slice gris con build PC/APK, CI y Pages, sin
+  mecánicas de conducción.
+- Siguiente: Fase 2.1 con DS-R (motor, caja automática y tests).
+
 ## [0.1.2] — 2026-11-22
 
 ### Añadido

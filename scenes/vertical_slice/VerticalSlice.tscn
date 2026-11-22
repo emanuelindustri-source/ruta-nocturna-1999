@@ -1,0 +1,116 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://src/world/vertical_slice.gd" id="1_slice"]
+[ext_resource type="PackedScene" path="res://scenes/vehicle/EsteemBlockout.tscn" id="2_esteem"]
+
+[sub_resource type="Environment" id="Environment_night"]
+background_mode = 1
+background_color = Color(0.012, 0.02, 0.03, 1)
+ambient_light_source = 3
+ambient_light_color = Color(0.28, 0.34, 0.4, 1)
+ambient_light_energy = 0.55
+fog_enabled = true
+fog_light_color = Color(0.12, 0.16, 0.2, 1)
+fog_density = 0.012
+fog_sky_affect = 0.0
+
+[sub_resource type="StandardMaterial3D" id="Material_road"]
+albedo_color = Color(0.2, 0.21, 0.22, 1)
+roughness = 0.92
+
+[sub_resource type="StandardMaterial3D" id="Material_ground"]
+albedo_color = Color(0.09, 0.11, 0.1, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="Material_shoulder"]
+albedo_color = Color(0.42, 0.4, 0.34, 1)
+roughness = 0.95
+
+[sub_resource type="PlaneMesh" id="Mesh_road"]
+material = SubResource("Material_road")
+size = Vector2(8, 240)
+
+[sub_resource type="PlaneMesh" id="Mesh_ground"]
+material = SubResource("Material_ground")
+size = Vector2(70, 260)
+
+[sub_resource type="BoxMesh" id="Mesh_shoulder"]
+material = SubResource("Material_shoulder")
+size = Vector3(0.9, 0.02, 240)
+
+[node name="VerticalSlice" type="Node3D"]
+script = ExtResource("1_slice")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_night")
+
+[node name="MoonLight" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-38, 142, 0)
+light_color = Color(0.72, 0.8, 0.9, 1)
+light_energy = 0.65
+shadow_enabled = true
+
+[node name="Ground" type="MeshInstance3D" parent="."]
+position = Vector3(0, -0.03, 0)
+mesh = SubResource("Mesh_ground")
+
+[node name="Road" type="MeshInstance3D" parent="."]
+mesh = SubResource("Mesh_road")
+
+[node name="ShoulderLeft" type="MeshInstance3D" parent="."]
+position = Vector3(-4.45, 0.01, 0)
+mesh = SubResource("Mesh_shoulder")
+
+[node name="ShoulderRight" type="MeshInstance3D" parent="."]
+position = Vector3(4.45, 0.01, 0)
+mesh = SubResource("Mesh_shoulder")
+
+[node name="EsteemBlockout" parent="." instance=ExtResource("2_esteem")]
+position = Vector3(0, 0, 1.5)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+position = Vector3(5.4, 2.7, 8.2)
+fov = 58.0
+far = 400.0
+
+[node name="Overlay" type="CanvasLayer" parent="."]
+
+[node name="Panel" type="PanelContainer" parent="Overlay"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -188.0
+offset_right = 560.0
+offset_bottom = -24.0
+grow_vertical = 0
+
+[node name="Margin" type="MarginContainer" parent="Overlay/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 14
+
+[node name="VBox" type="VBoxContainer" parent="Overlay/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="Overlay/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.941, 0.788, 0.361, 1)
+theme_override_font_sizes/font_size = 22
+text = "REBANADA VERTICAL · v0.1.3"
+
+[node name="Subtitle" type="Label" parent="Overlay/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.74, 0.8, 0.78, 1)
+theme_override_font_sizes/font_size = 15
+text = "Coche gris y carretera gris. Todavía sin conducción."
+autowrap_mode = 3
+
+[node name="BackButton" type="Button" parent="Overlay/Panel/Margin/VBox"]
+custom_minimum_size = Vector2(200, 48)
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Volver"

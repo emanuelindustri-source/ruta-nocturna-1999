@@ -1,8 +1,9 @@
 extends Control
-## Pantalla de arranque de la Fase 1.2.
+## Pantalla de arranque desde la Fase 1.2 y acceso a la rebanada vertical de 1.4.
 ## Verifica los servicios base y abre el panel QA, sin mecánicas de conducción.
 
-const PHASE := "1.2"
+const PHASE := "1.4"
+const VERTICAL_SLICE_SCENE := "res://scenes/vertical_slice/VerticalSlice.tscn"
 const REPOSITORY := "emanuelindustri-source/ruta-nocturna-1999"
 const SERVICE_NAMES := [
 	"EventBus",
@@ -23,6 +24,7 @@ const SERVICE_NAMES := [
 @onready var version_label: Label = $Center/VBox/VersionLabel
 @onready var qa_hint_label: Label = $Center/VBox/QaHint
 @onready var crash_warning_label: Label = $Center/VBox/CrashWarning
+@onready var view_slice_button: Button = $Center/VBox/ViewSlice
 
 
 func _ready() -> void:
@@ -37,6 +39,8 @@ func _ready() -> void:
 		{"version": version, "phase": PHASE, "platform": OS.get_name()}
 	)
 	qa_hint_label.text = tr("BOOT_QA_HINT")
+	view_slice_button.text = tr("UI_VIEW_SLICE")
+	view_slice_button.pressed.connect(_open_vertical_slice)
 	crash_warning_label.visible = CrashReporter.previous_session_detected
 	if crash_warning_label.visible:
 		crash_warning_label.text = tr("BOOT_CRASH_WARNING")
@@ -44,7 +48,12 @@ func _ready() -> void:
 		"[RN1999] Boot v%s, fase %s, %d/%d servicios, repo %s"
 		% [version, PHASE, active, SERVICE_NAMES.size(), REPOSITORY]
 	)
+	print("[RN1999] BOOT_READY version=%s platform=%s services=%d" % [version, OS.get_name(), active])
 	EventBus.application_booted.emit(version)
+
+
+func _open_vertical_slice() -> void:
+	SceneRouter.change_scene(VERTICAL_SLICE_SCENE, "vertical_slice")
 
 
 func _count_services() -> int:

@@ -7,7 +7,7 @@ extends Node
 ## El proceso devuelve 0 solo si todos los servicios base responden y el
 ## bloqueo del Esteem conserva LOD0/LOD1/LOD2, manifiesto y ancla de rig.
 
-const EXPECTED_VERSION := "0.1.2"
+const EXPECTED_VERSION := "0.1.3"
 const AUTOLOADS := [
 	"EventBus",
 	"HardwareProfiler",
@@ -47,6 +47,8 @@ func _ready() -> void:
 	await _test_creator_qa_menu()
 	_test_scene_router()
 	await _test_vehicle_blockout()
+	await _test_vertical_slice()
+	_test_export_presets()
 	_finish()
 
 
@@ -350,6 +352,70 @@ func _test_vehicle_blockout() -> void:
 			_check(skeleton.find_bone("anchor_root") != -1, "hueso raíz anchor_root")
 	blockout.queue_free()
 	await get_tree().process_frame
+
+
+func _test_vertical_slice() -> void:
+	var packed := load("res://scenes/vertical_slice/VerticalSlice.tscn") as PackedScene
+	_check(packed != null, "escena VerticalSlice carga")
+	if packed == null:
+		return
+	var slice := packed.instantiate()
+	add_child(slice)
+	await get_tree().process_frame
+	_check(slice.get_node_or_null("Road") != null, "rebanada con carretera gris")
+	_check(slice.get_node_or_null("Ground") != null, "rebanada con terreno")
+	_check(slice.get_node_or_null("Camera3D") != null, "rebanada con cámara")
+	_check(slice.get_node_or_null("EsteemBlockout") != null, "rebanada con el bloqueo del Esteem")
+	var dashes := slice.get_node_or_null("LaneDashes")
+	_check(dashes != null and dashes.get_child_count() >= 20, "marcas de carril generadas")
+	var back_button := slice.get_node_or_null("Overlay/Panel/Margin/VBox/BackButton") as Button
+	_check(back_button != null and not back_button.text.is_empty(), "botón de retorno localizado")
+	var triangles := _count_triangles(slice)
+	_check(triangles > 0 and triangles <= 120000, "triángulos de la rebanada dentro del presupuesto móvil (%d)" % triangles)
+	var lod0 := slice.get_node_or_null("EsteemBlockout/LOD0") as Node3D
+	var lod1 := slice.get_node_or_null("EsteemBlockout/LOD1") as Node3D
+	var lod2 := slice.get_node_or_null("EsteemBlockout/LOD2") as Node3D
+	_check(
+		lod0 != null and lod0.visible and lod1 != null and not lod1.visible and lod2 != null and not lod2.visible,
+		"solo LOD0 visible en la rebanada"
+	)
+	var has_vehicle_body := _find_first(slice, ["VehicleBody3D", "RigidBody3D", "CharacterBody3D"]) != null
+	_check(not has_vehicle_body, "rebanada sin cuerpos de física ni conducción")
+	slice.queue_free()
+	await get_tree().process_frame
+
+	var boot := load("res://scenes/boot/Boot.tscn") as PackedScene
+	_check(boot != null, "escena Boot carga")
+	if boot != null:
+		var boot_scene := boot.instantiate()
+		add_child(boot_scene)
+		await get_tree().process_frame
+		_check(boot_scene.get_node_or_null("Center/VBox/ViewSlice") is Button, "Boot ofrece acceso a la rebanada")
+		boot_scene.queue_free()
+		await get_tree().process_frame
+
+
+func _find_first(node: Node, type_names: Array) -> Node:
+	for child in node.get_children():
+		for type_name in type_names:
+			if child.is_class(type_name):
+				return child
+		var found := _find_first(child, type_names)
+		if found != null:
+			return found
+	return null
+
+
+func _test_export_presets() -> void:
+	var text := FileAccess.get_file_as_string("res://export_presets.cfg")
+	_check(not text.is_empty(), "export_presets.cfg presente")
+	_check(text.contains('platform="Windows Desktop"'), "preset de Windows Desktop")
+	_check(text.contains('platform="Android"'), "preset de Android")
+	_check(text.contains("include_filter=\"localization/*.csv"), "CSV de localización incluido en el export")
+	_check(text.contains("build/exports/windows/"), "ruta de export de Windows declarada")
+	_check(text.contains("build/exports/android/"), "ruta de export de Android declarada")
+	_check(not text.contains("keystore_password"), "sin contraseñas de keystore en los presets")
+	_check(str(ProjectSettings.get_setting("application/config/version", "")) == EXPECTED_VERSION, "versión de export %s" % EXPECTED_VERSION)
 
 
 func _finish() -> void:

@@ -26,6 +26,9 @@ BLENDER = Path(r"C:\Program Files\Blender Foundation\Blender 4.5\blender.exe")
 ADB = Path(r"C:\Android\platform-tools\adb.exe")
 GH = Path(r"C:\Program Files\GitHub CLI\gh.exe")
 KEYSTORE = Path(r"C:\Android\debug.keystore")
+JAVA = Path(r"C:\Program Files\Eclipse Adoptium\jdk-17.0.21.10002-hotspot\bin\java.exe")
+ANDROID_SDK = Path(r"C:\Android")
+EXPORT_TEMPLATES = Path.home() / "AppData" / "Roaming" / "Godot" / "export_templates" / "4.7.2.stable"
 REPORT_DIR = ROOT / "build" / "logs" / "health"
 
 REQUIRED_FILES = [
@@ -53,6 +56,7 @@ REQUIRED_FILES = [
     "docs/architecture/STATE_MACHINES.md",
     "docs/architecture/DATA_CONTRACTS.md",
     "docs/architecture/QA_AND_RECOVERY.md",
+    "docs/architecture/BUILD_AND_RELEASE.md",
     "data/schemas/vehicle_components.json",
     "data/schemas/folklore_entities.json",
     "data/schemas/dialogue_and_endings.json",
@@ -87,10 +91,17 @@ REQUIRED_FILES = [
     "tools/validate_schemas.py",
     "tools/validate_localization.py",
     "tools/validate_assets.py",
+    "tools/validate_export.py",
     "tools/release/sync_roadmap.py",
     "tools/scan_reference_library.py",
     "tools/reference_library.json",
+    "tools/dev/export.ps1",
+    "tools/dev/export.cmd",
+    "tools/test_android_adb.ps1",
+    "export_presets.cfg",
     "scenes/boot/Boot.tscn",
+    "scenes/vertical_slice/VerticalSlice.tscn",
+    "src/world/vertical_slice.gd",
     "data/vehicle/blockout_spec.json",
     "tools/blender/build_assets.py",
     "tools/blender/build_assets.cmd",
@@ -215,6 +226,85 @@ def check_generated_assets(checks: list[Check]) -> None:
         )
     except Exception as exc:  # noqa: BLE001
         result(checks, "generated_assets", False, f"No se pudo ejecutar la validación: {exc}")
+
+
+def check_export_presets(checks: list[Check]) -> None:
+    try:
+        module = load_module(TOOLS / "validate_export.py", "rn1999_validate_export")
+        errors, warnings = module.validate()
+        result(
+            checks,
+            "export_presets",
+            not errors,
+            f"{len(errors)} errores, {len(warnings)} advertencias" if errors or warnings else "Presets de Windows y Android válidos",
+            {"errors": errors, "warnings": warnings},
+            warn=bool(warnings) and not errors,
+        )
+    except Exception as exc:  # noqa: BLE001
+        result(checks, "export_presets", False, f"No se pudo validar: {exc}")
+
+
+def check_build_toolchain(checks: list[Check]) -> None:
+    details = {
+        "java": str(JAVA) if JAVA.exists() else None,
+        "android_sdk": str(ANDROID_SDK) if ANDROID_SDK.exists() else None,
+        "export_templates": str(EXPORT_TEMPLATES) if EXPORT_TEMPLATES.exists() else None,
+        "android_template": str(EXPORT_TEMPLATES / "android_debug.apk") if (EXPORT_TEMPLATES / "android_debug.apk").exists() else None,
+        "windows_template": str(EXPORT_TEMPLATES / "windows_release_x86_64.exe") if (EXPORT_TEMPLATES / "windows_release_x86_64.exe").exists() else None,
+    }
+    missing = [name for name, value in details.items() if value is None]
+    result(
+        checks,
+        "build_toolchain",
+        not missing,
+        "Java, SDK y plantillas de export presentes" if not missing else f"Faltan: {', '.join(missing)}",
+        details,
+        warn=bool(missing),
+    )
+
+
+def check_android_device(checks: list[Check]) -> None:
+    if not ADB.exists():
+        result(checks, "android_device", False, "adb no está instalado", warn=True)
+        return
+    code, output = run_command([str(ADB), "devices", "-l"], timeout=30)
+    authorized = [
+        line.split()[0]
+        for line in output.splitlines()
+        if len(line.split()) >= 2 and line.split()[1] == "device"
+    ]
+    if code != 0:
+        result(checks, "android_device", False, f"adb devices falló: {output.strip()[:160]}", warn=True)
+        return
+    result(
+        checks,
+        "android_device",
+        bool(authorized),
+        f"Dispositivo autorizado: {', '.join(authorized)}" if authorized else "Sin dispositivo ADB autorizado",
+        {"devices": authorized},
+        warn=not authorized,
+    )
+
+
+def check_tracked_secrets(checks: list[Check]) -> None:
+    code, output = run_command(["git", "ls-files"], timeout=20)
+    if code != 0:
+        result(checks, "tracked_secrets", False, "No se pudo listar el índice de Git", warn=True)
+        return
+    tracked = [line for line in output.splitlines() if line.strip()]
+    suspicious = [
+        path
+        for path in tracked
+        if path.lower().endswith((".keystore", ".jks", ".p12", ".pfx", ".apk", ".aab"))
+        or path.lower() in {"export_credentials.cfg", ".env"}
+    ]
+    result(
+        checks,
+        "tracked_secrets",
+        not suspicious,
+        f"{len(suspicious)} archivos sensibles versionados" if suspicious else f"{len(tracked)} archivos versionados sin secretos ni binarios",
+        {"suspicious": suspicious},
+    )
 
 
 def check_reference_library(checks: list[Check]) -> None:
@@ -454,6 +544,10 @@ def main() -> int:
     check_forbidden_binaries(checks)
     check_autoloads(checks)
     check_generated_assets(checks)
+    check_export_presets(checks)
+    check_build_toolchain(checks)
+    check_android_device(checks)
+    check_tracked_secrets(checks)
     check_godot_import(checks, args.skip_godot)
     check_smoke_test(checks, args.skip_godot or args.skip_smoke)
 

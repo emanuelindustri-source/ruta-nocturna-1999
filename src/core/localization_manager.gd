@@ -148,14 +148,22 @@ func _count_keys() -> int:
 func _load_imported_translations() -> bool:
 	var loaded: Dictionary = {}
 	for locale in LOCALES:
-		var translation := TranslationServer.get_translation_object(locale)
-		if translation == null:
-			continue
-		if translation.get_message(StringName("APP_TITLE")).is_empty():
+		var translation: Translation = TranslationServer.get_translation_object(locale)
+		if translation == null or translation.get_message(StringName("APP_TITLE")).is_empty():
+			# En exports el CSV no se empaqueta como archivo plano, pero el
+			# importador sí genera y empaqueta un .translation por locale.
+			var path := "res://localization/strings.%s.translation" % locale
+			if ResourceLoader.exists(path):
+				var resource: Resource = ResourceLoader.load(path)
+				if resource is Translation:
+					translation = resource
+		if translation == null or translation.get_message(StringName("APP_TITLE")).is_empty():
 			continue
 		loaded[locale] = translation
 	if loaded.size() != LOCALES.size():
 		return false
+	for locale in loaded.keys():
+		TranslationServer.add_translation(loaded[locale])
 	_translations = loaded
 	var fallback: Translation = _translations.get(FALLBACK_LOCALE)
 	if fallback is OptimizedTranslation:

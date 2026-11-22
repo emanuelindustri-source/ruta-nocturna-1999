@@ -1,9 +1,9 @@
 # ROADMAP — Ruta Nocturna: 1999
 
-**Versión actual:** `v0.1.2`  
-**Subfase actual:** **1.4 — CI, Android/ADB, export y vertical slice**  
-**Estado global:** Fase 1.3 completada y publicada; siguiente gate 1.4  
-**Última fuente:** cierre de Fase 1.3 en GitHub
+**Versión actual:** `v0.1.3`  
+**Subfase actual:** **2.1 — Motor, caja automática y tests**  
+**Estado global:** Fase 1 completada y publicada; siguiente gate 2.1  
+**Última fuente:** cierre de Fase 1.4 en GitHub
 
 Esta es la fuente de verdad del desarrollo. Cada fila es un gate cerrado: no se
 avanza sin validación, actualización de estado, commit, tag y cambio de chat.
@@ -48,7 +48,7 @@ invertir en arte o mecánicas complejas.
 | **1.1** | `v0.1.0` | **DS-S** | Proyecto, AGENTS, ROADMAP, contratos JSON, arquitectura, web Pages, herramientas de salud, referencias y bootstrap. Validado y publicado. | Completada |
 | **1.2** | `v0.1.1` | **DS-R** | EventBus, once autoloads base, CrashReporter, CreatorQAMenu inicial, boot y smoke test sin mecánicas. Validado y publicado. | Completada |
 | **1.3** | `v0.1.2` | **MiMo Pro** | Fábrica Blender headless, manifiestos, bloqueo del Esteem, LOD0/1/2 y ancla de rig. Validado y publicado. | Completada |
-| **1.4** | `v0.1.3` | **DS-S** | CI, test Android/ADB, export Windows/APK, health check completo, Pages y tag de vertical slice. | Pendiente |
+| **1.4** | `v0.1.3` | **DS-S** | CI, test Android/ADB, export Windows/APK, health check completo, Pages y tag de vertical slice. Validado y publicado. | Completada |
 
 **Cierre:** `/new` después de cada subfase; cambio de modelo en 1.2, 1.3 y 1.4.
 

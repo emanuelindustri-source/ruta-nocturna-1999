@@ -9,6 +9,10 @@ on:
 permissions:
   contents: read
 
+env:
+  GODOT_VERSION: "4.7.2"
+  GODOT_RELEASE: "4.7.2-stable"
+
 jobs:
   contracts:
     runs-on: ubuntu-latest
@@ -33,6 +37,9 @@ jobs:
       - name: Validate 11-language foundation
         run: python tools/validate_localization.py
 
+      - name: Validate export presets
+        run: python tools/validate_export.py
+
       - name: Validate roadmap synchronization
         run: python tools/release/sync_roadmap.py --check
 
@@ -43,8 +50,41 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if git ls-files | grep -E '\.(keystore|jks|apk|aab)$'; then
+          if git ls-files | grep -E '\.(keystore|jks|apk|aab|p12|pfx)$'; then
             echo "Forbidden binary or secret found in Git."
             exit 1
           fi
           echo "No forbidden binaries tracked."
+
+  godot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download Godot 4.7.2
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsSL -o godot.zip \
+            "https://github.com/godotengine/godot/releases/download/${GODOT_RELEASE}/Godot_v${GODOT_RELEASE}_linux.x86_64.zip"
+          unzip -q godot.zip
+          chmod +x "Godot_v${GODOT_RELEASE}_linux.x86_64"
+          "./Godot_v${GODOT_RELEASE}_linux.x86_64" --version
+
+      - name: Import project headless
+        run: ./Godot_v4.7.2-stable_linux.x86_64 --headless --path . --editor --quit
+
+      - name: Run smoke test
+        run: ./Godot_v4.7.2-stable_linux.x86_64 --headless --path . res://tests/smoke/SmokeTest.tscn
+
+      - name: Check for script errors
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ./Godot_v4.7.2-stable_linux.x86_64 --headless --path . res://tests/smoke/SmokeTest.tscn 2>&1 | tee smoke.log | grep -E "SCRIPT ERROR|Parse Error|Failed to load"; then
+            echo "Script errors detected."
+            exit 1
+          fi
+          grep -q "\[SMOKE\] OK" smoke.log
