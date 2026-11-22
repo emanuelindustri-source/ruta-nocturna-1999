@@ -1,0 +1,284 @@
+{
+  "schema_version": 1,
+  "asset_id": "vehicle.esteem.cabin",
+  "vehicle_id": "chevrolet_esteem_1999_auto_beige",
+  "content_status": "interior_blockout_provisional",
+  "description": "Especificacion declarativa del bloqueo funcional de la cabina del Esteem 1999 (volante, columna, tablero/consola, palanca P-R-N-D-2-L con boton de Overdrive, freno de mano, radio cassette doble DIN, guantera, paneles de puerta y consola) y del rig de manos con poses IK. La fabrica de assets en tools/blender genera las mallas LOD0/LOD1/LOD2 y el armazon del rig de manos a partir de este archivo. Sin mecanicas de conduccion, sin espejos, sin HUD y sin interaccion (F2.3/F2.4).",
+  "units": "meters",
+  "axes": "godot_y_up_forward_minus_z_right_plus_x",
+  "axes_note": "Coordenadas de runtime: X+ derecha, Y+ arriba, Z+ detras (el frente del vehiculo apunta a -Z). El conductor va a la izquierda (LHD, anchor_driver_seat x=-0.35). La fabrica convierte a coordenadas Blender (Z+ arriba, Y+ frente) al exportar, igual que blockout_spec.json.",
+  "source_policy": "Ninguna cota de interior procede del manual de servicio disponible (no incluye cotas de cabina). Las posiciones de los controles derivan de las anclas anchor_* de data/vehicle/blockout_spec.json (provisionales) y las dimensiones de las proporciones observadas en las fotografias de la biblioteca externa (solo lectura). Todos los valores de esta especificacion son provisional_design_value / photo_observed_provisional y no se publican como especificacion oficial del vehiculo.",
+  "anchor_frame": {
+    "blockout_spec": "data/vehicle/blockout_spec.json",
+    "note": "Las posiciones de los controles se toman de las anclas anchor_* del bloqueo para garantizar compatibilidad con el rig del vehiculo. Los objetos de cabina se colocan en el mismo espacio de coordenadas.",
+    "used_anchors": [
+      "anchor_driver_seat",
+      "anchor_passenger_seat",
+      "anchor_steering_wheel",
+      "anchor_gear_lever",
+      "anchor_handbrake",
+      "anchor_camera_driver"
+    ]
+  },
+  "materials": {
+    "cabin_plastic_dark": { "base_color": [0.15, 0.16, 0.17, 1.0], "roughness": 0.72 },
+    "cabin_plastic_light": { "base_color": [0.52, 0.5, 0.46, 1.0], "roughness": 0.78 },
+    "cabin_metal": { "base_color": [0.36, 0.37, 0.39, 1.0], "roughness": 0.45, "metallic": 0.85 },
+    "cabin_fabric": { "base_color": [0.44, 0.45, 0.47, 1.0], "roughness": 0.95 },
+    "cabin_accent": { "base_color": [0.24, 0.26, 0.28, 1.0], "roughness": 0.6 }
+  },
+  "materials_note": "Colores de greybox originales del proyecto (grises y beige neutros). Ninguna textura ni color procede de la biblioteca de referencias. Sin marcas ni emblemas.",
+  "components": {
+    "steering_wheel": {
+      "anchor": "anchor_steering_wheel",
+      "type": "wheel",
+      "rim_outer_radius_m": 0.185,
+      "rim_thickness_m": 0.032,
+      "hub_radius_m": 0.052,
+      "spokes": 3,
+      "rotation_blender_deg": [66.0, 0.0, 0.0],
+      "material": "cabin_plastic_dark",
+      "note": "Volante de tres radios segun ESTEEM_MECHANICAL_NOTES.md. Inclinacion de columna provisional (24 deg respecto a la vertical). Radio exterior ~0,185 m, provisional."
+    },
+    "steering_column": {
+      "anchor": "anchor_steering_wheel",
+      "type": "cylinder",
+      "length_m": 0.26,
+      "radius_m": 0.046,
+      "direction_blender_deg": [66.0, 0.0, 0.0],
+      "offset_m": [0.0, -0.02, -0.11],
+      "material": "cabin_plastic_dark",
+      "note": "Columna y cubo de direccion bajo el volante, provisional."
+    },
+    "instrument_cluster": {
+      "type": "box",
+      "min_m": [-0.6, 1.02, -0.81],
+      "max_m": [-0.11, 1.17, -0.66],
+      "material": "cabin_accent",
+      "note": "Caja del instrumental detras del volante (velocimetro central y testigos laterales). Provisional."
+    },
+    "dashboard": {
+      "type": "box",
+      "min_m": [-0.73, 0.86, -0.82],
+      "max_m": [0.73, 1.17, -0.30],
+      "material": "cabin_plastic_dark",
+      "note": "Tablero principal de lado a lado. Provisional."
+    },
+    "dashboard_passenger_tray": {
+      "type": "box",
+      "min_m": [0.2, 1.1, -0.72],
+      "max_m": [0.66, 1.17, -0.5],
+      "material": "cabin_plastic_dark",
+      "note": "Bandeja superior del lado del acompanante observada en las fotos. Provisional."
+    },
+    "center_stack": {
+      "type": "box",
+      "min_m": [-0.13, 0.86, -0.64],
+      "max_m": [0.13, 1.17, -0.42],
+      "material": "cabin_plastic_light",
+      "note": "Consola central vertical (radio y clima). Provisional."
+    },
+    "air_vent_left": {
+      "type": "box",
+      "min_m": [-0.12, 1.1, -0.64],
+      "max_m": [-0.015, 1.16, -0.56],
+      "material": "cabin_accent",
+      "note": "Salida de aire central izquierda. Provisional."
+    },
+    "air_vent_right": {
+      "type": "box",
+      "min_m": [0.015, 1.1, -0.64],
+      "max_m": [0.12, 1.16, -0.56],
+      "material": "cabin_accent",
+      "note": "Salida de aire central derecha. Provisional."
+    },
+    "radio_double_din": {
+      "type": "box",
+      "min_m": [-0.11, 1.0, -0.63],
+      "max_m": [0.11, 1.1, -0.55],
+      "slot": true,
+      "material": "cabin_plastic_dark",
+      "note": "Radio cassette de doble DIN (~0,10 m de alto) con ranura de cassette. Alto y posicion provisionales; el manual no da cotas."
+    },
+    "climate_controls": {
+      "type": "box",
+      "min_m": [-0.11, 0.89, -0.62],
+      "max_m": [0.11, 0.99, -0.55],
+      "material": "cabin_plastic_light",
+      "note": "Panel de clima con deslizantes (temperatura y modo). Sin texto. Provisional."
+    },
+    "console": {
+      "type": "box",
+      "min_m": [-0.21, 0.5, -0.64],
+      "max_m": [0.21, 0.88, 0.32],
+      "material": "cabin_plastic_light",
+      "note": "Tunel/consola central entre los asientos; aloja guia de palanca, freno de mano y cubierta trasera. Provisional."
+    },
+    "gear_gate_plate": {
+      "type": "box",
+      "min_m": [-0.075, 0.86, -0.58],
+      "max_m": [0.075, 0.9, -0.3],
+      "material": "cabin_metal",
+      "note": "Guia de la palanca automatica P-R-N-D-2-L. Solo forma y posiciones; sin texto (la localizacion es F2.4/F9.1). Provisional."
+    },
+    "gear_lever": {
+      "anchor": "anchor_gear_lever",
+      "type": "gear_lever",
+      "shaft_radius_m": 0.018,
+      "shaft_length_m": 0.14,
+      "knob_size_m": [0.075, 0.075, 0.11],
+      "od_button": true,
+      "od_button_size_m": [0.022, 0.03, 0.045],
+      "material": "cabin_plastic_dark",
+      "note": "Palanca automatica tipo T/piston con boton lateral de OVER DRIVE en el mango (observado en INTERIOR ESTEEM.jpg). El boton refleja transmission.overdrive de vehicle_powertrain.json. Provisional."
+    },
+    "handbrake": {
+      "anchor": "anchor_handbrake",
+      "type": "handbrake",
+      "lever_length_m": 0.3,
+      "lever_radius_m": 0.017,
+      "grip_size_m": [0.045, 0.05, 0.12],
+      "tilt_blender_deg": [58.0, 0.0, 0.0],
+      "material": "cabin_plastic_dark",
+      "note": "Freno de mano de consola, inclinado hacia detras. Provisional."
+    },
+    "glovebox": {
+      "type": "box",
+      "min_m": [0.2, 0.83, -0.68],
+      "max_m": [0.62, 1.02, -0.52],
+      "latch": true,
+      "material": "cabin_plastic_light",
+      "note": "Guantera del acompanante con puerta y cierre. Provisional."
+    },
+    "door_panel_driver": {
+      "type": "box",
+      "min_m": [-0.75, 0.52, -0.58],
+      "max_m": [-0.66, 1.18, 0.42],
+      "armrest": true,
+      "handle": true,
+      "window_switch": true,
+      "material": "cabin_plastic_light",
+      "note": "Panel de puerta del conductor con apoyabrazos, tirador y mando de cristaleras. Provisional."
+    },
+    "door_panel_passenger": {
+      "type": "box",
+      "min_m": [0.66, 0.52, -0.58],
+      "max_m": [0.75, 1.18, 0.42],
+      "armrest": true,
+      "handle": true,
+      "window_switch": true,
+      "material": "cabin_plastic_light",
+      "note": "Panel de puerta del acompanante, espejo del del conductor. Provisional."
+    }
+  },
+  "lods": [
+    {
+      "id": "lod0",
+      "output": "assets/generated/vehicle/esteem_cabin_lod0.glb",
+      "detail": "full",
+      "bevel_width_m": 0.008,
+      "bevel_segments": 1,
+      "wheel_segments": 24,
+      "features": ["buttons", "vent_slats", "radio_slot", "gate_notches", "spokes", "latch", "window_switch"],
+      "max_triangles": 12000
+    },
+    {
+      "id": "lod1",
+      "output": "assets/generated/vehicle/esteem_cabin_lod1.glb",
+      "detail": "medium",
+      "bevel_width_m": 0.0,
+      "bevel_segments": 0,
+      "wheel_segments": 12,
+      "features": ["spokes", "latch"],
+      "max_triangles": 6000
+    },
+    {
+      "id": "lod2",
+      "output": "assets/generated/vehicle/esteem_cabin_lod2.glb",
+      "detail": "coarse",
+      "bevel_width_m": 0.0,
+      "bevel_segments": 0,
+      "wheel_segments": 8,
+      "features": [],
+      "max_triangles": 2500
+    }
+  ],
+  "lod_policy": {
+    "required_levels": [0, 1, 2],
+    "strictly_decreasing": true,
+    "budget_note": "Ninguna malla entra al juego sin LOD0/LOD1/LOD2 (AGENTS.md seccion 9). El presupuesto visible movil es 120.000 triangulos; la cabina en LOD0 queda muy por debajo. El conteo total visible se medira junto con el exterior en F3.5."
+  },
+  "rig_anchor": {
+    "output": "assets/generated/vehicle/esteem_hand_rig.glb",
+    "armature_name": "EsteemHandRig",
+    "root_bone": "anchor_root",
+    "bind_to_meshes": false,
+    "note": "Rig de manos y poses IK. Huesos de control alineados con las anclas anchor_* del bloqueo (compatibilidad verificable) y huesos de mano para manos IK. Poses IK nombradas que alcanzan volante, palanca y freno de mano. Sin piel ni animacion de conduccion: la interaccion es F2.3.",
+    "anchors": [
+      { "id": "anchor_root", "position_m": [0.0, 0.0, 0.0], "purpose": "raiz del rig de manos" },
+      { "id": "anchor_driver_seat", "position_m": [-0.35, 1.0, -0.1], "purpose": "ancla del asiento del conductor (== anchor_driver_seat del bloqueo)" },
+      { "id": "anchor_steering_wheel", "position_m": [-0.35, 1.1, -0.75], "purpose": "hueso de control del volante (== anchor_steering_wheel del bloqueo); destino de manos IK" },
+      { "id": "anchor_gear_lever", "position_m": [0.0, 0.95, -0.45], "purpose": "hueso de control de la palanca (== anchor_gear_lever del bloqueo); destino de mano IK" },
+      { "id": "anchor_handbrake", "position_m": [-0.15, 0.92, -0.15], "purpose": "hueso de control del freno de mano (== anchor_handbrake del bloqueo); destino de mano IK" },
+      { "id": "hand_l_wrist", "position_m": [-0.42, 0.92, -0.18], "purpose": "muneca izquierda (bind de reposo)" },
+      { "id": "hand_l_palm", "position_m": [-0.44, 0.95, -0.28], "purpose": "palma izquierda" },
+      { "id": "hand_l_grip", "position_m": [-0.45, 0.97, -0.36], "purpose": "agarre izquierdo (IK)" },
+      { "id": "hand_r_wrist", "position_m": [-0.28, 0.92, -0.18], "purpose": "muneca derecha (bind de reposo)" },
+      { "id": "hand_r_palm", "position_m": [-0.26, 0.95, -0.28], "purpose": "palma derecha" },
+      { "id": "hand_r_grip", "position_m": [-0.25, 0.97, -0.36], "purpose": "agarre derecho (IK)" },
+      { "id": "ik_steering_l", "position_m": [-0.51, 1.1, -0.74], "purpose": "destino IK mano izquierda en el volante" },
+      { "id": "ik_steering_r", "position_m": [-0.19, 1.1, -0.74], "purpose": "destino IK mano derecha en el volante" },
+      { "id": "ik_gear", "position_m": [0.0, 1.02, -0.45], "purpose": "destino IK mano en el pomo de la palanca" },
+      { "id": "ik_handbrake", "position_m": [-0.15, 1.0, -0.28], "purpose": "destino IK mano en el mango del freno de mano" }
+    ],
+    "ik_poses": [
+      {
+        "id": "pose_rest",
+        "target_anchor": "anchor_driver_seat",
+        "description": "Manos en reposo sobre el regazo del conductor.",
+        "hand_targets_m": {
+          "hand_l_grip": [-0.45, 0.97, -0.36],
+          "hand_r_grip": [-0.25, 0.97, -0.36]
+        }
+      },
+      {
+        "id": "pose_steering",
+        "target_anchor": "anchor_steering_wheel",
+        "description": "Ambas manos sobre el volante (posiciones de agarre izquierda/derecha).",
+        "hand_targets_m": {
+          "hand_l_grip": [-0.51, 1.1, -0.74],
+          "hand_r_grip": [-0.19, 1.1, -0.74]
+        }
+      },
+      {
+        "id": "pose_gear",
+        "target_anchor": "anchor_gear_lever",
+        "description": "Mano derecha sobre el pomo de la palanca P-R-N-D-2-L.",
+        "hand_targets_m": {
+          "hand_r_grip": [0.0, 1.02, -0.45]
+        }
+      },
+      {
+        "id": "pose_handbrake",
+        "target_anchor": "anchor_handbrake",
+        "description": "Mano derecha sobre el mango del freno de mano.",
+        "hand_targets_m": {
+          "hand_r_grip": [-0.15, 1.0, -0.28]
+        }
+      }
+    ]
+  },
+  "validation_rules": {
+    "controls_within_cabin_width_m": 0.75,
+    "controls_within_height_m": { "min": 0.4, "max": 1.25 },
+    "hand_rig_requires_blockout_anchors": ["anchor_driver_seat", "anchor_steering_wheel", "anchor_gear_lever", "anchor_handbrake"],
+    "ik_pose_min_count": 3,
+    "anchor_bounds_m": { "x": 1.5, "y_min": -0.5, "y_max": 3.0, "z": 6.0 }
+  },
+  "reference_notes": [
+    "Disposicion de cabina revisada contra la hoja de contacto de interior (build/reference/contact_sheets/interior_f22_review.jpg) y las fotos images (10).jpg, INTERIOR ESTEEM.jpg (= images (12).jpg) y images (7).jpg, solo lectura.",
+    "Palanca con boton lateral de OVER DRIVE confirmada en INTERIOR ESTEEM.jpg. Radio cassette doble DIN y volante de tres radios segun ESTEEM_MECHANICAL_NOTES.md.",
+    "Sin marcas, emblemas, texto ni texturas derivadas de las fotografias.",
+    "Cotas de interior provisionales: no publicar como especificacion oficial del vehiculo. Verificar contra manual o medicion antes de Fase 3.2 / Fase 5."
+  ]
+}

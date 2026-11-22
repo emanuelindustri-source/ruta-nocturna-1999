@@ -122,8 +122,58 @@ convención con las posiciones del ancla de rig.
 
 ## 8. Ampliación futura
 
-Los siguientes assets (exterior final F3.1, interior F3.2, biomas F4.3, fauno
+Los siguientes assets (exterior final F3.1, interior final F3.2, biomas F4.3, fauno
 F5.3, entidades F6.2, pasajeros F7.3) añadirán objetivos a `TARGETS` en
 `tools/blender/build_assets.py`, cada uno con su spec, su script `bpy` y su
 manifiesto. El validador y el health check ya cubren cualquier manifiesto nuevo
 que siga el contrato.
+
+## 9. Cabina y rig de manos (Fase 2.2)
+
+La cabina es el segundo asset de la fábrica y sigue el mismo contrato que el
+bloqueo: un spec declarativo, un script `bpy` reproducible, mallas LOD0/LOD1/LOD2
+y una salida `rig_anchor`, todo con manifiesto, hashes, autor, licencia y fecha.
+
+- Spec: `data/vehicle/cabin_spec.json` (`vehicle.esteem.cabin`). Describe los
+  componentes de cabina (volante de tres radios, columna, tablero, instrumental,
+  consola, radio cassette doble DIN con ranura, clima, guantera con cierre, paneles
+  de puerta con apoyabrazos/tirador/cristaleras, consola y guía de palanca
+  P-R-N-D-2-L) y el rig de manos con poses IK.
+- Script: `tools/blender/esteem_cabin.py` (target `vehicle.esteem.cabin`).
+- Salidas: `esteem_cabin_lod0.glb` (1.584 triángulos, máx. 12.000),
+  `esteem_cabin_lod1.glb` (704, máx. 6.000), `esteem_cabin_lod2.glb` (480, máx.
+  2.500) y `esteem_hand_rig.glb` (rig de manos, 15 huesos).
+- Manifiesto: `assets/manifests/esteem_cabin.manifest.json`.
+- Escena: `scenes/vehicle/EsteemCabin.tscn` (solo LOD0 visible).
+
+Política de LOD idéntica a la del bloqueo: LOD0/LOD1/LOD2 obligatorios,
+triángulos estrictamente decrecientes y cada nivel dentro de su presupuesto. El
+conteo total visible (cabina + exterior + mundo) se medirá en F3.5/F10; la cabina
+en LOD0 queda muy por debajo del presupuesto móvil de 120.000.
+
+Coordenadas: el spec vive en coordenadas de runtime (Y arriba, frente −Z, X+
+derecha) y el script convierte a coordenadas Blender y exporta con la conversión
++Y-up estándar, igual que el bloqueo.
+
+### Rig de manos y poses IK
+
+La salida `rig_anchor` de la cabina es el armazón `EsteemHandRig`. Sus huesos de
+control usan **las mismas posiciones** que las anclas `anchor_*` del bloqueo
+(`anchor_driver_seat`, `anchor_steering_wheel`, `anchor_gear_lever`,
+`anchor_handbrake`), de modo que las poses IK son compatibles con el rig del
+vehículo. `tests/vehicle/CabinTest.tscn` verifica esa coincidencia de posiciones.
+
+Las poses IK (`pose_rest`, `pose_steering`, `pose_gear`, `pose_handbrake`) están
+declaradas en `cabin_spec.json` (`rig_anchor.ik_poses`) con sus objetivos de mano,
+y se hornean como acciones de pose en Blender. La interacción real (transiciones
+de manos, "mirar/tocar") es alcance de F2.3.
+
+### Licencias y referencias de la cabina
+
+- Todo el contenido es procedural y propio: sin texturas ni mallas de las fotos.
+- La disposición de cabina se revisó con la hoja de contacto de interior y las
+  fotos `images (10).jpg`, `INTERIOR ESTEEM.jpg` (= `images (12).jpg`) e
+  `images (7).jpg` (solo lectura); registro en `REFERENCE_USAGE_LOG.md`.
+- Sin marcas ni emblemas. Sin texto visible (la señalética P-R-N-D-2-L es solo
+  posicional; la localización llega en F2.4/F9.1).
+- Cotas de interior provisionales: no publicar como especificación oficial.

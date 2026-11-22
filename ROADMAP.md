@@ -1,9 +1,9 @@
 # ROADMAP — Ruta Nocturna: 1999
 
-**Versión actual:** `v0.2.0`  
-**Subfase actual:** **2.2 — Cabina funcional y rig de manos**  
-**Estado global:** Fase 1 completada; 2.1 completada; siguiente gate 2.2  
-**Última fuente:** cierre de Fase 2.1 en GitHub
+**Versión actual:** `v0.2.1`  
+**Subfase actual:** **2.3 — Interacción contextual "mirar/tocar"**  
+**Estado global:** Fase 1 completada; 2.1 y 2.2 completadas; siguiente gate 2.3  
+**Última fuente:** cierre de Fase 2.2 en GitHub
 
 Esta es la fuente de verdad del desarrollo. Cada fila es un gate cerrado: no se
 avanza sin validación, actualización de estado, commit, tag y cambio de chat.
@@ -62,7 +62,7 @@ invertir en arte o mecánicas complejas.
 | Subfase | Versión | Modelo | Entregable | Estado |
 |---|---|---|---|---|
 | **2.1** | `v0.2.0` | **DS-R** | Motor, caja automática P-R-N-D-2-L, O/D, frenos, combustible, térmica, electroventilador y tests. Validado y publicado. | Completada |
-| **2.2** | `v0.2.1` | **MiMo Pro** | Cabina funcional, volante, palanca, freno de mano, radio, guantera, paneles, rig de manos y poses IK. | Pendiente |
+| **2.2** | `v0.2.1` | **MiMo Pro** | Cabina funcional, volante, palanca, freno de mano, radio, guantera, paneles, rig de manos y poses IK. Validado y publicado. | Completada |
 | **2.3** | `v0.2.2` | **DS-R** | Interacción contextual “mirar/tocar”, IK 2/1/0 manos, puertas, seguros, vidrios, luces, antena y radio. | Pendiente |
 | **2.4** | `v0.2.3` | **MiMo Flash** | Espejos `SubViewport`, HUD mínimo, gamepad/D-Pad, save v0.2.0, QA de reparaciones y ADB. | Pendiente |
 

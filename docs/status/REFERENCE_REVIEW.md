@@ -21,6 +21,10 @@
 - Fase 2.1: revisión de seis fotos técnicas y de los dos manuales extraídos para
   el tren motriz; valores verificados y provisionales separados en
   `docs/reference/ESTEEM_MECHANICAL_NOTES.md`.
+- Fase 2.2: revisión visual completa de referencias de interior (hoja de contacto
+  `interior_f22_review.jpg` de 37 fotos + `images (10).jpg`, `INTERIOR ESTEEM.jpg`
+  e `images (7).jpg` a tamaño real) para la cabina y el rig de manos; registrada
+  en `REFERENCE_USAGE_LOG.md`. Sin copiar archivos al repositorio.
 - Alta nueva `VID_20261122_115121.mp4` catalogada como video conceptual (95
   archivos). No se usa en mecánica.
 

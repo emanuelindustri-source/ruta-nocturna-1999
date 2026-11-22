@@ -172,6 +172,63 @@ intacta.
 - Copiar imágenes, PDFs o fotogramas al repositorio.
 - Modelar piezas de motor, caja o frenos en esta subfase.
 
+## 2026-11-22 — Fase 2.2 — cabina funcional y rig de manos (revisión visual completa de interior)
+
+**Alcance:** revisión visual completa de las referencias de interior que exige
+`AGENTS.md` para F2.2 (hitos de revisión obligatoria). Se usó el catálogo
+`docs/reference/reference_catalog.json` y una **hoja de contacto de interior**
+generada a `build/reference/contact_sheets/interior_f22_review.jpg` (37 fotos de
+vehículo, no versionada). **No se cargaron las 40 imágenes en contexto** y **no
+se copió ningún archivo** de `C:\Dev\fotos de ejemplo` al repositorio. Solo se
+abrieron a tamaño real **tres** fotografías clave de cabina para confirmar
+detalles de modelado; las copias de trabajo derivadas quedan en
+`build/reference/review_f22/` (ignoradas por Git, originales intactos).
+
+### Referencias utilizadas
+
+| Referencia | Uso | Resultado |
+|---|---|---|
+| Hoja de contacto de interior (37 fotos de vehículo) | Inventario visual de cabina: tablero, consola, volante, palanca, guantera, puertas, asientos | Identificadas las fotos de cabina frente a exteriores, mecánica y piezas |
+| `images (10).jpg` (tablero completo, 500×400, ampliada ×2) | Distribución global del tablero y la consola central | Volante con radios y cubo central, instrumental con velocímetro central, consola con radio/cassette, clima, palanca automática, freno de mano sobre el túnel y guantera con bandeja superior |
+| `INTERIOR ESTEEM.jpg` (= `images (12).jpg`, 640×480) | Consola central a tamaño real: palanca, radio, clima | Palanca automática tipo T/pistón con **botón lateral “OVER DRIVE”** en el mango, clima con deslizantes, encendedor 12V, guantera y panel de cristaleras |
+| `images (7).jpg` (lado acompañante, 507×394, ampliada ×2) | Guantera, consola y panel de puerta del acompañante | Guantera con puerta y cierre, consola central, panel de puerta con apoyabrazos |
+| `images (1).jpg`, `images (11).jpg`, `images (17).jpg`, `images (2).jpg`, `images (6).jpg`, `images (12).jpg` (vistas de tablero, volante, asientos y puertas) | Volante, instrumental, asientos de tela con patrón geométrico y paneles | Confirmada la disposición de cabina y el patrón de tapicería; sin cotas utilizables |
+| `ESTEEM_MECHANICAL_NOTES.md` (sección Apariencia y cabina) | Notas ya derivadas de las fotos | Interior beige/telas grises, volante de tres radios, radio cassette doble DIN, palanca con botón de Overdrive, guantera con cierre, paneles con apoyabrazos |
+
+### Decisiones de modelado (F2.2)
+
+- La cabina de F2.2 es un **bloqueo funcional** (greybox) del interior: volante,
+  columna, tablero/consola, palanca P-R-N-D-2-L con botón de Overdrive, freno de
+  mano, radio cassette doble DIN, guantera, paneles de puerta y consola. El
+  interior final (telas, materiales PBR) es F3.2.
+- La palanca se modela como empuñadura tipo T/pistón con **botón lateral de
+  Overdrive**, coherente con `transmission.overdrive` y
+  `transmission.selector_modes` de `vehicle_powertrain.json`. No se implementa la
+  interacción (es F2.3).
+- El volante sigue la nota documentada de **tres radios** de
+  `ESTEEM_MECHANICAL_NOTES.md`. Se deja constancia de que algunas fotos
+  (`images (10)`) podrían leerse como cuatro radios; se marca para verificación
+  en F3.2 y se usa la determinación ya documentada (no se inventa).
+- La radio es **cassette de doble DIN** según la nota documentada; la posición y
+  el alto son provisionales (el manual no da cotas de interior).
+- Todas las cotas de interior son **provisionales** (`provisional_design_value` /
+  `photo_observed_provisional`): se derivan de las anclas `anchor_*` del bloqueo y
+  de proporciones observadas en fotos, no del manual. No se publican como
+  especificación oficial.
+- Materiales: grises y beige **originales del proyecto** (greybox); ninguna
+  textura, malla ni color procede de las fotografías.
+- Sin emblemas ni marcas (Chevrolet, PDV ni otras). Sin texto visible: la
+  señalética P-R-N-D-2-L se representa solo por posición de la guía, no por texto
+  (la localización llega en F2.4/F9.1).
+
+### Descartado
+
+- Copiar imágenes, recortes o texturas de la biblioteca externa al repositorio.
+- Tomar cotas de interior de las fotos como medidas del manual.
+- Reproducir emblemas, logos o texto de marca.
+- Implementar interacción “mirar/tocar”, espejos, HUD, gamepad o guardado (F2.3/F2.4).
+- Usar las fotos como capturas de tienda o assets del juego.
+
 ## Próxima revisión
 
 - Revisión rápida: inicio y cierre de cada subfase.

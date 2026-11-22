@@ -214,3 +214,35 @@ Reglas:
   documentar la migración. Cambiar un valor exige actualizar su `source_note`.
 - El contrato es de simulación, no de reparación: los costos, herramientas y
   síntomas siguen en `vehicle_components.json`.
+
+## 14. Cabina y rig de manos (Fase 2.2)
+
+La cabina es un contrato de **assets 3D**, no de sistemas: `data/vehicle/cabin_spec.json`
+(`schema_version: 1`) describe de forma declarativa el bloqueo funcional del
+interior y el rig de manos. Su validación vive en `tools/validate_assets.py`
+(mismo patrón que el bloqueo) y no en `validate_schemas.py`.
+
+Secciones:
+
+| Sección | Contenido |
+|---|---|
+| `components` | Volante, columna, tablero, instrumental, consola, radio cassette doble DIN, clima, guantera, paneles de puerta y guía de palanca P-R-N-D-2-L |
+| `materials` | Grises/beige de greybox originales; sin texturas de fotos |
+| `lods` | LOD0/LOD1/LOD2 con `max_triangles` estrictamente decrecientes |
+| `rig_anchor` | Armazón `EsteemHandRig`, huesos `anchor_*`/`hand_*`/`ik_*` y `ik_poses` |
+
+Reglas:
+
+- Los controles se colocan según las anclas `anchor_*` de
+  `data/vehicle/blockout_spec.json` (mismo espacio de coordenadas); el rig de
+  manos reutiliza esas posiciones para que las poses IK sean compatibles.
+- La palanca refleja `transmission.selector_modes` y `transmission.overdrive` de
+  `vehicle_powertrain.json`; el freno de mano refleja `brakes.parking`. La
+  manipulación real es F2.3; aquí solo existe la geometría y las poses IK.
+- No hay texto visible: la señalética P-R-N-D-2-L es posicional. La localización
+  de etiquetas llega en F2.4/F9.1.
+- Todas las cotas de interior son `provisional_design_value` /
+  `photo_observed_provisional`: el manual disponible no incluye cotas de cabina.
+  No se publican como especificación oficial. Ver `ESTEEM_MECHANICAL_NOTES.md`.
+- Cambiar la estructura exige incrementar `schema_version`; cambiar un valor exige
+  actualizar su `note` de fuente.

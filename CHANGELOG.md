@@ -4,6 +4,75 @@ Todas las fechas usan ISO 8601. Las versiones siguen SemVer.
 
 ## [Unreleased]
 
+## [0.2.1] — 2026-11-22
+
+### Añadido
+
+- Contrato declarativo `data/vehicle/cabin_spec.json`: cabina funcional del Esteem
+  (volante de tres radios, columna, tablero, instrumental, consola central, radio
+  cassette doble DIN con ranura, clima, guantera con bandeja/cierre, paneles de
+  puerta con apoyabrazos/tirador/cristaleras y consola) y el rig de manos con
+  poses IK. Cotas de interior provisionales derivadas de las anclas `anchor_*` del
+  bloqueo y de las fotos; no son especificación oficial.
+- `tools/blender/esteem_cabin.py`: script `bpy` reproducible que genera las mallas
+  LOD0/LOD1/LOD2 de la cabina y el armazón `EsteemHandRig` con huesos de mano,
+  huesos de control alineados con `anchor_*` y poses IK (botón de Overdrive,
+  palanca tipo T, freno de mano).
+- Target `vehicle.esteem.cabin` en `tools/blender/build_assets.py`.
+- Assets generados `esteem_cabin_lod0/1/2.glb` y `esteem_hand_rig.glb` con
+  manifiesto `assets/manifests/esteem_cabin.manifest.json` (comando, hashes,
+  autor, licencia CC BY-NC-SA 4.0, fecha).
+- Escena `scenes/vehicle/EsteemCabin.tscn` (LOD0 visible, LOD1/2 ocultos, rig).
+- `tests/vehicle/CabinTest.tscn` y `cabin_test.gd`: 46 comprobaciones headless
+  (manifiesto y hashes, LODs decrecientes y coincidentes, rig de manos con
+  `anchor_root`, compatibilidad de posiciones de anclas con el bloqueo, poses IK
+  y ausencia de física de conducción).
+- `tools/dev/cabin_test.cmd` y `.ps1`; chequeo `cabin_tests` en `health_check.py`.
+- Revisión visual completa de referencias de interior para F2.2 registrada en
+  `REFERENCE_USAGE_LOG.md` (hoja de contacto + 3 fotos a tamaño real; sin copiar
+  archivos de la biblioteca externa).
+
+### Cambiado
+
+- Versión del proyecto a `0.2.1` (`VERSION`, `project.godot`, `export_presets.cfg`,
+  `EXPECTED_VERSION` del smoke test).
+- `export_presets.cfg`: `version/name` de Android a `0.2.1`, `version/code` a 104
+  y versiones de Windows a `0.2.1.0`.
+- `validate_assets.py` cubre el nuevo manifiesto de cabina (mismo contrato de
+  LOD0/1/2 y `rig_anchor`).
+- `ASSET_FACTORY.md`, `DATA_CONTRACTS.md`, `ESTEEM_MECHANICAL_NOTES.md`,
+  `REFERENCE_USAGE_LOG.md` y `REFERENCE_REVIEW.md` actualizados con el alcance de
+  2.2.
+
+### Validación
+
+- 6 contratos JSON válidos; advertencia previa de claves de contenido para F8.4.
+- Localización de 11 idiomas sin errores; fuentes CJK pendientes de F8.4.
+- Roadmap 6/45 subfases completadas (13,3%), JSON sincronizado con la web.
+- Importación de Godot 4.7.2 headless con exit 0; sin marcadores críticos.
+- Smoke test: 155/155 comprobaciones, exit 0 (sin cambios).
+- Pruebas del tren motriz: 125/125, exit 0 (sin cambios).
+- Pruebas de la cabina: 46/46, exit 0 (nuevo).
+- Assets generados: 2 manifiestos válidos, 0 errores (LOD0 1584 / LOD1 704 /
+  LOD2 480 triángulos, estrictamente decrecientes y dentro de presupuesto).
+- `health_check.py --end`: 17 OK, 3 advertencias esperadas, 0 errores.
+- Dispositivo ADB autorizado (Redmi 22101316G) y 79,86 GB libres en `C:`.
+- Referencias: 95 archivos; escaneo rápido sin cambios; revisión de interior
+  completada y registrada.
+
+### Publicación
+
+- Commit convencional, tag `v0.2.1` y push a `origin/main`.
+
+### Estado
+
+- Fase 2.2 completada: cabina funcional bloqueo (volante, palanca P-R-N-D-2-L con
+  Overdrive, freno de mano, radio doble DIN, guantera, paneles y consola) y rig de
+  manos con poses IK compatibles con `anchor_*`. Sin interacción (F2.3), espejos,
+  HUD, gamepad ni guardado (F2.4).
+- Siguiente: Fase 2.3 con DS-R (interacción contextual "mirar/tocar", IK manos,
+  puertas, seguros, vidrios, luces, antena y radio).
+
 ## [0.2.0] — 2026-11-22
 
 ### Añadido

@@ -46,6 +46,13 @@ TARGETS = [
         "manifest": "assets/manifests/esteem_blockout.manifest.json",
         "anchor_mode": "armature",
     },
+    {
+        "asset_id": "vehicle.esteem.cabin",
+        "script": "tools/blender/esteem_cabin.py",
+        "spec": "data/vehicle/cabin_spec.json",
+        "manifest": "assets/manifests/esteem_cabin.manifest.json",
+        "anchor_mode": "armature",
+    },
 ]
 
 

@@ -109,6 +109,36 @@ Fuente y registro: `docs/reference/REFERENCE_USAGE_LOG.md` (Fase 1.3). Verificar
 contra manual o medición antes de Fase 2/Fase 5. No publicar como especificación
 oficial del vehículo.
 
+## Cabina y cotas de interior (Fase 2.2, provisionales)
+
+El bloqueo funcional de la cabina (`data/vehicle/cabin_spec.json`) modela volante
+de tres radios, columna, tablero, instrumental, consola central, radio cassette
+doble DIN con ranura, clima, guantera con bandeja y cierre, paneles de puerta con
+apoyabrazos/tirador/cristaleras, consola y guía de palanca P-R-N-D-2-L, más el rig
+de manos con poses IK.
+
+Observado en fotografías (revisión de interior de F2.2):
+
+- Palanca automática tipo T/pistón con **botón lateral "OVER DRIVE"** en el mango
+  (`INTERIOR ESTEEM.jpg` = `images (12).jpg`), confirmado a tamaño real.
+- Consola central con radio/cassette arriba, clima con deslizantes debajo,
+  encendedor 12V y guía de palanca sobre el túnel; freno de mano sobre el túnel
+  entre los asientos (`images (10).jpg`).
+- Guantera del acompañante con bandeja superior y puerta con cierre; panel de
+  puerta con apoyabrazos y mando de cristaleras (`images (7).jpg`).
+- Tablero con velocímetro central y testigos laterales; volante con cubo central.
+
+Discrepancia anotada: la nota documentada de la sección de apariencia indica
+**volante de tres radios**; algunas fotos (`images (10).jpg`) podrían leerse como
+cuatro radios. Se usa la determinación ya documentada (tres radios) y se marca
+para **verificación en F3.2**. No se inventa.
+
+Ninguna cota de interior procede del manual (que no incluye cotas de cabina). Las
+posiciones derivan de las anclas `anchor_*` del bloqueo y las dimensiones de
+proporciones observadas en fotos; todas van marcadas como
+`provisional_design_value` / `photo_observed_provisional` en `cabin_spec.json`.
+No publicar como especificación oficial del vehículo.
+
 ## Datos pendientes antes de Fase 2/5
 
 - Altura física real de la toma de aire del modelo elegido y cota del filtro.

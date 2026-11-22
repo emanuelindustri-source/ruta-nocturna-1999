@@ -116,11 +116,19 @@ REQUIRED_FILES = [
     "scenes/vertical_slice/VerticalSlice.tscn",
     "src/world/vertical_slice.gd",
     "data/vehicle/blockout_spec.json",
+    "data/vehicle/cabin_spec.json",
     "tools/blender/build_assets.py",
     "tools/blender/build_assets.cmd",
     "tools/blender/esteem_blockout.py",
+    "tools/blender/esteem_cabin.py",
     "assets/manifests/esteem_blockout.manifest.json",
+    "assets/manifests/esteem_cabin.manifest.json",
     "scenes/vehicle/EsteemBlockout.tscn",
+    "scenes/vehicle/EsteemCabin.tscn",
+    "tests/vehicle/CabinTest.tscn",
+    "tests/vehicle/cabin_test.gd",
+    "tools/dev/cabin_test.cmd",
+    "tools/dev/cabin_test.ps1",
 ]
 
 REQUIRED_REPO_BINARIES = {".apk", ".aab", ".keystore", ".jks", ".p12", ".pfx"}
@@ -508,6 +516,27 @@ def check_powertrain_test(checks: list[Check], skip_smoke: bool) -> None:
     )
 
 
+def check_cabin_test(checks: list[Check], skip_smoke: bool) -> None:
+    if skip_smoke:
+        result(checks, "cabin_tests", True, "Omitido por --skip-godot/--skip-smoke", warn=True)
+        return
+    if not GODOT.exists():
+        result(checks, "cabin_tests", False, "Godot no está instalado en la ruta esperada")
+        return
+    code, output = run_command(
+        [str(GODOT), "--headless", "--path", str(ROOT), "res://tests/vehicle/CabinTest.tscn"],
+        timeout=180,
+    )
+    ok = code == 0 and "[CABIN] OK" in output
+    result(
+        checks,
+        "cabin_tests",
+        ok,
+        f"Exit {code}; {'cabina y rig de manos superados' if ok else 'sin marca de éxito'}",
+        {"exit_code": code, "tail": "\n".join(output.splitlines()[-30:])},
+    )
+
+
 def check_godot_import(checks: list[Check], skip_import: bool) -> None:
     if skip_import:
         result(checks, "godot_import", True, "Omitido por --skip-godot", warn=True)
@@ -585,6 +614,7 @@ def main() -> int:
     check_godot_import(checks, args.skip_godot)
     check_smoke_test(checks, args.skip_godot or args.skip_smoke)
     check_powertrain_test(checks, args.skip_godot or args.skip_smoke)
+    check_cabin_test(checks, args.skip_godot or args.skip_smoke)
 
     report = build_report(checks, mode)
     REPORT_DIR.mkdir(parents=True, exist_ok=True)

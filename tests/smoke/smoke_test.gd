@@ -7,7 +7,7 @@ extends Node
 ## El proceso devuelve 0 solo si todos los servicios base responden y el
 ## bloqueo del Esteem conserva LOD0/LOD1/LOD2, manifiesto y ancla de rig.
 
-const EXPECTED_VERSION := "0.2.0"
+const EXPECTED_VERSION := "0.2.1"
 const AUTOLOADS := [
 	"EventBus",
 	"HardwareProfiler",

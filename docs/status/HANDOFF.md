@@ -1,48 +1,55 @@
-# Handoff — Fase 2.2
+# Handoff — Fase 2.3
 
 ## Estado de partida
 
-La Fase 2.1 quedó completada, validada y publicada. El tren motriz del Esteem ya
-existe como simulación data-driven y probada; la cabina, las manos y los espejos
-todavía no.
+La Fase 2.2 quedó completada, validada y publicada. La cabina funcional del
+Esteem existe como bloqueo (greybox) generado por `bpy`, con volante de tres
+radios, palanca P-R-N-D-2-L con botón de Overdrive, freno de mano, radio cassette
+doble DIN, guantera, paneles de puerta y consola, además del rig de manos con
+poses IK compatibles con las anclas `anchor_*` del bloqueo.
 
 - Web: https://emanuelindustri-source.github.io/ruta-nocturna-1999/
 - Repositorio: https://github.com/emanuelindustri-source/ruta-nocturna-1999
-- Versión: `v0.2.0`
-- Contrato del tren motriz: `data/schemas/vehicle_powertrain.json`.
-- Código: `src/vehicle/` (`engine_model`, `automatic_transmission`, `brake_system`,
-  `fuel_system`, `cooling_system`, `vehicle_powertrain`).
-- Pruebas: `tests/vehicle/PowertrainTest.tscn` (125 comprobaciones) y
-  `tools/dev/powertrain_test.cmd`.
-- Smoke test: 155/155 comprobaciones; health check de cierre sin errores.
-- Catálogo de referencias: 95 archivos.
+- Versión: `v0.2.1`
+- Contrato de la cabina: `data/vehicle/cabin_spec.json`.
+- Generador: `tools/blender/esteem_cabin.py` (target `vehicle.esteem.cabin`).
+- Assets: `assets/generated/vehicle/esteem_cabin_lod0/1/2.glb` y
+  `esteem_hand_rig.glb`; manifiesto `assets/manifests/esteem_cabin.manifest.json`.
+- Escena: `scenes/vehicle/EsteemCabin.tscn`.
+- Pruebas: `tests/vehicle/CabinTest.tscn` (46 comprobaciones) y
+  `tools/dev/cabin_test.cmd`.
+- Tren motriz de 2.1 intacto: `data/schemas/vehicle_powertrain.json`,
+  `src/vehicle/`, `tests/vehicle/PowertrainTest.tscn` (125 comprobaciones).
+- Smoke test: 155/155; health check de cierre sin errores.
 
-## Qué debe hacer F2.2
+## Qué debe hacer F2.3
 
-Alcance exclusivo de **MiMo Pro**:
+Alcance exclusivo de **DS-R** (interacción e IK):
 
-1. Cabina funcional del Esteem: volante, palanca automática P-R-N-D-2-L con botón
-   de Overdrive, freno de mano, radio cassette de doble DIN, guantera, paneles de
-   puerta y consola.
-2. Rig de manos y poses IK compatibles con el ancla `anchor_*` del bloqueo.
-3. Todo modelo sale de scripts `bpy` reproducibles con manifiesto y LOD0/LOD1/LOD2.
-4. No se implementan espejos, HUD, gamepad ni guardado: son F2.4.
-5. No se implementa conducción narrativa ni interacción contextual completa: la
-   interacción “mirar/tocar” y las puertas/seguros son F2.3.
-6. No se copian imágenes de `C:\Dev\fotos de ejemplo` al repositorio ni se usan
-   como texturas.
+1. Interacción contextual "mirar/tocar" con retículo/tacto y mano IK sobre los
+   controles ya modelados (volante, palanca, freno de mano, radio, guantera).
+2. IK de 2/1/0 manos: poses y transiciones de las manos hacia los controles.
+3. Puertas y seguros, vidrios (subir/bajar), luces, antena y radio (funcionamiento,
+   no solo geometría).
+4. Conectar la manipulación de la palanca con los estados reales de
+   `vehicle_powertrain.json` (P-R-N-D-2-L y Overdrive) y el freno de mano con
+   `brakes.parking`, sin duplicar mecánicas fuera de contrato.
+5. Todo sigue saliendo de scripts `bpy`/código reproducible, respetando anclas y
+   presupuestos; sin romper los tests de 2.1/2.2.
+6. No se implementan espejos, HUD, gamepad ni guardado: son F2.4. No se avanza a
+   F2.4 ni a la Fase 3.
 
-Antes de empezar, `AGENTS.md` exige revisión visual completa de las referencias de
-interior para F2.2. Debe hacerse con las hojas de contacto y el catálogo, sin
-cargar las 40 imágenes en contexto, y registrarse en
-`docs/reference/REFERENCE_USAGE_LOG.md`.
+Antes de implementar interacción, revisar solo las referencias del catálogo
+relevantes y registrar su uso en `docs/reference/REFERENCE_USAGE_LOG.md`. No se
+cargan las 40 imágenes en contexto ni se copian archivos de
+`C:\Dev\fotos de ejemplo` al repositorio.
 
 ## Prompt para el siguiente chat
 
 ```text
-[RN1999 · Subfase 2.2]
+[RN1999 · Subfase 2.3]
 CWD: C:\Dev\RutaNocturna1999
-Modelo asignado: MiMo Pro (opencode-go/mimo-v2.6-pro)
+Modelo asignado: DS-R (opencode-go/deepseek-v4.1-flash#max)
 
 Lee completos:
 - AGENTS.md
@@ -50,26 +57,27 @@ Lee completos:
 - docs/status/CURRENT.md
 - docs/status/HANDOFF.md
 - docs/architecture/SYSTEM_ARCHITECTURE.md
-- docs/architecture/ASSET_FACTORY.md
 - docs/architecture/DATA_CONTRACTS.md
 - docs/architecture/STATE_MACHINES.md
-- docs/reference/ESTEEM_MECHANICAL_NOTES.md
-- data/vehicle/blockout_spec.json
+- docs/architecture/ASSET_FACTORY.md
 - data/schemas/vehicle_powertrain.json
+- data/vehicle/cabin_spec.json
+- data/vehicle/blockout_spec.json
 
-Ejecuta únicamente la Subfase 2.2 (tag v0.2.1): cabina funcional, volante,
-palanca P-R-N-D-2-L con Overdrive, freno de mano, radio, guantera, paneles,
-rig de manos y poses IK. Sin espejos, HUD, gamepad, guardado ni conducción
-narrativa.
+Ejecuta únicamente la Subfase 2.3 (tag v0.2.2): interacción contextual
+"mirar/tocar" con retículo/tacto y mano IK, IK de 2/1/0 manos, puertas y
+seguros, vidrios, luces, antena y radio. Sin espejos, HUD, gamepad ni guardado
+(F2.4). No avances a la Fase 2.4 ni a la Fase 3.
 
-Antes de modelar, haz la revisión visual completa de las referencias de interior
-que exige AGENTS.md para F2.2. Usa el catálogo y las hojas de contacto; no cargues
-las 40 imágenes en contexto ni copies archivos de C:\Dev\fotos de ejemplo al
-repositorio. Registra el uso en docs/reference/REFERENCE_USAGE_LOG.md.
+Conecta la manipulación de la palanca P-R-N-D-2-L y el Overdrive con los estados
+de vehicle_powertrain.json y el freno de mano con brakes.parking. No dupliques
+mecánicas fuera de contrato ni introduzcas física de conducción nueva: el tren
+motriz sigue siendo longitudinal y la cabina es un bloqueo funcional.
 
-Todo asset 3D debe salir de scripts bpy reproducibles, con manifiesto, licencia,
-hash y LOD0/LOD1/LOD2. Respeta el ancla de rig y los presupuestos de triángulos.
-No inventes cotas: usa el manual, las mediciones del modelo o marca provisional.
+Antes de implementar, revisa solo las referencias del catálogo relevantes para
+esta subfase y registra su uso en docs/reference/REFERENCE_USAGE_LOG.md. No
+cargues las 40 imágenes en contexto ni copies archivos de C:\Dev\fotos de ejemplo
+al repositorio.
 
 Al iniciar:
   python tools/health_check.py --start
@@ -78,14 +86,15 @@ Al iniciar:
 Al cerrar:
 - valida esquemas, localización y roadmap
 - importa el proyecto en Godot headless
-- ejecuta tools/dev/smoke_test.cmd y tools/dev/powertrain_test.cmd
+- ejecuta tools/dev/smoke_test.cmd, tools/dev/powertrain_test.cmd y
+  tools/dev/cabin_test.cmd
 - comprueba espacio en disco y dispositivo ADB autorizado
 - ejecuta health_check --end
 - actualiza ROADMAP.md, docs/roadmap-data.json, CHANGELOG.md, CURRENT.md y HANDOFF
-- haz commit, tag v0.2.1 y push solo si todo pasa
+- haz commit, tag v0.2.2 y push solo si todo pasa
 - entrega el prompt del siguiente /new
 
-No avances a la Fase 2.3.
+No avances a la Fase 2.4.
 ```
 
 ## Recordatorios
@@ -94,12 +103,16 @@ No avances a la Fase 2.3.
 - La ExecutionPolicy de PowerShell está restringida: usar wrappers `.cmd`.
 - El export se hace con `tools\dev\export.cmd`; los binarios van a `build/` y
   nunca a Git.
-- Ningún modelo entra sin LOD0/LOD1/LOD2.
-- El tren motriz de 2.1 no crea `VehicleBody3D`; la cabina de 2.2 tampoco debe
-  introducir física de conducción por su cuenta.
-- El smoke test y el test del tren motriz deben seguir pasando; no se relajan
-  para acomodar la cabina.
-- Las cotas del bloqueo y los valores de simulación siguen siendo provisionales.
+- Ningún modelo entra sin LOD0/LOD1/LOD2; el rig de manos se rige por el contrato
+  `rig_anchor` (mismo patrón que el bloqueo).
+- El tren motriz de 2.1 y la cabina de 2.2 no crean `VehicleBody3D`; la interacción
+  de 2.3 tampoco debe introducir física de conducción por su cuenta.
+- El smoke test (155), el test del tren motriz (125) y el test de la cabina (46)
+  deben seguir pasando; no se relajan para acomodar la interacción.
+- Las cotas de interior, las del bloqueo y los valores de simulación siguen siendo
+  provisionales. Al cambiar `EXPECTED_VERSION` del smoke test, actualizar también
+  `VERSION`, `project.godot` y `export_presets.cfg` (`version/name` y
+  `version/code`).
 - No se sube ningún token, keystore, APK o AAB a Git.
 
 ## Seguridad

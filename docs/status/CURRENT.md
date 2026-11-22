@@ -1,8 +1,8 @@
 # Estado actual
 
-**Subfase:** 2.1 — Motor, caja automática y tests  
-**Versión:** `v0.2.0`  
-**Modelo de la subfase:** DS-R  
+**Subfase:** 2.2 — Cabina funcional y rig de manos  
+**Versión:** `v0.2.1`  
+**Modelo de la subfase:** MiMo Pro  
 **Fecha:** 2026-11-22  
 **Estado:** completada y publicada.
 
@@ -17,63 +17,62 @@
 | Prueba | Resultado |
 |---|---|
 | Contratos JSON + Schemas | 6 contratos válidos, 0 errores, 1 advertencia de claves de contenido |
-| Coherencia del tren motriz | Cilindrada, selector, marchas, Overdrive, tanque, ventilador y radio de rueda comprobados |
-| Localización | 11 idiomas, 62 claves, 0 errores; fuentes CJK pendientes de F8.4 |
-| Roadmap | 5/45 subfases completadas (11,1%), JSON sincronizado |
+| Localización | 11 idiomas, 0 errores; fuentes CJK pendientes de F8.4 |
+| Roadmap | 6/45 subfases completadas (13,3%), JSON sincronizado |
+| Assets generados | 2 manifiestos válidos (bloqueo + cabina), 0 errores |
+| Cabina LOD0/LOD1/LOD2 | 1584 / 704 / 480 triángulos, estrictamente decrecientes, dentro de presupuesto |
+| Pruebas de la cabina | 46/46 comprobaciones, exit 0 |
 | Pruebas del tren motriz | 125/125 comprobaciones, exit 0 |
 | Smoke test | 155/155 comprobaciones, exit 0 |
 | Godot import headless | exit 0; sin marcadores críticos |
-| Health check de cierre | 16 OK, 3 advertencias esperadas, 0 errores |
+| Health check de cierre | 17 OK, 3 advertencias esperadas, 0 errores |
 | Dispositivo ADB | Redmi 22101316G autorizado (`obojropz89mbwgpn`) |
-| Espacio libre | 77 GB en `C:` |
-| Referencias | 95 archivos, escaneo rápido sin cambios pendientes |
-| Git | Rama `main`, commit y tag `v0.2.0` publicados |
+| Espacio libre | 79,86 GB en `C:` |
+| Referencias | 95 archivos; revisión visual completa de interior registrada |
+| Git | Rama `main`, commit y tag `v0.2.1` publicados |
 
 Advertencias conocidas:
 
 - 202 claves de contenido aún no están en el CSV de localización. Se completarán
   en F8.4; la UI base ya está cubierta.
 - Las fuentes CJK/cirílicas se empaquetan y validan visualmente en F8.4.
-- Los valores de simulación (relaciones, convertidor, curva de par, masas,
-  umbrales térmicos y fuerzas de freno) son provisionales y están marcados en
-  `vehicle_powertrain.json`. Los datos de cilindrada, diámetro, carrera,
-  compresión, alimentación y aceite sí están verificados en el manual Mitchell.
-- Las cotas del bloqueo del Esteem siguen siendo valores provisionales.
-- No hay cabina, manos IK, espejos ni conducción narrativa: son F2.2–F2.4.
-- El modelo térmico y de frenos es longitudinal y no sustituye una prueba de
-  `VehicleBody3D`, suspensión, neumáticos o colisión.
-- No se generó una APK nueva en 2.1. La APK debug de la Fase 1.4 sigue siendo la
-  referencia de build; su prueba de rendimiento no cubre el tren motriz.
-- MIUI/HyperOS exige el permiso "Instalar vía USB" para el paquete; sin él,
-  `adb install` devuelve `INSTALL_FAILED_USER_RESTRICTED`.
+- Todas las cotas de interior de la cabina son provisionales
+  (`provisional_design_value` / `photo_observed_provisional`): el manual disponible
+  no incluye cotas de cabina. Se derivan de las anclas `anchor_*` del bloqueo y de
+  proporciones observadas en fotos. Verificar contra manual o medición antes de
+  F3.2/F5.
+- El volante sigue la nota documentada de tres radios; algunas fotos podrían
+  leerse como cuatro radios. Marcado para verificación en F3.2.
+- La cabina es un bloqueo funcional (greybox), no el interior final: telas,
+  materiales PBR y detalle son F3.2.
+- No hay interacción "mirar/tocar", espejos, HUD, gamepad ni guardado: son F2.3/F2.4.
+- La cabina no introduce física de conducción (sin `VehicleBody3D`); la integración
+  con el chasis es F2.4/F3.
+- No se generó una APK nueva en 2.2. La APK debug de la Fase 1.4 sigue siendo la
+  referencia de build; su prueba de rendimiento no cubre la cabina.
 
 ## Completado
 
-- Contrato `data/schemas/vehicle_powertrain.json` con `schema_version: 1`, JSON
-  Schema propio y validación cruzada con `vehicle_components.json` y
-  `blockout_spec.json`.
-- Motor 1.6L SOHC 16V simulado: arranque, ralentí, curva de par, corte de
-  inyección, fricción, retención, calado, ahogo, secado, modo seguro y
-  agarrotamiento.
-- Caja automática de cuatro marchas con P-R-N-D-2-L, Overdrive, convertidor de
-  par, bloqueo en crucero, calendario de cambios y rechazo de maniobras
-  inválidas.
-- Frenos de servicio y estacionamiento con fade térmico, desgaste de pastillas y
-  nivel de líquido.
-- Combustible: tanque de 50 L, consumo por carga, reserva, aviso y calado por
-  vacío.
-- Térmica: termostato, radiador, electroventilador de dos velocidades, fallos de
-  fusible/relé/motor, aviso de sobrecalentamiento, modo seguro y agarrotamiento.
-- Orquestador `VehiclePowertrain` con señales locales y telemetría, sin UI ni
-  autoloads nuevos.
-- 125 pruebas headless del tren motriz, integración en smoke test y chequeo de
-  salud `powertrain_tests`.
-- Documentación de arquitectura, contratos, máquinas de estados, QA y referencias
-  actualizada con el alcance real de 2.1.
+- Contrato `data/vehicle/cabin_spec.json` con cabina funcional y rig de manos
+  (poses IK), cotas provisionales y compatibilidad con las anclas `anchor_*`.
+- `tools/blender/esteem_cabin.py`: generación `bpy` reproducible de la cabina
+  (volante de tres radios, columna, tablero, instrumental, consola, radio cassette
+  doble DIN con ranura, clima, guantera con cierre, paneles de puerta con
+  apoyabrazos/tirador/cristaleras, consola y guía de palanca P-R-N-D-2-L) y del
+  armazón `EsteemHandRig` con botón de Overdrive, palanca tipo T y freno de mano.
+- Mallas LOD0/LOD1/LOD2 y rig de manos exportados a glTF con manifiesto
+  reproducible (comando, hashes, autor, licencia CC BY-NC-SA 4.0, fecha).
+- Rig de manos con 15 huesos: `anchor_root`, anclas de control iguales a las del
+  bloqueo (`anchor_driver_seat`, `anchor_steering_wheel`, `anchor_gear_lever`,
+  `anchor_handbrake`), huesos de mano y destinos IK.
+- Cuatro poses IK nombradas (reposo, volante, palanca, freno de mano) que alcanzan
+  los controles; verificadas contra las anclas del bloqueo.
+- Escena `EsteemCabin.tscn` y `tests/vehicle/CabinTest.tscn` (46 comprobaciones),
+  integradas en `health_check.py`.
+- Revisión visual completa de referencias de interior (hoja de contacto + 3 fotos
+  clave) registrada en `REFERENCE_USAGE_LOG.md`.
 
 ## Siguiente
 
-Fase **2.2 con MiMo Pro**: cabina funcional, volante, palanca, freno de mano,
-radio, guantera, paneles, rig de manos y poses IK. Antes de abrir el chat se debe
-hacer la revisión visual completa de las referencias de interior que exige
-`AGENTS.md` para F2.2. No se inicia en este chat.
+Fase **2.3 con DS-R**: interacción contextual "mirar/tocar", IK 2/1/0 manos,
+puertas, seguros, vidrios, luces, antena y radio. No se inicia en este chat.

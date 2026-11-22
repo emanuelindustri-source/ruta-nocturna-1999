@@ -2,11 +2,11 @@
   "project": "Ruta Nocturna: 1999",
   "repository": "emanuelindustri-source/ruta-nocturna-1999",
   "generated_from": "ROADMAP.md",
-  "source_sha256": "9b475d70032931e0255946e1c8cece358729fc538fef742eed72ff2fbfbad97b",
-  "current_version": "v0.2.0",
-  "version_file": "0.2.0",
-  "current_subphase": "2.2",
-  "global_status": "Fase 1 completada; 2.1 completada; siguiente gate 2.2",
+  "source_sha256": "17873c2d515ad68f76374fa8ad2c14ed8e6f8a7ec37988febfb45b656c009346",
+  "current_version": "v0.2.1",
+  "version_file": "0.2.1",
+  "current_subphase": "2.3",
+  "global_status": "Fase 1 completada; 2.1 y 2.2 completadas; siguiente gate 2.3",
   "models": {
     "DS-R": "DeepSeek V4.1 Flash 1017 · Razonamiento",
     "DS-S": "DeepSeek V4.1 Flash 1017 · Estándar",
@@ -14,11 +14,11 @@
     "MiMo Flash": "MiMo-V2.6-Flash"
   },
   "summary": {
-    "completed": 5,
+    "completed": 6,
     "in_progress": 0,
-    "pending": 40,
+    "pending": 39,
     "total": 45,
-    "percent": 11.1
+    "percent": 13.3
   },
   "phases": [
     {
@@ -92,9 +92,9 @@
           "version": "v0.2.1",
           "model": "MiMo Pro",
           "model_label": "MiMo-V2.6-Pro",
-          "summary": "Cabina funcional, volante, palanca, freno de mano, radio, guantera, paneles, rig de manos y poses IK.",
-          "status": "pending",
-          "status_label": "Pendiente"
+          "summary": "Cabina funcional, volante, palanca, freno de mano, radio, guantera, paneles, rig de manos y poses IK. Validado y publicado.",
+          "status": "completed",
+          "status_label": "Completada"
         },
         {
           "id": "2.3",
@@ -119,9 +119,9 @@
       "status": "in_progress",
       "status_label": "En curso",
       "progress": {
-        "completed": 1,
+        "completed": 2,
         "in_progress": 0,
-        "pending": 3,
+        "pending": 2,
         "total": 4
       }
     },
