@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "architectural_rule": "Las aristas representan dependencias de llamada directa. La comunicación de retorno ocurre por señales del EventBus. El grafo debe ser acíclico.",
+  "autoloads": [
+    {
+      "name": "EventBus",
+      "path": "res://src/core/event_bus.gd",
+      "depends_on": [],
+      "responsibility": "Publicar y suscribir señales tipadas entre sistemas. No conoce reglas de juego."
+    },
+    {
+      "name": "HardwareProfiler",
+      "path": "res://src/core/hardware_profiler.gd",
+      "depends_on": [],
+      "responsibility": "Detectar hardware, GPU, SoC, memoria y perfil gráfico recomendado."
+    },
+    {
+      "name": "SettingsManager",
+      "path": "res://src/core/settings_manager.gd",
+      "depends_on": ["HardwareProfiler"],
+      "responsibility": "Persistir ajustes, calidad gráfica, accesibilidad e input."
+    },
+    {
+      "name": "LocalizationManager",
+      "path": "res://src/core/localization_manager.gd",
+      "depends_on": ["SettingsManager"],
+      "responsibility": "Gestionar el locale, fuentes, plurales y fallback es_VE."
+    },
+    {
+      "name": "GameState",
+      "path": "res://src/core/game_state.gd",
+      "depends_on": ["EventBus"],
+      "responsibility": "Mantener banderas, humanidad, confianza, misión y snapshot serializable."
+    },
+    {
+      "name": "SaveManager",
+      "path": "res://src/core/save_manager.gd",
+      "depends_on": ["GameState", "EventBus"],
+      "responsibility": "Leer snapshots, escribir guardados atómicos, migrar y mantener backups."
+    },
+    {
+      "name": "AudioDirector",
+      "path": "res://src/core/audio_director.gd",
+      "depends_on": ["SettingsManager", "EventBus"],
+      "responsibility": "Mezclar buses, priorizar voces, aplicar reverb y exponer indicadores accesibles."
+    },
+    {
+      "name": "WeatherManager",
+      "path": "res://src/core/weather_manager.gd",
+      "depends_on": ["SettingsManager", "EventBus"],
+      "responsibility": "Dirigir clima, humedad, rayos, niebla y transiciones de bioma."
+    },
+    {
+      "name": "UpdateChecker",
+      "path": "res://src/core/update_checker.gd",
+      "depends_on": ["EventBus"],
+      "responsibility": "Consultar releases de GitHub, comparar versiones y notificar sin bloquear el juego."
+    },
+    {
+      "name": "CrashReporter",
+      "path": "res://src/core/crash_reporter.gd",
+      "depends_on": ["EventBus"],
+      "responsibility": "Capturar logs, contexto, caída de FPS y cierres anormales en un reporte local legible."
+    },
+    {
+      "name": "SceneRouter",
+      "path": "res://src/core/scene_router.gd",
+      "depends_on": ["GameState", "EventBus"],
+      "responsibility": "Cambiar entre boot, menú y mundo, con estados de carga."
+    }
+  ],
+  "scene_services": [
+    {
+      "name": "WorldDirector",
+      "owner_scene": "res://scenes/world/World.tscn",
+      "depends_on": ["WeatherManager", "EntityDirector", "GameState"]
+    },
+    {
+      "name": "EntityDirector",
+      "owner_scene": "res://scenes/world/World.tscn",
+      "depends_on": ["EventBus"]
+    },
+    {
+      "name": "NarrativeDirector",
+      "owner_scene": "res://scenes/world/World.tscn",
+      "depends_on": ["GameState", "EventBus"]
+    },
+    {
+      "name": "CreatorQAMenu",
+      "owner_scene": "res://scenes/ui/CreatorQAMenu.tscn",
+      "depends_on": ["GameState", "WeatherManager", "EntityDirector"]
+    }
+  ]
+}

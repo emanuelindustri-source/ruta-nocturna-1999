@@ -1,0 +1,109 @@
+# Ruta Nocturna: 1999
+
+Terror psicológico, conducción de supervivencia y exploración en una Venezuela
+nocturna de diciembre de 1999. El protagonista cruza el país en un sedán beige
+de 1999, con su mecánica, su radio y sus carreteras como sistema de supervivencia.
+
+> **Estado actual:** Fase 1.1 — fundación técnica y contratos de datos.  
+> **Versión local:** `0.1.0`  
+> **No hay todavía una build jugable.** La primera vertical slice llega en Fase 1.2.
+
+## Objetivo técnico
+
+- Godot 4.7.2 stable.
+- Windows y Linux con Forward+.
+- Android 10–17 con renderer Mobile y una variante de compatibilidad si las
+  pruebas de TV Box la justifican.
+- Arte 3D generado de forma reproducible con Blender 4.5.16 headless.
+- Audio y voces producidos por scripts locales; sin APIs de pago en el juego.
+- Mundo inspirado en datos abiertos de OpenStreetMap y elevación DEM.
+- Once idiomas, accesibilidad, guardado versionado y actualizador GitHub.
+
+## Herramientas locales verificadas
+
+| Herramienta | Ruta |
+|---|---|
+| Godot | `C:\Dev\Godot\godot.cmd` |
+| Blender | `C:\Program Files\Blender Foundation\Blender 4.5\blender.exe` |
+| Android SDK | `C:\Android` |
+| Java 17 | `C:\Program Files\Eclipse Adoptium\jdk-17.0.21.10002-hotspot` |
+| Python del sistema | `C:\Users\Sr_Hidalgo\AppData\Local\Programs\Python\Python314\python.exe` |
+| Entorno Python del proyecto | `.venv\Scripts\python.exe` |
+| Dispositivo de prueba | Redmi Note 12 Pro 5G por ADB |
+
+Godot tenía una marca de compatibilidad “Ejecutar como administrador” que impedía
+`--headless`. Fue retirada en la preparación de esta fase y la versión
+`4.7.2.stable.official.ed1daf0bf` responde correctamente.
+
+## Comandos de trabajo
+
+```powershell
+# Comprobar el entorno (los .cmd evitan problemas de ExecutionPolicy).
+.\tools\dev\bootstrap.cmd
+
+# Importar el proyecto y comprobar que las escenas cargan.
+.\tools\dev\godot.cmd --headless --path . --editor --quit
+
+# Ejecutar el chequeo de salud.
+.\.venv\Scripts\python.exe tools\health_check.py --start
+
+# Validar todo lo anterior.
+.\tools\dev\validate.cmd
+
+# Sincronizar el roadmap de la web.
+.\.venv\Scripts\python.exe tools\release\sync_roadmap.py
+
+# Abrir la web local.
+.\.venv\Scripts\python.exe -m http.server 8000 --directory docs
+```
+
+La política de ejecución de PowerShell está restringida en este equipo. Por eso
+los wrappers `.cmd` invocan los scripts con `-ExecutionPolicy Bypass` sin cambiar
+la configuración del sistema. Para automatizaciones directas:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\dev\bootstrap.ps1
+```
+
+## Estructura
+
+```text
+AGENTS.md                 reglas de ejecución y validación
+ROADMAP.md                fases, versiones, modelos y gates de chat
+data/schemas/             contratos canónicos y JSON Schemas
+docs/                     web de GitHub Pages, arquitectura y estado
+localization/             claves base para los once idiomas
+tools/                    validación, referencias y automatización
+assets/                   arte generado y manifiestos
+scenes/ y src/            proyecto Godot
+```
+
+## Estado de la web
+
+La web de `docs/` es una base estática sin imágenes de terceros. Presenta el
+roadmap sincronizado con `ROADMAP.md`, el estado y los enlaces de privacidad.
+Las capturas reales se incorporarán cuando exista una build visual.
+
+La publicación remota está pendiente de autenticación. Después de iniciar sesión:
+
+```powershell
+gh auth login
+.\tools\release\publish_github.cmd
+```
+
+El primer comando es interactivo y Khristyan debe autorizar la cuenta
+`emanuelindustri-source`. El segundo crea el repositorio público, sube `main` y los
+tags, y configura GitHub Pages. No se guardan tokens en el repositorio.
+
+## Biblioteca de referencias
+
+El director mantiene material de referencia en
+`C:\Dev\fotos de ejemplo`. Esa carpeta es **externa, de solo lectura y no se
+versiona**. El proceso de consulta periódica está descrito en
+`AGENTS.md` y `docs/reference/EXTERNAL_REFERENCE_LIBRARY.md`.
+
+## Licencias
+
+Código: MIT. Contenido original: CC BY-NC-SA 4.0. Datos OSM: ODbL. Las
+dependencias y material de terceros conservan sus licencias. Ver `LICENSE`,
+`ASSET_LICENSE.md` y `CREDITS.md`.

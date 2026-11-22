@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Ruta Nocturna: 1999 — terror psicológico y conducción de supervivencia en la Venezuela de 1999. Desarrollo abierto, roadmap interactivo y estado del proyecto.">
+  <meta name="theme-color" content="#071116">
+  <meta property="og:title" content="Ruta Nocturna: 1999">
+  <meta property="og:description" content="La carretera, el coche y la noche. Un juego de terror y conducción de supervivencia en la Venezuela de 1999.">
+  <meta property="og:type" content="website">
+  <title>Ruta Nocturna: 1999 — Desarrollo abierto</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+  <div class="screen-grain" aria-hidden="true"></div>
+  <div class="screen-lines" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="brand" href="#inicio">
+      <span class="brand-mark">RN</span>
+      <span class="brand-text">RUTA NOCTURNA <span>1999</span></span>
+    </a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menú</button>
+    <nav id="site-nav" class="site-nav" aria-label="Navegación principal">
+      <a href="#proyecto">Proyecto</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#galeria">Galería</a>
+      <a href="#transparencia">Transparencia</a>
+    </nav>
+  </header>
+
+  <main id="contenido">
+    <section class="hero" id="inicio" aria-labelledby="hero-title">
+      <div class="hero-moon" aria-hidden="true"></div>
+      <div class="hero-road" aria-hidden="true"></div>
+      <div class="hero-content">
+        <p class="eyebrow">Un viaje al final de la carretera</p>
+        <h1 id="hero-title">RUTA<br><span>NOCTURNA</span><small>1999</small></h1>
+        <p class="hero-lead">Terror psicológico, conducción de supervivencia y una Venezuela que no aparece en los mapas. Un sedán beige. Una Troncal 5. La noche entera por delante.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#roadmap">Ver el roadmap</a>
+          <a class="button button-ghost" href="#proyecto">Conocer el proyecto</a>
+        </div>
+        <p class="hero-note">Desarrollo abierto · sin demos falsas · sin tienda de assets de pago</p>
+      </div>
+      <div class="hero-dashboard" aria-label="Estado actual del desarrollo">
+        <p class="dash-label">ESTADO DEL PROYECTO</p>
+        <p class="dash-version" id="status-version">v0.1.0</p>
+        <p class="dash-phase" id="status-phase">Fase 1.1 · Fundación técnica</p>
+        <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-labelledby="progress-label">
+          <div class="progress-line"><span id="progress-bar"></span></div>
+          <p id="progress-label">0 / 45 hitos completados</p>
+        </div>
+        <p class="dash-status" id="status-copy">La carretera todavía no es jugable. Los cimientos sí.</p>
+      </div>
+      <div class="hero-scroll" aria-hidden="true">DESLIZA PARA BAJAR</div>
+    </section>
+
+    <section class="section section-intro" id="proyecto">
+      <div class="section-heading">
+        <p class="eyebrow">01 · EL PROYECTO</p>
+        <h2>La carretera no termina.</h2>
+        <p class="section-lede">Seis regiones inspiradas en Venezuela, un coche que se rompe, una radio que no siempre dice la verdad y algo que camina en la oscuridad.</p>
+      </div>
+      <div class="intro-grid">
+        <article class="feature">
+          <span class="feature-number">01</span>
+          <h3>Conducir es sobrevivir</h3>
+          <p>Combustible, temperatura, neumáticos, fusibles y una caja automática de cuatro marchas. El Esteem de 1999 no es un fondo: es el sistema de supervivencia más importante.</p>
+        </article>
+        <article class="feature">
+          <span class="feature-number">02</span>
+          <h3>Una Venezuela nocturna</h3>
+          <p>Del páramo de Mérida al Delta, pasando por Los Llanos y la Troncal 5. Rutas reales reinterpretadas con OSM, clima dinámico y mapas de papel.</p>
+        </article>
+        <article class="feature">
+          <span class="feature-number">03</span>
+          <h3>El folclore no es un monstruo genérico</h3>
+          <p>El Silbón invierte la distancia. La Sayona seduce. El Enano de la Catedral espera que le des fuego. Cada entidad tiene una regla, no solo una barra de vida.</p>
+        </article>
+        <article class="feature">
+          <span class="feature-number">04</span>
+          <h3>Accesible desde el diseño</h3>
+          <p>Once idiomas, subtítulos configurables, reducción de sustos, dirección visual del sonido y navegación completa por gamepad y D-Pad.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section section-roadmap" id="roadmap" aria-labelledby="roadmap-title">
+      <div class="section-heading">
+        <p class="eyebrow">02 · LA RUTA DEL DESARROLLO</p>
+        <h2 id="roadmap-title">Cuarenta y cinco hitos.<br>Una sola carretera.</h2>
+        <p class="section-lede">Este roadmap se genera desde el repositorio y no es un adorno. Cada subfase exige validación, estado, artefactos y un cambio de contexto.</p>
+      </div>
+      <div class="roadmap-toolbar">
+        <div class="filter-group" role="group" aria-label="Filtrar roadmap">
+          <button class="filter is-active" type="button" data-filter="all">Todo</button>
+          <button class="filter" type="button" data-filter="in_progress">En curso</button>
+          <button class="filter" type="button" data-filter="completed">Completado</button>
+          <button class="filter" type="button" data-filter="pending">Pendiente</button>
+        </div>
+        <p class="roadmap-count" id="roadmap-count">Cargando hitos…</p>
+      </div>
+      <div class="roadmap-summary" id="roadmap-summary" aria-live="polite"></div>
+      <div class="roadmap-list" id="roadmap-list">
+        <noscript>Activa JavaScript para ver el roadmap interactivo.</noscript>
+      </div>
+      <aside class="legend">
+        <p><span class="model dsr">DS-R</span> DeepSeek V4.1 Flash · razonamiento</p>
+        <p><span class="model dss">DS-S</span> DeepSeek V4.1 Flash · estándar</p>
+        <p><span class="model pro">MiMo Pro</span> modelado, rigging, shaders y arte</p>
+        <p><span class="model flash">MiMo Flash</span> iteración, audio, builds y ADB</p>
+      </aside>
+    </section>
+
+    <section class="section section-log" id="bitacora">
+      <div class="section-heading">
+        <p class="eyebrow">03 · BITÁCORA</p>
+        <h2>La noche, por escrito.</h2>
+      </div>
+      <div class="log-grid">
+        <article class="log-card">
+          <p class="log-date">22 NOV 2026 · v0.1.0</p>
+          <h3>Fundación técnica</h3>
+          <p>Contratos JSON, arquitectura de autoloads, máquinas de estados, web, biblioteca de referencias y chequeo de salud. Nada de mecánicas todavía: primero el suelo firme.</p>
+        </article>
+        <article class="log-card">
+          <p class="log-date">PRÓXIMO · v0.1.1</p>
+          <h3>El primer heartbeat</h3>
+          <p>EventBus, autoloads base, CrashReporter, CreatorQAMenu inicial, escena de boot y un smoke test sin coche final.</p>
+        </article>
+        <article class="log-card log-card-dark">
+          <p class="log-date">REGLA DE ORO</p>
+          <h3>Nada se declara terminado sin evidencia.</h3>
+          <p>Validación, logs, captura y estado del repositorio. Si falla, no se etiqueta. Si se avanza, se cambia de chat.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section section-gallery" id="galeria">
+      <div class="section-heading">
+        <p class="eyebrow">04 · GALERÍA</p>
+        <h2>Lo que todavía no existe.</h2>
+        <p class="section-lede">No vamos a rellenar esta página con imágenes generadas que parezcan capturas. Cuando haya juego real, habrá capturas reales.</p>
+      </div>
+      <div class="gallery-grid" aria-label="Capturas pendientes">
+        <figure class="gallery-placeholder">
+          <div class="placeholder-scene scene-road" aria-hidden="true"></div>
+          <figcaption><span>FASE 3</span> Exterior del Esteem</figcaption>
+        </figure>
+        <figure class="gallery-placeholder">
+          <div class="placeholder-scene scene-cabin" aria-hidden="true"></div>
+          <figcaption><span>FASE 2</span> Cabina e IK</figcaption>
+        </figure>
+        <figure class="gallery-placeholder">
+          <div class="placeholder-scene scene-storm" aria-hidden="true"></div>
+          <figcaption><span>FASE 4</span> Clima y biomas</figcaption>
+        </figure>
+      </div>
+      <p class="gallery-note">Los mockups externos son referencia de dirección de arte, no material oficial del juego.</p>
+    </section>
+
+    <section class="section section-transparency" id="transparencia">
+      <div class="section-heading">
+        <p class="eyebrow">05 · TRANSPARENCIA</p>
+        <h2>Herramientas libres.<br>Decisiones visibles.</h2>
+      </div>
+      <div class="transparency-grid">
+        <div>
+          <h3>Motor y producción</h3>
+          <ul class="check-list">
+            <li>Godot 4.7.2 para Windows, Linux y Android.</li>
+            <li>Blender 4.5.16 headless para arte 3D paramétrico.</li>
+            <li>Python para pipelines, validación, audio y assets de tienda.</li>
+            <li>OpenStreetMap y datos abiertos para el mundo base.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Compromisos</h3>
+          <ul class="check-list">
+            <li>Sin Tripo AI, sin modelos de pago, sin API de voz de pago.</li>
+            <li>Sin telemetría ni cuentas; partidas y fotos locales.</li>
+            <li>Guardados versionados y migrables desde v0.2.0.</li>
+            <li>Capturas de tienda sólo de builds reales.</li>
+          </ul>
+        </div>
+        <div class="tech-card">
+          <p class="tech-kicker">PRÓXIMO GATE</p>
+          <p class="tech-big" id="next-gate">FASE 1.2</p>
+          <p>El próximo chat abre EventBus, servicios base y la caja negra. Después del cierre de 1.1.</p>
+          <a class="text-link" href="privacy.html">Política de privacidad</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-brand">
+      <span class="brand-mark">RN</span>
+      <div>
+        <p>RUTA NOCTURNA: 1999</p>
+        <p class="footer-small">Dirección: Khristyan Hidalgo · Desarrollo abierto</p>
+      </div>
+    </div>
+    <div class="footer-links">
+      <a href="https://github.com/emanuelindustri-source/ruta-nocturna-1999" rel="noopener">GitHub</a>
+      <a href="privacy.html">Privacidad</a>
+      <a href="#inicio">Volver arriba</a>
+    </div>
+    <p class="footer-legal">© <span id="year">2026</span> Ruta Nocturna. Código MIT; contenido original CC BY-NC-SA 4.0. Marcas y assets de terceros pertenecen a sus titulares.</p>
+  </footer>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

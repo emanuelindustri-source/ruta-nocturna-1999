@@ -1,0 +1,3158 @@
+{
+  "schema_version": 1,
+  "generated_by": "tools/scan_reference_library.py",
+  "root": "C:/Dev/fotos de ejemplo",
+  "read_only": true,
+  "scan_type": "full",
+  "last_full_scan_utc": "2026-11-22T14:21:06Z",
+  "review_interval_days": 14,
+  "review_gates": [
+    "F2.2",
+    "F3.1",
+    "F3.2",
+    "F3.3",
+    "F3.4",
+    "F4.3",
+    "F5.1",
+    "F5.3",
+    "F7.3",
+    "F9.2",
+    "F10.2"
+  ],
+  "license_notice": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada.",
+  "file_count": 94,
+  "total_size_bytes": 321821004,
+  "duplicate_groups": [
+    {
+      "sha256": "9534438acbf04fd8ff532f9a53b1ece7a989a26ffd421dd42d3569cbb15dc44f",
+      "files": [
+        "Gemini_Generated_Image_rc0h8yrc0h8yrc0h (1).png",
+        "Gemini_Generated_Image_rc0h8yrc0h8yrc0h.png"
+      ]
+    },
+    {
+      "sha256": "855386bba5590135c8cc59dc821627914ec76c8531d316554557de2f567bb48b",
+      "files": [
+        "images (12).jpg",
+        "INTERIOR ESTEEM.jpg"
+      ]
+    }
+  ],
+  "files": [
+    {
+      "id": "REF-4F3BA3589B",
+      "name": "1.webp",
+      "relative_path": "1.webp",
+      "extension": ".webp",
+      "size_bytes": 77716,
+      "modified_utc": "2026-11-22T13:55:39Z",
+      "sha256": "4f3ba3589b3f109705cd1fa66b8082fc5033288e264a4a05a4d582d373177aae",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 768,
+        "height": 994,
+        "mode": "RGB",
+        "format": "WEBP"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-443755E77D",
+      "name": "4131d.webp",
+      "relative_path": "4131d.webp",
+      "extension": ".webp",
+      "size_bytes": 29414,
+      "modified_utc": "2026-11-22T13:56:01Z",
+      "sha256": "443755e77de5ab164183e6084e7895c6e500eba28af3bdfc9dfc5a776a19db63",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 671,
+        "height": 388,
+        "mode": "RGB",
+        "format": "WEBP"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-8C2F647987",
+      "name": "adentro esteem.jpg",
+      "relative_path": "adentro esteem.jpg",
+      "extension": ".jpg",
+      "size_bytes": 39386,
+      "modified_utc": "2026-11-20T20:40:28Z",
+      "sha256": "8c2f6479874a6accdaa367a2ece42c82af55b54749e069369b9501cd7db21fb3",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 516,
+        "height": 387,
+        "mode": "RGB",
+        "format": "JPEG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-32BF265E13",
+      "name": "ARRANCADADORES ESTEEM.webp",
+      "relative_path": "ARRANCADADORES ESTEEM.webp",
+      "extension": ".webp",
+      "size_bytes": 124094,
+      "modified_utc": "2026-11-20T20:46:19Z",
+      "sha256": "32bf265e133f73efef3c23115b1252e5a2e9e8ea59fd2c521a23c615143ad54d",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 1200,
+        "height": 1200,
+        "mode": "RGB",
+        "format": "WEBP"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-4B8E09B855",
+      "name": "BASE DE MOTOR.webp",
+      "relative_path": "BASE DE MOTOR.webp",
+      "extension": ".webp",
+      "size_bytes": 37498,
+      "modified_utc": "2026-11-20T20:43:37Z",
+      "sha256": "4b8e09b85540a1aaefbb8b7807a6bab7f03d21f74971f8762bfd2e3caed5d137",
+      "category": "vehicle_technical_photo",
+      "kind": "mechanical_reference",
+      "tags": [
+        "vehicle",
+        "mechanics",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2",
+        "F5.1",
+        "F5.3"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 600,
+        "height": 600,
+        "mode": "RGB",
+        "format": "WEBP"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-67F4CA7289",
+      "name": "BASE OTRA ESTEEM.jpg",
+      "relative_path": "BASE OTRA ESTEEM.jpg",
+      "extension": ".jpg",
+      "size_bytes": 7054,
+      "modified_utc": "2026-11-20T20:44:57Z",
+      "sha256": "67f4ca7289c037a641e05d6c1f13548c228c07a0e3198742df4ffd02809d85d4",
+      "category": "vehicle_technical_photo",
+      "kind": "mechanical_reference",
+      "tags": [
+        "vehicle",
+        "mechanics",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2",
+        "F5.1",
+        "F5.3"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 447,
+        "height": 447,
+        "mode": "RGB",
+        "format": "JPEG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-24AF001EF1",
+      "name": "BASE TAMBIEN ESTEEM.jpg",
+      "relative_path": "BASE TAMBIEN ESTEEM.jpg",
+      "extension": ".jpg",
+      "size_bytes": 7054,
+      "modified_utc": "2026-11-20T20:44:44Z",
+      "sha256": "24af001ef18685c615bcf3712e28c2507ce1fd96ab2e89256fa299c5c51be845",
+      "category": "vehicle_technical_photo",
+      "kind": "mechanical_reference",
+      "tags": [
+        "vehicle",
+        "mechanics",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2",
+        "F5.1",
+        "F5.3"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 300,
+        "height": 300,
+        "mode": "RGB",
+        "format": "JPEG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-D8B2D42AB6",
+      "name": "BASES.png",
+      "relative_path": "BASES.png",
+      "extension": ".png",
+      "size_bytes": 583845,
+      "modified_utc": "2026-11-20T20:42:02Z",
+      "sha256": "d8b2d42ab63bf4b6a7768fbe1b6a488986117a9b7c80ac6ad92c67f5c0c68939",
+      "category": "vehicle_technical_photo",
+      "kind": "mechanical_reference",
+      "tags": [
+        "vehicle",
+        "mechanics",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2",
+        "F5.1",
+        "F5.3"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 1080,
+        "height": 1080,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-5FFDD17400",
+      "name": "BOMBA DE FRENO DE ESTEEM.webp",
+      "relative_path": "BOMBA DE FRENO DE ESTEEM.webp",
+      "extension": ".webp",
+      "size_bytes": 29696,
+      "modified_utc": "2026-11-20T20:43:28Z",
+      "sha256": "5ffdd1740019c229802084356a4eae23d0a8d5b22edacaf72807def1027c699e",
+      "category": "vehicle_technical_photo",
+      "kind": "mechanical_reference",
+      "tags": [
+        "vehicle",
+        "mechanics",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2",
+        "F5.1",
+        "F5.3"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 800,
+        "height": 800,
+        "mode": "RGBA",
+        "format": "WEBP"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-CB985E46BD",
+      "name": "caja automatica.jpg",
+      "relative_path": "caja automatica.jpg",
+      "extension": ".jpg",
+      "size_bytes": 38767,
+      "modified_utc": "2026-11-20T20:41:01Z",
+      "sha256": "cb985e46bd1f426989d015662434ee2a04c299c562dbbcf283cc5e4ecd14fb49",
+      "category": "vehicle_technical_photo",
+      "kind": "mechanical_reference",
+      "tags": [
+        "vehicle",
+        "mechanics",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2",
+        "F5.1",
+        "F5.3"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 415,
+        "height": 739,
+        "mode": "RGB",
+        "format": "JPEG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-6B97775271",
+      "name": "Coleccion bicentenario.pdf",
+      "relative_path": "Coleccion bicentenario.pdf",
+      "extension": ".pdf",
+      "size_bytes": 1322456,
+      "modified_utc": "2026-11-20T13:34:55Z",
+      "sha256": "6b97775271803e5d30cead4370a78bdd169e9e7dc99d0e4b3ca6f4265ec4b0aa",
+      "category": "technical_document",
+      "kind": "manual_or_specification",
+      "tags": [
+        "manual",
+        "technical",
+        "esteem"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.1",
+        "F3.1",
+        "F3.2",
+        "F5.1",
+        "F5.4"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "pages": 248
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-C8F78642D0",
+      "name": "correa del carro esteem.jpg",
+      "relative_path": "correa del carro esteem.jpg",
+      "extension": ".jpg",
+      "size_bytes": 22007,
+      "modified_utc": "2026-11-20T20:41:47Z",
+      "sha256": "c8f78642d03f1983d2d782f3ba09eeff44c518971b66f5e057781b5f36f516c8",
+      "category": "vehicle_technical_photo",
+      "kind": "mechanical_reference",
+      "tags": [
+        "vehicle",
+        "mechanics",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2",
+        "F5.1",
+        "F5.3"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 480,
+        "height": 360,
+        "mode": "RGB",
+        "format": "JPEG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-CEF6F28558",
+      "name": "D_NQ_NP_728975-MLV109568530304_042026-O.webp",
+      "relative_path": "D_NQ_NP_728975-MLV109568530304_042026-O.webp",
+      "extension": ".webp",
+      "size_bytes": 9016,
+      "modified_utc": "2026-11-22T13:56:51Z",
+      "sha256": "cef6f285584f3a967f3f8159dc05634df8626523a03bf2d41c340014b08df708",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 400,
+        "height": 500,
+        "mode": "RGB",
+        "format": "WEBP"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-7E8E49260D",
+      "name": "D_NQ_NP_992627-MLV113346707105_062026-O.webp",
+      "relative_path": "D_NQ_NP_992627-MLV113346707105_062026-O.webp",
+      "extension": ".webp",
+      "size_bytes": 13658,
+      "modified_utc": "2026-11-22T13:59:01Z",
+      "sha256": "7e8e49260dc71dda52ee8d92a6d03d3370c9a810b69f132ff3ae41cfd4531f0f",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 500,
+        "height": 361,
+        "mode": "RGB",
+        "format": "WEBP"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-22D2F80CCF",
+      "name": "D_Q_NP_2X_657049-MLV79055284410_092024-T.webp",
+      "relative_path": "D_Q_NP_2X_657049-MLV79055284410_092024-T.webp",
+      "extension": ".webp",
+      "size_bytes": 4244,
+      "modified_utc": "2026-11-22T13:58:20Z",
+      "sha256": "22d2f80ccf8399168e4f0b0831e5cb3a00feff5400b79b1d4e905051b6c54e3f",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 320,
+        "height": 320,
+        "mode": "RGB",
+        "format": "WEBP"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-88F043A9AD",
+      "name": "D_Q_NP_2X_662714-MLV49042577749_022022-T.webp",
+      "relative_path": "D_Q_NP_2X_662714-MLV49042577749_022022-T.webp",
+      "extension": ".webp",
+      "size_bytes": 2968,
+      "modified_utc": "2026-11-22T13:57:33Z",
+      "sha256": "88f043a9ad36667fea3c5b715848d337f5482592bf52dc4147371f5e0bf81186",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 320,
+        "height": 320,
+        "mode": "RGB",
+        "format": "WEBP"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-A49EECF9D9",
+      "name": "D_Q_NP_2X_827470-MLV96513783426_112025-T.webp",
+      "relative_path": "D_Q_NP_2X_827470-MLV96513783426_112025-T.webp",
+      "extension": ".webp",
+      "size_bytes": 7360,
+      "modified_utc": "2026-11-22T13:57:40Z",
+      "sha256": "a49eecf9d90417cc87f9b9a5709f2a149630cc20e1ff107743eef8757a2bb68a",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 320,
+        "height": 320,
+        "mode": "RGB",
+        "format": "WEBP"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-D9CF9019BA",
+      "name": "desarmardo.jpg",
+      "relative_path": "desarmardo.jpg",
+      "extension": ".jpg",
+      "size_bytes": 47498,
+      "modified_utc": "2026-11-20T20:41:17Z",
+      "sha256": "d9cf9019ba1a910f0481eb432ec567449bce22512b8acbe2069a9b7263f5bdf5",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 415,
+        "height": 739,
+        "mode": "RGB",
+        "format": "JPEG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-EE607E4121",
+      "name": "ec70298fd90d8044e7e9e3e972e5cf8e.jpg",
+      "relative_path": "ec70298fd90d8044e7e9e3e972e5cf8e.jpg",
+      "extension": ".jpg",
+      "size_bytes": 30928,
+      "modified_utc": "2026-11-22T13:55:49Z",
+      "sha256": "ee607e41217e37c58a076339093be4c2add3c872f8c6bf8271b0b6f110948522",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 325,
+        "height": 430,
+        "mode": "RGB",
+        "format": "JPEG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-08505D1052",
+      "name": "ESTEEM MANGUITO.jpg",
+      "relative_path": "ESTEEM MANGUITO.jpg",
+      "extension": ".jpg",
+      "size_bytes": 14374,
+      "modified_utc": "2026-11-20T20:43:08Z",
+      "sha256": "08505d1052679eab32d0bcb3240675c99aa1f7f8fb0201b0c9b02172c85ca24d",
+      "category": "vehicle_technical_photo",
+      "kind": "mechanical_reference",
+      "tags": [
+        "vehicle",
+        "mechanics",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2",
+        "F5.1",
+        "F5.3"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 325,
+        "height": 430,
+        "mode": "RGB",
+        "format": "JPEG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-A9F404053E",
+      "name": "esteem motor.jpg",
+      "relative_path": "esteem motor.jpg",
+      "extension": ".jpg",
+      "size_bytes": 34380,
+      "modified_utc": "2026-11-20T20:40:14Z",
+      "sha256": "a9f404053edb7046a21a506d0535ceb04341a82327f0884b8e8cd7f1da3198d2",
+      "category": "vehicle_technical_photo",
+      "kind": "mechanical_reference",
+      "tags": [
+        "vehicle",
+        "mechanics",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2",
+        "F5.1",
+        "F5.3"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 516,
+        "height": 387,
+        "mode": "RGB",
+        "format": "JPEG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-8F111A2A70",
+      "name": "esteem-13.webp",
+      "relative_path": "esteem-13.webp",
+      "extension": ".webp",
+      "size_bytes": 20454,
+      "modified_utc": "2026-11-22T13:55:20Z",
+      "sha256": "8f111a2a70e4a05b2c404192095ef9836b5977b181c6dc0149ae3e33b3e4655b",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 324,
+        "height": 430,
+        "mode": "RGB",
+        "format": "WEBP"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-34A0F9CBA0",
+      "name": "esteem-16.webp",
+      "relative_path": "esteem-16.webp",
+      "extension": ".webp",
+      "size_bytes": 17498,
+      "modified_utc": "2026-11-22T13:54:44Z",
+      "sha256": "34a0f9cba0e4e6ad286fc9f89bc7a8e69245d65513b49998b2d9a1649013c028",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 333,
+        "height": 430,
+        "mode": "RGB",
+        "format": "WEBP"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-1A8636BE11",
+      "name": "esteem-17.webp",
+      "relative_path": "esteem-17.webp",
+      "extension": ".webp",
+      "size_bytes": 15818,
+      "modified_utc": "2026-11-22T13:55:02Z",
+      "sha256": "1a8636be11b0184af5d75013d2c00abbc24095e6f0fb35295abd3473c3f2865c",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 333,
+        "height": 430,
+        "mode": "RGB",
+        "format": "WEBP"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-66134459DA",
+      "name": "esteem-3.webp",
+      "relative_path": "esteem-3.webp",
+      "extension": ".webp",
+      "size_bytes": 22224,
+      "modified_utc": "2026-11-22T13:55:09Z",
+      "sha256": "66134459da7cb82e557695b21375815d2f885147b873e293265e4169607b304f",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 323,
+        "height": 430,
+        "mode": "RGB",
+        "format": "WEBP"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-AFDE79765B",
+      "name": "esteem00int.png",
+      "relative_path": "esteem00int.png",
+      "extension": ".png",
+      "size_bytes": 458983,
+      "modified_utc": "2026-11-22T13:54:28Z",
+      "sha256": "afde79765b23330650e576d0511ad059bf04eba4149e0ca9015cb69eadaa09dc",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 313,
+        "height": 728,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-5CA04AA611",
+      "name": "FILTRO DE ACEITE DE MOTOR ESTEEM.jpg",
+      "relative_path": "FILTRO DE ACEITE DE MOTOR ESTEEM.jpg",
+      "extension": ".jpg",
+      "size_bytes": 25126,
+      "modified_utc": "2026-11-20T20:46:04Z",
+      "sha256": "5ca04aa611e68ea1c0e60186136ade36077dd165ba9c1da97f2c83a7e579c4f0",
+      "category": "vehicle_technical_photo",
+      "kind": "mechanical_reference",
+      "tags": [
+        "vehicle",
+        "mechanics",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2",
+        "F5.1",
+        "F5.3"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 370,
+        "height": 370,
+        "mode": "RGB",
+        "format": "JPEG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-EAB2B64175",
+      "name": "Gemini_Generated_Image_2pv8vc2pv8vc2pv8.png",
+      "relative_path": "Gemini_Generated_Image_2pv8vc2pv8vc2pv8.png",
+      "extension": ".png",
+      "size_bytes": 4643715,
+      "modified_utc": "2026-11-20T17:17:08Z",
+      "sha256": "eab2b64175ea0fedde22e8645ee2378504718dfa6189576474a68781eced95b2",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-E66CE54A87",
+      "name": "Gemini_Generated_Image_4c0ere4c0ere4c0e.png",
+      "relative_path": "Gemini_Generated_Image_4c0ere4c0ere4c0e.png",
+      "extension": ".png",
+      "size_bytes": 5565939,
+      "modified_utc": "2026-11-20T17:13:43Z",
+      "sha256": "e66ce54a8754aabc8cce4d8be22341d5958a8df7bd041766767dfec8d4536dd1",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-0785F8A459",
+      "name": "Gemini_Generated_Image_4owb874owb874owb.png",
+      "relative_path": "Gemini_Generated_Image_4owb874owb874owb.png",
+      "extension": ".png",
+      "size_bytes": 7053733,
+      "modified_utc": "2026-11-20T12:57:02Z",
+      "sha256": "0785f8a459a4df4bb08b122087781b744ac9af10e88be65036465487003183aa",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-1659101129",
+      "name": "Gemini_Generated_Image_5kkwv35kkwv35kkw.png",
+      "relative_path": "Gemini_Generated_Image_5kkwv35kkwv35kkw.png",
+      "extension": ".png",
+      "size_bytes": 6993851,
+      "modified_utc": "2026-11-20T13:09:10Z",
+      "sha256": "1659101129cc54841e174cab956751d6df87213d89b6138a3fb0110eebf5cbcf",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-68836D1204",
+      "name": "Gemini_Generated_Image_5nuful5nuful5nuf.png",
+      "relative_path": "Gemini_Generated_Image_5nuful5nuful5nuf.png",
+      "extension": ".png",
+      "size_bytes": 5540673,
+      "modified_utc": "2026-11-20T17:14:49Z",
+      "sha256": "68836d12045b3135ef4a4e577c0caf539aaf80e389b511494b7c7dfe7cfb7b35",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-950C1F22C8",
+      "name": "Gemini_Generated_Image_6eil8g6eil8g6eil.png",
+      "relative_path": "Gemini_Generated_Image_6eil8g6eil8g6eil.png",
+      "extension": ".png",
+      "size_bytes": 7080895,
+      "modified_utc": "2026-11-20T12:46:26Z",
+      "sha256": "950c1f22c80b3b843a0211a718194987708284c1af42167b83d63e5ab3a327af",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-D45C0E575C",
+      "name": "Gemini_Generated_Image_7g7dyo7g7dyo7g7d.png",
+      "relative_path": "Gemini_Generated_Image_7g7dyo7g7dyo7g7d.png",
+      "extension": ".png",
+      "size_bytes": 7397259,
+      "modified_utc": "2026-11-20T13:04:05Z",
+      "sha256": "d45c0e575c55ba268d66c5f0438441c5c3e1b98f21d7dd1ea55a8f44f2f26226",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-414BAEDAE6",
+      "name": "Gemini_Generated_Image_8yds528yds528yds.png",
+      "relative_path": "Gemini_Generated_Image_8yds528yds528yds.png",
+      "extension": ".png",
+      "size_bytes": 4283772,
+      "modified_utc": "2026-11-20T17:11:49Z",
+      "sha256": "414baedae64d7067d538904c7cbf2d9868b1d9a1971e45134b8f7052babb733c",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-7275B46987",
+      "name": "Gemini_Generated_Image_934x1l934x1l934x.png",
+      "relative_path": "Gemini_Generated_Image_934x1l934x1l934x.png",
+      "extension": ".png",
+      "size_bytes": 7767421,
+      "modified_utc": "2026-11-20T12:54:08Z",
+      "sha256": "7275b4698737ecde62a6b61b564a85747b7253aecc75ccf0c6ced639770ada5d",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-4FE5C375C8",
+      "name": "Gemini_Generated_Image_984w3r984w3r984w.png",
+      "relative_path": "Gemini_Generated_Image_984w3r984w3r984w.png",
+      "extension": ".png",
+      "size_bytes": 7081766,
+      "modified_utc": "2026-11-20T13:10:01Z",
+      "sha256": "4fe5c375c84c9477184947fd37aeb953cf4696c0128d12a0f88933517e36aca4",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-D99D203F7B",
+      "name": "Gemini_Generated_Image_9fwaao9fwaao9fwa.png",
+      "relative_path": "Gemini_Generated_Image_9fwaao9fwaao9fwa.png",
+      "extension": ".png",
+      "size_bytes": 6480303,
+      "modified_utc": "2026-11-20T12:41:31Z",
+      "sha256": "d99d203f7b48f814b9009f0866480b7a33335a57bcb14c62569eddfb95f117b3",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-D3CB713D85",
+      "name": "Gemini_Generated_Image_9jui229jui229jui.png",
+      "relative_path": "Gemini_Generated_Image_9jui229jui229jui.png",
+      "extension": ".png",
+      "size_bytes": 7390029,
+      "modified_utc": "2026-11-20T12:51:38Z",
+      "sha256": "d3cb713d854b04316ef1a3f2c586030d81d28f7642167634fccce8dd27d236ec",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-255849D29D",
+      "name": "Gemini_Generated_Image_b4h891b4h891b4h8.png",
+      "relative_path": "Gemini_Generated_Image_b4h891b4h891b4h8.png",
+      "extension": ".png",
+      "size_bytes": 6638014,
+      "modified_utc": "2026-11-20T12:56:31Z",
+      "sha256": "255849d29d288d6770287738e7dc9999cd9ddad6453ff44f49fa33447b4e5504",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-6FE3F5232D",
+      "name": "Gemini_Generated_Image_beiwofbeiwofbeiw.png",
+      "relative_path": "Gemini_Generated_Image_beiwofbeiwofbeiw.png",
+      "extension": ".png",
+      "size_bytes": 7876434,
+      "modified_utc": "2026-11-20T12:57:29Z",
+      "sha256": "6fe3f5232d48a054e4f44b15537d26e234b0d741a96e2030cb5ebd6a50321ace",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-2517056992",
+      "name": "Gemini_Generated_Image_cbu9xacbu9xacbu9.png",
+      "relative_path": "Gemini_Generated_Image_cbu9xacbu9xacbu9.png",
+      "extension": ".png",
+      "size_bytes": 7021038,
+      "modified_utc": "2026-11-20T12:48:21Z",
+      "sha256": "2517056992fde7fb76697ca59820eefa1060b5910b1398b8f0d34224b06ae1b6",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-23D4315B81",
+      "name": "Gemini_Generated_Image_ctt1lkctt1lkctt1.png",
+      "relative_path": "Gemini_Generated_Image_ctt1lkctt1lkctt1.png",
+      "extension": ".png",
+      "size_bytes": 7209069,
+      "modified_utc": "2026-11-20T13:05:28Z",
+      "sha256": "23d4315b819218c0fe25df6a7c40226ba18f40edd93a0d725ef53eb796ebd8a6",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-F9DA0CBD0B",
+      "name": "Gemini_Generated_Image_cy8md5cy8md5cy8m.png",
+      "relative_path": "Gemini_Generated_Image_cy8md5cy8md5cy8m.png",
+      "extension": ".png",
+      "size_bytes": 4916535,
+      "modified_utc": "2026-11-20T17:18:32Z",
+      "sha256": "f9da0cbd0bb85e7f9316834d626e833e808b97979a452a7f9d051311f5fc9bef",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-57792186AA",
+      "name": "Gemini_Generated_Image_dogjuodogjuodogj.png",
+      "relative_path": "Gemini_Generated_Image_dogjuodogjuodogj.png",
+      "extension": ".png",
+      "size_bytes": 7491627,
+      "modified_utc": "2026-11-20T12:48:54Z",
+      "sha256": "57792186aa953313238ad2fcbc2ed533190770953e13ac8a879b65d128d09835",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-6CA1BAB334",
+      "name": "Gemini_Generated_Image_e41whde41whde41w.png",
+      "relative_path": "Gemini_Generated_Image_e41whde41whde41w.png",
+      "extension": ".png",
+      "size_bytes": 7146965,
+      "modified_utc": "2026-11-20T12:59:57Z",
+      "sha256": "6ca1bab334dfda66456a4615062fd3222e7e27a08d0006b2ee28d92b57d765b3",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-DAC3A8CA83",
+      "name": "Gemini_Generated_Image_f3ff1zf3ff1zf3ff.png",
+      "relative_path": "Gemini_Generated_Image_f3ff1zf3ff1zf3ff.png",
+      "extension": ".png",
+      "size_bytes": 6643595,
+      "modified_utc": "2026-11-20T12:47:05Z",
+      "sha256": "dac3a8ca837a1c85003859398bc5b17690bc51366d918bd836f8bc7971e0de8d",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-338EA74F85",
+      "name": "Gemini_Generated_Image_f5u431f5u431f5u4.png",
+      "relative_path": "Gemini_Generated_Image_f5u431f5u431f5u4.png",
+      "extension": ".png",
+      "size_bytes": 5719728,
+      "modified_utc": "2026-11-20T17:16:04Z",
+      "sha256": "338ea74f85d9e8cdb9f937cde5288e106ce889e4bc996e8f79d0807913f6a094",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-6A697C2EAC",
+      "name": "Gemini_Generated_Image_i150mci150mci150.png",
+      "relative_path": "Gemini_Generated_Image_i150mci150mci150.png",
+      "extension": ".png",
+      "size_bytes": 7325099,
+      "modified_utc": "2026-11-20T12:52:12Z",
+      "sha256": "6a697c2eacef44d57402b7d6d9fffa4183d0d595cbc7c982b47c683b295cd811",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-FD1695EB91",
+      "name": "Gemini_Generated_Image_k6f4vnk6f4vnk6f4.png",
+      "relative_path": "Gemini_Generated_Image_k6f4vnk6f4vnk6f4.png",
+      "extension": ".png",
+      "size_bytes": 5408115,
+      "modified_utc": "2026-11-20T17:12:53Z",
+      "sha256": "fd1695eb91d83077c35bedf5e617397780d1d20c41ca44929bed00e45c74b53c",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-A78458E06D",
+      "name": "Gemini_Generated_Image_klwu52klwu52klwu.png",
+      "relative_path": "Gemini_Generated_Image_klwu52klwu52klwu.png",
+      "extension": ".png",
+      "size_bytes": 7467911,
+      "modified_utc": "2026-11-20T12:45:49Z",
+      "sha256": "a78458e06dea1e31490aef5ca31f19550542d53b4c9ad0342319c98fbb387174",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-803380F68F",
+      "name": "Gemini_Generated_Image_kokkxdkokkxdkokk.png",
+      "relative_path": "Gemini_Generated_Image_kokkxdkokkxdkokk.png",
+      "extension": ".png",
+      "size_bytes": 7116594,
+      "modified_utc": "2026-11-20T13:09:52Z",
+      "sha256": "803380f68f93946381c9a292efecad1954d1276d1a2a631713504d2d7fea738a",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-697FC04642",
+      "name": "Gemini_Generated_Image_n427lxn427lxn427.png",
+      "relative_path": "Gemini_Generated_Image_n427lxn427lxn427.png",
+      "extension": ".png",
+      "size_bytes": 6068873,
+      "modified_utc": "2026-11-20T12:55:52Z",
+      "sha256": "697fc046424531c667b48e9445e1beaf41cb279968ce4bfb1e7d6cbfc5c973f6",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-159121C2AC",
+      "name": "Gemini_Generated_Image_peof5zpeof5zpeof.png",
+      "relative_path": "Gemini_Generated_Image_peof5zpeof5zpeof.png",
+      "extension": ".png",
+      "size_bytes": 6938454,
+      "modified_utc": "2026-11-20T12:52:39Z",
+      "sha256": "159121c2ac8f3abd85902dbd32be2d878212926afc9d6fba8e568d1448ab6c42",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-B0AC9B9759",
+      "name": "Gemini_Generated_Image_pxuvovpxuvovpxuv.png",
+      "relative_path": "Gemini_Generated_Image_pxuvovpxuvovpxuv.png",
+      "extension": ".png",
+      "size_bytes": 6844301,
+      "modified_utc": "2026-11-20T12:49:48Z",
+      "sha256": "b0ac9b97590e0900bf716eaa85e01942ebbceeb811e4e7ad7708d308f8640f63",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-CB694DA679",
+      "name": "Gemini_Generated_Image_q4nsljq4nsljq4ns.png",
+      "relative_path": "Gemini_Generated_Image_q4nsljq4nsljq4ns.png",
+      "extension": ".png",
+      "size_bytes": 4821740,
+      "modified_utc": "2026-11-20T17:17:53Z",
+      "sha256": "cb694da679749403131505404dbb62cbbbbd7787dea9909b8d68ab5ed1744a0e",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-81A2E69F22",
+      "name": "Gemini_Generated_Image_qn2k9sqn2k9sqn2k.png",
+      "relative_path": "Gemini_Generated_Image_qn2k9sqn2k9sqn2k.png",
+      "extension": ".png",
+      "size_bytes": 6794047,
+      "modified_utc": "2026-11-20T12:53:10Z",
+      "sha256": "81a2e69f22290a0d1a398d749e8482f68a71e165c5bc0f8a216bc9bdcce8e987",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-9534438ACB",
+      "name": "Gemini_Generated_Image_rc0h8yrc0h8yrc0h (1).png",
+      "relative_path": "Gemini_Generated_Image_rc0h8yrc0h8yrc0h (1).png",
+      "extension": ".png",
+      "size_bytes": 6911305,
+      "modified_utc": "2026-11-20T13:04:52Z",
+      "sha256": "9534438acbf04fd8ff532f9a53b1ece7a989a26ffd421dd42d3569cbb15dc44f",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-9534438ACB",
+      "name": "Gemini_Generated_Image_rc0h8yrc0h8yrc0h.png",
+      "relative_path": "Gemini_Generated_Image_rc0h8yrc0h8yrc0h.png",
+      "extension": ".png",
+      "size_bytes": 6911305,
+      "modified_utc": "2026-11-20T13:04:38Z",
+      "sha256": "9534438acbf04fd8ff532f9a53b1ece7a989a26ffd421dd42d3569cbb15dc44f",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": "Gemini_Generated_Image_rc0h8yrc0h8yrc0h (1).png",
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-F92E8B62A7",
+      "name": "Gemini_Generated_Image_rh2veprh2veprh2v.png",
+      "relative_path": "Gemini_Generated_Image_rh2veprh2veprh2v.png",
+      "extension": ".png",
+      "size_bytes": 4910349,
+      "modified_utc": "2026-11-20T17:20:51Z",
+      "sha256": "f92e8b62a701fd87a9f9d641992a12a5e8a0766895c3cc262b5ffbfdd0be5984",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-CB2C1A823D",
+      "name": "Gemini_Generated_Image_s7uasjs7uasjs7ua.png",
+      "relative_path": "Gemini_Generated_Image_s7uasjs7uasjs7ua.png",
+      "extension": ".png",
+      "size_bytes": 5309719,
+      "modified_utc": "2026-11-20T17:19:28Z",
+      "sha256": "cb2c1a823d42a7e29a04e69be645fe9053d428416ef04e378b403a08c7682051",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-8A02972AE7",
+      "name": "Gemini_Generated_Image_t9wfept9wfept9wf.png",
+      "relative_path": "Gemini_Generated_Image_t9wfept9wfept9wf.png",
+      "extension": ".png",
+      "size_bytes": 6809268,
+      "modified_utc": "2026-11-20T12:51:06Z",
+      "sha256": "8a02972ae779386046b0d968dc799fdf31b77875350eb48db1be98fd7ad2b9c3",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-E883D28A74",
+      "name": "Gemini_Generated_Image_u6e885u6e885u6e8.png",
+      "relative_path": "Gemini_Generated_Image_u6e885u6e885u6e8.png",
+      "extension": ".png",
+      "size_bytes": 7459359,
+      "modified_utc": "2026-11-20T12:53:59Z",
+      "sha256": "e883d28a748e41e2050b150dec137a272ffae4a70340f1c10fc70a3b5355d354",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-26F40F815A",
+      "name": "Gemini_Generated_Image_vnjw2uvnjw2uvnjw.png",
+      "relative_path": "Gemini_Generated_Image_vnjw2uvnjw2uvnjw.png",
+      "extension": ".png",
+      "size_bytes": 7733412,
+      "modified_utc": "2026-11-20T12:47:27Z",
+      "sha256": "26f40f815a48ebd7e2a2434c3419fa8e8768bc99adde5a0464ee85d262d40fe6",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-03161600E3",
+      "name": "Gemini_Generated_Image_vvoepfvvoepfvvoe.png",
+      "relative_path": "Gemini_Generated_Image_vvoepfvvoepfvvoe.png",
+      "extension": ".png",
+      "size_bytes": 7100178,
+      "modified_utc": "2026-11-20T12:54:49Z",
+      "sha256": "03161600e332f654bfbabc2e667936a25b9fca3903a3dac5243b35b7fa4253b2",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-5F90D610FC",
+      "name": "Gemini_Generated_Image_xju2soxju2soxju2.png",
+      "relative_path": "Gemini_Generated_Image_xju2soxju2soxju2.png",
+      "extension": ".png",
+      "size_bytes": 6800731,
+      "modified_utc": "2026-11-20T13:01:44Z",
+      "sha256": "5f90d610fc4e346fea8a3d86f4ed39c98a4899feb5e828febe18f9c732238754",
+      "category": "concept_art",
+      "kind": "ai_generated_concept",
+      "tags": [
+        "ui",
+        "scene",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F3.3",
+        "F3.4",
+        "F4.3",
+        "F9.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 2730,
+        "height": 1536,
+        "mode": "RGB",
+        "format": "PNG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-8897FFC577",
+      "name": "gemini_generated_video_0bd0deb7.mp4",
+      "relative_path": "gemini_generated_video_0bd0deb7.mp4",
+      "extension": ".mp4",
+      "size_bytes": 6386132,
+      "modified_utc": "2026-11-21T15:24:55Z",
+      "sha256": "8897ffc5779f6f9f77303b644426e005f11ebd6d3df3d76eca3d83b7fd424d16",
+      "category": "concept_video",
+      "kind": "motion_reference",
+      "tags": [
+        "ui",
+        "motion",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F9.2",
+        "F10.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "metadata_status": "video duration pending optional ffprobe/VLC review"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-27EBF1EF95",
+      "name": "gemini_generated_video_c160dab1.mp4",
+      "relative_path": "gemini_generated_video_c160dab1.mp4",
+      "extension": ".mp4",
+      "size_bytes": 6159873,
+      "modified_utc": "2026-11-21T15:24:58Z",
+      "sha256": "27ebf1ef95c79fab13de482e6c818e43fa949ae4b9fbb509e74827b8442fbb52",
+      "category": "concept_video",
+      "kind": "motion_reference",
+      "tags": [
+        "ui",
+        "motion",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F9.2",
+        "F10.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "metadata_status": "video duration pending optional ffprobe/VLC review"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-C4DDF3D84A",
+      "name": "ilide.info-manual-esteem-pdf-pr_4e99b52951698215c02224e65d8cfd0b.pdf",
+      "relative_path": "ilide.info-manual-esteem-pdf-pr_4e99b52951698215c02224e65d8cfd0b.pdf",
+      "extension": ".pdf",
+      "size_bytes": 46973762,
+      "modified_utc": "2026-11-20T20:48:09Z",
+      "sha256": "c4ddf3d84a8421edc1e116f9bb4a5cbb90f4db5a3353e110e82ef4091a430ed2",
+      "category": "technical_document",
+      "kind": "manual_or_specification",
+      "tags": [
+        "manual",
+        "technical",
+        "esteem"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.1",
+        "F3.1",
+        "F3.2",
+        "F5.1",
+        "F5.4"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "pages": 1348
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-0A57670E44",
+      "name": "images (1).jpg",
+      "relative_path": "images (1).jpg",
+      "extension": ".jpg",
+      "size_bytes": 37407,
+      "modified_utc": "2026-11-22T13:54:03Z",
+      "sha256": "0a57670e44b577f0b3dcf4121aae0e7ab9d57db0d6e3016d47cab71a6a54d41b",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 516,
+        "height": 387,
+        "mode": "RGB",
+        "format": "JPEG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-7AE09B5F80",
+      "name": "images (10).jpg",
+      "relative_path": "images (10).jpg",
+      "extension": ".jpg",
+      "size_bytes": 34513,
+      "modified_utc": "2026-11-22T13:58:12Z",
+      "sha256": "7ae09b5f8060b965a3ab54d5bdd02796c55be07aa2e8f7b48385431fc08b9d23",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 500,
+        "height": 400,
+        "mode": "RGB",
+        "format": "JPEG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-C7E147BC47",
+      "name": "images (11).jpg",
+      "relative_path": "images (11).jpg",
+      "extension": ".jpg",
+      "size_bytes": 32299,
+      "modified_utc": "2026-11-22T13:58:31Z",
+      "sha256": "c7e147bc478543432fc5915c1c02345ec98ac05ee047a43d7828d1453a87d30e",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 387,
+        "height": 516,
+        "mode": "RGB",
+        "format": "JPEG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-855386BBA5",
+      "name": "images (12).jpg",
+      "relative_path": "images (12).jpg",
+      "extension": ".jpg",
+      "size_bytes": 47269,
+      "modified_utc": "2026-11-22T13:58:38Z",
+      "sha256": "855386bba5590135c8cc59dc821627914ec76c8531d316554557de2f567bb48b",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 640,
+        "height": 480,
+        "mode": "RGB",
+        "format": "JPEG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-0E56ED90B8",
+      "name": "images (13).jpg",
+      "relative_path": "images (13).jpg",
+      "extension": ".jpg",
+      "size_bytes": 38858,
+      "modified_utc": "2026-11-22T13:58:51Z",
+      "sha256": "0e56ed90b8b9837cef52995e8e2f6f6927e29a58842b3f273db90959d76b972c",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 516,
+        "height": 387,
+        "mode": "RGB",
+        "format": "JPEG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-BE3AD1A169",
+      "name": "images (14).jpg",
+      "relative_path": "images (14).jpg",
+      "extension": ".jpg",
+      "size_bytes": 18629,
+      "modified_utc": "2026-11-22T13:59:06Z",
+      "sha256": "be3ad1a169fc6e6b8d90f7d3e11acd0f84adc26943c06604c6f3bd6c7b219909",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 495,
+        "height": 404,
+        "mode": "RGB",
+        "format": "JPEG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-EC8AFDB699",
+      "name": "images (15).jpg",
+      "relative_path": "images (15).jpg",
+      "extension": ".jpg",
+      "size_bytes": 39003,
+      "modified_utc": "2026-11-22T13:59:11Z",
+      "sha256": "ec8afdb699bbcd758df0f882cbb3d05d5e8120409ed552e1ad46c03c1722fd57",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 516,
+        "height": 387,
+        "mode": "RGB",
+        "format": "JPEG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-9E77A97975",
+      "name": "images (16).jpg",
+      "relative_path": "images (16).jpg",
+      "extension": ".jpg",
+      "size_bytes": 63146,
+      "modified_utc": "2026-11-22T13:59:18Z",
+      "sha256": "9e77a9797524cd229ee996f2b86ce56c634cd93240a03bdadf01d6a43cac7dfe",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 639,
+        "height": 480,
+        "mode": "RGB",
+        "format": "JPEG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-4E6120B6F8",
+      "name": "images (17).jpg",
+      "relative_path": "images (17).jpg",
+      "extension": ".jpg",
+      "size_bytes": 30840,
+      "modified_utc": "2026-11-22T13:59:42Z",
+      "sha256": "4e6120b6f8322ef6f048c02689f0803ab58a28378f8283e93d589a9961a7dcc9",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 507,
+        "height": 394,
+        "mode": "RGB",
+        "format": "JPEG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-7D2F02A93E",
+      "name": "images (2).jpg",
+      "relative_path": "images (2).jpg",
+      "extension": ".jpg",
+      "size_bytes": 7193,
+      "modified_utc": "2026-11-22T13:54:55Z",
+      "sha256": "7d2f02a93e949a3db0b81795c09e3f3721996850aacd3d99328fb5b389fa8b0e",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 255,
+        "height": 198,
+        "mode": "RGB",
+        "format": "JPEG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-7A5D2696FB",
+      "name": "images (3).jpg",
+      "relative_path": "images (3).jpg",
+      "extension": ".jpg",
+      "size_bytes": 32885,
+      "modified_utc": "2026-11-22T13:55:55Z",
+      "sha256": "7a5d2696fb7c1ecaca72a349545be13d3c0641f3e4c9d8748275775d9ef1d12e",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 387,
+        "height": 516,
+        "mode": "RGB",
+        "format": "JPEG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-5C984424EB",
+      "name": "images (4).jpg",
+      "relative_path": "images (4).jpg",
+      "extension": ".jpg",
+      "size_bytes": 43482,
+      "modified_utc": "2026-11-22T13:56:09Z",
+      "sha256": "5c984424eb2bf74dde56a5b7ee88be0bd3f3060768eca9192a3fe2e4b9dd5d73",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 480,
+        "height": 638,
+        "mode": "RGB",
+        "format": "JPEG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-DBB255EF3D",
+      "name": "images (5).jpg",
+      "relative_path": "images (5).jpg",
+      "extension": ".jpg",
+      "size_bytes": 30131,
+      "modified_utc": "2026-11-22T13:56:23Z",
+      "sha256": "dbb255ef3d6425b5ab6dfc995b85114a29de4210fd245d70994bcb51f7617334",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 387,
+        "height": 516,
+        "mode": "RGB",
+        "format": "JPEG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-BA4C2425F1",
+      "name": "images (6).jpg",
+      "relative_path": "images (6).jpg",
+      "extension": ".jpg",
+      "size_bytes": 32772,
+      "modified_utc": "2026-11-22T13:56:39Z",
+      "sha256": "ba4c2425f10f98e36bef7504594398de97f12a187ecc66bc6d23cabea43e6add",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 516,
+        "height": 387,
+        "mode": "RGB",
+        "format": "JPEG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-CC13D7A17A",
+      "name": "images (7).jpg",
+      "relative_path": "images (7).jpg",
+      "extension": ".jpg",
+      "size_bytes": 29881,
+      "modified_utc": "2026-11-22T13:57:26Z",
+      "sha256": "cc13d7a17acda133682ce3cf8c82b0e5a0e636343d0ef4adc326c42647c1e222",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 507,
+        "height": 394,
+        "mode": "RGB",
+        "format": "JPEG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-B25645C86B",
+      "name": "images (8).jpg",
+      "relative_path": "images (8).jpg",
+      "extension": ".jpg",
+      "size_bytes": 8031,
+      "modified_utc": "2026-11-22T13:57:51Z",
+      "sha256": "b25645c86b77ae551d1b870cdf5116d6181bf69036d06a2a65f2eeea60896fef",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 320,
+        "height": 320,
+        "mode": "RGB",
+        "format": "JPEG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-45E50DB54A",
+      "name": "images (9).jpg",
+      "relative_path": "images (9).jpg",
+      "extension": ".jpg",
+      "size_bytes": 5990,
+      "modified_utc": "2026-11-22T13:57:56Z",
+      "sha256": "45e50db54af95464fd42efc0cb8a2be155a7a596fb15a5b6e56232bd451b86ef",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 225,
+        "height": 225,
+        "mode": "RGB",
+        "format": "JPEG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-76B637DC54",
+      "name": "images.jpg",
+      "relative_path": "images.jpg",
+      "extension": ".jpg",
+      "size_bytes": 53371,
+      "modified_utc": "2026-11-22T13:53:47Z",
+      "sha256": "76b637dc5426cd8f4118ce84c56e4f0f0e5939ee17a2fe030671e3f8ec3eb201",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 640,
+        "height": 480,
+        "mode": "RGB",
+        "format": "JPEG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-855386BBA5",
+      "name": "INTERIOR ESTEEM.jpg",
+      "relative_path": "INTERIOR ESTEEM.jpg",
+      "extension": ".jpg",
+      "size_bytes": 47269,
+      "modified_utc": "2026-11-20T20:42:46Z",
+      "sha256": "855386bba5590135c8cc59dc821627914ec76c8531d316554557de2f567bb48b",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": "images (12).jpg",
+      "media": {
+        "width": 640,
+        "height": 480,
+        "mode": "RGB",
+        "format": "JPEG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-6051A95A31",
+      "name": "LADO IZQUIERDO EJE.jpg",
+      "relative_path": "LADO IZQUIERDO EJE.jpg",
+      "extension": ".jpg",
+      "size_bytes": 4516,
+      "modified_utc": "2026-11-20T20:45:36Z",
+      "sha256": "6051a95a31bdf560e74b949daffce0cbd7ae4e93c548557faacfc642cc641a39",
+      "category": "vehicle_technical_photo",
+      "kind": "mechanical_reference",
+      "tags": [
+        "vehicle",
+        "mechanics",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2",
+        "F5.1",
+        "F5.3"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 447,
+        "height": 447,
+        "mode": "RGB",
+        "format": "JPEG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-BB1396DE62",
+      "name": "leyendas venezolanas, buscar mas informacion en internet.docx",
+      "relative_path": "leyendas venezolanas, buscar mas informacion en internet.docx",
+      "extension": ".docx",
+      "size_bytes": 27052,
+      "modified_utc": "2026-11-20T13:49:52Z",
+      "sha256": "bb1396de629d669ab4d4457cd9e6e13ea231808ac3ffcd79ecb0e3999e301069",
+      "category": "folklore_document",
+      "kind": "legend_collection",
+      "tags": [
+        "folklore",
+        "narrative",
+        "venezuela"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F6.1",
+        "F7.1",
+        "F7.3"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "paragraphs": 112,
+        "tables": 0
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-0CFD1DB457",
+      "name": "motor esteem.jpg",
+      "relative_path": "motor esteem.jpg",
+      "extension": ".jpg",
+      "size_bytes": 53571,
+      "modified_utc": "2026-11-20T20:40:45Z",
+      "sha256": "0cfd1db45711884c0e7b4f3b6613c6864d66be51b74fb7e99e033e2fbe163e0e",
+      "category": "vehicle_technical_photo",
+      "kind": "mechanical_reference",
+      "tags": [
+        "vehicle",
+        "mechanics",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2",
+        "F5.1",
+        "F5.3"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 415,
+        "height": 739,
+        "mode": "RGB",
+        "format": "JPEG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-4F2B01FB92",
+      "name": "pdf-div-class-2qs3tf-truncatedtext-module-wrapper-fg1km9p-classtruncatedtext-module-lineclamped-85ulhh-style-max-lines5esteem-1999-2000-13l-16l-p-div_compress.pdf",
+      "relative_path": "pdf-div-class-2qs3tf-truncatedtext-module-wrapper-fg1km9p-classtruncatedtext-module-lineclamped-85ulhh-style-max-lines5esteem-1999-2000-13l-16l-p-div_compress.pdf",
+      "extension": ".pdf",
+      "size_bytes": 1818483,
+      "modified_utc": "2026-11-20T20:33:58Z",
+      "sha256": "4f2b01fb92e05cd78bff36408c9940cb52f2ba6202fd769194e33c658622371c",
+      "category": "technical_document",
+      "kind": "manual_or_specification",
+      "tags": [
+        "manual",
+        "technical",
+        "esteem"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.1",
+        "F3.1",
+        "F3.2",
+        "F5.1",
+        "F5.4"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "pages": 45
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-2F13F7F172",
+      "name": "RT_PU_92a67511c7434a42bbdec44622d73a0b.webp",
+      "relative_path": "RT_PU_92a67511c7434a42bbdec44622d73a0b.webp",
+      "extension": ".webp",
+      "size_bytes": 28810,
+      "modified_utc": "2026-11-22T13:59:25Z",
+      "sha256": "2f13f7f172af372ea161e295c9788a481cdb58871795eaf9262ea6b04a3cae86",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 480,
+        "height": 360,
+        "mode": "RGB",
+        "format": "WEBP"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-992446847D",
+      "name": "turbina-convertidor-de-torque.jpg",
+      "relative_path": "turbina-convertidor-de-torque.jpg",
+      "extension": ".jpg",
+      "size_bytes": 19199,
+      "modified_utc": "2026-11-22T13:55:35Z",
+      "sha256": "992446847db26cb7e7b0096de655c1589251173fcc37bf93ac6c82352c62e1a8",
+      "category": "vehicle_photo",
+      "kind": "exterior_or_interior_reference",
+      "tags": [
+        "vehicle",
+        "visual_reference"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F2.2",
+        "F3.1",
+        "F3.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "width": 250,
+        "height": 250,
+        "mode": "RGB",
+        "format": "JPEG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+# Godot generated data
+.godot/
+*.translation
+
+# Builds and local evidence
+build/*
+!build/.gdignore
+dist/
+*.apk
+*.aab
+*.exe
+*.pck
+*.zip
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# Secrets and signing material
+*.keystore
+*.jks
+.env
+.env.*
+export_credentials.cfg
+
+# OS and editor noise
+Thumbs.db
+Desktop.ini
+.vscode/
+.idea/
+*.swp
+*~
+
+# Blender temporaries
+*.blend1
+*.blend2
+
+# Local reference derivatives (original library stays outside the repo)
+docs/reference/raw/
+build/reference/

@@ -1,0 +1,41 @@
+; Engine configuration file.
+; Edit through the editor when possible.
+; Format: https://docs.godotengine.org/en/stable/contributing/development/file_formats/tscn.html
+
+config_version=5
+
+[application]
+
+config/name="Ruta Nocturna: 1999"
+config/description="Terror psicológico y conducción de supervivencia en la Venezuela de 1999."
+config/version="0.1.0"
+run/main_scene="res://scenes/boot/Boot.tscn"
+config/features=PackedStringArray("4.7", "Forward Plus")
+config/icon="res://assets/branding/icon.svg"
+config/use_custom_user_dir=true
+config/custom_user_dir_name="RutaNocturna1999"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/size/resizable=true
+window/stretch/mode="canvas_items"
+window/handheld/orientation=1
+
+[rendering]
+
+renderer/rendering_method="forward_plus"
+renderer/rendering_method.mobile="mobile"
+environment/defaults/default_clear_color=Color(0.015, 0.024, 0.035, 1)
+anti_aliasing/quality/msaa_3d=1
+
+[internationalization]
+
+locale/fallback="es_VE"
+
+[boot_splash]
+
+bg_color=Color(0.015, 0.024, 0.035, 1)
+show_image=true
+image="res://assets/branding/icon.svg"

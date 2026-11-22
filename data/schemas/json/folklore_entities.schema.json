@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ruta-nocturna:schemas:folklore_entities:1",
+  "title": "Contrato de entidades del folclore venezolano",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["schema_version", "content_status", "regions", "entities"],
+  "properties": {
+    "schema_version": {"type": "integer", "minimum": 1},
+    "content_status": {"type": "string"},
+    "design_rule": {"type": "string"},
+    "regions": {
+      "type": "array",
+      "items": {"enum": ["carabobo", "falcon", "merida", "llanos", "amazonas", "delta"]},
+      "uniqueItems": true
+    },
+    "entities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/entity"}
+    }
+  },
+  "$defs": {
+    "entity": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "id",
+        "name_key",
+        "category",
+        "summary_key",
+        "regions",
+        "spawn_conditions",
+        "perception",
+        "states",
+        "audio",
+        "evasion",
+        "combat",
+        "despawn_conditions",
+        "qa_spawn_command"
+      ],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+        "name_key": {"type": "string", "pattern": "^[A-Z0-9_]+$"},
+        "category": {"type": "string"},
+        "summary_key": {"type": "string", "pattern": "^[A-Z0-9_]+$"},
+        "regions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"enum": ["carabobo", "falcon", "merida", "llanos", "amazonas", "delta"]},
+          "uniqueItems": true
+        },
+        "spawn_conditions": {
+          "type": "object",
+          "required": ["time_windows", "weather", "biomes", "min_night", "probability", "required_flags", "forbidden_flags"],
+          "properties": {
+            "time_windows": {"type": "array", "items": {"type": "string"}},
+            "weather": {"type": "array", "items": {"type": "string"}},
+            "biomes": {"type": "array", "items": {"type": "string"}},
+            "min_night": {"type": "integer", "minimum": 1},
+            "probability": {"type": "number", "minimum": 0, "maximum": 1},
+            "required_flags": {"type": "array", "items": {"type": "string"}},
+            "forbidden_flags": {"type": "array", "items": {"type": "string"}}
+          }
+        },
+        "perception": {
+          "type": "object",
+          "required": ["sight_radius_m", "hearing_radius_m", "light_attraction", "engine_noise_attraction", "radio_attraction"],
+          "properties": {
+            "sight_radius_m": {"type": "number", "minimum": 0},
+            "hearing_radius_m": {"type": "number", "minimum": 0},
+            "light_attraction": {"type": "number", "minimum": 0},
+            "engine_noise_attraction": {"type": "number", "minimum": 0},
+            "radio_attraction": {"type": "number", "minimum": 0}
+          }
+        },
+        "states": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["id", "next"],
+            "properties": {
+              "id": {"type": "string"},
+              "next": {"type": "array", "items": {"type": "string"}}
+            }
+          }
+        },
+        "audio": {
+          "type": "object",
+          "required": ["mode", "description_key", "params"],
+          "properties": {
+            "mode": {"type": "string"},
+            "description_key": {"type": "string", "pattern": "^[A-Z0-9_]+$"},
+            "params": {"type": "object"}
+          }
+        },
+        "evasion": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["id", "description_key", "requirements", "effectiveness"],
+            "properties": {
+              "id": {"type": "string"},
+              "description_key": {"type": "string", "pattern": "^[A-Z0-9_]+$"},
+              "requirements": {"type": "array", "items": {"type": "string"}},
+              "effectiveness": {"type": "number", "minimum": 0, "maximum": 1}
+            }
+          }
+        },
+        "combat": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "description_key", "item_ids", "effect"],
+            "properties": {
+              "id": {"type": "string"},
+              "description_key": {"type": "string", "pattern": "^[A-Z0-9_]+$"},
+              "item_ids": {"type": "array", "items": {"type": "string"}},
+              "vehicle_actions": {"type": "array", "items": {"type": "string"}},
+              "effect": {"type": "string"},
+              "requires": {"type": "array", "items": {"type": "string"}},
+              "stun_seconds": {"type": "number", "minimum": 0},
+              "cooldown_seconds": {"type": "number", "minimum": 0}
+            }
+          }
+        },
+        "despawn_conditions": {"type": "array", "items": {"type": "string"}},
+        "qa_spawn_command": {"type": "string"},
+        "reference_notes": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}

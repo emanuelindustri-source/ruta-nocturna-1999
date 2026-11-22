@@ -1,0 +1,35 @@
+# Normalize text files to LF in the repository.
+* text=auto eol=lf
+
+# Windows automation keeps CRLF for PowerShell/cmd compatibility.
+*.ps1 text eol=crlf
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+# Binary art, audio and package formats.
+*.glb binary
+*.gltf binary
+*.blend binary
+*.fbx binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.ico binary
+*.ogg binary
+*.wav binary
+*.mp3 binary
+*.pdf binary
+*.apk binary
+*.aab binary
+*.exe binary
+*.dll binary
+
+# Godot generated import sidecars are text but must not be merged blindly.
+*.import text eol=lf
+
+# GitHub linguist hints.
+*.gd text
+*.gdshader text
+*.tscn text
+*.tres text

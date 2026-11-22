@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ruta-nocturna:schemas:autoload_dependencies:1",
+  "title": "Grafo de dependencias de autoloads",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["schema_version", "architectural_rule", "autoloads", "scene_services"],
+  "properties": {
+    "schema_version": {"type": "integer", "minimum": 1},
+    "architectural_rule": {"type": "string"},
+    "autoloads": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name", "path", "depends_on", "responsibility"],
+        "properties": {
+          "name": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9]+$"},
+          "path": {"type": "string", "pattern": "^res://"},
+          "depends_on": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+          "responsibility": {"type": "string", "minLength": 5}
+        }
+      }
+    },
+    "scene_services": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "owner_scene", "depends_on"],
+        "properties": {
+          "name": {"type": "string"},
+          "owner_scene": {"type": "string", "pattern": "^res://"},
+          "depends_on": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    }
+  }
+}

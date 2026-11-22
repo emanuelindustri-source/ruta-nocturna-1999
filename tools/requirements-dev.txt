@@ -1,0 +1,10 @@
+# Development and validation tools.
+# Install with:
+#   .\.venv\Scripts\python.exe -m pip install -r tools\requirements-dev.lock
+#
+# The lock file is the reproducible source. This file documents the direct tools.
+jsonschema
+Pillow
+pypdf
+python-docx
+fonttools

@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ruta-nocturna:schemas:vehicle_components:1",
+  "title": "Contrato de componentes del Chevrolet Esteem 1999",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["schema_version", "vehicle_id", "display_name_key", "content_status", "currency", "specs", "components"],
+  "properties": {
+    "schema_version": {"type": "integer", "minimum": 1},
+    "vehicle_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+    "display_name_key": {"type": "string", "pattern": "^[A-Z0-9_]+$"},
+    "content_status": {"type": "string"},
+    "currency": {"const": "VES_1999"},
+    "balance_note": {"type": "string"},
+    "specs": {
+      "type": "object",
+      "required": ["engine", "transmission", "fuel", "water", "recovery"],
+      "properties": {
+        "engine": {"type": "object"},
+        "transmission": {"type": "object"},
+        "fuel": {"type": "object"},
+        "water": {"type": "object"},
+        "recovery": {"type": "object"}
+      }
+    },
+    "components": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/component"}
+    }
+  },
+  "$defs": {
+    "component": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "id",
+        "name_key",
+        "category",
+        "location",
+        "repair_kind",
+        "part_cost_bs",
+        "labor_cost_bs",
+        "price_source",
+        "required_tools",
+        "required_items",
+        "repair_minutes",
+        "roadside_possible",
+        "symptoms",
+        "failure_modes",
+        "effects"
+      ],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9_.]+$"},
+        "name_key": {"type": "string", "pattern": "^[A-Z0-9_]+$"},
+        "category": {"type": "string", "minLength": 2},
+        "location": {"type": "string", "minLength": 2},
+        "repair_kind": {"enum": ["replace", "repair", "service"]},
+        "part_cost_bs": {"type": "integer", "minimum": 0},
+        "labor_cost_bs": {"type": "integer", "minimum": 0},
+        "price_source": {"type": "string"},
+        "required_tools": {
+          "type": "array",
+          "items": {"type": "string", "pattern": "^[a-z0-9_.]+$"},
+          "uniqueItems": true
+        },
+        "required_items": {
+          "type": "array",
+          "items": {"type": "string", "pattern": "^[a-z0-9_.]+$"},
+          "uniqueItems": true
+        },
+        "repair_minutes": {"type": "integer", "minimum": 0},
+        "roadside_possible": {"type": "boolean"},
+        "symptoms": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["id", "description_key", "conditions"],
+            "properties": {
+              "id": {"type": "string"},
+              "description_key": {"type": "string", "pattern": "^[A-Z0-9_]+$"},
+              "conditions": {"type": "object"}
+            }
+          }
+        },
+        "failure_modes": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "effects": {"type": "object"},
+        "reference_notes": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    }
+  }
+}

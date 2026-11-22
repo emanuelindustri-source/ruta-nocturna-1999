@@ -1,0 +1,498 @@
+{
+  "schema_version": 1,
+  "content_status": "foundation_example",
+  "regions": ["carabobo", "falcon", "merida", "llanos", "amazonas", "delta"],
+  "design_rule": "Las entidades son reglas de supervivencia, no simples enemigos. Las condiciones y respuestas deben probarse en QA antes de poblar el mundo.",
+  "entities": [
+    {
+      "id": "silbon",
+      "name_key": "ENTITY_SILBON_NAME",
+      "category": "folklore",
+      "summary_key": "ENTITY_SILBON_SUMMARY",
+      "regions": ["llanos", "falcon"],
+      "spawn_conditions": {
+        "time_windows": ["20:00-05:00"],
+        "weather": ["clear", "fog", "storm"],
+        "biomes": ["savanna", "empty_road", "palm_plain"],
+        "min_night": 1,
+        "probability": 0.35,
+        "required_flags": [],
+        "forbidden_flags": ["silbon_banished"]
+      },
+      "perception": {
+        "sight_radius_m": 14,
+        "hearing_radius_m": 80,
+        "light_attraction": 0.9,
+        "engine_noise_attraction": 1.2,
+        "radio_attraction": 0.7
+      },
+      "states": [
+        {"id": "dormant", "next": ["observe"]},
+        {"id": "observe", "next": ["stalk", "withdraw"]},
+        {"id": "stalk", "next": ["manifest", "withdraw"]},
+        {"id": "manifest", "next": ["chase", "withdraw"]},
+        {"id": "chase", "next": ["attack", "withdraw", "banished"]},
+        {"id": "attack", "next": ["chase", "withdraw"]},
+        {"id": "withdraw", "next": ["dormant"]},
+        {"id": "banished", "next": []}
+      ],
+      "audio": {
+        "mode": "inverted_distance",
+        "description_key": "ENTITY_SILBON_AUDIO_RULE",
+        "params": {
+          "real_near_m": 15,
+          "real_far_m": 80,
+          "invert_volume": true,
+          "preserve_direction": true,
+          "whistle_sequence": "ascending_descending",
+          "min_gap_seconds": 4,
+          "max_gap_seconds": 11
+        }
+      },
+      "evasion": [
+        {
+          "id": "stop_and_hide",
+          "description_key": "ENTITY_SILBON_EVADE_HIDE",
+          "requirements": ["engine_off", "lights_off", "radio_off", "hide_under_car"],
+          "effectiveness": 0.85
+        },
+        {
+          "id": "leave_road",
+          "description_key": "ENTITY_SILBON_EVADE_LEAVE",
+          "requirements": ["speed_min_kph=45", "road_exit_allowed"],
+          "effectiveness": 0.35
+        }
+      ],
+      "combat": [
+        {
+          "id": "salt_line",
+          "description_key": "ENTITY_SILBON_COMBAT_SALT",
+          "item_ids": ["defense.salt"],
+          "vehicle_actions": [],
+          "effect": "banish",
+          "requires": ["facing_entity"],
+          "cooldown_seconds": 30
+        },
+        {
+          "id": "flare_light",
+          "description_key": "ENTITY_SILBON_COMBAT_FLARE",
+          "item_ids": ["defense.flare"],
+          "vehicle_actions": ["high_beams"],
+          "effect": "stun",
+          "stun_seconds": 3
+        }
+      ],
+      "despawn_conditions": ["daylight", "player_left_region", "banished"],
+      "qa_spawn_command": "spawn_entity silbon",
+      "reference_notes": [
+        "El DOCX de leyendas confirma la inversión del silbido; conservar dirección y invertir solo la percepción de distancia."
+      ]
+    },
+    {
+      "id": "llorona",
+      "name_key": "ENTITY_LLORONA_NAME",
+      "category": "folklore",
+      "summary_key": "ENTITY_LLORONA_SUMMARY",
+      "regions": ["llanos", "amazonas", "delta"],
+      "spawn_conditions": {
+        "time_windows": ["21:00-04:30"],
+        "weather": ["fog", "rain", "storm"],
+        "biomes": ["riverbank", "swamp", "lagoon"],
+        "min_night": 2,
+        "probability": 0.28,
+        "required_flags": [],
+        "forbidden_flags": ["llorona_free"]
+      },
+      "perception": {
+        "sight_radius_m": 20,
+        "hearing_radius_m": 45,
+        "light_attraction": 0.4,
+        "engine_noise_attraction": 0.7,
+        "radio_attraction": 0.3
+      },
+      "states": [
+        {"id": "dormant", "next": ["weep"]},
+        {"id": "weep", "next": ["observe", "lure"]},
+        {"id": "observe", "next": ["lure", "withdraw"]},
+        {"id": "lure", "next": ["chase", "withdraw"]},
+        {"id": "chase", "next": ["attack", "withdraw"]},
+        {"id": "attack", "next": ["withdraw"]},
+        {"id": "withdraw", "next": ["dormant"]}
+      ],
+      "audio": {
+        "mode": "spatial_cry",
+        "description_key": "ENTITY_LLORONA_AUDIO_RULE",
+        "params": {
+          "cry_interval_seconds": 8,
+          "water_distance_gain": 0.5,
+          "preserve_direction": true
+        }
+      },
+      "evasion": [
+        {
+          "id": "do_not_follow_cry",
+          "description_key": "ENTITY_LLORONA_EVADE_CALL",
+          "requirements": ["stay_on_road", "windows_up"],
+          "effectiveness": 0.7
+        },
+        {
+          "id": "bright_vehicle_light",
+          "description_key": "ENTITY_LLORONA_EVADE_LIGHTS",
+          "requirements": ["high_beams_on"],
+          "effectiveness": 0.4
+        }
+      ],
+      "combat": [
+        {
+          "id": "salt_water_edge",
+          "description_key": "ENTITY_LLORONA_COMBAT_SALT",
+          "item_ids": ["defense.salt"],
+          "effect": "repel",
+          "requires": ["near_water"],
+          "cooldown_seconds": 20
+        }
+      ],
+      "despawn_conditions": ["daylight", "player_left_region", "repelled"],
+      "qa_spawn_command": "spawn_entity llorona",
+      "reference_notes": [
+        "La leyenda aparece en el DOCX; la versión de juego no copiará el texto fuente."
+      ]
+    },
+    {
+      "id": "sayona",
+      "name_key": "ENTITY_SAYONA_NAME",
+      "category": "folklore",
+      "summary_key": "ENTITY_SAYONA_SUMMARY",
+      "regions": ["llanos", "carabobo"],
+      "spawn_conditions": {
+        "time_windows": ["20:30-05:00"],
+        "weather": ["clear", "fog"],
+        "biomes": ["empty_road", "savanna", "roadside_house"],
+        "min_night": 2,
+        "probability": 0.25,
+        "required_flags": [],
+        "forbidden_flags": ["sayona_free"]
+      },
+      "perception": {
+        "sight_radius_m": 30,
+        "hearing_radius_m": 25,
+        "light_attraction": 0.2,
+        "engine_noise_attraction": 0.4,
+        "radio_attraction": 0.1
+      },
+      "states": [
+        {"id": "dormant", "next": ["lure"]},
+        {"id": "lure", "next": ["observe", "manifest"]},
+        {"id": "observe", "next": ["manifest", "withdraw"]},
+        {"id": "manifest", "next": ["chase", "withdraw"]},
+        {"id": "chase", "next": ["attack", "withdraw"]},
+        {"id": "attack", "next": ["withdraw"]},
+        {"id": "withdraw", "next": ["dormant"]}
+      ],
+      "audio": {
+        "mode": "mimic_voice",
+        "description_key": "ENTITY_SAYONA_AUDIO_RULE",
+        "params": {
+          "mimic_source": "passenger_or_radio",
+          "wrong_word_probability": 0.15,
+          "preserve_direction": true
+        }
+      },
+      "evasion": [
+        {
+          "id": "no_eye_contact",
+          "description_key": "ENTITY_SAYONA_EVADE_GAZE",
+          "requirements": ["do_not_look", "keep_moving"],
+          "effectiveness": 0.65
+        },
+        {
+          "id": "high_beams_and_reverse",
+          "description_key": "ENTITY_SAYONA_EVADE_LIGHT",
+          "requirements": ["high_beams_on", "speed_max_kph=15"],
+          "effectiveness": 0.5
+        }
+      ],
+      "combat": [
+        {
+          "id": "salt_and_relic",
+          "description_key": "ENTITY_SAYONA_COMBAT_RELIC",
+          "item_ids": ["defense.salt", "story.relic"],
+          "effect": "repel",
+          "requires": ["facing_entity"],
+          "cooldown_seconds": 25
+        }
+      ],
+      "despawn_conditions": ["daylight", "player_left_region", "repelled"],
+      "qa_spawn_command": "spawn_entity sayona",
+      "reference_notes": [
+        "La Sayona debe aparecer como seducción y engaño, no como un enemigo genérico."
+      ]
+    },
+    {
+      "id": "momoyes",
+      "name_key": "ENTITY_MOMOYE_NAME",
+      "category": "folklore",
+      "summary_key": "ENTITY_MOMOYE_SUMMARY",
+      "regions": ["merida", "falcon"],
+      "spawn_conditions": {
+        "time_windows": ["22:00-04:00"],
+        "weather": ["fog", "storm", "snow"],
+        "biomes": ["mountain_forest", "paramo", "cave"],
+        "min_night": 2,
+        "probability": 0.3,
+        "required_flags": [],
+        "forbidden_flags": []
+      },
+      "perception": {
+        "sight_radius_m": 15,
+        "hearing_radius_m": 40,
+        "light_attraction": 0.3,
+        "engine_noise_attraction": 0.5,
+        "radio_attraction": 0.2
+      },
+      "states": [
+        {"id": "dormant", "next": ["mimic"]},
+        {"id": "mimic", "next": ["ambush", "withdraw"]},
+        {"id": "ambush", "next": ["chase", "withdraw"]},
+        {"id": "chase", "next": ["attack", "withdraw"]},
+        {"id": "attack", "next": ["withdraw"]},
+        {"id": "withdraw", "next": ["dormant"]}
+      ],
+      "audio": {
+        "mode": "mimic_human_whistle",
+        "description_key": "ENTITY_MOMOYE_AUDIO_RULE",
+        "params": {
+          "false_friendly_calls": true,
+          "voice_distance_m": 35,
+          "preserve_direction": false
+        }
+      },
+      "evasion": [
+        {
+          "id": "do_not_answer",
+          "description_key": "ENTITY_MOMOYE_EVADE_CALL",
+          "requirements": ["silence", "radio_off"],
+          "effectiveness": 0.75
+        },
+        {
+          "id": "reverse_from_cave",
+          "description_key": "ENTITY_MOMOYE_EVADE_CAVE",
+          "requirements": ["reverse_speed_max_kph=10"],
+          "effectiveness": 0.5
+        }
+      ],
+      "combat": [
+        {
+          "id": "flare_fire",
+          "description_key": "ENTITY_MOMOYE_COMBAT_FIRE",
+          "item_ids": ["defense.flare"],
+          "effect": "stun",
+          "stun_seconds": 4
+        }
+      ],
+      "despawn_conditions": ["daylight", "player_left_region", "fire_scare"],
+      "qa_spawn_command": "spawn_entity momoyes",
+      "reference_notes": [
+        "La niebla andina y el frío son parte de su gramática visual."
+      ]
+    },
+    {
+      "id": "mapurangui",
+      "name_key": "ENTITY_MAPURANGUI_NAME",
+      "category": "folklore",
+      "summary_key": "ENTITY_MAPURANGUI_SUMMARY",
+      "regions": ["amazonas", "delta"],
+      "spawn_conditions": {
+        "time_windows": ["19:00-05:00"],
+        "weather": ["rain", "storm", "fog"],
+        "biomes": ["rainforest", "riverbank", "mangrove"],
+        "min_night": 3,
+        "probability": 0.22,
+        "required_flags": [],
+        "forbidden_flags": []
+      },
+      "perception": {
+        "sight_radius_m": 25,
+        "hearing_radius_m": 70,
+        "light_attraction": 0.2,
+        "engine_noise_attraction": 1.0,
+        "radio_attraction": 0.2
+      },
+      "states": [
+        {"id": "dormant", "next": ["shadow"]},
+        {"id": "shadow", "next": ["follow", "withdraw"]},
+        {"id": "follow", "next": ["ambush", "withdraw"]},
+        {"id": "ambush", "next": ["chase", "withdraw"]},
+        {"id": "chase", "next": ["attack", "withdraw"]},
+        {"id": "attack", "next": ["withdraw"]},
+        {"id": "withdraw", "next": ["dormant"]}
+      ],
+      "audio": {
+        "mode": "animal_mimic",
+        "description_key": "ENTITY_MAPURANGUI_AUDIO_RULE",
+        "params": {
+          "mimic_sources": ["bird", "monkey", "water_drop"],
+          "false_direction_probability": 0.5
+        }
+      },
+      "evasion": [
+        {
+          "id": "stay_in_car",
+          "description_key": "ENTITY_MAPURANGUI_EVADE_CAR",
+          "requirements": ["doors_locked", "engine_off"],
+          "effectiveness": 0.8
+        },
+        {
+          "id": "river_route",
+          "description_key": "ENTITY_MAPURANGUI_EVADE_RIVER",
+          "requirements": ["follow_marked_route"],
+          "effectiveness": 0.45
+        }
+      ],
+      "combat": [
+        {
+          "id": "vehicle_high_beams",
+          "description_key": "ENTITY_MAPURANGUI_COMBAT_LIGHT",
+          "item_ids": [],
+          "vehicle_actions": ["high_beams"],
+          "effect": "stun",
+          "stun_seconds": 2
+        }
+      ],
+      "despawn_conditions": ["daylight", "player_left_region", "river_boundary"],
+      "qa_spawn_command": "spawn_entity mapurangui",
+      "reference_notes": []
+    },
+    {
+      "id": "serpiente_siete_cabezas",
+      "name_key": "ENTITY_SEVEN_HEADED_SERPENT_NAME",
+      "category": "folklore",
+      "summary_key": "ENTITY_SEVEN_HEADED_SERPENT_SUMMARY",
+      "regions": ["amazonas", "delta", "llanos"],
+      "spawn_conditions": {
+        "time_windows": ["21:00-04:30"],
+        "weather": ["storm", "rain"],
+        "biomes": ["river", "flooded_plain", "lagoon"],
+        "min_night": 4,
+        "probability": 0.12,
+        "required_flags": ["flood_season_event"],
+        "forbidden_flags": ["serpent_sealed"]
+      },
+      "perception": {
+        "sight_radius_m": 40,
+        "hearing_radius_m": 60,
+        "light_attraction": 0.5,
+        "engine_noise_attraction": 1.1,
+        "radio_attraction": 0.1
+      },
+      "states": [
+        {"id": "dormant", "next": ["surface"]},
+        {"id": "surface", "next": ["pursue", "withdraw"]},
+        {"id": "pursue", "next": ["strike", "withdraw"]},
+        {"id": "strike", "next": ["pursue", "withdraw"]},
+        {"id": "withdraw", "next": ["dormant"]}
+      ],
+      "audio": {
+        "mode": "low_water_rumble",
+        "description_key": "ENTITY_SERPENT_AUDIO_RULE",
+        "params": {
+          "sub_bass_hz": 32,
+          "head_hiss_count": 7,
+          "preserve_direction": true
+        }
+      },
+      "evasion": [
+        {
+          "id": "leave_flooded_ground",
+          "description_key": "ENTITY_SERPENT_EVADE_HIGH_GROUND",
+          "requirements": ["reach_high_ground"],
+          "effectiveness": 0.85
+        },
+        {
+          "id": "cut_lights_and_wait",
+          "description_key": "ENTITY_SERPENT_EVADE_STILL",
+          "requirements": ["engine_off", "lights_off", "inside_vehicle"],
+          "effectiveness": 0.4
+        }
+      ],
+      "combat": [
+        {
+          "id": "flare_and_salt",
+          "description_key": "ENTITY_SERPENT_COMBAT_FIRE",
+          "item_ids": ["defense.flare", "defense.salt"],
+          "effect": "repel",
+          "requires": ["seven_head_ritual_flag"],
+          "cooldown_seconds": 60
+        }
+      ],
+      "despawn_conditions": ["daylight", "player_left_region", "sealed"],
+      "qa_spawn_command": "spawn_entity serpiente_siete_cabezas",
+      "reference_notes": [
+        "Debe sentirse como un evento de agua y escala, no como una pelea de acción rápida."
+      ]
+    },
+    {
+      "id": "enano_catedral",
+      "name_key": "ENTITY_CATHEDRAL_DWARF_NAME",
+      "category": "folklore",
+      "summary_key": "ENTITY_CATHEDRAL_DWARF_SUMMARY",
+      "regions": ["carabobo"],
+      "spawn_conditions": {
+        "time_windows": ["00:00-03:30"],
+        "weather": ["clear", "fog"],
+        "biomes": ["urban_church", "old_plaza"],
+        "min_night": 3,
+        "probability": 0.2,
+        "required_flags": ["visited_cathedral"],
+        "forbidden_flags": []
+      },
+      "perception": {
+        "sight_radius_m": 10,
+        "hearing_radius_m": 25,
+        "light_attraction": 0.6,
+        "engine_noise_attraction": 0.2,
+        "radio_attraction": 0.0
+      },
+      "states": [
+        {"id": "dormant", "next": ["offer_light"]},
+        {"id": "offer_light", "next": ["grow", "withdraw"]},
+        {"id": "grow", "next": ["chase", "withdraw"]},
+        {"id": "chase", "next": ["attack", "withdraw"]},
+        {"id": "attack", "next": ["withdraw"]},
+        {"id": "withdraw", "next": ["dormant"]}
+      ],
+      "audio": {
+        "mode": "human_voice_deceptive",
+        "description_key": "ENTITY_CATHEDRAL_DWARF_AUDIO_RULE",
+        "params": {
+          "polite_tone": true,
+          "grow_trigger": "give_fire",
+          "preserve_direction": true
+        }
+      },
+      "evasion": [
+        {
+          "id": "refuse_fire",
+          "description_key": "ENTITY_CATHEDRAL_DWARF_EVADE_REFUSE",
+          "requirements": ["do_not_give_fire", "leave_plaza"],
+          "effectiveness": 0.95
+        }
+      ],
+      "combat": [
+        {
+          "id": "holy_light",
+          "description_key": "ENTITY_CATHEDRAL_DWARF_COMBAT_LIGHT",
+          "item_ids": ["defense.flare", "story.relic"],
+          "effect": "banish",
+          "requires": ["facing_entity"],
+          "cooldown_seconds": 30
+        }
+      ],
+      "despawn_conditions": ["daylight", "player_left_region", "banished"],
+      "qa_spawn_command": "spawn_entity enano_catedral",
+      "reference_notes": [
+        "La leyenda advierte explícitamente no darle fuego. La interacción debe permitir negarse."
+      ]
+    }
+  ]
+}

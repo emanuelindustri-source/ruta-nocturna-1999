@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#050b12"/>
+      <stop offset="1" stop-color="#12333c"/>
+    </linearGradient>
+    <radialGradient id="moon" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#fff2b8"/>
+      <stop offset="1" stop-color="#c78a2b"/>
+    </radialGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#sky)"/>
+  <circle cx="358" cy="132" r="70" fill="url(#moon)"/>
+  <path d="M0 360 L156 268 L236 286 L314 252 L512 338 L512 512 L0 512 Z" fill="#071116"/>
+  <path d="M182 512 L252 288 L278 288 L342 512 Z" fill="#20323a"/>
+  <path d="M256 336 L269 512" stroke="#f0c95c" stroke-width="9" stroke-linecap="round" stroke-dasharray="34 32"/>
+  <text x="64" y="102" fill="#f0c95c" font-family="'Courier New', monospace" font-size="46" font-weight="700">RN</text>
+  <text x="64" y="136" fill="#a9d7d6" font-family="'Courier New', monospace" font-size="20" letter-spacing="4">1999</text>
+</svg>

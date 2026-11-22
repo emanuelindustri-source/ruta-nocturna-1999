@@ -1,0 +1,250 @@
+{
+  "schema_version": 1,
+  "content_status": "foundation_example",
+  "currency": "VES_1999",
+  "balance_note": "Los precios son valores de balance del juego. No se presentan como precios históricos exactos hasta su revisión contra fuentes de 1999.",
+  "items": [
+    {
+      "id": "tool.jack",
+      "name_key": "ITEM_JACK_NAME",
+      "description_key": "ITEM_JACK_DESC",
+      "category": "recovery",
+      "is_tool": true,
+      "unit_cost_bs": 12000,
+      "stackable": false,
+      "max_stack": 1,
+      "tags": ["trunk", "anti_softlock", "wheel"]
+    },
+    {
+      "id": "tool.wheel_wrench",
+      "name_key": "ITEM_WHEEL_WRENCH_NAME",
+      "description_key": "ITEM_WHEEL_WRENCH_DESC",
+      "category": "recovery",
+      "is_tool": true,
+      "unit_cost_bs": 3500,
+      "stackable": false,
+      "max_stack": 1,
+      "tags": ["trunk", "anti_softlock", "wheels"]
+    },
+    {
+      "id": "tool.spare_tire",
+      "name_key": "ITEM_SPARE_TIRE_NAME",
+      "description_key": "ITEM_SPARE_TIRE_DESC",
+      "category": "recovery",
+      "is_tool": false,
+      "unit_cost_bs": 26000,
+      "stackable": false,
+      "max_stack": 1,
+      "tags": ["trunk", "anti_softlock", "tire"]
+    },
+    {
+      "id": "tool.fuse_puller",
+      "name_key": "ITEM_FUSE_PULLER_NAME",
+      "description_key": "ITEM_FUSE_PULLER_DESC",
+      "category": "electrical",
+      "is_tool": true,
+      "unit_cost_bs": 500,
+      "stackable": false,
+      "max_stack": 1,
+      "tags": ["glovebox", "fuse_box"]
+    },
+    {
+      "id": "tool.screwdriver_set",
+      "name_key": "ITEM_SCREWDRIVER_SET_NAME",
+      "description_key": "ITEM_SCREWDRIVER_SET_DESC",
+      "category": "mechanical",
+      "is_tool": true,
+      "unit_cost_bs": 2000,
+      "stackable": false,
+      "max_stack": 1,
+      "tags": ["trunk", "electrical", "interior"]
+    },
+    {
+      "id": "tool.pliers",
+      "name_key": "ITEM_PLIERS_NAME",
+      "description_key": "ITEM_PLIERS_DESC",
+      "category": "mechanical",
+      "is_tool": true,
+      "unit_cost_bs": 1500,
+      "stackable": false,
+      "max_stack": 1,
+      "tags": ["trunk", "electrical"]
+    },
+    {
+      "id": "tool.adjustable_wrench",
+      "name_key": "ITEM_ADJUSTABLE_WRENCH_NAME",
+      "description_key": "ITEM_ADJUSTABLE_WRENCH_DESC",
+      "category": "mechanical",
+      "is_tool": true,
+      "unit_cost_bs": 2500,
+      "stackable": false,
+      "max_stack": 1,
+      "tags": ["trunk", "cooling", "engine"]
+    },
+    {
+      "id": "tool.socket_set",
+      "name_key": "ITEM_SOCKET_SET_NAME",
+      "description_key": "ITEM_SOCKET_SET_DESC",
+      "category": "mechanical",
+      "is_tool": true,
+      "unit_cost_bs": 8000,
+      "stackable": false,
+      "max_stack": 1,
+      "tags": ["trunk", "engine", "advanced_repair"]
+    },
+    {
+      "id": "tool.spark_plug_wrench",
+      "name_key": "ITEM_SPARK_PLUG_WRENCH_NAME",
+      "description_key": "ITEM_SPARK_PLUG_WRENCH_DESC",
+      "category": "ignition",
+      "is_tool": true,
+      "unit_cost_bs": 2200,
+      "stackable": false,
+      "max_stack": 1,
+      "tags": ["trunk", "ignition", "wading"]
+    },
+    {
+      "id": "tool.jumper_cables",
+      "name_key": "ITEM_JUMPER_CABLES_NAME",
+      "description_key": "ITEM_JUMPER_CABLES_DESC",
+      "category": "electrical",
+      "is_tool": true,
+      "unit_cost_bs": 4500,
+      "stackable": false,
+      "max_stack": 1,
+      "tags": ["trunk", "battery", "roadside"]
+    },
+    {
+      "id": "supply.coolant",
+      "name_key": "ITEM_COOLANT_NAME",
+      "description_key": "ITEM_COOLANT_DESC",
+      "category": "consumable",
+      "is_tool": false,
+      "unit_cost_bs": 2000,
+      "stackable": true,
+      "max_stack": 3,
+      "tags": ["trunk", "cooling"]
+    },
+    {
+      "id": "supply.duct_tape",
+      "name_key": "ITEM_DUCT_TAPE_NAME",
+      "description_key": "ITEM_DUCT_TAPE_DESC",
+      "category": "consumable",
+      "is_tool": false,
+      "unit_cost_bs": 700,
+      "stackable": true,
+      "max_stack": 2,
+      "tags": ["glovebox", "temporary_repair"]
+    },
+    {
+      "id": "supply.brake_fluid",
+      "name_key": "ITEM_BRAKE_FLUID_NAME",
+      "description_key": "ITEM_BRAKE_FLUID_DESC",
+      "category": "consumable",
+      "is_tool": false,
+      "unit_cost_bs": 1800,
+      "stackable": true,
+      "max_stack": 2,
+      "tags": ["gas_station", "brakes"]
+    },
+    {
+      "id": "tool.flashlight",
+      "name_key": "ITEM_FLASHLIGHT_NAME",
+      "description_key": "ITEM_FLASHLIGHT_DESC",
+      "category": "survival",
+      "is_tool": true,
+      "unit_cost_bs": 5000,
+      "stackable": false,
+      "max_stack": 1,
+      "tags": ["glovebox", "night", "battery"]
+    },
+    {
+      "id": "supply.rags",
+      "name_key": "ITEM_RAGS_NAME",
+      "description_key": "ITEM_RAGS_DESC",
+      "category": "consumable",
+      "is_tool": false,
+      "unit_cost_bs": 400,
+      "stackable": true,
+      "max_stack": 4,
+      "tags": ["trunk", "wading", "cleaning"]
+    },
+    {
+      "id": "tool.boards",
+      "name_key": "ITEM_BOARDS_NAME",
+      "description_key": "ITEM_BOARDS_DESC",
+      "category": "recovery",
+      "is_tool": true,
+      "unit_cost_bs": 1200,
+      "stackable": true,
+      "max_stack": 2,
+      "tags": ["trunk", "anti_softlock", "mud"]
+    },
+    {
+      "id": "defense.salt",
+      "name_key": "ITEM_SALT_NAME",
+      "description_key": "ITEM_SALT_DESC",
+      "category": "defense",
+      "is_tool": false,
+      "unit_cost_bs": 300,
+      "stackable": true,
+      "max_stack": 5,
+      "tags": ["glovebox", "folklore"]
+    },
+    {
+      "id": "defense.flare",
+      "name_key": "ITEM_FLARE_NAME",
+      "description_key": "ITEM_FLARE_DESC",
+      "category": "defense",
+      "is_tool": false,
+      "unit_cost_bs": 1500,
+      "stackable": true,
+      "max_stack": 3,
+      "tags": ["trunk", "folklore", "light"]
+    },
+    {
+      "id": "defense.machete",
+      "name_key": "ITEM_MACHETE_NAME",
+      "description_key": "ITEM_MACHETE_DESC",
+      "category": "defense",
+      "is_tool": true,
+      "unit_cost_bs": 2500,
+      "stackable": false,
+      "max_stack": 1,
+      "tags": ["trunk", "defense", "folklore"]
+    },
+    {
+      "id": "story.relic",
+      "name_key": "ITEM_RELIC_NAME",
+      "description_key": "ITEM_RELIC_DESC",
+      "category": "story",
+      "is_tool": false,
+      "unit_cost_bs": 0,
+      "stackable": false,
+      "max_stack": 1,
+      "tags": ["quest", "folklore", "non_sellable"]
+    },
+    {
+      "id": "tool.paper_map",
+      "name_key": "ITEM_PAPER_MAP_NAME",
+      "description_key": "ITEM_PAPER_MAP_DESC",
+      "category": "navigation",
+      "is_tool": true,
+      "unit_cost_bs": 1000,
+      "stackable": false,
+      "max_stack": 1,
+      "tags": ["glovebox", "navigation", "1999"]
+    },
+    {
+      "id": "tool.camera",
+      "name_key": "ITEM_CAMERA_NAME",
+      "description_key": "ITEM_CAMERA_DESC",
+      "category": "survival",
+      "is_tool": true,
+      "unit_cost_bs": 15000,
+      "stackable": false,
+      "max_stack": 1,
+      "tags": ["glovebox", "photo_mode"]
+    }
+  ]
+}

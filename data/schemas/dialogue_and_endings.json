@@ -1,0 +1,304 @@
+{
+  "schema_version": 1,
+  "content_status": "foundation_example",
+  "design_rule": "Los nodos de ejemplo prueban el contrato. La campaña completa se escribe en Fase 7 y cada rama debe validarse antes de entrar al build.",
+  "entry_node": "intro_001",
+  "meters": {
+    "trust": {
+      "min": -100,
+      "max": 100,
+      "neutral": 0,
+      "thresholds": [
+        {"id": "distrust", "max": -30},
+        {"id": "neutral", "min": -29, "max": 29},
+        {"id": "trusted", "min": 30, "max": 69},
+        {"id": "bonded", "min": 70}
+      ]
+    },
+    "humanity": {
+      "min": -100,
+      "max": 100,
+      "start": 0,
+      "thresholds": [
+        {"id": "lost", "max": -30},
+        {"id": "fraying", "min": -29, "max": 9},
+        {"id": "human", "min": 10, "max": 59},
+        {"id": "lucid", "min": 60}
+      ]
+    }
+  },
+  "passengers": [
+    {
+      "id": "passenger.carmen",
+      "name_key": "PASSENGER_CARMEN_NAME",
+      "role_key": "PASSENGER_CARMEN_ROLE",
+      "trust_start": 5,
+      "trust_min": -100,
+      "trust_max": 100,
+      "join_regions": ["carabobo", "llanos"],
+      "arc_key": "PASSENGER_CARMEN_ARC"
+    },
+    {
+      "id": "passenger.jesus",
+      "name_key": "PASSENGER_JESUS_NAME",
+      "role_key": "PASSENGER_JESUS_ROLE",
+      "trust_start": -5,
+      "trust_min": -100,
+      "trust_max": 100,
+      "join_regions": ["falcon", "merida"],
+      "arc_key": "PASSENGER_JESUS_ARC"
+    },
+    {
+      "id": "passenger.nayeli",
+      "name_key": "PASSENGER_NAYELI_NAME",
+      "role_key": "PASSENGER_NAYELI_ROLE",
+      "trust_start": 10,
+      "trust_min": -100,
+      "trust_max": 100,
+      "join_regions": ["llanos", "amazonas"],
+      "arc_key": "PASSENGER_NAYELI_ARC"
+    },
+    {
+      "id": "passenger.anselmo",
+      "name_key": "PASSENGER_ANSELMO_NAME",
+      "role_key": "PASSENGER_ANSELMO_ROLE",
+      "trust_start": 0,
+      "trust_min": -100,
+      "trust_max": 100,
+      "join_regions": ["merida", "carabobo"],
+      "arc_key": "PASSENGER_ANSELMO_ARC"
+    },
+    {
+      "id": "passenger.rosa",
+      "name_key": "PASSENGER_ROSA_NAME",
+      "role_key": "PASSENGER_ROSA_ROLE",
+      "trust_start": 0,
+      "trust_min": -100,
+      "trust_max": 100,
+      "join_regions": ["delta", "llanos"],
+      "arc_key": "PASSENGER_ROSA_ARC"
+    },
+    {
+      "id": "passenger.fotografo",
+      "name_key": "PASSENGER_FOTOGRAFO_NAME",
+      "role_key": "PASSENGER_FOTOGRAFO_ROLE",
+      "trust_start": -10,
+      "trust_min": -100,
+      "trust_max": 100,
+      "join_regions": ["amazonas", "delta"],
+      "arc_key": "PASSENGER_FOTOGRAFO_ARC"
+    },
+    {
+      "id": "passenger.desconocida",
+      "name_key": "PASSENGER_DESCONOCIDA_NAME",
+      "role_key": "PASSENGER_DESCONOCIDA_ROLE",
+      "trust_start": 0,
+      "trust_min": -100,
+      "trust_max": 100,
+      "join_regions": ["llanos", "merida"],
+      "arc_key": "PASSENGER_DESCONOCIDA_ARC"
+    },
+    {
+      "id": "passenger.adolescente",
+      "name_key": "PASSENGER_ADOLESCENTE_NAME",
+      "role_key": "PASSENGER_ADOLESCENTE_ROLE",
+      "trust_start": -5,
+      "trust_min": -100,
+      "trust_max": 100,
+      "join_regions": ["carabobo", "delta"],
+      "arc_key": "PASSENGER_ADOLESCENTE_ARC"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "intro_001",
+      "type": "line",
+      "speaker_id": "narrator",
+      "text_key": "DIALOGUE_INTRO_001",
+      "voice_key": "VOICE_NARRATOR_INTRO_001",
+      "conditions": {"all": []},
+      "effects": [],
+      "next": "carmen_001",
+      "choices": []
+    },
+    {
+      "id": "carmen_001",
+      "type": "line",
+      "speaker_id": "passenger.carmen",
+      "text_key": "DIALOGUE_CARMEN_001",
+      "voice_key": "VOICE_CARMEN_001",
+      "conditions": {"all": []},
+      "effects": [],
+      "next": "carmen_choice_001",
+      "choices": []
+    },
+    {
+      "id": "carmen_choice_001",
+      "type": "choice",
+      "speaker_id": "passenger.carmen",
+      "text_key": "DIALOGUE_CARMEN_CHOICE_001",
+      "conditions": {"all": []},
+      "effects": [],
+      "next": null,
+      "choices": [
+        {
+          "id": "ask_if_she_is_ok",
+          "text_key": "DIALOGUE_CARMEN_OPTION_CARE",
+          "conditions": {"all": []},
+          "effects": [
+            {"op": "add_trust", "target": "passenger.carmen", "value": 5}
+          ],
+          "next": "carmen_002"
+        },
+        {
+          "id": "keep_silence",
+          "text_key": "DIALOGUE_CARMEN_OPTION_SILENCE",
+          "conditions": {"all": []},
+          "effects": [
+            {"op": "add_trust", "target": "passenger.carmen", "value": -2}
+          ],
+          "next": "carmen_003"
+        },
+        {
+          "id": "ask_about_radio",
+          "text_key": "DIALOGUE_CARMEN_OPTION_RADIO",
+          "conditions": {
+            "all": [
+              {"field": "radio.on", "op": "eq", "value": true}
+            ]
+          },
+          "effects": [],
+          "next": "road_radio"
+        }
+      ]
+    },
+    {
+      "id": "carmen_002",
+      "type": "line",
+      "speaker_id": "passenger.carmen",
+      "text_key": "DIALOGUE_CARMEN_002",
+      "voice_key": "VOICE_CARMEN_002",
+      "conditions": {"all": []},
+      "effects": [],
+      "next": "road_radio",
+      "choices": []
+    },
+    {
+      "id": "carmen_003",
+      "type": "line",
+      "speaker_id": "passenger.carmen",
+      "text_key": "DIALOGUE_CARMEN_003",
+      "voice_key": "VOICE_CARMEN_003",
+      "conditions": {"all": []},
+      "effects": [],
+      "next": "road_radio",
+      "choices": []
+    },
+    {
+      "id": "road_radio",
+      "type": "line",
+      "speaker_id": "radio",
+      "text_key": "DIALOGUE_RADIO_1999_001",
+      "voice_key": "VOICE_RADIO_1999_001",
+      "conditions": {"all": []},
+      "effects": [
+        {"op": "set_flag", "target": "heard_truncal5_warning", "value": true}
+      ],
+      "next": "foundation_end",
+      "choices": []
+    },
+    {
+      "id": "foundation_end",
+      "type": "end",
+      "speaker_id": "narrator",
+      "text_key": "DIALOGUE_FOUNDATION_END",
+      "conditions": {"all": []},
+      "effects": [],
+      "next": null,
+      "choices": []
+    }
+  ],
+  "ending_evaluator": {
+    "order": "priority_ascending",
+    "guarantee_one": true,
+    "fallback_ending": "end_amanecer"
+  },
+  "endings": [
+    {
+      "id": "end_amanecer",
+      "title_key": "ENDING_DAWN_TITLE",
+      "description_key": "ENDING_DAWN_DESC",
+      "priority": 10,
+      "conditions": {
+        "all": [
+          {"field": "meters.humanity", "op": "gte", "value": 10},
+          {"field": "vehicle.roadworthy", "op": "eq", "value": true}
+        ]
+      },
+      "scene_key": "ENDING_DAWN_SCENE"
+    },
+    {
+      "id": "end_silbon",
+      "title_key": "ENDING_SILBON_TITLE",
+      "description_key": "ENDING_SILBON_DESC",
+      "priority": 20,
+      "conditions": {
+        "all": [
+          {"field": "flags.silbon_marked", "op": "eq", "value": true},
+          {"field": "meters.humanity", "op": "lte", "value": 20}
+        ]
+      },
+      "scene_key": "ENDING_SILBON_SCENE"
+    },
+    {
+      "id": "end_sayona",
+      "title_key": "ENDING_SAYONA_TITLE",
+      "description_key": "ENDING_SAYONA_DESC",
+      "priority": 30,
+      "conditions": {
+        "all": [
+          {"field": "flags.sayona_truth", "op": "eq", "value": true}
+        ]
+      },
+      "scene_key": "ENDING_SAYONA_SCENE"
+    },
+    {
+      "id": "end_llorona",
+      "title_key": "ENDING_LLORONA_TITLE",
+      "description_key": "ENDING_LLORONA_DESC",
+      "priority": 40,
+      "conditions": {
+        "all": [
+          {"field": "flags.llorona_released", "op": "eq", "value": true},
+          {"field": "region", "op": "eq", "value": "delta"}
+        ]
+      },
+      "scene_key": "ENDING_LLORONA_SCENE"
+    },
+    {
+      "id": "end_delta",
+      "title_key": "ENDING_DELTA_TITLE",
+      "description_key": "ENDING_DELTA_DESC",
+      "priority": 50,
+      "conditions": {
+        "all": [
+          {"field": "flags.delta_promise", "op": "eq", "value": true},
+          {"field": "vehicle.condition", "op": "gte", "value": 40}
+        ]
+      },
+      "scene_key": "ENDING_DELTA_SCENE"
+    },
+    {
+      "id": "end_humanidad",
+      "title_key": "ENDING_HUMANITY_TITLE",
+      "description_key": "ENDING_HUMANITY_DESC",
+      "priority": 60,
+      "conditions": {
+        "all": [
+          {"field": "meters.humanity", "op": "lte", "value": -30}
+        ]
+      },
+      "scene_key": "ENDING_HUMANITY_SCENE"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+name: Project validation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+
+      - name: Install validation dependencies
+        run: python -m pip install -r tools/requirements-dev.lock
+
+      - name: Validate JSON contracts
+        run: python tools/validate_schemas.py
+
+      - name: Validate 11-language foundation
+        run: python tools/validate_localization.py
+
+      - name: Validate roadmap synchronization
+        run: python tools/release/sync_roadmap.py --check
+
+      - name: Validate JSON syntax of public roadmap
+        run: python -m json.tool docs/roadmap-data.json > /dev/null
+
+      - name: Reject tracked secrets and packages
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git ls-files | grep -E '\.(keystore|jks|apk|aab)$'; then
+            echo "Forbidden binary or secret found in Git."
+            exit 1
+          fi
+          echo "No forbidden binaries tracked."

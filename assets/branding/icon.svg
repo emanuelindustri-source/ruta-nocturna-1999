@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Ruta Nocturna 1999">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#050b12"/>
+      <stop offset="0.55" stop-color="#0b2430"/>
+      <stop offset="1" stop-color="#12333c"/>
+    </linearGradient>
+    <radialGradient id="moon" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#fff2b8"/>
+      <stop offset="0.7" stop-color="#f0c95c"/>
+      <stop offset="1" stop-color="#c78a2b"/>
+    </radialGradient>
+    <linearGradient id="road" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#20323a"/>
+      <stop offset="1" stop-color="#080d11"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#sky)"/>
+  <circle cx="358" cy="132" r="70" fill="url(#moon)"/>
+  <circle cx="386" cy="112" r="18" fill="#0b1c26" opacity="0.42"/>
+  <circle cx="340" cy="154" r="10" fill="#0b1c26" opacity="0.34"/>
+  <path d="M0 360 L156 268 L236 286 L314 252 L512 338 L512 512 L0 512 Z" fill="#071116"/>
+  <path d="M182 512 L252 288 L278 288 L342 512 Z" fill="url(#road)"/>
+  <path d="M256 336 L269 512" stroke="#f0c95c" stroke-width="9" stroke-linecap="round" stroke-dasharray="34 32" opacity="0.9"/>
+  <path d="M180 400 C118 380 88 348 68 302" stroke="#1f5961" stroke-width="12" fill="none" stroke-linecap="round" opacity="0.8"/>
+  <path d="M344 420 C396 392 424 356 438 314" stroke="#1f5961" stroke-width="9" fill="none" stroke-linecap="round" opacity="0.6"/>
+  <path d="M112 174 L112 204 M86 188 L138 188" stroke="#f0c95c" stroke-width="4" opacity="0.6"/>
+  <text x="64" y="102" fill="#f0c95c" font-family="'Courier New', monospace" font-size="46" font-weight="700" letter-spacing="2">RN</text>
+  <text x="64" y="136" fill="#a9d7d6" font-family="'Courier New', monospace" font-size="20" letter-spacing="4">1999</text>
+</svg>

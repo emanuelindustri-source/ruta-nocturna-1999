@@ -1,0 +1,8 @@
+# Audio production dependencies, scheduled for Phase 8.
+# Do not add this environment to the shipped game.
+# Versions will be pinned in F8.2/F8.3 after voice and synthesis spikes.
+edge-tts
+numpy
+scipy
+soundfile
+pyloudnorm

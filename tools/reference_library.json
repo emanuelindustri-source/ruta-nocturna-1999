@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "root": "C:/Dev/fotos de ejemplo",
+  "catalog": "docs/reference/reference_catalog.json",
+  "build_dir": "build/reference",
+  "read_only": true,
+  "copy_into_repo": false,
+  "review_interval_days": 14,
+  "quick_scan_each_subphase": true,
+  "allowed_extensions": [".png", ".jpg", ".jpeg", ".webp", ".pdf", ".docx", ".mp4"],
+  "review_gates": [
+    "F2.2",
+    "F3.1",
+    "F3.2",
+    "F3.3",
+    "F3.4",
+    "F4.3",
+    "F5.1",
+    "F5.3",
+    "F7.3",
+    "F9.2",
+    "F10.2"
+  ],
+  "license_notice": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+}

@@ -1,0 +1,913 @@
+{
+  "schema_version": 1,
+  "vehicle_id": "chevrolet_esteem_1999_auto_beige",
+  "display_name_key": "VEHICLE_ESTEEM_NAME",
+  "content_status": "foundation_example",
+  "currency": "VES_1999",
+  "balance_note": "Costos de balance interno para 1999. La exactitud histórica se revisará contra el manual de servicio antes de v0.5.0.",
+  "specs": {
+    "engine": {
+      "displacement_cc": 1590,
+      "cylinders": 4,
+      "valvetrain": "SOHC 16V",
+      "power_hp": 95,
+      "fuel": "gasoline",
+      "source_status": "provisional_until_manual_review"
+    },
+    "transmission": {
+      "type": "automatic",
+      "gears": 4,
+      "overdrive": true,
+      "selector_modes": ["P", "R", "N", "D", "2", "L"]
+    },
+    "fuel": {
+      "tank_liters": 50,
+      "price_bs_per_liter": 120,
+      "source_status": "game_balance"
+    },
+    "water": {
+      "air_intake_height_m": 0.68,
+      "safe_wading_depth_m": 0.3,
+      "max_safe_crossing_speed_kph": 12,
+      "bow_wave_risk_speed_kph": 20,
+      "hydrolock_probability_over_intake": 0.55,
+      "drying_minutes": 12,
+      "source_status": "provisional_until_manual_and_model_calibration"
+    },
+    "recovery": {
+      "rollover_seconds": 3,
+      "no_traction_seconds": 8,
+      "safe_return_search_radius_m": 250,
+      "tow_fee_bs": 9000,
+      "debt_allowed": true
+    }
+  },
+  "components": [
+    {
+      "id": "cooling.fan_motor",
+      "name_key": "VEH_COMP_FAN_MOTOR_NAME",
+      "category": "cooling",
+      "location": "engine_bay.radiator_rear",
+      "repair_kind": "replace",
+      "part_cost_bs": 8500,
+      "labor_cost_bs": 2500,
+      "price_source": "game_balance",
+      "required_tools": ["tool.screwdriver_set", "tool.adjustable_wrench"],
+      "required_items": [],
+      "repair_minutes": 45,
+      "roadside_possible": true,
+      "symptoms": [
+        {
+          "id": "fan_not_starting_when_hot",
+          "description_key": "SYMPTOM_FAN_MOTOR_HOT_IDLE",
+          "conditions": {
+            "coolant_temp_c_min": 100,
+            "engine_rpm_max": 950,
+            "fan_running": false
+          }
+        },
+        {
+          "id": "fan_draws_current_but_does_not_spin",
+          "description_key": "SYMPTOM_FAN_MOTOR_SEIZED",
+          "conditions": {
+            "fan_circuit_voltage_min": 11.5,
+            "fan_running": false
+          }
+        }
+      ],
+      "failure_modes": ["bearing_seized", "winding_open", "connector_corroded"],
+      "effects": {
+        "cooling_capacity": 0.25,
+        "idle_overheat_risk": 0.8
+      },
+      "reference_notes": ["Fotos de motor y refrigeración; verificar posición en el manual."]
+    },
+    {
+      "id": "cooling.fan_relay",
+      "name_key": "VEH_COMP_FAN_RELAY_NAME",
+      "category": "electrical",
+      "location": "engine_bay.fuse_box",
+      "repair_kind": "replace",
+      "part_cost_bs": 1200,
+      "labor_cost_bs": 300,
+      "price_source": "game_balance",
+      "required_tools": ["tool.fuse_puller"],
+      "required_items": [],
+      "repair_minutes": 5,
+      "roadside_possible": true,
+      "symptoms": [
+        {
+          "id": "intermittent_fan_with_good_fuse",
+          "description_key": "SYMPTOM_FAN_RELAY_INTERMITTENT",
+          "conditions": {
+            "coolant_temp_c_min": 100,
+            "fan_running": "intermittent",
+            "fan_fuse_ok": true
+          }
+        },
+        {
+          "id": "relay_click_without_fan",
+          "description_key": "SYMPTOM_FAN_RELAY_CLICK",
+          "conditions": {
+            "relay_click": true,
+            "fan_circuit_voltage_min": 11.5,
+            "fan_running": false
+          }
+        }
+      ],
+      "failure_modes": ["coil_open", "contact_welded", "contact_carbonized"],
+      "effects": {
+        "cooling_capacity": 0.0,
+        "idle_overheat_risk": 0.9
+      },
+      "reference_notes": ["Diagrama de caja de fusibles: extraer del manual antes de v0.2.0."]
+    },
+    {
+      "id": "cooling.fan_fuse",
+      "name_key": "VEH_COMP_FAN_FUSE_NAME",
+      "category": "electrical",
+      "location": "engine_bay.fuse_box",
+      "repair_kind": "replace",
+      "part_cost_bs": 150,
+      "labor_cost_bs": 100,
+      "price_source": "game_balance",
+      "required_tools": ["tool.fuse_puller"],
+      "required_items": [],
+      "repair_minutes": 2,
+      "roadside_possible": true,
+      "symptoms": [
+        {
+          "id": "no_fan_power",
+          "description_key": "SYMPTOM_FAN_FUSE_BLOWN",
+          "conditions": {
+            "fan_circuit_voltage_max": 0.5,
+            "fan_fuse_ok": false
+          }
+        }
+      ],
+      "failure_modes": ["overcurrent_short", "fatigue"],
+      "effects": {
+        "cooling_capacity": 0.0,
+        "electrical_circuit_open": true
+      },
+      "reference_notes": []
+    },
+    {
+      "id": "cooling.thermostat",
+      "name_key": "VEH_COMP_THERMOSTAT_NAME",
+      "category": "cooling",
+      "location": "engine_bay.thermostat_housing",
+      "repair_kind": "replace",
+      "part_cost_bs": 1800,
+      "labor_cost_bs": 2200,
+      "price_source": "game_balance",
+      "required_tools": ["tool.socket_set", "tool.adjustable_wrench"],
+      "required_items": ["supply.coolant"],
+      "repair_minutes": 50,
+      "roadside_possible": false,
+      "symptoms": [
+        {
+          "id": "overheat_with_cold_radiator",
+          "description_key": "SYMPTOM_THERMOSTAT_STUCK_CLOSED",
+          "conditions": {
+            "coolant_temp_c_min": 105,
+            "radiator_lower_hose_temp_c_max": 55,
+            "fan_running": true
+          }
+        },
+        {
+          "id": "engine_runs_cold",
+          "description_key": "SYMPTOM_THERMOSTAT_STUCK_OPEN",
+          "conditions": {
+            "coolant_temp_c_max": 62,
+            "engine_run_minutes_min": 15
+          }
+        }
+      ],
+      "failure_modes": ["stuck_closed", "stuck_open", "gasket_leak"],
+      "effects": {
+        "cooling_capacity": 0.4,
+        "fuel_economy": 0.85
+      },
+      "reference_notes": ["Confirmar temperatura de apertura en el manual."]
+    },
+    {
+      "id": "cooling.water_pump",
+      "name_key": "VEH_COMP_WATER_PUMP_NAME",
+      "category": "cooling",
+      "location": "engine_bay.timing_belt_area",
+      "repair_kind": "replace",
+      "part_cost_bs": 7200,
+      "labor_cost_bs": 5000,
+      "price_source": "game_balance",
+      "required_tools": ["tool.socket_set", "tool.adjustable_wrench"],
+      "required_items": ["supply.coolant"],
+      "repair_minutes": 120,
+      "roadside_possible": false,
+      "symptoms": [
+        {
+          "id": "coolant_leak_under_pump",
+          "description_key": "SYMPTOM_WATER_PUMP_LEAK",
+          "conditions": {
+            "coolant_level_drop": true,
+            "leak_near_pump": true
+          }
+        },
+        {
+          "id": "coolant_not_circulating",
+          "description_key": "SYMPTOM_WATER_PUMP_CIRCULATION",
+          "conditions": {
+            "coolant_temp_c_min": 105,
+            "heater_core_hot": false,
+            "fan_running": true
+          }
+        }
+      ],
+      "failure_modes": ["bearing_failure", "seal_leak", "impeller_eroded"],
+      "effects": {
+        "cooling_capacity": 0.1,
+        "belt_risk": 0.3
+      },
+      "reference_notes": []
+    },
+    {
+      "id": "cooling.radiator",
+      "name_key": "VEH_COMP_RADIATOR_NAME",
+      "category": "cooling",
+      "location": "engine_bay.front",
+      "repair_kind": "replace",
+      "part_cost_bs": 18000,
+      "labor_cost_bs": 4200,
+      "price_source": "game_balance",
+      "required_tools": ["tool.socket_set", "tool.adjustable_wrench"],
+      "required_items": ["supply.coolant"],
+      "repair_minutes": 90,
+      "roadside_possible": false,
+      "symptoms": [
+        {
+          "id": "radiator_leak",
+          "description_key": "SYMPTOM_RADIATOR_LEAK",
+          "conditions": {
+            "coolant_level_drop": true,
+            "leak_near_radiator": true
+          }
+        },
+        {
+          "id": "cooling_fan_runs_but_overheat",
+          "description_key": "SYMPTOM_RADIATOR_BLOCKED",
+          "conditions": {
+            "coolant_temp_c_min": 105,
+            "fan_running": true,
+            "radiator_airflow": "restricted"
+          }
+        }
+      ],
+      "failure_modes": ["fin_damage", "tank_crack", "internal_clog"],
+      "effects": {
+        "cooling_capacity": 0.2,
+        "coolant_loss_rate": 0.4
+      },
+      "reference_notes": ["Verificar capacidad y tipo de refrigerante en el manual."]
+    },
+    {
+      "id": "cooling.upper_hose",
+      "name_key": "VEH_COMP_UPPER_HOSE_NAME",
+      "category": "cooling",
+      "location": "engine_bay.thermostat_to_radiator",
+      "repair_kind": "replace",
+      "part_cost_bs": 1200,
+      "labor_cost_bs": 500,
+      "price_source": "game_balance",
+      "required_tools": ["tool.screwdriver_set", "tool.pliers"],
+      "required_items": ["supply.coolant"],
+      "repair_minutes": 20,
+      "roadside_possible": true,
+      "symptoms": [
+        {
+          "id": "hose_leak",
+          "description_key": "SYMPTOM_COOLANT_HOSE_LEAK",
+          "conditions": {
+            "coolant_loss": true,
+            "leak_from_hose": true
+          }
+        }
+      ],
+      "failure_modes": ["rubber_crack", "clamp_failure"],
+      "effects": {
+        "cooling_capacity": 0.35,
+        "coolant_loss_rate": 0.6
+      },
+      "reference_notes": []
+    },
+    {
+      "id": "cooling.coolant",
+      "name_key": "VEH_COMP_COOLANT_NAME",
+      "category": "fluid",
+      "location": "engine_bay.coolant_reservoir",
+      "repair_kind": "service",
+      "part_cost_bs": 2000,
+      "labor_cost_bs": 0,
+      "price_source": "game_balance",
+      "required_tools": [],
+      "required_items": ["supply.coolant"],
+      "repair_minutes": 5,
+      "roadside_possible": true,
+      "symptoms": [
+        {
+          "id": "low_coolant",
+          "description_key": "SYMPTOM_COOLANT_LOW",
+          "conditions": {
+            "coolant_level_percent_max": 25
+          }
+        }
+      ],
+      "failure_modes": ["low_level"],
+      "effects": {
+        "cooling_capacity": 0.5
+      },
+      "reference_notes": ["No abrir el radiador caliente. El juego mostrará advertencia térmica."]
+    },
+    {
+      "id": "electrical.battery",
+      "name_key": "VEH_COMP_BATTERY_NAME",
+      "category": "electrical",
+      "location": "engine_bay.battery_tray",
+      "repair_kind": "replace",
+      "part_cost_bs": 30000,
+      "labor_cost_bs": 600,
+      "price_source": "game_balance",
+      "required_tools": ["tool.adjustable_wrench"],
+      "required_items": [],
+      "repair_minutes": 15,
+      "roadside_possible": true,
+      "symptoms": [
+        {
+          "id": "slow_crank",
+          "description_key": "SYMPTOM_BATTERY_SLOW_CRANK",
+          "conditions": {
+            "battery_voltage_max": 11.8,
+            "starter_rpm_max": 180
+          }
+        },
+        {
+          "id": "radio_and_lights_dim_at_idle",
+          "description_key": "SYMPTOM_BATTERY_DIM_IDLE",
+          "conditions": {
+            "battery_voltage_max": 12.1,
+            "engine_rpm_max": 800
+          }
+        }
+      ],
+      "failure_modes": ["sulfated", "cell_short", "terminal_corrosion"],
+      "effects": {
+        "starting_voltage": 0.6,
+        "electrical_stability": 0.4
+      },
+      "reference_notes": ["La foto de batería es referencia visual; capacidades se verifican en manual."]
+    },
+    {
+      "id": "electrical.alternator",
+      "name_key": "VEH_COMP_ALTERNATOR_NAME",
+      "category": "electrical",
+      "location": "engine_bay.accessory_belt",
+      "repair_kind": "replace",
+      "part_cost_bs": 22000,
+      "labor_cost_bs": 4000,
+      "price_source": "game_balance",
+      "required_tools": ["tool.socket_set", "tool.adjustable_wrench"],
+      "required_items": [],
+      "repair_minutes": 90,
+      "roadside_possible": false,
+      "symptoms": [
+        {
+          "id": "battery_drains_while_running",
+          "description_key": "SYMPTOM_ALTERNATOR_NO_CHARGE",
+          "conditions": {
+            "engine_rpm_min": 1200,
+            "battery_voltage_max": 12.2,
+            "charge_warning": true
+          }
+        },
+        {
+          "id": "belt_squeal_with_electrical_load",
+          "description_key": "SYMPTOM_ALTERNATOR_BEARING",
+          "conditions": {
+            "electrical_load": "high",
+            "squeal": true
+          }
+        }
+      ],
+      "failure_modes": ["diode_failure", "regulator_failure", "bearing_noise"],
+      "effects": {
+        "charging_output": 0.15,
+        "battery_drain_rate": 0.5
+      },
+      "reference_notes": []
+    },
+    {
+      "id": "electrical.alternator_belt",
+      "name_key": "VEH_COMP_ACCESSORY_BELT_NAME",
+      "category": "engine",
+      "location": "engine_bay.accessory_belt",
+      "repair_kind": "replace",
+      "part_cost_bs": 3000,
+      "labor_cost_bs": 1200,
+      "price_source": "game_balance",
+      "required_tools": ["tool.socket_set", "tool.adjustable_wrench"],
+      "required_items": [],
+      "repair_minutes": 40,
+      "roadside_possible": false,
+      "symptoms": [
+        {
+          "id": "belt_slip",
+          "description_key": "SYMPTOM_BELT_SLIP",
+          "conditions": {
+            "squeal": true,
+            "battery_voltage_max": 12.4,
+            "power_steering_weak": true
+          }
+        }
+      ],
+      "failure_modes": ["glazed", "cracked", "broken"],
+      "effects": {
+        "charging_output": 0.2,
+        "cooling_capacity": 0.6,
+        "steering_assist": 0.4
+      },
+      "reference_notes": ["Foto de correa en la biblioteca externa."]
+    },
+    {
+      "id": "ignition.spark_plugs",
+      "name_key": "VEH_COMP_SPARK_PLUGS_NAME",
+      "category": "ignition",
+      "location": "engine_bay.engine_head",
+      "repair_kind": "replace",
+      "part_cost_bs": 4800,
+      "labor_cost_bs": 1800,
+      "price_source": "game_balance",
+      "required_tools": ["tool.spark_plug_wrench", "tool.socket_set"],
+      "required_items": ["supply.rags"],
+      "repair_minutes": 35,
+      "roadside_possible": true,
+      "symptoms": [
+        {
+          "id": "rough_idle_and_misfire",
+          "description_key": "SYMPTOM_SPARK_PLUG_MISFIRE",
+          "conditions": {
+            "misfire": true,
+            "engine_rpm_variation_min": 80,
+            "fuel_economy_penalty": true
+          }
+        },
+        {
+          "id": "wet_engine_after_wading",
+          "description_key": "SYMPTOM_SPARK_PLUG_WET",
+          "conditions": {
+            "recent_water_ingress": true,
+            "engine_state": "stalled"
+          }
+        }
+      ],
+      "failure_modes": ["worn_electrode", "fouled", "wet"],
+      "effects": {
+        "engine_power": 0.7,
+        "fuel_economy": 0.8,
+        "starting_reliability": 0.6
+      },
+      "reference_notes": ["Secar bujías después de un vadeo profundo."]
+    },
+    {
+      "id": "ignition.plug_wires",
+      "name_key": "VEH_COMP_PLUG_WIRES_NAME",
+      "category": "ignition",
+      "location": "engine_bay.engine_head",
+      "repair_kind": "replace",
+      "part_cost_bs": 6000,
+      "labor_cost_bs": 800,
+      "price_source": "game_balance",
+      "required_tools": ["tool.pliers"],
+      "required_items": [],
+      "repair_minutes": 20,
+      "roadside_possible": true,
+      "symptoms": [
+        {
+          "id": "misfire_when_damp",
+          "description_key": "SYMPTOM_PLUG_WIRES_DAMP",
+          "conditions": {
+            "humidity": "high",
+            "misfire": true
+          }
+        }
+      ],
+      "failure_modes": ["insulation_crack", "terminal_corrosion"],
+      "effects": {
+        "engine_power": 0.8,
+        "starting_reliability": 0.7
+      },
+      "reference_notes": []
+    },
+    {
+      "id": "air.filter",
+      "name_key": "VEH_COMP_AIR_FILTER_NAME",
+      "category": "engine",
+      "location": "engine_bay.air_box",
+      "repair_kind": "replace",
+      "part_cost_bs": 2500,
+      "labor_cost_bs": 300,
+      "price_source": "game_balance",
+      "required_tools": ["tool.screwdriver_set"],
+      "required_items": [],
+      "repair_minutes": 10,
+      "roadside_possible": true,
+      "symptoms": [
+        {
+          "id": "dust_penalty",
+          "description_key": "SYMPTOM_AIR_FILTER_DUST",
+          "conditions": {
+            "biome": ["llanos", "falcon"],
+            "filter_dust_percent_min": 70
+          }
+        }
+      ],
+      "failure_modes": ["clogged", "wet"],
+      "effects": {
+        "fuel_economy": 0.88,
+        "engine_power": 0.9,
+        "water_ingress_risk": 0.2
+      },
+      "reference_notes": ["La altura del filtro es clave para el vadeo; calibrar en el modelo 3D."]
+    },
+    {
+      "id": "fuel.filter",
+      "name_key": "VEH_COMP_FUEL_FILTER_NAME",
+      "category": "fuel",
+      "location": "engine_bay.fuel_line",
+      "repair_kind": "replace",
+      "part_cost_bs": 2800,
+      "labor_cost_bs": 1600,
+      "price_source": "game_balance",
+      "required_tools": ["tool.pliers", "tool.screwdriver_set"],
+      "required_items": [],
+      "repair_minutes": 40,
+      "roadside_possible": false,
+      "symptoms": [
+        {
+          "id": "power_loss_uphill",
+          "description_key": "SYMPTOM_FUEL_FILTER_CLOG",
+          "conditions": {
+            "load": "high",
+            "engine_sputter": true,
+            "speed_loss": true
+          }
+        }
+      ],
+      "failure_modes": ["clogged", "water_contamination"],
+      "effects": {
+        "fuel_flow": 0.7,
+        "engine_power": 0.85
+      },
+      "reference_notes": []
+    },
+    {
+      "id": "tires.fl",
+      "name_key": "VEH_COMP_TIRE_FL_NAME",
+      "category": "tires",
+      "location": "wheel.front_left",
+      "repair_kind": "replace",
+      "part_cost_bs": 26000,
+      "labor_cost_bs": 800,
+      "price_source": "game_balance",
+      "required_tools": ["tool.jack", "tool.wheel_wrench"],
+      "required_items": ["tool.spare_tire"],
+      "repair_minutes": 25,
+      "roadside_possible": true,
+      "symptoms": [
+        {
+          "id": "pressure_low",
+          "description_key": "SYMPTOM_TIRE_PRESSURE_LOW",
+          "conditions": {
+            "tire_pressure_psi_max": 22
+          }
+        },
+        {
+          "id": "tread_worn",
+          "description_key": "SYMPTOM_TIRE_TREAD_WORN",
+          "conditions": {
+            "tire_tread_percent_max": 25,
+            "wet_grip": "poor"
+          }
+        }
+      ],
+      "failure_modes": ["puncture", "sidewall_damage", "aquaplaning"],
+      "effects": {
+        "wet_grip": 0.65,
+        "steering_pull": 0.2
+      },
+      "reference_notes": []
+    },
+    {
+      "id": "tires.fr",
+      "name_key": "VEH_COMP_TIRE_FR_NAME",
+      "category": "tires",
+      "location": "wheel.front_right",
+      "repair_kind": "replace",
+      "part_cost_bs": 26000,
+      "labor_cost_bs": 800,
+      "price_source": "game_balance",
+      "required_tools": ["tool.jack", "tool.wheel_wrench"],
+      "required_items": ["tool.spare_tire"],
+      "repair_minutes": 25,
+      "roadside_possible": true,
+      "symptoms": [
+        {
+          "id": "pressure_low",
+          "description_key": "SYMPTOM_TIRE_PRESSURE_LOW",
+          "conditions": {
+            "tire_pressure_psi_max": 22
+          }
+        },
+        {
+          "id": "tread_worn",
+          "description_key": "SYMPTOM_TIRE_TREAD_WORN",
+          "conditions": {
+            "tire_tread_percent_max": 25,
+            "wet_grip": "poor"
+          }
+        }
+      ],
+      "failure_modes": ["puncture", "sidewall_damage", "aquaplaning"],
+      "effects": {
+        "wet_grip": 0.65,
+        "steering_pull": 0.2
+      },
+      "reference_notes": []
+    },
+    {
+      "id": "tires.rl",
+      "name_key": "VEH_COMP_TIRE_RL_NAME",
+      "category": "tires",
+      "location": "wheel.rear_left",
+      "repair_kind": "replace",
+      "part_cost_bs": 26000,
+      "labor_cost_bs": 800,
+      "price_source": "game_balance",
+      "required_tools": ["tool.jack", "tool.wheel_wrench"],
+      "required_items": ["tool.spare_tire"],
+      "repair_minutes": 25,
+      "roadside_possible": true,
+      "symptoms": [
+        {
+          "id": "pressure_low",
+          "description_key": "SYMPTOM_TIRE_PRESSURE_LOW",
+          "conditions": {
+            "tire_pressure_psi_max": 22
+          }
+        },
+        {
+          "id": "tread_worn",
+          "description_key": "SYMPTOM_TIRE_TREAD_WORN",
+          "conditions": {
+            "tire_tread_percent_max": 25,
+            "wet_grip": "poor"
+          }
+        }
+      ],
+      "failure_modes": ["puncture", "sidewall_damage", "aquaplaning"],
+      "effects": {
+        "wet_grip": 0.65,
+        "steering_pull": 0.1
+      },
+      "reference_notes": []
+    },
+    {
+      "id": "tires.rr",
+      "name_key": "VEH_COMP_TIRE_RR_NAME",
+      "category": "tires",
+      "location": "wheel.rear_right",
+      "repair_kind": "replace",
+      "part_cost_bs": 26000,
+      "labor_cost_bs": 800,
+      "price_source": "game_balance",
+      "required_tools": ["tool.jack", "tool.wheel_wrench"],
+      "required_items": ["tool.spare_tire"],
+      "repair_minutes": 25,
+      "roadside_possible": true,
+      "symptoms": [
+        {
+          "id": "pressure_low",
+          "description_key": "SYMPTOM_TIRE_PRESSURE_LOW",
+          "conditions": {
+            "tire_pressure_psi_max": 22
+          }
+        },
+        {
+          "id": "tread_worn",
+          "description_key": "SYMPTOM_TIRE_TREAD_WORN",
+          "conditions": {
+            "tire_tread_percent_max": 25,
+            "wet_grip": "poor"
+          }
+        }
+      ],
+      "failure_modes": ["puncture", "sidewall_damage", "aquaplaning"],
+      "effects": {
+        "wet_grip": 0.65,
+        "steering_pull": 0.1
+      },
+      "reference_notes": []
+    },
+    {
+      "id": "tires.spare",
+      "name_key": "VEH_COMP_SPARE_TIRE_NAME",
+      "category": "tires",
+      "location": "trunk.spare_well",
+      "repair_kind": "replace",
+      "part_cost_bs": 26000,
+      "labor_cost_bs": 0,
+      "price_source": "game_balance",
+      "required_tools": [],
+      "required_items": [],
+      "repair_minutes": 0,
+      "roadside_possible": true,
+      "symptoms": [
+        {
+          "id": "spare_missing",
+          "description_key": "SYMPTOM_SPARE_TIRE_MISSING",
+          "conditions": {
+            "has_spare_tire": false
+          }
+        }
+      ],
+      "failure_modes": ["missing", "flat"],
+      "effects": {
+        "recovery_capability": 0.0
+      },
+      "reference_notes": []
+    },
+    {
+      "id": "body.wiper_left",
+      "name_key": "VEH_COMP_WIPER_LEFT_NAME",
+      "category": "visibility",
+      "location": "windshield.left",
+      "repair_kind": "replace",
+      "part_cost_bs": 1800,
+      "labor_cost_bs": 100,
+      "price_source": "game_balance",
+      "required_tools": [],
+      "required_items": [],
+      "repair_minutes": 5,
+      "roadside_possible": true,
+      "symptoms": [
+        {
+          "id": "wiper_streak",
+          "description_key": "SYMPTOM_WIPER_STREAK",
+          "conditions": {
+            "rain_intensity_min": 0.4,
+            "visibility_penalty": true
+          }
+        }
+      ],
+      "failure_modes": ["worn_rubber", "detached"],
+      "effects": {
+        "windshield_clear_rate": 0.5,
+        "night_visibility": 0.8
+      },
+      "reference_notes": []
+    },
+    {
+      "id": "body.wiper_right",
+      "name_key": "VEH_COMP_WIPER_RIGHT_NAME",
+      "category": "visibility",
+      "location": "windshield.right",
+      "repair_kind": "replace",
+      "part_cost_bs": 1800,
+      "labor_cost_bs": 100,
+      "price_source": "game_balance",
+      "required_tools": [],
+      "required_items": [],
+      "repair_minutes": 5,
+      "roadside_possible": true,
+      "symptoms": [
+        {
+          "id": "wiper_streak",
+          "description_key": "SYMPTOM_WIPER_STREAK",
+          "conditions": {
+            "rain_intensity_min": 0.4,
+            "visibility_penalty": true
+          }
+        }
+      ],
+      "failure_modes": ["worn_rubber", "detached"],
+      "effects": {
+        "windshield_clear_rate": 0.5,
+        "night_visibility": 0.8
+      },
+      "reference_notes": []
+    },
+    {
+      "id": "body.antenna",
+      "name_key": "VEH_COMP_ANTENNA_NAME",
+      "category": "radio",
+      "location": "front_right_fender",
+      "repair_kind": "replace",
+      "part_cost_bs": 3200,
+      "labor_cost_bs": 400,
+      "price_source": "game_balance",
+      "required_tools": ["tool.pliers"],
+      "required_items": [],
+      "repair_minutes": 20,
+      "roadside_possible": true,
+      "symptoms": [
+        {
+          "id": "am_reception_poor",
+          "description_key": "SYMPTOM_ANTENNA_AM",
+          "conditions": {
+            "antenna_extended": false,
+            "radio_band": "AM",
+            "signal_quality_max": 30
+          }
+        },
+        {
+          "id": "fm_reception_poor",
+          "description_key": "SYMPTOM_ANTENNA_FM",
+          "conditions": {
+            "antenna_extended": false,
+            "radio_band": "FM",
+            "signal_quality_max": 55
+          }
+        }
+      ],
+      "failure_modes": ["mast_bent", "ground_connection"],
+      "effects": {
+        "radio_signal": 0.4
+      },
+      "reference_notes": ["La antena se manipula desde la cabina, pero se inspecciona desde el frente."]
+    },
+    {
+      "id": "brakes.master_cylinder",
+      "name_key": "VEH_COMP_BRAKE_MASTER_NAME",
+      "category": "brakes",
+      "location": "engine_bay.firewall",
+      "repair_kind": "replace",
+      "part_cost_bs": 9500,
+      "labor_cost_bs": 3000,
+      "price_source": "game_balance",
+      "required_tools": ["tool.socket_set", "tool.adjustable_wrench"],
+      "required_items": ["supply.brake_fluid"],
+      "repair_minutes": 90,
+      "roadside_possible": false,
+      "symptoms": [
+        {
+          "id": "soft_brake_pedal",
+          "description_key": "SYMPTOM_BRAKE_MASTER_SOFT",
+          "conditions": {
+            "brake_pedal_travel": "long",
+            "brake_fluid_loss": true
+          }
+        }
+      ],
+      "failure_modes": ["internal_seal_leak", "fluid_leak"],
+      "effects": {
+        "brake_pressure": 0.55
+      },
+      "reference_notes": ["Foto de bomba de freno disponible en la biblioteca externa."]
+    },
+    {
+      "id": "brakes.front_pads",
+      "name_key": "VEH_COMP_BRAKE_PADS_NAME",
+      "category": "brakes",
+      "location": "brakes.front",
+      "repair_kind": "replace",
+      "part_cost_bs": 6500,
+      "labor_cost_bs": 1800,
+      "price_source": "game_balance",
+      "required_tools": ["tool.socket_set", "tool.pliers"],
+      "required_items": [],
+      "repair_minutes": 60,
+      "roadside_possible": false,
+      "symptoms": [
+        {
+          "id": "brake_squeal",
+          "description_key": "SYMPTOM_BRAKE_PAD_SQUEAL",
+          "conditions": {
+            "braking": true,
+            "squeal": true
+          }
+        },
+        {
+          "id": "long_braking_distance",
+          "description_key": "SYMPTOM_BRAKE_PAD_LONG",
+          "conditions": {
+            "brake_pad_percent_max": 20,
+            "brake_distance_penalty": true
+          }
+        }
+      ],
+      "failure_modes": ["worn", "glazed", "uneven"],
+      "effects": {
+        "brake_pressure": 0.75
+      },
+      "reference_notes": []
+    }
+  ]
+}
