@@ -1,11 +1,13 @@
 extends Node
-## Smoke test de la Fase 1.2. Sin mecánicas de conducción.
+## Smoke test de servicios base y del bloqueo del Esteem (Fase 1.3).
+## Sin mecánicas de conducción.
 ##
 ## Ejecutar:
 ##   .\tools\dev\smoke_test.cmd
-## El proceso devuelve 0 solo si todos los servicios base responden.
+## El proceso devuelve 0 solo si todos los servicios base responden y el
+## bloqueo del Esteem conserva LOD0/LOD1/LOD2, manifiesto y ancla de rig.
 
-const EXPECTED_VERSION := "0.1.1"
+const EXPECTED_VERSION := "0.1.2"
 const AUTOLOADS := [
 	"EventBus",
 	"HardwareProfiler",
@@ -44,6 +46,7 @@ func _ready() -> void:
 	_test_crash_reporter()
 	await _test_creator_qa_menu()
 	_test_scene_router()
+	await _test_vehicle_blockout()
 	_finish()
 
 
@@ -261,6 +264,92 @@ func _test_scene_router() -> void:
 	_check(current.ends_with("SmokeTest.tscn"), "SceneRouter detecta la escena actual")
 	_check(not SceneRouter.is_loading(), "SceneRouter sin carga pendiente")
 	_check(SceneRouter.can_route_to("res://scenes/boot/Boot.tscn"), "ruta a Boot disponible")
+
+
+func _count_triangles(node: Node) -> int:
+	var total := 0
+	if node is MeshInstance3D and (node as MeshInstance3D).mesh != null:
+		total += (node as MeshInstance3D).mesh.get_faces().size() / 3
+	for child in node.get_children():
+		total += _count_triangles(child)
+	return total
+
+
+func _find_skeleton(node: Node) -> Skeleton3D:
+	if node is Skeleton3D:
+		return node
+	for child in node.get_children():
+		var found := _find_skeleton(child)
+		if found != null:
+			return found
+	return null
+
+
+func _test_vehicle_blockout() -> void:
+	var manifest_text := FileAccess.get_file_as_string("res://assets/manifests/esteem_blockout.manifest.json")
+	_check(not manifest_text.is_empty(), "manifiesto del bloqueo presente")
+	var manifest: Variant = JSON.parse_string(manifest_text)
+	_check(manifest is Dictionary, "manifiesto del bloqueo es JSON")
+	var lod_triangles := {}
+	if manifest is Dictionary:
+		var outputs: Array = manifest.get("outputs", [])
+		_check(outputs.size() == 4, "manifiesto con cuatro salidas generadas")
+		for output in outputs:
+			if not (output is Dictionary):
+				continue
+			var relative := str(output.get("file", ""))
+			var path := "res://" + relative
+			_check(FileAccess.file_exists(path), "salida generada %s" % relative)
+			var expected_hash := str(output.get("sha256", ""))
+			if not expected_hash.is_empty() and FileAccess.file_exists(path):
+				_check(FileAccess.get_sha256(path) == expected_hash, "hash SHA-256 verificado en %s" % relative)
+			if str(output.get("kind", "")) == "mesh_lod":
+				lod_triangles[int(output.get("lod", -1))] = int(output.get("triangles", 0))
+		_check(lod_triangles.has(0) and lod_triangles.has(1) and lod_triangles.has(2), "LOD0/LOD1/LOD2 declarados")
+		_check(
+			int(lod_triangles.get(0, 0)) > int(lod_triangles.get(1, 0))
+				and int(lod_triangles.get(1, 0)) > int(lod_triangles.get(2, 0)),
+			"triángulos decrecientes entre LODs en el manifiesto"
+		)
+	var spec_text := FileAccess.get_file_as_string("res://data/vehicle/blockout_spec.json")
+	var spec: Variant = JSON.parse_string(spec_text)
+	_check(spec is Dictionary, "spec del bloqueo accesible")
+	var packed := load("res://scenes/vehicle/EsteemBlockout.tscn") as PackedScene
+	_check(packed != null, "escena EsteemBlockout carga")
+	if packed == null:
+		return
+	var blockout := packed.instantiate()
+	add_child(blockout)
+	var previous_triangles := 1 << 30
+	for lod_index in range(3):
+		var lod_node := blockout.get_node_or_null("LOD%d" % lod_index)
+		_check(lod_node != null, "nodo LOD%d en la escena" % lod_index)
+		if lod_node == null:
+			continue
+		var triangles := _count_triangles(lod_node)
+		_check(triangles > 0, "mallas del LOD%d con triángulos" % lod_index)
+		_check(triangles == int(lod_triangles.get(lod_index, -1)), "triángulos del LOD%d coinciden con el manifiesto" % lod_index)
+		_check(triangles < previous_triangles, "LOD%d menor que el nivel anterior" % lod_index)
+		previous_triangles = triangles
+	var anchor := blockout.get_node_or_null("RigAnchor")
+	_check(anchor != null, "ancla de rig presente en la escena")
+	if anchor != null and spec is Dictionary:
+		var skeleton := _find_skeleton(anchor)
+		_check(skeleton != null, "Skeleton3D del ancla de rig")
+		if skeleton != null:
+			var anchors: Array = spec.get("rig_anchor", {}).get("anchors", [])
+			var all_found := true
+			for entry in anchors:
+				if not (entry is Dictionary):
+					continue
+				var bone_name := str(entry.get("id", ""))
+				if skeleton.find_bone(bone_name) == -1:
+					all_found = false
+					print("[SMOKE]     hueso ausente: %s" % bone_name)
+			_check(all_found, "los %d huesos del ancla existen" % anchors.size())
+			_check(skeleton.find_bone("anchor_root") != -1, "hueso raíz anchor_root")
+	blockout.queue_free()
+	await get_tree().process_frame
 
 
 func _finish() -> void:

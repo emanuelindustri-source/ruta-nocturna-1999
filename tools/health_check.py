@@ -86,10 +86,17 @@ REQUIRED_FILES = [
     "docs/architecture/EVENT_BUS.md",
     "tools/validate_schemas.py",
     "tools/validate_localization.py",
+    "tools/validate_assets.py",
     "tools/release/sync_roadmap.py",
     "tools/scan_reference_library.py",
     "tools/reference_library.json",
     "scenes/boot/Boot.tscn",
+    "data/vehicle/blockout_spec.json",
+    "tools/blender/build_assets.py",
+    "tools/blender/build_assets.cmd",
+    "tools/blender/esteem_blockout.py",
+    "assets/manifests/esteem_blockout.manifest.json",
+    "scenes/vehicle/EsteemBlockout.tscn",
 ]
 
 REQUIRED_REPO_BINARIES = {".apk", ".aab", ".keystore", ".jks", ".p12", ".pfx"}
@@ -192,6 +199,22 @@ def check_roadmap(checks: list[Check]) -> None:
     sync_script = ROOT / "tools" / "release" / "sync_roadmap.py"
     code, output = run_command([sys.executable, str(sync_script), "--check"], timeout=30)
     result(checks, "roadmap_sync", code == 0, output.strip() or "Sin salida", {"exit_code": code})
+
+
+def check_generated_assets(checks: list[Check]) -> None:
+    try:
+        module = load_module(TOOLS / "validate_assets.py", "rn1999_validate_assets")
+        errors, warnings = module.validate()
+        result(
+            checks,
+            "generated_assets",
+            not errors,
+            f"{len(errors)} errores, {len(warnings)} advertencias",
+            {"errors": errors, "warnings": warnings},
+            warn=bool(warnings) and not errors,
+        )
+    except Exception as exc:  # noqa: BLE001
+        result(checks, "generated_assets", False, f"No se pudo ejecutar la validación: {exc}")
 
 
 def check_reference_library(checks: list[Check]) -> None:
@@ -430,6 +453,7 @@ def main() -> int:
     check_toolchain(checks)
     check_forbidden_binaries(checks)
     check_autoloads(checks)
+    check_generated_assets(checks)
     check_godot_import(checks, args.skip_godot)
     check_smoke_test(checks, args.skip_godot or args.skip_smoke)
 

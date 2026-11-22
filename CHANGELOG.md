@@ -4,6 +4,68 @@ Todas las fechas usan ISO 8601. Las versiones siguen SemVer.
 
 ## [Unreleased]
 
+## [0.1.2] — 2026-11-22
+
+### Añadido
+
+- Fábrica de assets Blender 4.5.16 headless: orquestador
+  `tools/blender/build_assets.py`, generador paramétrico `bpy`
+  `tools/blender/esteem_blockout.py` y wrapper `tools/blender/build_assets.cmd`.
+- Contrato declarativo `data/vehicle/blockout_spec.json` con cotas provisionales
+  del vehículo, masas de greybox, materiales, presupuestos de LOD y anclas de rig.
+- Bloqueo del Esteem generado proceduralmente en `assets/generated/vehicle/`:
+  `esteem_blockout_lod0.glb` (1.192 triángulos, máx. 8.000),
+  `esteem_blockout_lod1.glb` (440, máx. 4.000) y
+  `esteem_blockout_lod2.glb` (184, máx. 1.500); decrecientes y sin texturas de
+  terceros.
+- Ancla de rig `esteem_rig_anchor.glb`: armazón `EsteemRigAnchor` con
+  `Skeleton3D` de 17 huesos `anchor_*` (ruedas, asientos, volante, palanca,
+  freno de mano, cámaras, capó, maletero, espejos y techo) para el rig futuro.
+- Manifiesto reproducible `assets/manifests/esteem_blockout.manifest.json` con
+  comando exacto de Blender, hashes SHA-256 de entradas y salidas, autor,
+  licencia CC BY-NC-SA 4.0 y fecha UTC.
+- Validador `tools/validate_assets.py` (manifiestos, hashes, política de
+  LOD0/LOD1/LOD2 y coherencia de anclas) integrado en `health_check.py`.
+- Escena `scenes/vehicle/EsteemBlockout.tscn` con los tres LODs (solo LOD0
+  visible) y el ancla de rig.
+- Documentación del pipeline en `docs/architecture/ASSET_FACTORY.md` y sección 11
+  de `docs/architecture/DATA_CONTRACTS.md`.
+- Smoke test ampliado con 31 comprobaciones del bloqueo: manifiesto, hashes
+  SHA-256, LODs, conteo de triángulos y los 17 huesos del ancla.
+
+### Cambiado
+
+- Versión del proyecto a `0.1.2`.
+- `tools/dev/smoke_test.ps1` ejecuta la importación headless de Godot antes de la
+  escena; el smoke test es autosuficiente en un clon limpio.
+- `docs/reference/ESTEEM_MECHANICAL_NOTES.md` registra las cotas del bloqueo como
+  valores de diseño provisionales pendientes de verificación.
+- `docs/reference/REFERENCE_USAGE_LOG.md` registra la revisión de referencias del
+  vehículo para el bloqueo (hoja de contacto, perfil lateral y manual Mitchell).
+
+### Validación
+
+- 5 contratos JSON validados; 1 advertencia previa de claves de contenido (F8.4).
+- Localización de 11 idiomas sin errores; fuentes CJK pendientes de F8.4.
+- Manifiestos de assets válidos: 4 salidas, hashes verificados, LOD0/1/2 con
+  triángulos decrecientes y 17 anclas coincidentes con el spec.
+- Roadmap 3/45 subfases (6,7%), JSON sincronizado con la web.
+- Importación de Godot 4.7.2 headless con exit 0 (4 GLB importados sin errores).
+- Smoke test con 118/118 comprobaciones y exit 0.
+- `health_check.py --end`: 11 OK, 3 advertencias esperadas, 0 errores.
+- Escaneo rápido de 94 referencias sin cambios.
+
+### Publicación
+
+- Commit convencional, tag `v0.1.2` y push a `origin/main`.
+
+### Estado
+
+- Fase 1.3 completada. Sin mecánicas de conducción. Las cotas del bloqueo son
+  provisionales hasta verificarlas en Fase 2/Fase 5.
+- Siguiente: Fase 1.4, CI, test Android/ADB, export Windows/APK y tag de
+  vertical slice.
+
 ## [0.1.1] — 2026-11-22
 
 ### Añadido

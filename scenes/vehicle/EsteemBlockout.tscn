@@ -1,0 +1,18 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/generated/vehicle/esteem_blockout_lod0.glb" id="1_lod0"]
+[ext_resource type="PackedScene" path="res://assets/generated/vehicle/esteem_blockout_lod1.glb" id="2_lod1"]
+[ext_resource type="PackedScene" path="res://assets/generated/vehicle/esteem_blockout_lod2.glb" id="3_lod2"]
+[ext_resource type="PackedScene" path="res://assets/generated/vehicle/esteem_rig_anchor.glb" id="4_anchor"]
+
+[node name="EsteemBlockout" type="Node3D"]
+
+[node name="LOD0" parent="." instance=ExtResource("1_lod0")]
+
+[node name="LOD1" parent="." instance=ExtResource("2_lod1")]
+visible = false
+
+[node name="LOD2" parent="." instance=ExtResource("3_lod2")]
+visible = false
+
+[node name="RigAnchor" parent="." instance=ExtResource("4_anchor")]

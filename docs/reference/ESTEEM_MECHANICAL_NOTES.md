@@ -58,6 +58,29 @@ La ficha técnica extraída identifica motores **1.3L y 1.6L de 4 cilindros** pa
 motor y transmisión automática. La extracción es de solo lectura y permanece en
 `build/reference/extracted/`, fuera de Git.
 
+## Cotas del bloqueo (Fase 1.3, provisionales)
+
+El bloqueo paramétrico (`data/vehicle/blockout_spec.json`) usa valores de diseño
+estimados desde las proporciones de las fotografías del vehículo (perfil lateral y
+tres cuartos). La búsqueda en el manual de servicio disponible **no** encontró
+cotas de carrocería; por tanto, ninguna cifra de esta tabla es un dato del manual:
+
+| Dato | Valor preliminar | Estado |
+|---|---:|---|
+| Largo | 4,37 m | Valor de diseño (proporciones fotográficas) |
+| Ancho | 1,69 m | Valor de diseño |
+| Alto | 1,40 m | Valor de diseño |
+| Distancia entre ejes | 2,48 m | Valor de diseño |
+| Voladizo delantero | 0,945 m | Valor de diseño |
+| Voladizo trasero | 0,945 m | Valor de diseño |
+| Vía | 1,44 m | Valor de diseño |
+| Radio de rueda | 0,30 m | Valor de diseño |
+| Ancho de neumático | 0,19 m | Valor de diseño |
+
+Fuente y registro: `docs/reference/REFERENCE_USAGE_LOG.md` (Fase 1.3). Verificar
+contra manual o medición antes de Fase 2/Fase 5. No publicar como especificación
+oficial del vehículo.
+
 ## Datos pendientes antes de Fase 2/5
 
 - Altura física real de la toma de aire del modelo elegido.

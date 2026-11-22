@@ -1,0 +1,124 @@
+{
+  "manifest_version": 1,
+  "asset_id": "vehicle.esteem.blockout",
+  "content_status": "blockout_provisional",
+  "author": "Ruta Nocturna 1999 - asset factory (modelado parametrico, MiMo-V2.6-Pro)",
+  "license": "CC BY-NC-SA 4.0 (arte 3D propio del proyecto). Ver ASSET_LICENSE.md. Sin texturas ni mallas de terceros.",
+  "created_utc": "2026-11-22T15:43:25Z",
+  "generator": {
+    "tool": "tools/blender/build_assets.py",
+    "script": "tools/blender/esteem_blockout.py",
+    "script_sha256": "2aa0f5edaea960a6fd75b2e1340edc266c1f8bf776dbc17cf99bfe4134d37113",
+    "spec": "data/vehicle/blockout_spec.json",
+    "spec_sha256": "a33397796d87d27bc0045d661fc6ad346f3942c4281fc69b03af56651cc06459",
+    "blender_version": "4.5.16 LTS",
+    "blender_path": "C:\\Program Files\\Blender Foundation\\Blender 4.5\\blender.exe",
+    "command": "C:\\Program Files\\Blender Foundation\\Blender 4.5\\blender.exe --background --factory-startup --python C:\\Dev\\RutaNocturna1999\\tools\\blender\\esteem_blockout.py -- --spec C:\\Dev\\RutaNocturna1999\\data\\vehicle\\blockout_spec.json --output-dir C:\\Dev\\RutaNocturna1999\\assets\\generated\\vehicle --report C:\\Dev\\RutaNocturna1999\\build\\logs\\blender\\vehicle_esteem_blockout_report.json --anchor-mode armature",
+    "reproducible": true
+  },
+  "reference_notes": [
+    "Proporciones revisadas contra la hoja de contacto de vehiculos y el perfil lateral de la biblioteca externa (solo lectura).",
+    "Sin marcas, emblemas ni texturas derivadas de las fotografias.",
+    "Cotas provisionales: no publicar como especificacion oficial del vehiculo."
+  ],
+  "outputs": [
+    {
+      "file": "assets/generated/vehicle/esteem_blockout_lod0.glb",
+      "kind": "mesh_lod",
+      "lod": 0,
+      "triangles": 1192,
+      "vertices": 624,
+      "max_triangles": 8000,
+      "objects": [
+        "body_lower",
+        "bumper_front",
+        "bumper_rear",
+        "cabin",
+        "hood",
+        "trunk_deck",
+        "wheel_fl",
+        "wheel_fl_hub",
+        "wheel_fr",
+        "wheel_fr_hub",
+        "wheel_rl",
+        "wheel_rl_hub",
+        "wheel_rr",
+        "wheel_rr_hub"
+      ],
+      "size_bytes": 82204,
+      "sha256": "ae42367e3b1e52f877a1260b1c2586156e4c14fddd94746de3b977d3ffa4e80a"
+    },
+    {
+      "file": "assets/generated/vehicle/esteem_blockout_lod1.glb",
+      "kind": "mesh_lod",
+      "lod": 1,
+      "triangles": 440,
+      "vertices": 240,
+      "max_triangles": 4000,
+      "objects": [
+        "body_lower",
+        "bumper_front",
+        "bumper_rear",
+        "cabin",
+        "hood",
+        "trunk_deck",
+        "wheel_fl",
+        "wheel_fr",
+        "wheel_rl",
+        "wheel_rr"
+      ],
+      "size_bytes": 36584,
+      "sha256": "0cd041c907f9e344d681d30a925f20eeaeff31e6e0a4571960f402c534138117"
+    },
+    {
+      "file": "assets/generated/vehicle/esteem_blockout_lod2.glb",
+      "kind": "mesh_lod",
+      "lod": 2,
+      "triangles": 184,
+      "vertices": 112,
+      "max_triangles": 1500,
+      "objects": [
+        "body_lower",
+        "bumper_front",
+        "bumper_rear",
+        "cabin",
+        "hood",
+        "trunk_deck",
+        "wheel_fl",
+        "wheel_fr",
+        "wheel_rl",
+        "wheel_rr"
+      ],
+      "size_bytes": 19360,
+      "sha256": "8d26c2dc8aa4b23d7e6bc839182db5fd8324f5ec25562479a10a786ad9d7e10b"
+    },
+    {
+      "file": "assets/generated/vehicle/esteem_rig_anchor.glb",
+      "kind": "rig_anchor",
+      "anchor_mode": "armature",
+      "anchors": [
+        "anchor_root",
+        "anchor_wheel_fl",
+        "anchor_wheel_fr",
+        "anchor_wheel_rl",
+        "anchor_wheel_rr",
+        "anchor_driver_seat",
+        "anchor_passenger_seat",
+        "anchor_steering_wheel",
+        "anchor_gear_lever",
+        "anchor_handbrake",
+        "anchor_camera_driver",
+        "anchor_camera_chase",
+        "anchor_hood_center",
+        "anchor_trunk_center",
+        "anchor_mirror_left",
+        "anchor_mirror_right",
+        "anchor_roof_center"
+      ],
+      "triangles": 0,
+      "vertices": 0,
+      "size_bytes": 3184,
+      "sha256": "41415828b762564848e34ff52b26ad32c5d9911614d3c4676cbba5de184975bc"
+    }
+  ]
+}

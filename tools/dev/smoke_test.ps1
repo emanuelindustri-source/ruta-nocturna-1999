@@ -18,16 +18,29 @@ $logPath = Join-Path $logDir 'latest.log'
 Push-Location $root
 try {
     # Godot escribe warnings y errores por stderr. No convertir stderr en una
-    # excepción de PowerShell: el smoke test decide con su código de salida.
+    # excepcion de PowerShell: el smoke test decide con su codigo de salida.
     $previousPreference = $ErrorActionPreference
     $ErrorActionPreference = 'Continue'
+
+    # Importar recursos primero (GLB del bloqueo, texturas, CSV) para que la
+    # escena del smoke test pueda cargarlos tambien en un clon limpio.
+    $rawImport = & $console --headless --path $root --editor --quit 2>&1
+    $importCode = $LASTEXITCODE
+    $importOutput = @($rawImport | ForEach-Object { $_.ToString() })
+
     $rawOutput = & $console --headless --path $root 'res://tests/smoke/SmokeTest.tscn' 2>&1
     $exitCode = $LASTEXITCODE
     $ErrorActionPreference = $previousPreference
     $output = @($rawOutput | ForEach-Object { $_.ToString() })
-    $output | Tee-Object -FilePath $logPath | Write-Host
+    $combined = @('[SMOKE] Paso de importacion de Godot (headless)') + $importOutput + @('[SMOKE] Escena SmokeTest.tscn') + $output
+    $combined | Tee-Object -FilePath $logPath | Write-Host
 } finally {
     Pop-Location
+}
+
+if ($importCode -ne 0) {
+    Write-Host "La importacion de Godot fallo (exit $importCode). Log: $logPath"
+    exit 1
 }
 
 $successMarker = ($output | Select-String -SimpleMatch '[SMOKE] OK' -Quiet)

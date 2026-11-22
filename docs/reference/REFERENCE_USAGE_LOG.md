@@ -58,8 +58,46 @@ no se copiaron archivos y la biblioteca externa permaneció intacta.
   nativa y de glifos CJK sigue pendiente para F8.4.
 - No se usaron capturas ni imágenes de referencia como assets del juego.
 
+## 2026-11-22 — Fase 1.3 — bloqueo del Esteem y fábrica Blender
+
+**Alcance:** revisión de las referencias del vehículo necesarias para el bloqueo
+paramétrico. Se usó la hoja de contacto `vehicle_references.jpg` y las fichas de
+metadatos del catálogo (sin cargar las 40 imágenes en contexto); se abrieron a
+tamaño real solo `images (16).jpg` (perfil lateral) y `images.jpg` (vano motor).
+No se copió ningún archivo de la biblioteca externa.
+
+### Referencias utilizadas
+
+| Referencia | Uso | Resultado |
+|---|---|---|
+| Hoja de contacto de vehículos (49 entradas) | Inventario visual de siluetas, interiores y mecánica | Confirmada la silueta sedán "3 cajas" de cuatro puertas para el bloqueo |
+| `images (16).jpg` (perfil lateral) | Proporciones de masa del bloqueo | Cabina retrasada respecto al centro, voladizos similares, caídas de capó y maletero cortas |
+| `images.jpg` (vano motor) | Orientación transversal del motor y disposición del vano | El bloqueo reserva el vano motor; su contenido interno es F2.1/F3.2 |
+| Manual de servicio Mitchell 1999-2000 1.3L/1.6L (extracción en `build/reference/extracted/`) | Búsqueda de cotas de carrocería para el bloqueo | El manual cubre motor, dirección, frenos, suspensión y transmisión; **no** incluye cotas de carrocería |
+| Ficha técnica y catálogo de fotos | Confirmación de variantes y equipamiento | Las cotas del bloqueo quedan marcadas como provisionales |
+
+### Decisiones
+
+- Las cotas del bloqueo (largo, ancho, alto, distancia entre ejes, voladizos,
+  radio de rueda) son **valores de diseño provisionales** estimados desde las
+  proporciones fotográficas; se documentan en `data/vehicle/blockout_spec.json`
+  con `source_status: provisional_design_value` y se verificarán contra manual o
+  mediciones antes de Fase 2/Fase 5, como exige `ESTEEM_MECHANICAL_NOTES.md`.
+- El bloqueo es una greybox de masas: no representa detalles de carrocería,
+  emblemas ni interior; esos corresponden a F3.1/F3.2.
+- La disposición del vano motor solo se reserva como volumen; las piezas
+  internas se modelan con los contratos de componentes ya existentes.
+- No se usó ninguna textura, malla ni color tomado de las fotografías.
+
+### Descartado
+
+- Uso de la extracción del manual como fuente de cotas de carrocería (no las
+  contiene).
+- Cualquier emblema, marca o logotipo visible (Chevrolet, PDV y otros).
+- Copia de imágenes o PDFs al repositorio.
+
 ## Próxima revisión
 
 - Revisión rápida: inicio y cierre de cada subfase.
 - Revisión completa: **2026-12-06**, o antes de la subfase de modelado/UI que
-  corresponda.
+  corresponda (obligatoria antes de F3.1 y F3.2).

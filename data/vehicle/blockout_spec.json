@@ -1,0 +1,152 @@
+{
+  "schema_version": 1,
+  "asset_id": "vehicle.esteem.blockout",
+  "vehicle_id": "chevrolet_esteem_1999_auto_beige",
+  "content_status": "blockout_provisional",
+  "description": "Especificacion declarativa del bloqueo (greybox) del Esteem 1999 y de su ancla de rig. La fabrica de assets en tools/blender genera las mallas LOD0/LOD1/LOD2 y el armazon de anclas a partir de este archivo. Sin mecanicas de conduccion.",
+  "units": "meters",
+  "axes": "godot_y_up_forward_minus_z_right_plus_x",
+  "axes_note": "Coordenadas de runtime: X+ derecha, Y+ arriba, Z+ detras (el frente del vehiculo apunta a -Z). La fabrica convierte a coordenadas Blender (Z+ arriba, Y+ frente) al exportar.",
+  "dimensions": {
+    "length_m": 4.37,
+    "width_m": 1.69,
+    "height_m": 1.4,
+    "wheelbase_m": 2.48,
+    "front_overhang_m": 0.945,
+    "rear_overhang_m": 0.945,
+    "track_m": 1.44,
+    "wheel_radius_m": 0.3,
+    "wheel_width_m": 0.19,
+    "source_status": "provisional_design_value",
+    "source_note": "Estimado a partir de las proporciones de las fotografias de la biblioteca externa (perfil lateral y tres cuartos) y del segmento del sedan. El manual de servicio disponible no incluye cotas de carroceria. Verificar contra manual o medicion antes de Fase 2 / Fase 5. Ver docs/reference/ESTEEM_MECHANICAL_NOTES.md."
+  },
+  "masses": [
+    {
+      "id": "body_lower",
+      "material": "blockout_body",
+      "min_m": [-0.845, 0.3, -2.185],
+      "max_m": [0.845, 1.0, 2.185],
+      "note": "Caja baja completa: bajos, aletas y laterales."
+    },
+    {
+      "id": "hood",
+      "material": "blockout_body",
+      "min_m": [-0.8, 1.0, -2.185],
+      "max_m": [0.8, 1.08, -0.62],
+      "note": "Capo. El vano motor queda reservado bajo esta masa; su contenido interno es alcance de F2.1 / F3.2."
+    },
+    {
+      "id": "cabin",
+      "material": "blockout_glass",
+      "min_m": [-0.75, 1.0, -0.62],
+      "max_m": [0.75, 1.4, 1.18],
+      "note": "Cabina / invernadero. El interior detallado es alcance de F2.2 / F3.2."
+    },
+    {
+      "id": "trunk_deck",
+      "material": "blockout_body",
+      "min_m": [-0.8, 1.0, 1.18],
+      "max_m": [0.8, 1.1, 2.185],
+      "note": "Maletero."
+    },
+    {
+      "id": "bumper_front",
+      "material": "blockout_body",
+      "min_m": [-0.845, 0.35, -2.185],
+      "max_m": [0.845, 0.75, -2.085],
+      "note": "Parachoque delantero."
+    },
+    {
+      "id": "bumper_rear",
+      "material": "blockout_body",
+      "min_m": [-0.845, 0.35, 2.085],
+      "max_m": [0.845, 0.75, 2.185],
+      "note": "Parachoque trasero."
+    }
+  ],
+  "wheels": {
+    "ids": ["wheel_fl", "wheel_fr", "wheel_rl", "wheel_rr"],
+    "material": "blockout_wheel",
+    "note": "Posicion derivada de track_m, wheelbase_m y wheel_radius_m. Se generan como cilindros con eje lateral (X)."
+  },
+  "materials": {
+    "blockout_body": { "base_color": [0.55, 0.56, 0.58, 1.0], "roughness": 0.85 },
+    "blockout_glass": { "base_color": [0.18, 0.2, 0.22, 1.0], "roughness": 0.35 },
+    "blockout_wheel": { "base_color": [0.08, 0.08, 0.09, 1.0], "roughness": 0.9 }
+  },
+  "materials_note": "Colores de greybox originales del proyecto. Ninguna textura ni color procede de la biblioteca de referencias.",
+  "lods": [
+    {
+      "id": "lod0",
+      "output": "assets/generated/vehicle/esteem_blockout_lod0.glb",
+      "bevel_width_m": 0.03,
+      "bevel_segments": 2,
+      "wheel_segments": 24,
+      "hub": true,
+      "max_triangles": 8000
+    },
+    {
+      "id": "lod1",
+      "output": "assets/generated/vehicle/esteem_blockout_lod1.glb",
+      "bevel_width_m": 0.03,
+      "bevel_segments": 1,
+      "wheel_segments": 12,
+      "hub": false,
+      "max_triangles": 4000
+    },
+    {
+      "id": "lod2",
+      "output": "assets/generated/vehicle/esteem_blockout_lod2.glb",
+      "bevel_width_m": 0.0,
+      "bevel_segments": 0,
+      "wheel_segments": 8,
+      "hub": false,
+      "max_triangles": 1500
+    }
+  ],
+  "lod_policy": {
+    "required_levels": [0, 1, 2],
+    "strictly_decreasing": true,
+    "budget_note": "Ninguna malla entra al juego sin LOD0/LOD1/LOD2 (AGENTS.md seccion 9). El presupuesto visible movil es 120.000 triangulos; el bloqueo completo esta muy por debajo.",
+    "wheels_as_part_of_mesh": true
+  },
+  "rig_anchor": {
+    "output": "assets/generated/vehicle/esteem_rig_anchor.glb",
+    "armature_name": "EsteemRigAnchor",
+    "root_bone": "anchor_root",
+    "bind_to_meshes": false,
+    "note": "Ancla de rig del vehiculo: esqueleto con huesos nombrados donde se montara el rig definitivo (manos IK, controles de cabina, giros de rueda, camaras, puertas) en F2.2 / F2.3. En esta subfase no hay piel ni animacion.",
+    "anchors": [
+      { "id": "anchor_root", "position_m": [0.0, 0.0, 0.0], "purpose": "origen del vehiculo sobre el suelo, centro de la batalla" },
+      { "id": "anchor_wheel_fl", "position_m": [-0.72, 0.3, -1.24], "purpose": "centro de rueda delantera izquierda (giro y suspension)" },
+      { "id": "anchor_wheel_fr", "position_m": [0.72, 0.3, -1.24], "purpose": "centro de rueda delantera derecha (giro y suspension)" },
+      { "id": "anchor_wheel_rl", "position_m": [-0.72, 0.3, 1.24], "purpose": "centro de rueda trasera izquierda (giro y suspension)" },
+      { "id": "anchor_wheel_rr", "position_m": [0.72, 0.3, 1.24], "purpose": "centro de rueda trasera derecha (giro y suspension)" },
+      { "id": "anchor_driver_seat", "position_m": [-0.35, 1.0, -0.1], "purpose": "asiento del conductor (LHD); base de manos IK y camara interior" },
+      { "id": "anchor_passenger_seat", "position_m": [0.35, 1.0, -0.1], "purpose": "asiento del acompanante; pasajeros de Fase 7" },
+      { "id": "anchor_steering_wheel", "position_m": [-0.35, 1.1, -0.75], "purpose": "centro del volante; objetivo de manos IK en F2.2" },
+      { "id": "anchor_gear_lever", "position_m": [0.0, 0.95, -0.45], "purpose": "palanca automatica P-R-N-D-2-L con boton de Overdrive" },
+      { "id": "anchor_handbrake", "position_m": [-0.15, 0.92, -0.15], "purpose": "freno de mano" },
+      { "id": "anchor_camera_driver", "position_m": [-0.35, 1.22, -0.62], "purpose": "camara de cabina (ojos del conductor)" },
+      { "id": "anchor_camera_chase", "position_m": [0.0, 1.8, 4.6], "purpose": "camara de persecucion detras del vehiculo" },
+      { "id": "anchor_hood_center", "position_m": [0.0, 1.08, -1.4], "purpose": "apertura del capo / acceso al vano motor" },
+      { "id": "anchor_trunk_center", "position_m": [0.0, 1.1, 1.7], "purpose": "apertura del maletero / herramientas" },
+      { "id": "anchor_mirror_left", "position_m": [-0.82, 1.1, -0.7], "purpose": "espejo retrovisor lateral izquierdo" },
+      { "id": "anchor_mirror_right", "position_m": [0.82, 1.1, -0.7], "purpose": "espejo retrovisor lateral derecho" },
+      { "id": "anchor_roof_center", "position_m": [0.0, 1.42, 0.28], "purpose": "centro del techo (luz interior, goteo de lluvia)" }
+    ]
+  },
+  "validation_rules": {
+    "length_equals_wheelbase_plus_overhangs": true,
+    "tolerance_m": 0.02,
+    "masses_within_dimensions": true,
+    "wheel_positions_match_track_and_wheelbase": true,
+    "anchor_ids_prefixed": "anchor_",
+    "anchor_bounds_m": { "x": 1.5, "y_min": -0.5, "y_max": 3.0, "z": 6.0 }
+  },
+  "reference_notes": [
+    "Proporciones revisadas contra la hoja de contacto de vehiculos y el perfil lateral de la biblioteca externa (solo lectura).",
+    "Sin marcas, emblemas ni texturas derivadas de las fotografias.",
+    "Cotas provisionales: no publicar como especificacion oficial del vehiculo."
+  ]
+}

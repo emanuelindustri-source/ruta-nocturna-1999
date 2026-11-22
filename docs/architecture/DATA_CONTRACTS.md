@@ -146,3 +146,21 @@ rechazo de versiones futuras y backups; no incluye migraciones encadenadas.
 
 Los errores de esquema, IDs duplicados, referencias rotas o ciclos bloquean la
 subfase. Las advertencias se documentan y se resuelven en la fase correspondiente.
+
+## 11. Pipeline de assets 3D (Fase 1.3)
+
+Los assets 3D tienen su propio contrato declarativo, separado de los cinco
+contratos de sistemas:
+
+- `data/vehicle/blockout_spec.json` describe dimensiones, masas, materiales,
+  niveles de LOD y anclas del rig del bloqueo del Esteem.
+- Los `.glb` en `assets/generated/` se generan solo con scripts `bpy`
+  reproducibles (`tools/blender/`) y nunca se editan a mano.
+- `assets/manifests/*.manifest.json` registran comando, hashes de entradas y
+  salidas, autor, licencia y fecha de cada compilación.
+- `tools/validate_assets.py` comprueba manifiestos, hashes, política de
+  LOD0/LOD1/LOD2 y coherencia del ancla de rig con el spec.
+
+Detalle completo en `docs/architecture/ASSET_FACTORY.md`. Las cotas del bloqueo
+son provisionales hasta verificarlas contra manual o medición (ver
+`docs/reference/ESTEEM_MECHANICAL_NOTES.md`).
