@@ -39,19 +39,29 @@ try {
     }
 
     $repoSlug = "$Owner/$Repo"
+    $previousPreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
     $existing = & $gh repo view $repoSlug --json name 2>$null
     $repoExists = $LASTEXITCODE -eq 0
+    $ErrorActionPreference = $previousPreference
 
-    $remote = (git remote get-url origin 2>$null)
+    $remotes = @(git remote)
+    $remote = if ($remotes -contains 'origin') { (git remote get-url origin).Trim() } else { '' }
     if (-not $remote) {
         if ($repoExists) {
             Write-Host "[INFO] El repositorio $repoSlug ya existe. Configurando origin."
             git remote add origin "https://github.com/$repoSlug.git"
             if ($LASTEXITCODE -ne 0) { throw 'No se pudo configurar origin.' }
+            git push -u origin main
+            if ($LASTEXITCODE -ne 0) { throw 'No se pudo subir main.' }
         } else {
             Write-Host "[INFO] Creando repositorio público $repoSlug y subiendo main."
+            $previousPreference = $ErrorActionPreference
+            $ErrorActionPreference = 'Continue'
             & $gh repo create $repoSlug --public --source . --remote origin --push
-            if ($LASTEXITCODE -ne 0) { throw 'No se pudo crear el repositorio remoto.' }
+            $createExit = $LASTEXITCODE
+            $ErrorActionPreference = $previousPreference
+            if ($createExit -ne 0) { throw 'No se pudo crear el repositorio remoto.' }
             git push origin main --tags
             if ($LASTEXITCODE -ne 0) { throw 'No se pudieron subir los tags.' }
         }
