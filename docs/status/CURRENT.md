@@ -4,7 +4,36 @@
 **Versión:** `v0.1.0`  
 **Modelo de la subfase:** DS-S  
 **Fecha:** 2026-11-22  
-**Estado:** implementación local en validación; publicación remota pendiente de autenticación.
+**Estado:** validación local superada; publicación remota pendiente de autenticación.
+
+## Validación ejecutada
+
+| Prueba | Resultado |
+|---|---|
+| Contratos JSON + Schemas | 5 contratos válidos, 0 errores |
+| Referencias cruzadas del vehículo | Herramientas e items válidos |
+| Autoloads | Grafo acíclico y 11 servicios obligatorios |
+| Folclore | 7 entidades obligatorias presentes |
+| Diálogos | Nodos, elecciones y finales sin referencias rotas |
+| Localización | 11 idiomas, 0 errores |
+| Roadmap | 10 fases, 45 subfases, JSON sincronizado |
+| Godot import headless | exit 0, sin errores de escena |
+| Boot headless | exit 0, imprime versión y repo |
+| Web | 10 tarjetas de fase, 45 subfases, sin errores de consola |
+| Lighthouse | Accesibilidad 100, Best Practices 100, SEO 100 |
+| Bootstrap | 0 fallos críticos, 2 advertencias esperadas (auth GitHub, Android 36) |
+| Health check | 0 errores |
+| Limpieza | Dry run correcto, 4.01 MB recuperables en artefactos |
+| ADB | Redmi 22101316G conectado y autorizado |
+| Referencias | 94 archivos, 2 duplicados exactos, textos extraídos |
+
+Advertencias conocidas:
+
+- 202 claves de contenido aún no están en el CSV de localización. Se completarán
+  en F8.4; la UI base ya está cubierta.
+- Las fuentes CJK/cirílicas se empaquetan y validan visualmente en F8.4.
+- Android 36 no está instalado; requisito de Play a partir de agosto de 2026.
+- La sesión de `gh` no está iniciada.
 
 ## Completado
 
@@ -19,26 +48,26 @@
 - Catálogo de 94 referencias externas, hojas de contacto y extracción de textos.
 - Corrección del flag RUNASADMIN de Godot.
 - Generación de `C:\Android\debug.keystore`.
-- ADB reconoce el Redmi `22101316G`.
+- Primer commit local: `223d4f2`.
 
-## Pendiente de Fase 1.1
+## Bloqueo para cerrar la subfase
 
-- Ejecutar la validación final y corregir cualquier fallo.
-- Hacer commit y tag local `v0.1.0`.
-- Publicar el repositorio y activar GitHub Pages después de autenticar `gh`.
-- Actualizar la URL real de Pages si GitHub la confirma.
-- Confirmar que GitHub Actions está habilitado.
+La creación del repositorio remoto, el push del tag y la activación de GitHub
+Pages requieren que Khristyan autorice una vez la cuenta con:
 
-## Bloqueos externos
+```powershell
+gh auth login
+```
 
-- `gh auth status` indica que no hay una sesión de GitHub iniciada. La creación y
-  el push del repositorio remoto requieren `gh auth login` interactivo.
-- Android 36 no está instalado todavía; es requisito para publicar en Google Play
-  después de agosto de 2026. Se resolverá en la fase Android correspondiente.
-- Las fuentes CJK/cirílicas aún no están empaquetadas; su validación visual es de
-  F8.4. El validador base ya comprueba claves y placeholders.
+Después se ejecuta:
 
-## Siguiente
+```powershell
+.\tools\release\publish_github.cmd
+```
+
+No se guardan tokens ni contraseñas en el repositorio.
+
+## Siguiente después del cierre remoto
 
 Fase **1.2 con DS-R**: EventBus, autoloads base, CrashReporter, CreatorQAMenu
 inicial, pruebas de error y smoke test del boot.

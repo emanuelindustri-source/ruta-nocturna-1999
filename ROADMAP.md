@@ -2,8 +2,8 @@
 
 **Versión actual:** `v0.1.0`  
 **Subfase actual:** **1.1 — Fundación técnica, contratos y web base**  
-**Estado global:** en curso  
-**Última fuente:** implementación local de Fase 1.1
+**Estado global:** en curso — Fase 1.1 validada localmente; publicación remota pendiente de `gh auth login`  
+**Última fuente:** implementación y validación local de Fase 1.1
 
 Esta es la fuente de verdad del desarrollo. Cada fila es un gate cerrado: no se
 avanza sin validación, actualización de estado, commit, tag y cambio de chat.
@@ -45,7 +45,7 @@ invertir en arte o mecánicas complejas.
 
 | Subfase | Versión | Modelo | Entregable | Estado |
 |---|---|---|---|---|
-| **1.1** | `v0.1.0` | **DS-S** | Crear proyecto, AGENTS, ROADMAP, docs, contratos JSON, arquitectura, web Pages, herramientas de salud, referencias y bootstrap. | En curso |
+| **1.1** | `v0.1.0` | **DS-S** | Crear proyecto, AGENTS, ROADMAP, docs, contratos JSON, arquitectura, web Pages, herramientas de salud, referencias y bootstrap. Validado localmente; falta push remoto/Pages. | En curso |
 | **1.2** | `v0.1.1` | **DS-R** | Validar dependencias, crear EventBus/autoloads base, CrashReporter, CreatorQAMenu base, boot y smoke test sin mecánicas. | Pendiente |
 | **1.3** | `v0.1.2` | **MiMo Pro** | Fábrica Blender headless, manifiestos, bloqueo del Esteem, LOD0/1/2 y ancla de rig. | Pendiente |
 | **1.4** | `v0.1.3` | **DS-S** | CI, test Android/ADB, export Windows/APK, health check completo, Pages y tag de vertical slice. | Pendiente |
