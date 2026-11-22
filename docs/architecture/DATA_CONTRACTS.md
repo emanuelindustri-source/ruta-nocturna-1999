@@ -8,6 +8,7 @@ se implementó en Fase 1.2. Las mecánicas se implementan después.
 | Archivo | Propósito |
 |---|---|
 | `data/schemas/vehicle_components.json` | Piezas, fallos, síntomas, costos, herramientas y especificaciones del Esteem |
+| `data/schemas/vehicle_powertrain.json` | Simulación del motor, caja automática, frenos, combustible, térmica y masa longitudinal |
 | `data/schemas/inventory_tools.json` | Herramientas y consumibles referenciados por el vehículo y la defensa |
 | `data/schemas/folklore_entities.json` | Reglas de aparición, percepción, audio, evasión y combate |
 | `data/schemas/dialogue_and_endings.json` | Pasajeros, confianza, nodos de diálogo y finales |
@@ -178,3 +179,38 @@ son provisionales hasta verificarlas contra manual o medición (ver
 - Los JSON de `data/` se incluyen en el export para que el runtime pueda validar
   contratos más adelante; los tests, herramientas y documentación quedan fuera.
 - Los binarios de export no son contratos: van a `build/exports/` y nunca a Git.
+
+## 13. Tren motriz (Fase 2.1)
+
+El contrato de simulación del vehículo es `data/schemas/vehicle_powertrain.json`
+(`schema_version: 1`) y su JSON Schema vive en
+`data/schemas/json/vehicle_powertrain.schema.json`.
+
+Secciones:
+
+| Sección | Contenido |
+|---|---|
+| `engine` | Cilindrada, relación de compresión, curva de par, ralentí, corte, arranque, ahogo, fricción y consumo |
+| `transmission` | Relaciones, convertidor, calendario de cambios, P-R-N-D-2-L y Overdrive |
+| `fuel` | Capacidad, aviso de reserva y umbral de vacío |
+| `brakes` | Fuerza de servicio y estacionamiento, fade, pastillas y líquido |
+| `cooling` | Termostato, radiador, electroventilador, fallos y protecciones térmicas |
+| `vehicle` | Masa, radio de rueda, arrastre, rodadura y pendiente máxima |
+
+Reglas:
+
+- Cada sección declara `source_status` y `source_note`. Los valores del manual se
+  marcan como verificados; los valores de simulación se marcan como provisionales
+  y no se publican como especificación oficial.
+- `tools/validate_schemas.py` comprueba la coherencia con
+  `vehicle_components.json` (cilindrada, selector, marchas, Overdrive, tanque y
+  componentes del ventilador) y con `data/vehicle/blockout_spec.json` (radio de
+  rueda).
+- El runtime no interpreta texto visible: los avisos son códigos internos
+  (`fuel_low`, `overheat`, `fan_fault`, `brake_fade`, `parking_brake`,
+  `safe_mode`, `brake_fluid_low`, `engine_seized`). La UI de F2.4/F9.1 los
+  mapeará a claves de localización.
+- Cambiar la estructura del contrato exige incrementar `schema_version` y
+  documentar la migración. Cambiar un valor exige actualizar su `source_note`.
+- El contrato es de simulación, no de reparación: los costos, herramientas y
+  síntomas siguen en `vehicle_components.json`.

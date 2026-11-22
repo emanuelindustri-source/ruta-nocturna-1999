@@ -194,3 +194,57 @@ Snapshot → Validate → Migrate → Backup → Temp Write → Verify → Renam
 ```
 
 Cualquier fallo deja el archivo anterior intacto y un reporte legible.
+
+## 8. Implementación de la Fase 2.1
+
+Los diagramas de motor, transmisión y electroventilador ya tienen una
+implementación ejecutable en `src/vehicle/`. Los umbrales concretos están en
+`data/schemas/vehicle_powertrain.json`; no se duplican en la UI.
+
+### Motor
+
+Estados implementados:
+
+| Estado | Condición de entrada | Salida |
+|---|---|---|
+| `off` | Igníción apagada o motor detenido | Arranque en P/N |
+| `cranking` | Comando de arranque con combustible | `idle` tras 0,9 s o `flooded`/`stalled` |
+| `idle` | Motor en marcha sin carga | `running` con acelerador o carga |
+| `running` | Acelerador o velocidad de entrada | `idle` al soltar |
+| `stalled` | Sin combustible o giro insuficiente | Reintento seguro |
+| `flooded` | Bujías mojadas | `drying` con `dry_engine()` |
+| `drying` | Secado en curso | `off` tras 20 s |
+| `overheated_safe` | Refrigerante ≥ 115 °C | `running`/`idle` al bajar de 108 °C |
+| `seized` | Refrigerante ≥ 125 °C durante 8 s | Reparación explícita |
+
+El arranque solo se permite en `P` o `N`. La marcha se libera automáticamente al
+encender. El corte de inyección y la retención se calculan con la curva de par y
+el régimen; no son valores fijos en la UI.
+
+### Transmisión
+
+- `P`: bloqueo de salida (park pawl); el vehículo no se mueve.
+- `R`: relación de reversa; se rechaza con avance superior a 1 km/h.
+- `N`: sin par; permite arranque y remolque.
+- `D`: 1–4 según calendario y Overdrive.
+- `2`: máximo segunda; si se selecciona a alta velocidad, espera a que la
+  velocidad sea segura para bajar.
+- `L`: máximo primera, con la misma protección.
+- Overdrive: apagarlo desde cuarta fuerza tercera; encenderlo permite cuarta.
+- El convertidor multiplica par hasta 2,0 en parado y bloquea en crucero por
+  encima de 65 km/h con acelerador bajo.
+- `P` y `R` se rechazan en movimiento; `D` se rechaza en reversa. El rechazo se
+  expone como `last_rejection` para que la mano IK dé feedback en F2.3.
+
+### Electroventilador
+
+- Velocidad baja a 98 °C, alta a 104 °C; apagado con histéresis a 94/100 °C.
+- Fusible, relé y motor son fallos independientes. El relé puede ser
+  intermitente; el fusible y el motor dejan el ventilador sin servicio.
+- El fallo se repara con `repair_component()` usando los IDs de
+  `vehicle_components.json`.
+- La temperatura alta sostenida activa aviso (110 °C), modo seguro (115 °C) y
+  agarrotamiento (125 °C durante 8 s).
+- La recuperación anti-atasco completa no está en esta subfase: el motor
+  agarrotado se puede reparar por API/QA, pero la grúa y el punto seguro llegan
+  en F5.1.

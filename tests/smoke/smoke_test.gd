@@ -7,7 +7,7 @@ extends Node
 ## El proceso devuelve 0 solo si todos los servicios base responden y el
 ## bloqueo del Esteem conserva LOD0/LOD1/LOD2, manifiesto y ancla de rig.
 
-const EXPECTED_VERSION := "0.1.3"
+const EXPECTED_VERSION := "0.2.0"
 const AUTOLOADS := [
 	"EventBus",
 	"HardwareProfiler",
@@ -48,6 +48,7 @@ func _ready() -> void:
 	_test_scene_router()
 	await _test_vehicle_blockout()
 	await _test_vertical_slice()
+	await _test_powertrain()
 	_test_export_presets()
 	_finish()
 
@@ -404,6 +405,51 @@ func _find_first(node: Node, type_names: Array) -> Node:
 		if found != null:
 			return found
 	return null
+
+
+func _test_powertrain() -> void:
+	var vp := VehiclePowertrain.new()
+	vp.auto_simulate = false
+	add_child(vp)
+	_check(vp.spec != null and vp.spec.errors.is_empty(), "contrato del tren motriz carga")
+	_check(int(vp.spec.integer("engine.displacement_cc")) == 1590, "cilindrada 1590 cc")
+	_check(vp.spec.array("transmission.selector_modes") == ["P", "R", "N", "D", "2", "L"], "selector P-R-N-D-2-L")
+	_check(vp.start_engine(), "motor arranca en P")
+	for _index in range(120):
+		vp.simulate(1.0 / 60.0)
+	_check(vp.engine.get_state_name() == "idle", "motor en ralentí")
+	_check(vp.set_selector("D"), "D engranada")
+	vp.set_throttle(0.7)
+	for _index in range(900):
+		vp.simulate(1.0 / 60.0)
+	_check(vp.transmission.gear >= 3, "caja sube a tercera o cuarta")
+	_check(vp.speed_mps * 3.6 > 40.0, "vehículo avanza con el motor")
+	_check(vp.toggle_overdrive(), "botón O/D conmuta")
+	for _index in range(60):
+		vp.simulate(1.0 / 60.0)
+	_check(not vp.overdrive_enabled and vp.transmission.gear <= 3, "O/D off limita a tercera")
+	vp.set_throttle(0.0)
+	_check(vp.set_selector("N"), "N seleccionada para prueba de frenos")
+	vp.set_speed_kph(100.0)
+	vp.set_brake_pedal(1.0)
+	var distance := 0.0
+	for _index in range(300):
+		vp.simulate(1.0 / 60.0)
+		distance += absf(vp.speed_mps) / 60.0
+	_check(absf(vp.speed_mps) < 0.1 and distance < 60.0, "frenada de 100 km/h controlada")
+	vp.set_brake_pedal(0.0)
+	vp.set_fuel_level(5.0)
+	for _index in range(6):
+		vp.simulate(1.0 / 60.0)
+	_check(vp.fuel.low_warning, "aviso de combustible bajo")
+	_check(vp.set_fan_fault("cooling.fan_fuse", true), "fallo de fusible del ventilador")
+	vp.simulate(1.0 / 60.0)
+	_check(vp.get_warning("fan_fault"), "aviso de fallo del ventilador")
+	_check(vp.repair_component("cooling.fan_fuse"), "reparación del ventilador")
+	vp.simulate(1.0 / 60.0)
+	_check(not vp.get_warning("fan_fault"), "aviso de fallo se apaga")
+	vp.queue_free()
+	await get_tree().process_frame
 
 
 func _test_export_presets() -> void:

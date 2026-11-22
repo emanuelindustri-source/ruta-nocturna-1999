@@ -4,7 +4,7 @@
   "root": "C:/Dev/fotos de ejemplo",
   "read_only": true,
   "scan_type": "full",
-  "last_full_scan_utc": "2026-11-22T14:21:06Z",
+  "last_full_scan_utc": "2026-11-22T18:53:38Z",
   "review_interval_days": 14,
   "review_gates": [
     "F2.2",
@@ -20,8 +20,8 @@
     "F10.2"
   ],
   "license_notice": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada.",
-  "file_count": 94,
-  "total_size_bytes": 321821004,
+  "file_count": 95,
+  "total_size_bytes": 386002354,
   "duplicate_groups": [
     {
       "sha256": "9534438acbf04fd8ff532f9a53b1ece7a989a26ffd421dd42d3569cbb15dc44f",
@@ -3150,6 +3150,35 @@
         "height": 250,
         "mode": "RGB",
         "format": "JPEG"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-AE8C6FA09C",
+      "name": "VID_20261122_115121.mp4",
+      "relative_path": "VID_20261122_115121.mp4",
+      "extension": ".mp4",
+      "size_bytes": 64181350,
+      "modified_utc": "2026-11-22T18:34:00Z",
+      "sha256": "ae8c6fa09c7d56f5bd69c2e1ede814ace102c5544d9ffc7f873b73c72f07c519",
+      "category": "concept_video",
+      "kind": "motion_reference",
+      "tags": [
+        "ui",
+        "motion",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F9.2",
+        "F10.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "metadata_status": "video duration pending optional ffprobe/VLC review"
       },
       "notes": "",
       "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."

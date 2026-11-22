@@ -36,27 +36,55 @@ Las referencias incluyen:
 - Páginas de mantenimiento, dirección, frenos, suspensión y transmisión del
   manual de servicio.
 
-## Datos provisionales del contrato
+## Datos verificados en el manual (Fase 2.1)
 
-Los siguientes valores viven en `data/schemas/vehicle_components.json` y están
-marcados como provisionales:
+Extraídos del manual de servicio Mitchell 1999-2000 1.3L/1.6L 4-Cylinder,
+`ENGINE SPECIFICATIONS` y `ENGINE OILING`. La extracción de solo lectura vive en
+`build/reference/extracted/` y no se versiona.
+
+| Dato | Valor | Fuente |
+|---|---:|---|
+| Cilindrada 1.6L | 97.0 cu in (1.6L); 1.590 cc calculados con diámetro y carrera | Mitchell, ENGINE SPECIFICATIONS |
+| Diámetro | 75,0 mm (2.95 in) | Mitchell, ENGINE SPECIFICATIONS |
+| Carrera | 90,0 mm (3.54 in) | Mitchell, ENGINE SPECIFICATIONS |
+| Relación de compresión | 9,5:1 | Mitchell, ENGINE SPECIFICATIONS |
+| Alimentación 1.6L | SFI | Mitchell, ENGINE SPECIFICATIONS |
+| Presión de compresión | 199 psi (14 kg/cm²) estándar; límite 156 psi (11 kg/cm²) | Mitchell, ENGINE SPECIFICATIONS |
+| Aceite de motor con filtro | 3,3 L (3.5 qts) para Esteem/Swift | Mitchell, ENGINE OILING |
+| Presión de aceite | 3,3–4,3 kg/cm² (324–422 kPa) a 4000 rpm | Mitchell, ENGINE OILING |
+| Par de bujía | 20–30 N·m (15–22 ft-lb) | Mitchell, TORQUE SPECIFICATIONS |
+
+La ficha técnica identifica motores **1.3L y 1.6L de 4 cilindros** para 1999–2000.
+El manual cubre dirección, frenos, suspensión, motor y transmisión automática. La
+tabla de relaciones de la caja automática no aparece en la extracción disponible;
+por eso las relaciones siguen marcadas como provisionales.
+
+## Valores de simulación (Fase 2.1, provisionales)
+
+Viven en `data/schemas/vehicle_powertrain.json`, cada sección con su
+`source_status` y `source_note`. **No son especificación oficial** hasta
+calibrarlos con manual, dinamómetro o medición.
 
 | Dato | Valor preliminar | Estado |
 |---|---:|---|
-| Cilindrada | 1.590 cc | A confirmar con ficha |
-| Cilindros | 4, SOHC 16V | A confirmar con ficha |
-| Potencia | 95 hp | Solo concepto; no verificado |
-| Caja | Automática de 4 marchas con Overdrive | A confirmar por versión |
-| Combustible | 50 litros | A confirmar |
+| Par máximo | 135 N·m a 2500 rpm (curva de diseño) | `design_value_pending_manual_and_dyno_calibration` |
+| Potencia | 95 hp (contrato de componentes) | Provisional; no verificado |
+| Ralentí | 800 rpm | Valor de diseño |
+| Corte de inyección | 6800 rpm | Valor de diseño |
+| Relaciones | 2,81 / 1,55 / 1,00 / 0,71 | Valor de diseño; manual pendiente |
+| Relación final | 4,10 | Valor de diseño |
+| Convertidor | stall 2200 rpm, multiplicación 2,0 | Valor de diseño |
+| Masa en orden de marcha | 1080 kg | Valor de diseño |
+| CdA | 0,64 m² | Valor de diseño |
+| Termostato | abre 82 °C, pleno 88 °C | Valor de diseño |
+| Ventilador | baja 98 °C, alta 104 °C | Valor de diseño |
+| Aviso / modo seguro / agarrotamiento | 110 / 115 / 125 °C | Valor de diseño |
+| Fuerza de frenos | 9000 N de servicio, 3500 N de estacionamiento | Valor de diseño |
+| Combustible | 50 L | `game_balance` del contrato de componentes |
 | Altura de admisión de agua | 0,68 m | **No definitivo** |
 | Profundidad segura de vadeo | 0,30 m | Valor de diseño |
 | Velocidad segura de cruce | 12 km/h | Valor de diseño |
 | Grúa base | Bs. 9.000 | Balance del juego |
-
-La ficha técnica extraída identifica motores **1.3L y 1.6L de 4 cilindros** para
-1999–2000. El manual de servicio cubre sistemas de dirección, frenos, suspensión,
-motor y transmisión automática. La extracción es de solo lectura y permanece en
-`build/reference/extracted/`, fuera de Git.
 
 ## Cotas del bloqueo (Fase 1.3, provisionales)
 
@@ -83,17 +111,19 @@ oficial del vehículo.
 
 ## Datos pendientes antes de Fase 2/5
 
-- Altura física real de la toma de aire del modelo elegido.
+- Altura física real de la toma de aire del modelo elegido y cota del filtro.
 - Tipo y presión de neumáticos.
-- Capacidad y tipo de aceite de motor y ATF.
-- Capacidad de refrigerante.
+- Tipo de aceite de motor y capacidad/tipo de ATF.
+- Capacidad de refrigerante y temperatura exacta del termostato.
 - Diagrama exacto de fusibles y relés del ventilador.
+- Relaciones de la caja automática, relación final y curva de par reales.
 - Procedimiento de gato y puntos de elevación.
 - Cotas principales: distancia entre ejes, ancho, alto y voladizos.
 - Pesos y distribución para la simulación.
 - Procedimiento seguro de vadeo y secado de admisión.
 - Verificación de que la versión automática y el equipamiento de la referencia
   corresponden con la unidad del juego.
+- Confirmar si la caja es de cuatro marchas con Overdrive en la unidad de 1999.
 
 ## Regla de investigación
 

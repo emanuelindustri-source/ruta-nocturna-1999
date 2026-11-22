@@ -128,6 +128,50 @@ ninguna imagen a tamaño real y no se copió ningún archivo de la biblioteca ex
 - Presentar la rebanada como gameplay o como build jugable.
 - Añadir una captura de tienda en esta fase.
 
+## 2026-11-22 — Fase 2.1 — tren motriz del Esteem
+
+**Alcance:** revisión de las referencias del catálogo relevantes para motor, caja
+automática, frenos y refrigeración. Se abrieron a tamaño real seis fotografías
+técnicas y se consultó el texto extraído de dos manuales. No se cargaron las 40
+imágenes en contexto, no se copió ningún archivo y la biblioteca externa quedó
+intacta.
+
+### Referencias utilizadas
+
+| Referencia | Uso | Resultado |
+|---|---|---|
+| `esteem motor.jpg` (vano motor) | Distribución del vano, motor transversal, batería, caja de aire y bomba de freno | Confirmada la disposición transversal y la posición de batería, filtro de aire y cilindro maestro |
+| `motor esteem.jpg` (motor de cerca) | Identificación de tapa de válvulas, bujías, cables y soportes | Referencia de servicio; no se modeló ninguna pieza en esta subfase |
+| `caja automatica.jpg` (caja desarmada) | Campana, convertidor y carcasa de la transmisión automática | Confirmada la forma de campana y convertidor para el contrato de simulación |
+| `turbina-convertidor-de-torque.jpg` (despiece) | Componentes del convertidor y conjunto de transmisión | Referencia de nomenclatura; sin cotas utilizables |
+| `BOMBA DE FRENO DE ESTEEM.webp` | Cilindro maestro, depósito y conexiones | Referencia visual para el contrato de frenos; sin medidas |
+| `correa del carro esteem.jpg` | Zona de distribución y correa | Referencia de mantenimiento; no se usa para valores de simulación |
+| Manual Mitchell 1999-2000 1.3L/1.6L (extracción en `build/reference/extracted/`) | Cilindrada, diámetro, carrera, compresión, alimentación, aceite y presión | Valores marcados como `manual_verified` en `vehicle_powertrain.json` |
+| Manual de servicio en español (extracción en `build/reference/extracted/`) | Secciones de transmisión automática, frenos y mantenimiento | Confirmada la existencia de caja automática y procedimientos; **no** se encontró tabla de relaciones |
+| `VID_20261122_115121.mp4` (nuevo) | Inventario | Catalogado como video conceptual; no se usa en mecánica |
+
+### Decisiones
+
+- La cilindrada, diámetro, carrera, compresión, alimentación y datos de aceite
+  pasan al contrato como verificados en el manual, con su nota de fuente.
+- Relaciones de caja, convertidor, curva de par, masas, umbrales térmicos y
+  fuerzas de freno quedan como `design_value` provisionales. No se presentan como
+  datos del manual.
+- El tanque de 50 L sigue siendo `game_balance` heredado del contrato de
+  componentes.
+- La simulación es longitudinal y no crea cabina, IK, espejos ni conducción
+  narrativa. Esas piezas son F2.2–F2.4/F3.
+- Los avisos son códigos internos; la UI y la localización llegan en F2.4/F9.1.
+- El nuevo video se cataloga solo con metadatos; no se extraen fotogramas en esta
+  subfase porque no aporta datos mecánicos.
+
+### Descartado
+
+- Tomar cotas de las fotografías como si fueran medidas del manual.
+- Inventar relaciones de caja o temperaturas y presentarlas como verificadas.
+- Copiar imágenes, PDFs o fotogramas al repositorio.
+- Modelar piezas de motor, caja o frenos en esta subfase.
+
 ## Próxima revisión
 
 - Revisión rápida: inicio y cierre de cada subfase.

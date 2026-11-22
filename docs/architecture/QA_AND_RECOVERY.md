@@ -230,3 +230,44 @@ documentado.
 - `health_check.py --end` añade validación de presets, toolchain de build,
   dispositivo ADB y secretos/binarios en el índice de Git.
 - Detalle operativo en `docs/architecture/BUILD_AND_RELEASE.md`.
+
+## 13. Tren motriz (Fase 2.1)
+
+### Pruebas
+
+```powershell
+.\tools\dev\powertrain_test.cmd
+```
+
+- `tests/vehicle/PowertrainTest.tscn` ejecuta 125 comprobaciones headless:
+  contrato, arranque, ralentí, P-R-N-D-2-L, Overdrive, convertidor, frenos,
+  combustible, térmica, electroventilador, fallos, ahogo/secado y retención.
+- El log queda en `build/logs/powertrain/latest.log` (ignorado por Git).
+- `tools/dev/smoke_test.cmd` incluye una prueba de integración del tren motriz
+  además de los servicios base y el bloqueo.
+- `health_check.py` ejecuta `powertrain_tests` como chequeo independiente y el
+  smoke test como hasta ahora. `--skip-godot`/`--skip-smoke` omiten ambos.
+
+### Criterios
+
+- El contrato debe cargar sin errores y coincidir con `vehicle_components.json`.
+- El motor no arranca en `D`/`R`; solo en `P`/`N`.
+- La caja no permite `P`/`R` en movimiento ni `D` en reversa.
+- La frenada de 100 km/h debe quedar por debajo de 60 m en el modelo.
+- El tanque no supera 50 L; el motor se cala por debajo del umbral de vacío.
+- El ventilador debe pasar por baja y alta; un fusible abierto debe provocar
+  sobrecalentamiento y modo seguro.
+- Un motor agarrotado se repara por API y vuelve a arrancar; la recuperación
+  completa anti-atasco sigue siendo F5.1.
+
+### Límites
+
+- Es una simulación longitudinal, no una prueba de `VehicleBody3D`, suspensión,
+  neumáticos ni colisión.
+- Las pruebas se ejecutan con temperatura ambiente fija; la integración con
+  `WeatherManager` es F4.4.
+- Los valores de relaciones, curva de par, umbrales térmicos y masas son
+  provisionales y están marcados en el contrato. No se presentan como datos
+  oficiales del manual.
+- No sustituye la prueba Android/ADB de un hito de build. En 2.1 se comprueba que
+  el dispositivo siga autorizado, pero no se publica una APK nueva.

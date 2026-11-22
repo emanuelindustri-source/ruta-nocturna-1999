@@ -1,0 +1,305 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ruta-nocturna:schemas:vehicle_powertrain:1",
+  "title": "Contrato de simulacion del tren motriz del Chevrolet Esteem 1999",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema_version",
+    "contract_id",
+    "vehicle_id",
+    "content_status",
+    "source_policy",
+    "engine",
+    "transmission",
+    "fuel",
+    "brakes",
+    "cooling",
+    "vehicle"
+  ],
+  "properties": {
+    "schema_version": {"type": "integer", "minimum": 1},
+    "contract_id": {"type": "string", "minLength": 3},
+    "vehicle_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+    "content_status": {"type": "string", "minLength": 3},
+    "source_policy": {"type": "string", "minLength": 10},
+    "units": {"type": "object"},
+    "engine": {"$ref": "#/$defs/engine"},
+    "transmission": {"$ref": "#/$defs/transmission"},
+    "fuel": {"$ref": "#/$defs/fuel"},
+    "brakes": {"$ref": "#/$defs/brakes"},
+    "cooling": {"$ref": "#/$defs/cooling"},
+    "vehicle": {"$ref": "#/$defs/vehicle"}
+  },
+  "$defs": {
+    "sourced": {
+      "type": "object",
+      "required": ["source_status", "source_note"],
+      "properties": {
+        "source_status": {"type": "string", "minLength": 3},
+        "source_note": {"type": "string", "minLength": 10}
+      }
+    },
+    "engine": {
+      "allOf": [{"$ref": "#/$defs/sourced"}],
+      "type": "object",
+      "required": [
+        "displacement_cc",
+        "cylinders",
+        "valvetrain",
+        "fuel_system",
+        "bore_mm",
+        "stroke_mm",
+        "compression_ratio",
+        "idle_rpm",
+        "redline_rpm",
+        "fuel_cut_rpm",
+        "cranking_rpm",
+        "stall_rpm",
+        "start_delay_s",
+        "max_crank_s",
+        "flood_after_attempts",
+        "drying_s",
+        "torque_curve_nm",
+        "fuel",
+        "oil"
+      ],
+      "properties": {
+        "displacement_cc": {"type": "integer", "minimum": 500, "maximum": 4000},
+        "cylinders": {"type": "integer", "minimum": 1, "maximum": 12},
+        "valvetrain": {"type": "string"},
+        "fuel_system": {"type": "string"},
+        "bore_mm": {"type": "number", "exclusiveMinimum": 0},
+        "stroke_mm": {"type": "number", "exclusiveMinimum": 0},
+        "compression_ratio": {"type": "number", "exclusiveMinimum": 1},
+        "power_hp": {"type": "number", "exclusiveMinimum": 0},
+        "idle_rpm": {"type": "number", "minimum": 400, "maximum": 1500},
+        "redline_rpm": {"type": "number", "minimum": 3000, "maximum": 9000},
+        "fuel_cut_rpm": {"type": "number", "minimum": 3000, "maximum": 9500},
+        "cranking_rpm": {"type": "number", "minimum": 80, "maximum": 600},
+        "stall_rpm": {"type": "number", "minimum": 100, "maximum": 900},
+        "stall_grace_s": {"type": "number", "minimum": 0},
+        "start_delay_s": {"type": "number", "exclusiveMinimum": 0},
+        "max_crank_s": {"type": "number", "exclusiveMinimum": 0},
+        "flood_after_attempts": {"type": "integer", "minimum": 1},
+        "drying_s": {"type": "number", "exclusiveMinimum": 0},
+        "rpm_slew_rate": {"type": "number", "exclusiveMinimum": 0},
+        "friction_torque_nm": {"type": "number", "minimum": 0},
+        "friction_per_1000rpm_nm": {"type": "number", "minimum": 0},
+        "idle_governor_torque_nm": {"type": "number", "minimum": 0},
+        "engine_braking_base_nm": {"type": "number", "minimum": 0},
+        "engine_braking_per_1000rpm_nm": {"type": "number", "minimum": 0},
+        "torque_curve_nm": {
+          "type": "array",
+          "minItems": 3,
+          "items": {
+            "type": "array",
+            "prefixItems": [
+              {"type": "number", "minimum": 0},
+              {"type": "number", "minimum": 0}
+            ],
+            "minItems": 2,
+            "maxItems": 2
+          }
+        },
+        "fuel": {
+          "type": "object",
+          "required": ["idle_lph", "bsfc_g_per_kwh", "gasoline_density_kg_per_l", "overrun_fuel_cut_rpm"],
+          "properties": {
+            "idle_lph": {"type": "number", "minimum": 0},
+            "bsfc_g_per_kwh": {"type": "number", "minimum": 0},
+            "gasoline_density_kg_per_l": {"type": "number", "exclusiveMinimum": 0},
+            "overrun_fuel_cut_rpm": {"type": "number", "minimum": 0}
+          }
+        },
+        "oil": {
+          "type": "object",
+          "required": ["crankcase_capacity_l", "pressure_kpa_at_4000rpm_min", "pressure_kpa_at_4000rpm_max"],
+          "properties": {
+            "crankcase_capacity_l": {"type": "number", "exclusiveMinimum": 0},
+            "pressure_kpa_at_4000rpm_min": {"type": "number", "exclusiveMinimum": 0},
+            "pressure_kpa_at_4000rpm_max": {"type": "number", "exclusiveMinimum": 0}
+          }
+        }
+      }
+    },
+    "transmission": {
+      "allOf": [{"$ref": "#/$defs/sourced"}],
+      "type": "object",
+      "required": [
+        "type",
+        "gears",
+        "overdrive",
+        "selector_modes",
+        "gear_ratios",
+        "reverse_ratio",
+        "final_drive_ratio",
+        "driveline_efficiency",
+        "shift_time_s",
+        "second_max_gear",
+        "low_max_gear",
+        "upshift_kph",
+        "downshift_kph",
+        "torque_converter"
+      ],
+      "properties": {
+        "type": {"const": "automatic"},
+        "gears": {"type": "integer", "minimum": 3, "maximum": 6},
+        "overdrive": {"type": "boolean"},
+        "selector_modes": {
+          "type": "array",
+          "minItems": 6,
+          "uniqueItems": true,
+          "items": {"enum": ["P", "R", "N", "D", "2", "L"]}
+        },
+        "gear_ratios": {
+          "type": "array",
+          "minItems": 3,
+          "items": {"type": "number", "exclusiveMinimum": 0}
+        },
+        "reverse_ratio": {"type": "number", "exclusiveMinimum": 0},
+        "final_drive_ratio": {"type": "number", "exclusiveMinimum": 0},
+        "driveline_efficiency": {"type": "number", "exclusiveMinimum": 0, "maximum": 1},
+        "shift_time_s": {"type": "number", "exclusiveMinimum": 0},
+        "second_max_gear": {"type": "integer", "minimum": 1},
+        "low_max_gear": {"type": "integer", "minimum": 1},
+        "upshift_kph": {"type": "object"},
+        "downshift_kph": {"type": "object"},
+        "torque_converter": {
+          "type": "object",
+          "required": ["stall_rpm", "stall_torque_ratio", "coupling_rpm", "lockup_kph", "lockup_max_throttle"],
+          "properties": {
+            "stall_rpm": {"type": "number", "exclusiveMinimum": 0},
+            "stall_torque_ratio": {"type": "number", "minimum": 1},
+            "coupling_rpm": {"type": "number", "exclusiveMinimum": 0},
+            "lockup_kph": {"type": "number", "minimum": 0},
+            "lockup_max_throttle": {"type": "number", "minimum": 0, "maximum": 1}
+          }
+        }
+      }
+    },
+    "fuel": {
+      "allOf": [{"$ref": "#/$defs/sourced"}],
+      "type": "object",
+      "required": ["tank_capacity_l", "low_warning_l", "empty_threshold_l", "reserve_l"],
+      "properties": {
+        "tank_capacity_l": {"type": "number", "exclusiveMinimum": 0},
+        "low_warning_l": {"type": "number", "minimum": 0},
+        "empty_threshold_l": {"type": "number", "minimum": 0},
+        "reserve_l": {"type": "number", "minimum": 0}
+      }
+    },
+    "brakes": {
+      "allOf": [{"$ref": "#/$defs/sourced"}],
+      "type": "object",
+      "required": [
+        "max_service_force_n",
+        "parking_force_n",
+        "front_bias",
+        "pad_wear_force_loss",
+        "fluid_min_factor",
+        "fluid_low_warning",
+        "fade_start_c",
+        "fade_full_c",
+        "fade_min_factor",
+        "heat_capacity_kj_per_c",
+        "cooling_kw_per_c",
+        "parking_brake_speed_limit_kph"
+      ],
+      "properties": {
+        "max_service_force_n": {"type": "number", "exclusiveMinimum": 0},
+        "parking_force_n": {"type": "number", "exclusiveMinimum": 0},
+        "front_bias": {"type": "number", "minimum": 0, "maximum": 1},
+        "pad_wear_force_loss": {"type": "number", "minimum": 0, "maximum": 1},
+        "fluid_min_factor": {"type": "number", "minimum": 0, "maximum": 1},
+        "fluid_low_warning": {"type": "number", "minimum": 0, "maximum": 1},
+        "fade_start_c": {"type": "number", "minimum": 0},
+        "fade_full_c": {"type": "number", "minimum": 0},
+        "fade_min_factor": {"type": "number", "minimum": 0, "maximum": 1},
+        "heat_capacity_kj_per_c": {"type": "number", "exclusiveMinimum": 0},
+        "cooling_kw_per_c": {"type": "number", "minimum": 0},
+        "parking_brake_speed_limit_kph": {"type": "number", "minimum": 0}
+      }
+    },
+    "cooling": {
+      "allOf": [{"$ref": "#/$defs/sourced"}],
+      "type": "object",
+      "required": [
+        "coolant_capacity_l",
+        "coolant_heat_capacity_kj_per_c",
+        "thermostat_open_c",
+        "thermostat_full_open_c",
+        "fan_low_on_c",
+        "fan_low_off_c",
+        "fan_high_on_c",
+        "fan_high_off_c",
+        "fan_low_airflow_mps",
+        "fan_high_airflow_mps",
+        "radiator_kw_per_c",
+        "block_loss_kw_per_c",
+        "heat_kw_per_lph",
+        "overheat_warning_c",
+        "safe_mode_c",
+        "safe_mode_exit_c",
+        "safe_mode_derate",
+        "seize_c",
+        "seize_grace_s",
+        "fan_components"
+      ],
+      "properties": {
+        "coolant_capacity_l": {"type": "number", "exclusiveMinimum": 0},
+        "coolant_heat_capacity_kj_per_c": {"type": "number", "exclusiveMinimum": 0},
+        "thermostat_open_c": {"type": "number"},
+        "thermostat_full_open_c": {"type": "number"},
+        "fan_low_on_c": {"type": "number"},
+        "fan_low_off_c": {"type": "number"},
+        "fan_high_on_c": {"type": "number"},
+        "fan_high_off_c": {"type": "number"},
+        "fan_low_airflow_mps": {"type": "number", "minimum": 0},
+        "fan_high_airflow_mps": {"type": "number", "minimum": 0},
+        "radiator_kw_per_c": {"type": "number", "exclusiveMinimum": 0},
+        "block_loss_kw_per_c": {"type": "number", "minimum": 0},
+        "heat_kw_per_lph": {"type": "number", "exclusiveMinimum": 0},
+        "overheat_warning_c": {"type": "number"},
+        "safe_mode_c": {"type": "number"},
+        "safe_mode_exit_c": {"type": "number"},
+        "safe_mode_derate": {"type": "number", "minimum": 0, "maximum": 1},
+        "seize_c": {"type": "number"},
+        "seize_grace_s": {"type": "number", "exclusiveMinimum": 0},
+        "relay_intermittent_period_s": {"type": "number", "exclusiveMinimum": 0},
+        "relay_intermittent_on_fraction": {"type": "number", "minimum": 0, "maximum": 1},
+        "fan_components": {
+          "type": "object",
+          "required": ["fuse", "relay", "motor"],
+          "properties": {
+            "fuse": {"type": "string", "pattern": "^[a-z0-9_.]+$"},
+            "relay": {"type": "string", "pattern": "^[a-z0-9_.]+$"},
+            "motor": {"type": "string", "pattern": "^[a-z0-9_.]+$"}
+          }
+        }
+      }
+    },
+    "vehicle": {
+      "allOf": [{"$ref": "#/$defs/sourced"}],
+      "type": "object",
+      "required": [
+        "curb_mass_kg",
+        "wheel_radius_m",
+        "drag_cda_m2",
+        "rolling_resistance_coefficient",
+        "air_density_kg_m3",
+        "max_grade_percent",
+        "max_speed_mps"
+      ],
+      "properties": {
+        "curb_mass_kg": {"type": "number", "exclusiveMinimum": 0},
+        "wheel_radius_m": {"type": "number", "exclusiveMinimum": 0},
+        "drag_cda_m2": {"type": "number", "exclusiveMinimum": 0},
+        "rolling_resistance_coefficient": {"type": "number", "minimum": 0},
+        "air_density_kg_m3": {"type": "number", "exclusiveMinimum": 0},
+        "max_grade_percent": {"type": "number", "minimum": 0},
+        "max_speed_mps": {"type": "number", "exclusiveMinimum": 0}
+      }
+    }
+  }
+}

@@ -18,11 +18,14 @@ LOCALIZATION_CSV = ROOT / "localization" / "strings.csv"
 
 PAIRS = {
     "vehicle_components": "vehicle_components",
+    "vehicle_powertrain": "vehicle_powertrain",
     "inventory_tools": "inventory_tools",
     "folklore_entities": "folklore_entities",
     "dialogue_and_endings": "dialogue_and_endings",
     "autoload_dependencies": "autoload_dependencies",
 }
+
+BLOCKOUT_SPEC = ROOT / "data" / "vehicle" / "blockout_spec.json"
 
 REQUIRED_AUTOLOADS = {
     "EventBus",
@@ -160,6 +163,7 @@ def validate() -> tuple[list[str], list[str]]:
 
     inventory = data["inventory_tools"]
     vehicle = data["vehicle_components"]
+    powertrain = data["vehicle_powertrain"]
     folklore = data["folklore_entities"]
     dialogue = data["dialogue_and_endings"]
     autoloads = data["autoload_dependencies"]
@@ -188,6 +192,71 @@ def validate() -> tuple[list[str], list[str]]:
     water = vehicle.get("specs", {}).get("water", {})
     if not isinstance(water.get("air_intake_height_m"), (int, float)) or water["air_intake_height_m"] <= 0:
         errors.append("vehicle_components: air_intake_height_m debe ser un número positivo")
+
+    # Contrato de simulación del tren motriz: coherencia con el vehículo, la
+    # caja declarada y el bloqueo paramétrico. Los valores de simulación siguen
+    # marcados como provisionales en el propio contrato.
+    if powertrain.get("vehicle_id") != vehicle.get("vehicle_id"):
+        errors.append("vehicle_powertrain: vehicle_id no coincide con vehicle_components")
+    engine_spec = vehicle.get("specs", {}).get("engine", {})
+    powertrain_engine = powertrain.get("engine", {})
+    if int(powertrain_engine.get("displacement_cc", -1)) != int(engine_spec.get("displacement_cc", -2)):
+        errors.append("vehicle_powertrain: cilindrada distinta de vehicle_components")
+    transmission_spec = vehicle.get("specs", {}).get("transmission", {})
+    powertrain_transmission = powertrain.get("transmission", {})
+    if powertrain_transmission.get("selector_modes") != transmission_spec.get("selector_modes"):
+        errors.append("vehicle_powertrain: selector_modes distinto de vehicle_components")
+    if bool(powertrain_transmission.get("overdrive")) != bool(transmission_spec.get("overdrive")):
+        errors.append("vehicle_powertrain: overdrive distinto de vehicle_components")
+    if int(powertrain_transmission.get("gears", 0)) != int(transmission_spec.get("gears", -1)):
+        errors.append("vehicle_powertrain: número de marchas distinto de vehicle_components")
+    if float(powertrain.get("fuel", {}).get("tank_capacity_l", -1)) != float(vehicle.get("specs", {}).get("fuel", {}).get("tank_liters", -2)):
+        errors.append("vehicle_powertrain: capacidad de combustible distinta de vehicle_components")
+    fan_components = powertrain.get("cooling", {}).get("fan_components", {})
+    for role, component_id in fan_components.items():
+        if component_id not in component_ids:
+            errors.append(f"vehicle_powertrain: fan_components.{role} apunta a componente inexistente {component_id}")
+    torque_curve = powertrain_engine.get("torque_curve_nm", [])
+    previous_rpm = -1.0
+    for point in torque_curve:
+        if not isinstance(point, list) or len(point) != 2:
+            errors.append("vehicle_powertrain: punto de torque_curve_nm inválido")
+            continue
+        rpm, _torque = float(point[0]), float(point[1])
+        if rpm <= previous_rpm:
+            errors.append("vehicle_powertrain: torque_curve_nm debe tener RPM crecientes")
+        previous_rpm = rpm
+    gear_ratios = powertrain_transmission.get("gear_ratios", [])
+    if len(gear_ratios) != int(powertrain_transmission.get("gears", 0)):
+        errors.append("vehicle_powertrain: gear_ratios no coincide con gears")
+    if int(powertrain_transmission.get("low_max_gear", 0)) > int(powertrain_transmission.get("second_max_gear", 0)):
+        errors.append("vehicle_powertrain: low_max_gear no puede superar second_max_gear")
+    for gear in range(1, int(powertrain_transmission.get("gears", 0))):
+        if str(gear) not in powertrain_transmission.get("upshift_kph", {}):
+            errors.append(f"vehicle_powertrain: falta upshift_kph para la marcha {gear}")
+    for gear in range(2, int(powertrain_transmission.get("gears", 0)) + 1):
+        if str(gear) not in powertrain_transmission.get("downshift_kph", {}):
+            errors.append(f"vehicle_powertrain: falta downshift_kph para la marcha {gear}")
+    cooling = powertrain.get("cooling", {})
+    if not (float(cooling.get("thermostat_open_c", 0)) < float(cooling.get("thermostat_full_open_c", 0))):
+        errors.append("vehicle_powertrain: thermostat_open_c debe ser menor que thermostat_full_open_c")
+    if not (float(cooling.get("fan_low_on_c", 0)) < float(cooling.get("fan_high_on_c", 0))):
+        errors.append("vehicle_powertrain: fan_low_on_c debe ser menor que fan_high_on_c")
+    if not (float(cooling.get("overheat_warning_c", 0)) < float(cooling.get("safe_mode_c", 0)) < float(cooling.get("seize_c", 0))):
+        errors.append("vehicle_powertrain: umbrales térmicos fuera de orden")
+    brakes = powertrain.get("brakes", {})
+    if not (float(brakes.get("fade_start_c", 0)) < float(brakes.get("fade_full_c", 0))):
+        errors.append("vehicle_powertrain: fade_start_c debe ser menor que fade_full_c")
+    fuel = powertrain.get("fuel", {})
+    if not (float(fuel.get("empty_threshold_l", 0)) < float(fuel.get("low_warning_l", 0)) < float(fuel.get("tank_capacity_l", 0))):
+        errors.append("vehicle_powertrain: umbrales de combustible fuera de orden")
+    if BLOCKOUT_SPEC.exists():
+        blockout = load_json(BLOCKOUT_SPEC)
+        blockout_radius = float(blockout.get("dimensions", {}).get("wheel_radius_m", -1))
+        if abs(float(powertrain.get("vehicle", {}).get("wheel_radius_m", -2)) - blockout_radius) > 0.001:
+            errors.append("vehicle_powertrain: wheel_radius_m no coincide con blockout_spec.json")
+    else:
+        errors.append("vehicle_powertrain: falta data/vehicle/blockout_spec.json para la comprobación del radio de rueda")
 
     entity_ids = [entity["id"] for entity in folklore["entities"]]
     for duplicate in duplicate_values(entity_ids):

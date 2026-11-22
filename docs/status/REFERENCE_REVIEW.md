@@ -2,8 +2,8 @@
 
 **Última revisión completa:** 2026-11-22  
 **Próxima revisión completa:** 2026-12-06  
-**Archivos catalogados:** 94  
-**Tamaño:** ≈306.9 MB  
+**Archivos catalogados:** 95  
+**Tamaño:** ≈368.1 MB  
 **Catálogo:** `docs/reference/reference_catalog.json`  
 **Hojas de contacto:** `build/reference/contact_sheets/` (no versionadas)
 
@@ -18,15 +18,21 @@
 - Revisión específica de `UI_ART_DIRECTION_NOTES.md` para el boot y el panel QA
   de la Fase 1.2; la biblioteca externa no cambió.
 - Catálogo sin imágenes ni contenido propietario dentro del repositorio.
+- Fase 2.1: revisión de seis fotos técnicas y de los dos manuales extraídos para
+  el tren motriz; valores verificados y provisionales separados en
+  `docs/reference/ESTEEM_MECHANICAL_NOTES.md`.
+- Alta nueva `VID_20261122_115121.mp4` catalogada como video conceptual (95
+  archivos). No se usa en mecánica.
 
 ## Pendiente
 
-- Extraer fotogramas de los dos videos conceptuales.
+- Extraer fotogramas de los tres videos conceptuales.
 - Revisar individualmente las nuevas fotografías de piezas y páginas técnicas.
 - Identificar fuente/licencia de las fotos y del manual.
 - Contar con fuente adicional para La Llorona, Los Momoyes, Mapurangui y la
   Serpiente de Siete Cabezas.
-- Verificar cotas, neumáticos, capacidades y altura de admisión en el manual.
+- Verificar relaciones de caja, neumáticos, capacidades, altura de admisión y
+  umbrales térmicos en el manual antes de F5.1.
 - Repetir revisión completa antes del 2026-12-06 o al inicio de una subfase de
   modelado/UI, lo que ocurra primero.
 

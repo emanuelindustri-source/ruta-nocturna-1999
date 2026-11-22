@@ -14,9 +14,9 @@ Inventario completo al **2026-11-22**:
 | Conceptos de arte/UI generados con Gemini | 39 |
 | PDF técnico / manual / contexto | 3 |
 | Documento de leyendas | 1 |
-| Videos conceptuales | 2 |
-| **Total** | **94** |
-| Tamaño | **≈306.9 MB** |
+| Videos conceptuales | 3 |
+| **Total** | **95** |
+| Tamaño | **≈368.1 MB** |
 
 El inventario creció durante la Fase 1.1 con nuevos archivos aportados por el
 director entre las 13:54 y 13:59 del 22 de noviembre de 2026. Todos fueron

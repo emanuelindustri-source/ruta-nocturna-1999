@@ -74,7 +74,7 @@ Notas de dispositivo:
 
 `.github/workflows/ci.yml` tiene dos trabajos:
 
-- **contracts:** instala Python, valida los cinco contratos, la localización, los
+- **contracts:** instala Python, valida los seis contratos, la localización, los
   presets de export, la sincronización del roadmap y rechaza binarios/secretos
   versionados.
 - **godot:** descarga Godot 4.7.2 stable para Linux, importa el proyecto en

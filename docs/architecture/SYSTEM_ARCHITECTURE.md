@@ -223,3 +223,49 @@ Reglas aplicadas:
 - El export de Windows y la APK Android se generan con `tools/dev/export.ps1`;
   la prueba de dispositivo está en `tools/test_android_adb.ps1` y el detalle en
   `docs/architecture/BUILD_AND_RELEASE.md`.
+
+## 10. Tren motriz (Fase 2.1)
+
+El tren motriz es un módulo de escena, no un autoload. `VehiclePowertrain`
+(`src/vehicle/vehicle_powertrain.gd`) orquesta cinco modelos de simulación y
+expone señales locales para que F2.2/F2.4 los conecten al coche y al HUD.
+
+```mermaid
+flowchart LR
+    VP[VehiclePowertrain]
+    EN[EngineModel]
+    TR[AutomaticTransmission]
+    BR[BrakeSystem]
+    FU[FuelSystem]
+    CO[CoolingSystem]
+    SP[(vehicle_powertrain.json)]
+    VP --> EN
+    VP --> TR
+    VP --> BR
+    VP --> FU
+    VP --> CO
+    SP -. carga .-> VP
+```
+
+Reglas:
+
+- `VehiclePowertrain` no conoce la UI, la cabina, las manos IK ni `EventBus`.
+  Emite señales propias (`engine_state_changed`, `gear_changed`,
+  `selector_changed`, `overdrive_changed`, `warning_changed`, `stalled`,
+  `overheated`, `seized`). Un controlador de vehículo podrá reenviarlas al bus en
+  F2.4 si hace falta.
+- La simulación es longitudinal y determinista. `simulate(delta)` permite
+  avanzar el modelo sin `_physics_process`, lo que hace las pruebas headless
+  reproducibles. `auto_simulate` se desactiva en los tests.
+- El motor recibe una velocidad objetivo de giro y una carga; no calcula el
+  movimiento del chasis. La caja convierte par de motor en par de rueda. Los
+  frenos y la resistencia del vehículo se integran en el orquestador.
+- La temperatura ambiente se inyecta con `set_ambient_temperature()`. La conexión
+  con `WeatherManager` se hará en F4.4, no desde el módulo de vehículo.
+- El modelo no crea `VehicleBody3D` ni colisiones. La integración con la física
+  real del chasis y las ruedas es alcance de F2.2–F2.4/F3.
+- Los umbrales viven en `data/schemas/vehicle_powertrain.json`. No se codifican
+  valores de balance en la UI ni en scripts de presentación.
+- El motor agarrotado (`seized`) tiene una API de reparación para QA y pruebas.
+  La recuperación anti-atasco completa (grúa, deuda, punto seguro) es F5.1; esta
+  subfase no la simula.

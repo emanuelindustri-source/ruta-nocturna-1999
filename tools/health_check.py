@@ -58,11 +58,13 @@ REQUIRED_FILES = [
     "docs/architecture/QA_AND_RECOVERY.md",
     "docs/architecture/BUILD_AND_RELEASE.md",
     "data/schemas/vehicle_components.json",
+    "data/schemas/vehicle_powertrain.json",
     "data/schemas/folklore_entities.json",
     "data/schemas/dialogue_and_endings.json",
     "data/schemas/inventory_tools.json",
     "data/schemas/autoload_dependencies.json",
     "data/schemas/json/vehicle_components.schema.json",
+    "data/schemas/json/vehicle_powertrain.schema.json",
     "data/schemas/json/folklore_entities.schema.json",
     "data/schemas/json/dialogue_and_endings.schema.json",
     "data/schemas/json/inventory_tools.schema.json",
@@ -85,8 +87,19 @@ REQUIRED_FILES = [
     "scenes/ui/CreatorQAMenu.tscn",
     "tests/smoke/SmokeTest.tscn",
     "tests/smoke/smoke_test.gd",
+    "tests/vehicle/PowertrainTest.tscn",
+    "tests/vehicle/powertrain_test.gd",
     "tools/dev/smoke_test.cmd",
     "tools/dev/smoke_test.ps1",
+    "tools/dev/powertrain_test.cmd",
+    "tools/dev/powertrain_test.ps1",
+    "src/vehicle/vehicle_powertrain_spec.gd",
+    "src/vehicle/engine_model.gd",
+    "src/vehicle/automatic_transmission.gd",
+    "src/vehicle/brake_system.gd",
+    "src/vehicle/fuel_system.gd",
+    "src/vehicle/cooling_system.gd",
+    "src/vehicle/vehicle_powertrain.gd",
     "docs/architecture/EVENT_BUS.md",
     "tools/validate_schemas.py",
     "tools/validate_localization.py",
@@ -474,6 +487,27 @@ def check_smoke_test(checks: list[Check], skip_smoke: bool) -> None:
     )
 
 
+def check_powertrain_test(checks: list[Check], skip_smoke: bool) -> None:
+    if skip_smoke:
+        result(checks, "powertrain_tests", True, "Omitido por --skip-godot/--skip-smoke", warn=True)
+        return
+    if not GODOT.exists():
+        result(checks, "powertrain_tests", False, "Godot no está instalado en la ruta esperada")
+        return
+    code, output = run_command(
+        [str(GODOT), "--headless", "--path", str(ROOT), "res://tests/vehicle/PowertrainTest.tscn"],
+        timeout=180,
+    )
+    ok = code == 0 and "[POWERTRAIN] OK" in output
+    result(
+        checks,
+        "powertrain_tests",
+        ok,
+        f"Exit {code}; {'tren motriz superado' if ok else 'sin marca de éxito'}",
+        {"exit_code": code, "tail": "\n".join(output.splitlines()[-30:])},
+    )
+
+
 def check_godot_import(checks: list[Check], skip_import: bool) -> None:
     if skip_import:
         result(checks, "godot_import", True, "Omitido por --skip-godot", warn=True)
@@ -550,6 +584,7 @@ def main() -> int:
     check_tracked_secrets(checks)
     check_godot_import(checks, args.skip_godot)
     check_smoke_test(checks, args.skip_godot or args.skip_smoke)
+    check_powertrain_test(checks, args.skip_godot or args.skip_smoke)
 
     report = build_report(checks, mode)
     REPORT_DIR.mkdir(parents=True, exist_ok=True)

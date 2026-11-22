@@ -4,6 +4,67 @@ Todas las fechas usan ISO 8601. Las versiones siguen SemVer.
 
 ## [Unreleased]
 
+## [0.2.0] — 2026-11-22
+
+### Añadido
+
+- Contrato `data/schemas/vehicle_powertrain.json` y su JSON Schema
+  `data/schemas/json/vehicle_powertrain.schema.json`: motor, transmisión,
+  combustible, frenos, refrigeración y parámetros longitudinales del vehículo,
+  con `source_status`/`source_note` por sección.
+- Simulación del tren motriz en `src/vehicle/`:
+  - `engine_model.gd`: arranque, ralentí, curva de par, corte de inyección,
+    fricción, retención, calado, ahogo, secado, modo seguro y agarrotamiento.
+  - `automatic_transmission.gd`: P-R-N-D-2-L, Overdrive, convertidor de par,
+    bloqueo en crucero, calendario de cambios y rechazo de cambios inválidos.
+  - `brake_system.gd`: frenos de servicio y estacionamiento, fade térmico,
+    desgaste de pastillas y nivel de líquido.
+  - `fuel_system.gd`: tanque de 50 L, consumo, reserva y calado por vacío.
+  - `cooling_system.gd`: termostato, radiador, electroventilador de dos
+    velocidades, fallos de fusible/relé/motor y protecciones térmicas.
+  - `vehicle_powertrain.gd`: orquestador longitudinal con señales locales y
+    telemetría; sin UI, cabina ni `VehicleBody3D`.
+- `tests/vehicle/PowertrainTest.tscn` y `powertrain_test.gd`: 125 comprobaciones
+  headless del contrato y de todos los subsistemas.
+- `tools/dev/powertrain_test.cmd` y `.ps1`: importación headless, ejecución y
+  log en `build/logs/powertrain/latest.log`.
+- Chequeo `powertrain_tests` en `health_check.py` y paso nuevo en CI.
+- Integración del tren motriz en el smoke test (155 comprobaciones).
+
+### Cambiado
+
+- Versión del proyecto a `0.2.0` (`VERSION`, `project.godot`, presets, README).
+- `validate_schemas.py` valida seis contratos y comprueba la coherencia del tren
+  motriz con `vehicle_components.json` y `blockout_spec.json`.
+- `ESTEEM_MECHANICAL_NOTES.md` separa los datos verificados del manual de los
+  valores de simulación provisionales.
+- `REFERENCE_USAGE_LOG.md`, `REFERENCE_REVIEW.md`, arquitectura y QA actualizados
+  con el alcance de 2.1.
+- Catálogo de referencias a 95 archivos; el nuevo video conceptual queda
+  catalogado sin usarse en mecánica.
+
+### Validación
+
+- 6 contratos JSON válidos; advertencia previa de claves de contenido para F8.4.
+- Localización de 11 idiomas sin errores; fuentes CJK pendientes de F8.4.
+- Roadmap 5/45 subfases completadas (11,1%), JSON sincronizado con la web.
+- Importación de Godot 4.7.2 headless con exit 0.
+- Pruebas del tren motriz: 125/125, exit 0.
+- Smoke test: 155/155 comprobaciones, exit 0.
+- `health_check.py --end`: sin errores; advertencias esperadas documentadas.
+- Dispositivo ADB autorizado y espacio en disco comprobados.
+- Referencias: 95 archivos; escaneo rápido sin cambios pendientes.
+
+### Publicación
+
+- Commit convencional, tag `v0.2.0` y push a `origin/main`.
+
+### Estado
+
+- Fase 2.1 completada: tren motriz data-driven con pruebas; sin cabina, IK,
+  espejos ni conducción narrativa.
+- Siguiente: Fase 2.2 con MiMo Pro (cabina funcional, rig de manos y poses IK).
+
 ## [0.1.3] — 2026-11-22
 
 ### Añadido

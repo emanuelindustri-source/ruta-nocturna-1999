@@ -1,8 +1,8 @@
 # Estado actual
 
-**Subfase:** 1.4 — CI, Android/ADB, export y rebanada vertical  
-**Versión:** `v0.1.3`  
-**Modelo de la subfase:** DS-S  
+**Subfase:** 2.1 — Motor, caja automática y tests  
+**Versión:** `v0.2.0`  
+**Modelo de la subfase:** DS-R  
 **Fecha:** 2026-11-22  
 **Estado:** completada y publicada.
 
@@ -16,57 +16,64 @@
 
 | Prueba | Resultado |
 |---|---|
-| Contratos JSON + Schemas | 5 contratos válidos, 0 errores, 1 advertencia de claves de contenido |
+| Contratos JSON + Schemas | 6 contratos válidos, 0 errores, 1 advertencia de claves de contenido |
+| Coherencia del tren motriz | Cilindrada, selector, marchas, Overdrive, tanque, ventilador y radio de rueda comprobados |
 | Localización | 11 idiomas, 62 claves, 0 errores; fuentes CJK pendientes de F8.4 |
-| Roadmap | 4/45 subfases completadas (8,9%), JSON sincronizado |
-| Presets de export | Windows Desktop x86_64 y Android arm64-v8a válidos, 0 advertencias |
-| Export Windows | `.exe` + `.pck` generados; arranque headless con 11/11 servicios y 11 locales |
-| Export Android | APK debug firmada con keystore local, 28,5 MB |
-| Android/ADB | Instalación, arranque, 15 s de logcat, captura y PSS 376,5 MB (presupuesto 1.228,8 MB) |
-| Rebanada vertical en Android | Captura real en `build/logs/android-smoke/vertical-slice.png`; navegación por teclado hasta el botón |
+| Roadmap | 5/45 subfases completadas (11,1%), JSON sincronizado |
+| Pruebas del tren motriz | 125/125 comprobaciones, exit 0 |
+| Smoke test | 155/155 comprobaciones, exit 0 |
 | Godot import headless | exit 0; sin marcadores críticos |
-| Smoke test | 138/138 comprobaciones, exit 0 |
+| Health check de cierre | 16 OK, 3 advertencias esperadas, 0 errores |
 | Dispositivo ADB | Redmi 22101316G autorizado (`obojropz89mbwgpn`) |
-| Espacio libre | 78 GB en `C:` |
-| Referencias | 94 archivos, escaneo rápido sin cambios |
-| Health check | 15 OK, 3 advertencias esperadas, 0 errores |
+| Espacio libre | 77 GB en `C:` |
+| Referencias | 95 archivos, escaneo rápido sin cambios pendientes |
+| Git | Rama `main`, commit y tag `v0.2.0` publicados |
 
 Advertencias conocidas:
 
 - 202 claves de contenido aún no están en el CSV de localización. Se completarán
   en F8.4; la UI base ya está cubierta.
 - Las fuentes CJK/cirílicas se empaquetan y validan visualmente en F8.4.
-- Las cotas del bloqueo del Esteem (`data/vehicle/blockout_spec.json`) siguen
-  siendo valores provisionales; verificación obligatoria antes de Fase 2/Fase 5.
-- La rebanada vertical no es una prueba de rendimiento de gameplay: solo valida
-  arranque, memoria base y que el greybox se ve sobre la carretera.
-- La APK es una build debug de referencia, no una build de tienda ni una release
-  firmada para distribución.
+- Los valores de simulación (relaciones, convertidor, curva de par, masas,
+  umbrales térmicos y fuerzas de freno) son provisionales y están marcados en
+  `vehicle_powertrain.json`. Los datos de cilindrada, diámetro, carrera,
+  compresión, alimentación y aceite sí están verificados en el manual Mitchell.
+- Las cotas del bloqueo del Esteem siguen siendo valores provisionales.
+- No hay cabina, manos IK, espejos ni conducción narrativa: son F2.2–F2.4.
+- El modelo térmico y de frenos es longitudinal y no sustituye una prueba de
+  `VehicleBody3D`, suspensión, neumáticos o colisión.
+- No se generó una APK nueva en 2.1. La APK debug de la Fase 1.4 sigue siendo la
+  referencia de build; su prueba de rendimiento no cubre el tren motriz.
 - MIUI/HyperOS exige el permiso "Instalar vía USB" para el paquete; sin él,
   `adb install` devuelve `INSTALL_FAILED_USER_RESTRICTED`.
 
 ## Completado
 
-- Rebanada vertical estática: coche gris, carretera gris, terreno, marcas de
-  carril, cámara, niebla y panel informativo; sin física ni conducción.
-- Botón localizado en Boot para abrir la rebanada y botón de retorno; tres claves
-  nuevas en los once locales.
-- `export_presets.cfg` con Windows Desktop y Android, inclusión del CSV de
-  localización y exclusión de tests/tools/docs.
-- `tools/dev/export.ps1` + `.cmd` con importación previa, verificación de tamaño,
-  log y manifiesto SHA-256.
-- `tools/test_android_adb.ps1` con dispositivo autorizado, instalación `-r`,
-  marcador `BOOT_READY`, logcat, captura, PSS y resumen JSON.
-- `tools/validate_export.py` y cuatro chequeos nuevos en `health_check.py`.
-- Workflow de CI con validación de presets y trabajo Godot headless (import +
-  smoke test + detección de errores de script).
-- `LocalizationManager` corregido para cargar `.translation` importados en builds
-  exportadas; el CSV sigue siendo la fuente de verdad.
-- Documentación `docs/architecture/BUILD_AND_RELEASE.md` y actualizaciones de
-  arquitectura, contratos, QA y registro de referencias.
-- Web de Pages actualizada con la bitácora de 1.2/1.3 y el siguiente gate 2.1.
+- Contrato `data/schemas/vehicle_powertrain.json` con `schema_version: 1`, JSON
+  Schema propio y validación cruzada con `vehicle_components.json` y
+  `blockout_spec.json`.
+- Motor 1.6L SOHC 16V simulado: arranque, ralentí, curva de par, corte de
+  inyección, fricción, retención, calado, ahogo, secado, modo seguro y
+  agarrotamiento.
+- Caja automática de cuatro marchas con P-R-N-D-2-L, Overdrive, convertidor de
+  par, bloqueo en crucero, calendario de cambios y rechazo de maniobras
+  inválidas.
+- Frenos de servicio y estacionamiento con fade térmico, desgaste de pastillas y
+  nivel de líquido.
+- Combustible: tanque de 50 L, consumo por carga, reserva, aviso y calado por
+  vacío.
+- Térmica: termostato, radiador, electroventilador de dos velocidades, fallos de
+  fusible/relé/motor, aviso de sobrecalentamiento, modo seguro y agarrotamiento.
+- Orquestador `VehiclePowertrain` con señales locales y telemetría, sin UI ni
+  autoloads nuevos.
+- 125 pruebas headless del tren motriz, integración en smoke test y chequeo de
+  salud `powertrain_tests`.
+- Documentación de arquitectura, contratos, máquinas de estados, QA y referencias
+  actualizada con el alcance real de 2.1.
 
 ## Siguiente
 
-Fase **2.1 con DS-R**: motor, caja automática P-R-N-D-2-L, O/D, frenos,
-combustible, térmica, electroventilador y tests. No se inicia en este chat.
+Fase **2.2 con MiMo Pro**: cabina funcional, volante, palanca, freno de mano,
+radio, guantera, paneles, rig de manos y poses IK. Antes de abrir el chat se debe
+hacer la revisión visual completa de las referencias de interior que exige
+`AGENTS.md` para F2.2. No se inicia en este chat.
