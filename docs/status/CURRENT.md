@@ -1,8 +1,8 @@
 # Estado actual
 
-**Subfase:** 1.1 — Fundación técnica, contratos y web base  
-**Versión:** `v0.1.0`  
-**Modelo de la subfase:** DS-S  
+**Subfase:** 1.2 — Autoloads base, CrashReporter y CreatorQAMenu inicial  
+**Versión:** `v0.1.1`  
+**Modelo de la subfase:** DS-R  
 **Fecha:** 2026-11-22  
 **Estado:** completada y publicada.
 
@@ -16,46 +16,50 @@
 
 | Prueba | Resultado |
 |---|---|
-| Contratos JSON + Schemas | 5 contratos válidos, 0 errores |
-| Referencias cruzadas del vehículo | Herramientas e items válidos |
-| Autoloads | Grafo acíclico y 11 servicios obligatorios |
-| Folclore | 7 entidades obligatorias presentes |
-| Diálogos | Nodos, elecciones y finales sin referencias rotas |
-| Localización | 11 idiomas, 0 errores |
-| Roadmap | 10 fases, 45 subfases, JSON sincronizado |
-| Godot import headless | exit 0, sin errores de escena |
-| Boot headless | exit 0, imprime versión y repo |
-| Web | 10 tarjetas de fase, 45 subfases, sin errores de consola |
-| Lighthouse | Accesibilidad 100, Best Practices 100, SEO 100 |
-| Bootstrap | 0 fallos críticos, 2 advertencias esperadas (Android 36 y auth) |
-| Health check | 0 errores |
-| Limpieza | Dry run correcto, 4.01 MB recuperables en artefactos |
-| ADB | Redmi 22101316G conectado y autorizado |
-| Referencias | 94 archivos, 2 duplicados exactos, textos extraídos |
+| Contratos JSON + Schemas | 5 contratos válidos, 0 errores, 1 advertencia de claves de contenido |
+| Referencias cruzadas | Herramientas, items, entidades y diálogos válidos |
+| Autoloads | 11 declarados en `project.godot`, orden topológico verificado |
+| Localización | 11 idiomas, 59 claves, 0 errores; fuentes CJK pendientes de F8.4 |
+| Roadmap | 2/45 subfases completadas (4.4%), JSON sincronizado |
+| Godot import headless | exit 0, sin errores de parseo ni escenas |
+| Boot headless | exit 0, 11/11 servicios activos, versión 0.1.1 |
+| Smoke test | 87/87 comprobaciones, exit 0 |
+| Caja negra | Reporte local y marcador de sesión verificados |
+| Captura de error GDScript | Un warning no genera reporte; un error sí |
+| Cierre anormal previo | Marcador simulado; reporte emitido al arrancar |
+| Panel QA | Apertura/cierre y once servicios verificados en debug |
+| Referencias | 94 archivos, escaneo rápido sin cambios |
+| Health check | 10 OK, 3 advertencias esperadas, 0 errores |
 
 Advertencias conocidas:
 
 - 202 claves de contenido aún no están en el CSV de localización. Se completarán
   en F8.4; la UI base ya está cubierta.
 - Las fuentes CJK/cirílicas se empaquetan y validan visualmente en F8.4.
-- Android 36 no está instalado; requisito de Play a partir de agosto de 2026.
+- El preset de export de la Fase 1.4 debe incluir `localization/strings.csv`;
+  todavía no existe pipeline de export.
+- No se probó un cierre nativo real: no hay APK todavía. La prueba Android/ADB
+  corresponde a la Fase 1.4.
 
 ## Completado
 
-- Estructura del proyecto y repositorio Git local/remoto.
-- `AGENTS.md`, `ROADMAP.md`, licencias y créditos.
-- Cinco contratos canónicos y JSON Schemas.
-- Arquitectura de autoloads, máquinas de estados, datos y QA.
-- Web de GitHub Pages y roadmap interactivo sincronizado.
-- Localización base para 11 idiomas.
-- Validador de esquemas, validador de localización, sincronizador de roadmap,
-  health check, bootstrap, wrapper de Godot y limpieza segura.
-- Catálogo de 94 referencias externas, hojas de contacto y extracción de textos.
-- Corrección del flag RUNASADMIN de Godot.
-- Generación de `C:\Android\debug.keystore`.
-- Git local, tag de versión, push y Pages configurado.
+- `EventBus` con señales tipadas para ciclo de vida, ajustes, guardado, estado,
+  clima, audio, actualizaciones, diagnóstico y QA.
+- Once autoloads base en orden topológico: EventBus, HardwareProfiler,
+  SettingsManager, LocalizationManager, GameState, SaveManager, AudioDirector,
+  WeatherManager, UpdateChecker, CrashReporter y SceneRouter.
+- `CrashReporter` con logger nativo, búfer de 200 líneas, contexto por servicios,
+  reporte local en `user://ultimo_reporte_error.txt` y marcador de sesión para
+  cierres anormales.
+- `SaveManager` base con snapshot versionado, checksum canónico, escritura
+  atómica, backup y rechazo de versiones futuras.
+- `CreatorQAMenu` inicial con F12, cinco toques, estado, clima, modo de prueba,
+  reporte y copia al portapapeles. Oculto en tienda salvo bandera explícita.
+- Boot de Fase 1.2 con verificación de servicios y aviso de cierre anormal previo.
+- Smoke test reproducible y wrapper `tools/dev/smoke_test.cmd`.
+- `health_check.py` valida autoloads y ejecuta el smoke test.
 
 ## Siguiente
 
-Fase **1.2 con DS-R**: EventBus, autoloads base, CrashReporter, CreatorQAMenu
-inicial, pruebas de error y smoke test del boot.
+Fase **1.3 con MiMo Pro**: fábrica Blender headless, manifiestos reproducibles,
+bloqueo del Esteem, LOD0/1/2 y ancla de rig. Sin conducción todavía.

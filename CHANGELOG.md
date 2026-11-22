@@ -4,6 +4,57 @@ Todas las fechas usan ISO 8601. Las versiones siguen SemVer.
 
 ## [Unreleased]
 
+## [0.1.1] — 2026-11-22
+
+### Añadido
+
+- `EventBus` con señales tipadas y catálogo en `docs/architecture/EVENT_BUS.md`.
+- Once autoloads base en orden topológico: `EventBus`, `HardwareProfiler`,
+  `SettingsManager`, `LocalizationManager`, `GameState`, `SaveManager`,
+  `AudioDirector`, `WeatherManager`, `UpdateChecker`, `CrashReporter` y
+  `SceneRouter`.
+- `CrashReporter` con logger nativo, búfer de log, contexto por servicios,
+  reporte local y marcador de sesión para cierres anormales.
+- `SaveManager` base con snapshot versionado, checksum canónico, escritura
+  atómica, backup y rechazo de versiones futuras.
+- `CreatorQAMenu` inicial con F12, cinco toques, estado, clima, modo de prueba,
+  reporte local y copia al portapapeles.
+- Boot de Fase 1.2 con verificación de servicios y aviso de cierre anormal previo.
+- Smoke test de servicios base y wrapper `tools/dev/smoke_test.cmd`.
+- Validación de autoloads y ejecución del smoke test dentro de `health_check.py`.
+
+### Cambiado
+
+- Versión del proyecto a `0.1.1`.
+- Localización ampliada a 59 claves en los once idiomas.
+- Las traducciones se cargan en runtime desde `localization/strings.csv`, sin
+  depender de artefactos de importación.
+- El orden de autoloads coincide exactamente con
+  `data/schemas/autoload_dependencies.json`.
+
+### Validación
+
+- 5 contratos JSON validados; 1 advertencia de claves de contenido para F8.4.
+- Localización de 11 idiomas y 59 claves sin errores; fuente CJK pendiente.
+- 11 autoloads declarados y verificado el orden topológico.
+- Importación de Godot 4.7.2 headless con exit 0.
+- Boot headless con 11/11 servicios y exit 0.
+- Smoke test con 87/87 comprobaciones y exit 0.
+- Reporte local, marcador de sesión y panel QA verificados.
+- Un warning no genera reporte de error; un error de GDScript sí.
+- Un marcador de sesión simulado produjo el reporte de cierre anormal al arrancar.
+- `health_check.py --end`: 10 OK, 3 advertencias esperadas, 0 errores.
+- Escaneo rápido de 94 referencias sin cambios.
+
+### Publicación
+
+- Commit convencional, tag `v0.1.1` y push a `origin/main`.
+
+### Estado
+
+- Fase 1.2 completada. Sin mecánicas de conducción.
+- Siguiente: Fase 1.3, fábrica Blender headless y bloqueo del Esteem.
+
 ## [0.1.0] — 2026-11-22
 
 ### Añadido

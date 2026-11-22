@@ -1,21 +1,63 @@
 extends Control
-## Foundation boot screen for Phase 1.1.
-## This scene intentionally contains no gameplay mechanics.
+## Pantalla de arranque de la Fase 1.2.
+## Verifica los servicios base y abre el panel QA, sin mecánicas de conducción.
 
-const PHASE := "1.1"
+const PHASE := "1.2"
 const REPOSITORY := "emanuelindustri-source/ruta-nocturna-1999"
+const SERVICE_NAMES := [
+	"EventBus",
+	"HardwareProfiler",
+	"SettingsManager",
+	"LocalizationManager",
+	"GameState",
+	"SaveManager",
+	"AudioDirector",
+	"WeatherManager",
+	"UpdateChecker",
+	"CrashReporter",
+	"SceneRouter",
+]
 
+@onready var kicker_label: Label = $Center/VBox/Kicker
 @onready var status_label: Label = $Center/VBox/StatusLabel
 @onready var version_label: Label = $Center/VBox/VersionLabel
+@onready var qa_hint_label: Label = $Center/VBox/QaHint
+@onready var crash_warning_label: Label = $Center/VBox/CrashWarning
 
 
 func _ready() -> void:
-	var version: String = str(ProjectSettings.get_setting("application/config/version", "0.1.0"))
-	version_label.text = "v%s · Fase %s · base local" % [version, PHASE]
-	status_label.text = "Contratos, arquitectura, web y validación preparados.\nLa carretera todavía no es jugable."
-	print("[RN1999] Boot de fundación v%s, fase %s, repo %s" % [version, PHASE, REPOSITORY])
+	var version: String = str(ProjectSettings.get_setting("application/config/version", "0.0.0"))
+	var active := _count_services()
+	kicker_label.text = tr("BOOT_KICKER")
+	status_label.text = "%s\n%s" % [
+		tr("BOOT_STATUS_READY"),
+		tr("BOOT_SERVICES_LINE").format({"active": active, "total": SERVICE_NAMES.size()}),
+	]
+	version_label.text = tr("BOOT_VERSION_LINE").format(
+		{"version": version, "phase": PHASE, "platform": OS.get_name()}
+	)
+	qa_hint_label.text = tr("BOOT_QA_HINT")
+	crash_warning_label.visible = CrashReporter.previous_session_detected
+	if crash_warning_label.visible:
+		crash_warning_label.text = tr("BOOT_CRASH_WARNING")
+	print(
+		"[RN1999] Boot v%s, fase %s, %d/%d servicios, repo %s"
+		% [version, PHASE, active, SERVICE_NAMES.size(), REPOSITORY]
+	)
+	EventBus.application_booted.emit(version)
+
+
+func _count_services() -> int:
+	var active := 0
+	for service_name in SERVICE_NAMES:
+		if get_node_or_null("/root/%s" % service_name) != null:
+			active += 1
+	return active
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
+		var qa_menu := get_node_or_null("CreatorQAMenu")
+		if qa_menu != null and qa_menu.is_open():
+			return
 		get_tree().quit()

@@ -1,7 +1,8 @@
 # Arquitectura de sistemas
 
-**Estado:** contrato de Fase 1.1. Los servicios se implementan en Fase 1.2.  
-**Fuente de dependencias:** `data/schemas/autoload_dependencies.json`.
+**Estado:** contrato de Fase 1.1; autoloads base implementados en Fase 1.2.  
+**Fuente de dependencias:** `data/schemas/autoload_dependencies.json`.  
+**Catálogo de señales:** `docs/architecture/EVENT_BUS.md`.
 
 ## 1. Principio
 
@@ -89,10 +90,10 @@ orden topológico y se verifica que no exista un ciclo. El orden esperado es:
 4. `LocalizationManager`
 5. `GameState`
 6. `SaveManager`
-7. `CrashReporter`
-8. `AudioDirector`
-9. `WeatherManager`
-10. `UpdateChecker`
+7. `AudioDirector`
+8. `WeatherManager`
+9. `UpdateChecker`
+10. `CrashReporter`
 11. `SceneRouter`
 
 `WorldDirector`, `EntityDirector`, `NarrativeDirector` y `CreatorQAMenu` se
@@ -167,3 +168,39 @@ validar ni contener valores de balance dispersos en GDScript.
 ```
 
 Un ciclo, un autoload faltante o una referencia inválida es un error bloqueante.
+
+## 8. Implementación de la Fase 1.2
+
+Los once autoloads están declarados en `project.godot` exactamente en el orden
+topológico del contrato:
+
+1. `EventBus` — `src/core/event_bus.gd`
+2. `HardwareProfiler` — `src/core/hardware_profiler.gd`
+3. `SettingsManager` — `src/core/settings_manager.gd`
+4. `LocalizationManager` — `src/core/localization_manager.gd`
+5. `GameState` — `src/core/game_state.gd`
+6. `SaveManager` — `src/core/save_manager.gd`
+7. `AudioDirector` — `src/core/audio_director.gd`
+8. `WeatherManager` — `src/core/weather_manager.gd`
+9. `UpdateChecker` — `src/core/update_checker.gd`
+10. `CrashReporter` — `src/core/crash_reporter.gd`
+11. `SceneRouter` — `src/core/scene_router.gd`
+
+Reglas aplicadas:
+
+- Ningún autoload conoce nodos de UI.
+- `GameState` publica `save_requested`; `SaveManager` lee el snapshot y aplica la
+  carga sobre el estado, no sobre el mundo.
+- `EventBus` es el único mediador de notificaciones.
+- `CrashReporter` recibe contexto por `diagnostics_context_updated`; no llama a
+  otros servicios.
+- `LocalizationManager` carga `localization/strings.csv` en runtime para no
+  depender de artefactos de importación. El preset de export de la Fase 1.4 debe
+  incluir el CSV con `include_filter` (o registrar los `.translation` generados).
+- `SceneRouter` usa `ResourceLoader.load_threaded_request()` y un solo cambio de
+  escena a la vez.
+- `CreatorQAMenu` es un servicio de escena instanciado en Boot y, en el futuro, en
+  la pausa. No es autoload.
+- El smoke test `tests/smoke/SmokeTest.tscn` valida los once autoloads, EventBus,
+  ajustes, localización, guardado, clima, audio, actualizaciones, diagnóstico,
+  caja negra, panel QA y SceneRouter sin mecánicas de conducción.

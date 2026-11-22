@@ -1,6 +1,6 @@
 # QA, caja negra y recuperación
 
-**Estado:** contratos definidos en Fase 1.1. Implementación progresiva.
+**Estado:** contratos definidos en Fase 1.1; caja negra y panel QA inicial implementados en Fase 1.2.
 
 ## 1. Regla principal
 
@@ -191,3 +191,23 @@ tormenta. FSR es opción PC Forward+; en móvil se usa resolución dinámica.
 Una subfase no termina porque “se ve bien”. Termina cuando el health check, los
 tests, el import y las pruebas aplicables dan evidencia, y el estado quedó
 documentado.
+
+## 11. Implementación de la Fase 1.2
+
+- `CrashReporter` instala un `Logger` nativo con `OS.add_logger()`.
+- Conserva las últimas 200 líneas y las últimas 40 acciones.
+- Escribe `user://ultimo_reporte_error.txt` bajo demanda, en errores de GDScript
+  y al detectar un cierre anormal previo.
+- Usa `user://sesion_activa.json` como marcador; se elimina en una salida limpia.
+- El reporte incluye versión, plataforma, idioma, clima, estado de juego, acciones,
+  contexto por servicio y log reciente. Nunca se sube automáticamente.
+- `CreatorQAMenu` se abre con F12 o cinco toques en la esquina superior izquierda.
+  En build de tienda solo se habilita con `ruta_nocturna/qa/allow_in_release` o
+  con `--qa` en la línea de comandos.
+- Acciones actuales del panel: consultar estado, forzar clima, escribir/copiar el
+  reporte, alternar modo de prueba y limpiar banderas.
+- El smoke test comprueba el reporte y el marcador de sesión. La ruta de cierre
+  anormal se probó simulando un marcador huérfano: el reporte se emitió en el
+  siguiente arranque. Un warning no escribe reporte; un error de GDScript sí.
+  La detección de un cierre nativo real se probará con una build Android en la
+  Fase 1.4.

@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://src/core/Boot.gd" id="1_boot"]
+[ext_resource type="PackedScene" path="res://scenes/ui/CreatorQAMenu.tscn" id="2_qa"]
 
 [node name="Boot" type="Control"]
 layout_mode = 3
@@ -47,7 +48,7 @@ theme_override_constants/separation = 12
 layout_mode = 2
 theme_override_colors/font_color = Color(0.408, 0.718, 0.71, 1)
 theme_override_font_sizes/font_size = 16
-text = "FUNDACIÓN TÉCNICA  /  FASE 1.1"
+text = "FUNDACIÓN TÉCNICA  /  FASE 1.2"
 horizontal_alignment = 1
 
 [node name="Title" type="Label" parent="Center/VBox"]
@@ -80,5 +81,24 @@ autowrap_mode = 3
 layout_mode = 2
 theme_override_colors/font_color = Color(0.39, 0.48, 0.47, 1)
 theme_override_font_sizes/font_size = 14
-text = "v0.1.0"
+text = "v0.1.1"
 horizontal_alignment = 1
+
+[node name="QaHint" type="Label" parent="Center/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.31, 0.55, 0.54, 1)
+theme_override_font_sizes/font_size = 12
+text = "F12 o cinco toques arriba a la izquierda: panel QA"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="CrashWarning" type="Label" parent="Center/VBox"]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.933, 0.475, 0.298, 1)
+theme_override_font_sizes/font_size = 13
+text = "Se detectó un cierre anormal anterior."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="CreatorQAMenu" parent="." instance=ExtResource("2_qa")]

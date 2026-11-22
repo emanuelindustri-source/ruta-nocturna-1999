@@ -42,6 +42,22 @@ de texto.
 - Entidades adicionales no incluidas en el alcance actual.
 - Uso directo de fotografías o PDFs como assets del juego.
 
+## 2026-11-22 — Fase 1.2 — UI de boot y panel QA
+
+**Alcance:** revisión de `UI_ART_DIRECTION_NOTES.md` y de la paleta ya catalogada
+para la pantalla de arranque y el panel de creador. No se abrieron nuevas imágenes,
+no se copiaron archivos y la biblioteca externa permaneció intacta.
+
+### Decisiones
+
+- El boot y el panel QA usan verde petróleo, ámbar, hueso y cian apagado, sin
+  imitar los mockups de 25 botones.
+- El panel QA es una herramienta de desarrollo: no se muestra en build de tienda
+  salvo bandera explícita.
+- Los textos visibles nuevos pasan por las 11 claves de localización; la revisión
+  nativa y de glifos CJK sigue pendiente para F8.4.
+- No se usaron capturas ni imágenes de referencia como assets del juego.
+
 ## Próxima revisión
 
 - Revisión rápida: inicio y cierre de cada subfase.

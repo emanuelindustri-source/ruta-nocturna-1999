@@ -2,11 +2,11 @@
   "project": "Ruta Nocturna: 1999",
   "repository": "emanuelindustri-source/ruta-nocturna-1999",
   "generated_from": "ROADMAP.md",
-  "source_sha256": "c6b0e0c92cce7fcb1ca02cfac5e319a7b1b83439ada53f913e5b5b6a0a2d7f5e",
-  "current_version": "v0.1.0",
-  "version_file": "0.1.0",
-  "current_subphase": "1.2",
-  "global_status": "Fase 1.1 completada y publicada; siguiente gate 1.2",
+  "source_sha256": "228352ea5099c32da2b48c60c4ab56047f64483b354c74c05cc815c57976324d",
+  "current_version": "v0.1.1",
+  "version_file": "0.1.1",
+  "current_subphase": "1.3",
+  "global_status": "Fase 1.2 completada y publicada; siguiente gate 1.3",
   "models": {
     "DS-R": "DeepSeek V4.1 Flash 1017 · Razonamiento",
     "DS-S": "DeepSeek V4.1 Flash 1017 · Estándar",
@@ -14,11 +14,11 @@
     "MiMo Flash": "MiMo-V2.6-Flash"
   },
   "summary": {
-    "completed": 1,
+    "completed": 2,
     "in_progress": 0,
-    "pending": 44,
+    "pending": 43,
     "total": 45,
-    "percent": 2.2
+    "percent": 4.4
   },
   "phases": [
     {
@@ -40,9 +40,9 @@
           "version": "v0.1.1",
           "model": "DS-R",
           "model_label": "DeepSeek V4.1 Flash 1017 · Razonamiento",
-          "summary": "Validar dependencias, crear EventBus/autoloads base, CrashReporter, CreatorQAMenu base, boot y smoke test sin mecánicas.",
-          "status": "pending",
-          "status_label": "Pendiente"
+          "summary": "EventBus, once autoloads base, CrashReporter, CreatorQAMenu inicial, boot y smoke test sin mecánicas. Validado y publicado.",
+          "status": "completed",
+          "status_label": "Completada"
         },
         {
           "id": "1.3",
@@ -67,9 +67,9 @@
       "status": "in_progress",
       "status_label": "En curso",
       "progress": {
-        "completed": 1,
+        "completed": 2,
         "in_progress": 0,
-        "pending": 3,
+        "pending": 2,
         "total": 4
       }
     },

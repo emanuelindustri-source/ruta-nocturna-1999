@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import importlib.util
 import json
+import re
 import shutil
 import subprocess
 import sys
@@ -63,6 +64,26 @@ REQUIRED_FILES = [
     "data/schemas/json/inventory_tools.schema.json",
     "data/schemas/json/autoload_dependencies.schema.json",
     "localization/strings.csv",
+    "src/core/event_bus.gd",
+    "src/core/Boot.gd",
+    "src/core/hardware_profiler.gd",
+    "src/core/settings_manager.gd",
+    "src/core/localization_manager.gd",
+    "src/core/game_state.gd",
+    "src/core/save_manager.gd",
+    "src/core/crash_reporter.gd",
+    "src/core/crash_logger.gd",
+    "src/core/audio_director.gd",
+    "src/core/weather_manager.gd",
+    "src/core/update_checker.gd",
+    "src/core/scene_router.gd",
+    "src/ui/creator_qa_menu.gd",
+    "scenes/ui/CreatorQAMenu.tscn",
+    "tests/smoke/SmokeTest.tscn",
+    "tests/smoke/smoke_test.gd",
+    "tools/dev/smoke_test.cmd",
+    "tools/dev/smoke_test.ps1",
+    "docs/architecture/EVENT_BUS.md",
     "tools/validate_schemas.py",
     "tools/validate_localization.py",
     "tools/release/sync_roadmap.py",
@@ -272,6 +293,74 @@ def check_forbidden_binaries(checks: list[Check]) -> None:
     result(checks, "forbidden_binaries", not offenders, f"{len(offenders)} binarios prohibidos en el árbol" if offenders else "Sin APK/AAB/keystores en el árbol", {"offenders": offenders})
 
 
+def check_autoloads(checks: list[Check]) -> None:
+    contract_path = ROOT / "data" / "schemas" / "autoload_dependencies.json"
+    project_path = ROOT / "project.godot"
+    try:
+        contract = json.loads(contract_path.read_text(encoding="utf-8"))
+        entries = contract["autoloads"]
+        text = project_path.read_text(encoding="utf-8")
+        section = ""
+        declared: list[tuple[str, str]] = []
+        for raw_line in text.splitlines():
+            line = raw_line.strip()
+            if line.startswith("[") and line.endswith("]"):
+                section = line[1:-1]
+                continue
+            if section != "autoload":
+                continue
+            match = re.match(r'^([A-Za-z0-9_]+)="\*?(res://[^"]+)"$', line)
+            if match:
+                declared.append((match.group(1), match.group(2)))
+        expected = [(entry["name"], entry["path"]) for entry in entries]
+        errors: list[str] = []
+        if declared != expected:
+            errors.append("project.godot no coincide con autoload_dependencies.json")
+        positions = {name: index for index, (name, _path) in enumerate(declared)}
+        for entry in entries:
+            path = ROOT / entry["path"].removeprefix("res://")
+            if not path.exists():
+                errors.append(f"falta el script de {entry['name']}: {entry['path']}")
+            for dependency in entry["depends_on"]:
+                if dependency in positions and positions[dependency] > positions[entry["name"]]:
+                    errors.append(f"{entry['name']} se inicializa antes que {dependency}")
+        message = (
+            f"{len(declared)} autoloads declarados y ordenados"
+            if not errors
+            else "; ".join(errors[:6])
+        )
+        result(
+            checks,
+            "autoloads",
+            not errors,
+            message,
+            {"declared": declared, "expected": expected, "errors": errors},
+        )
+    except Exception as exc:  # noqa: BLE001
+        result(checks, "autoloads", False, f"No se pudo validar: {exc}")
+
+
+def check_smoke_test(checks: list[Check], skip_smoke: bool) -> None:
+    if skip_smoke:
+        result(checks, "smoke_test", True, "Omitido por --skip-godot/--skip-smoke", warn=True)
+        return
+    if not GODOT.exists():
+        result(checks, "smoke_test", False, "Godot no está instalado en la ruta esperada")
+        return
+    code, output = run_command(
+        [str(GODOT), "--headless", "--path", str(ROOT), "res://tests/smoke/SmokeTest.tscn"],
+        timeout=180,
+    )
+    ok = code == 0 and "[SMOKE] OK" in output
+    result(
+        checks,
+        "smoke_test",
+        ok,
+        f"Exit {code}; {'smoke test superado' if ok else 'sin marca de éxito'}",
+        {"exit_code": code, "tail": "\n".join(output.splitlines()[-30:])},
+    )
+
+
 def check_godot_import(checks: list[Check], skip_import: bool) -> None:
     if skip_import:
         result(checks, "godot_import", True, "Omitido por --skip-godot", warn=True)
@@ -325,6 +414,7 @@ def main() -> int:
     group.add_argument("--start", action="store_true", help="Chequeo de inicio de subfase.")
     group.add_argument("--end", action="store_true", help="Chequeo previo al commit/cierre.")
     parser.add_argument("--skip-godot", action="store_true", help="Omitir importación de Godot.")
+    parser.add_argument("--skip-smoke", action="store_true", help="Omitir el smoke test runtime.")
     args = parser.parse_args()
     mode = "start" if args.start else ("end" if args.end else "manual")
 
@@ -339,7 +429,9 @@ def main() -> int:
     check_disk(checks)
     check_toolchain(checks)
     check_forbidden_binaries(checks)
+    check_autoloads(checks)
     check_godot_import(checks, args.skip_godot)
+    check_smoke_test(checks, args.skip_godot or args.skip_smoke)
 
     report = build_report(checks, mode)
     REPORT_DIR.mkdir(parents=True, exist_ok=True)

@@ -15,6 +15,8 @@
 - Hojas de contacto de conceptos, vehículo y todas las imágenes.
 - Extracción de texto de tres PDFs y un DOCX a `build/reference/extracted/`.
 - Notas de mecánica, folclore y dirección de UI.
+- Revisión específica de `UI_ART_DIRECTION_NOTES.md` para el boot y el panel QA
+  de la Fase 1.2; la biblioteca externa no cambió.
 - Catálogo sin imágenes ni contenido propietario dentro del repositorio.
 
 ## Pendiente

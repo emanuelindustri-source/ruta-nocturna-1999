@@ -1,7 +1,7 @@
 # Contratos de datos
 
-**Estado:** Fase 1.1. Los contratos están escritos y validados; las mecánicas se
-implementan después.
+**Estado:** Fase 1.1. Los contratos están escritos y validados; `SaveManager` base
+se implementó en Fase 1.2. Las mecánicas se implementan después.
 
 ## 1. Archivos canónicos
 
@@ -133,6 +133,8 @@ Reglas:
 - Una partida de versión futura se rechaza sin sobrescribirla.
 
 La implementación real empieza en Fase 2.4/Fase 5.1 y se completa en Fase 9.4.
+La Fase 1.2 dejó un `SaveManager` base con escritura atómica, checksum canónico,
+rechazo de versiones futuras y backups; no incluye migraciones encadenadas.
 
 ## 10. Comandos
 
