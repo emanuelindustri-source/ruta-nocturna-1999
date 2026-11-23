@@ -4,6 +4,79 @@ Todas las fechas usan ISO 8601. Las versiones siguen SemVer.
 
 ## [Unreleased]
 
+## [0.3.3] — 2026-11-23
+
+### Añadido
+
+- `shaders/rain_fx_common.gdshaderinc`: campo procedural de gotas con fusión
+  visual de vecinas, estelas de escurrido, sector de barrido y ondas de
+  charco. Solo aspecto: la simulación sigue siendo la de F3.3.
+- `shaders/wet_paint.gdshader`, `wet_glass.gdshader` y `wet_road.gdshader`:
+  pintura/plástico/cromo mojados, cristales con gotas, refracción, zona
+  barrida y estela de goma, y asfalto mojado con charcos visibles. Consumen
+  `SurfaceWetnessModel`, `DropletFlowModel`, `WiperKinematics` y `PuddleModel`
+  por uniforms; ningún shader contiene valores de balance.
+- `shaders/rain_streaks.gdshader`, `splash_ring.gdshader` y
+  `camera_drops.gdshader`: estrellas de lluvia, salpicaduras de impacto y
+  gotas sobre la lente desde la cabina (billboard manual Godot 4).
+- `src/weather/rain_fx_controller.gd` (`RainFxController`): servicio de escena
+  que ata los modelos de F3.3 a los uniforms de los shaders, anima las
+  escobillas de F3.1 sobre los pivotes del contrato, coloca charcos visibles y
+  expone `set_weather()` para F4.4. No es un autoload.
+- `src/weather/rain_vfx.gd` (`RainVFX`): dos `GPUParticles3D` (`draw_pass_1`)
+  de estrellas y salpicaduras; `src/weather/rain_fx_warmup.gd`
+  (`RainFxWarmup`): compila las pipelines de los seis shaders en un
+  `SubViewport` mínimo antes del gameplay (`[RAINFX] WARMUP_*`).
+- `tests/render/RainFxRenderTest.tscn` + `rain_fx_render_test.gd` +
+  `tools/dev/render_test.cmd`: prueba de render real (ventana Vulkan
+  Forward+) con capturas `build/logs/render/f34_*.png`, medición de frame
+  time, draw calls y primitivas, comprobación de warm-up y pre-simulación de
+  tormenta de 90 s. `RainFxProbe.tscn`/`rain_fx_probe.gd` son la sonda de
+  diagnóstico de lookdev (no forma parte del juego).
+- Ampliación de `tests/weather/rain_fx_test.gd` con las comprobaciones de
+  F3.4: shaders, controlador, uniforms que siguen a los modelos, pivotes de
+  escobilla, charcos visibles, VFX y presupuestos GPU proyectados.
+
+### Cambiado
+
+- Versión `0.3.3` en `VERSION`, `project.godot`, `export_presets.cfg`
+  (`version/name`, `version/code=110` y `file/product_version 0.3.3.0`),
+  `EXPECTED_VERSION` del smoke y de la prueba de lluvia, `PHASE` de Boot y
+  `BOOT_KICKER` en once idiomas.
+- Prueba de lluvia: **206 comprobaciones** (126 de F3.3 + 80 nuevas), exit 0.
+  Smoke **270**, tren motriz **125**, cabina **46**, interacción **257**;
+  todas exit 0 sin cambios de conteo.
+- Medición de render real (Intel UHD Graphics, Vulkan Forward+, 1280x720,
+  vsync 60 Hz): boot **16,67 ms** media / 17,1 p95 y 12 draw calls; rebanada
+  con tormenta activa **16,67 / 16,9 ms**, 227 draw calls y ~15.900 primitivas;
+  cabina **16,67 / 17,1 ms**, 195,5 draw calls y 9.227 primitivas. Los
+  materiales mojados sustituyen a los existentes (`material_override`, 0 draw
+  calls nuevos); el coste añadido son 2 llamadas (VFX) en rebanada y 1
+  (gotas de cámara) en cabina, dentro de `budgets.*.gpu` (PC 8/5/6 %, móvil
+  4/3/10 %): peor caso proyectado 3 draw calls / 3 capas / ~6 % de fill.
+- Warm-up de shaders verificado antes del gameplay en boot, rebanada y cabina
+  (marcadores `[RAINFX] WARMUP_DONE` antes de `BOOT_READY` /
+  `VERTICAL_SLICE_READY`; primera compilación ~3,4 s en Intel UHD y ~0,04 s
+  con caché de pipelines).
+- `docs/architecture/RAIN_AND_SURFACE_FX.md` (secciones 11-12),
+  `SYSTEM_ARCHITECTURE.md` (13.1), `DATA_CONTRACTS.md` (18.1),
+  `STATE_MACHINES.md`, `QA_AND_RECOVERY.md` (16) documentan el GLSL, los VFX,
+  el warm-up y la medición.
+
+### Notas
+
+- El contrato `rain_surface_fx.json` sigue en `schema_version: 1` sin cambios;
+  F3.4 solo consume sus valores. F2.1–F3.2 siguen intactos.
+- Pitfalls de Godot 4 resueltos y documentados en los shaders: los render
+  modes `billboard*` no existen (billboard manual en `vertex()` con escritura
+  explícita de `POSITION`), los doc-comments `##` rompen el tokenizer del
+  lenguaje de shaders, los operadores booleanos son `&&`/`||` y la malla de
+  partículas se asigna por `draw_pass_1`.
+- La lluvia de las escenas es lookdev (`demo_*`); F4.4 inyecta la real con
+  `RainFxController.set_weather()`. Pérdida de agarre, hidroplaneo y vadeo
+  siguen reservados a F5.1. La medición GPU completa en ruta y dispositivo es
+  F3.5/F10.1.
+
 ## [0.3.2] — 2026-11-23
 
 ### Añadido

@@ -4,7 +4,7 @@ extends Node
 ## Valida contrato, humedad, gotas, limpiaparabrisas, charcos y presupuestos
 ## CPU. No mide GPU ni shaders: eso es F3.4/F3.5.
 
-const EXPECTED_VERSION := "0.3.2"
+const EXPECTED_VERSION := "0.3.3"
 const DELTA := 1.0 / 60.0
 const DELTA_MOBILE := 1.0 / 30.0
 
@@ -22,6 +22,9 @@ func _ready() -> void:
 	_test_wipers()
 	_test_puddles()
 	_test_budgets()
+	_test_fx_shaders()
+	await _test_fx_controller()
+	_test_fx_budgets()
 	_finish()
 
 
@@ -351,3 +354,196 @@ func _measure_profile(glass_capacity: int, paint_capacity: int, puddle_count: in
 		"glass": glass.count,
 		"paint": paint.count,
 	}
+
+
+# --- F3.4: GLSL de producción, gotas, barrido, charcos y VFX ----------------
+
+
+func _test_fx_shaders() -> void:
+	_check(FileAccess.file_exists("res://shaders/rain_fx_common.gdshaderinc"), "include común de lluvia presente")
+	for path in [
+		"res://shaders/wet_paint.gdshader",
+		"res://shaders/wet_glass.gdshader",
+		"res://shaders/wet_road.gdshader",
+		"res://shaders/rain_streaks.gdshader",
+		"res://shaders/splash_ring.gdshader",
+		"res://shaders/camera_drops.gdshader",
+	]:
+		var shader := load(path) as Shader
+		_check(shader != null, "shader %s carga" % path.get_file())
+		if shader != null:
+			# En headless el renderer Dummy no compila `spatial`: aquí se valida
+			# que el código parsea y declara uniforms; la compilación GPU real es
+			# la prueba de render (tools/dev/render_test.cmd).
+			_check(shader.code.contains("uniform"), "shader %s declara uniforms" % path.get_file())
+			_check(shader.code.contains("void fragment()"), "shader %s implementa fragment()" % path.get_file())
+			_check(not shader.code.contains("billboard_keep_scale"), "shader %s sin render modes de Godot 3" % path.get_file())
+	var paint := load("res://shaders/wet_paint.gdshader") as Shader
+	_check(paint != null and paint.code.contains("rain_fx_common.gdshaderinc"), "wet_paint incluye el común")
+	var glass := load("res://shaders/wet_glass.gdshader") as Shader
+	_check(glass != null and glass.code.contains("wiper"), "wet_glass consume el barrido")
+	var road := load("res://shaders/wet_road.gdshader") as Shader
+	_check(road != null and road.code.contains("puddles"), "wet_road consume los charcos")
+	_check(_spec.integer("droplets.instance_stride") == 6, "layout de instancias de 6 floats intacto")
+	var warmup := RainFxWarmup.run(get_tree().root)
+	_check(bool(warmup.get("done", false)), "warm-up de shaders termina (headless: sin GPU)")
+	_check(bool(warmup.get("skipped", false)), "warm-up se omite en headless sin fingir compilación")
+
+
+func _test_fx_controller() -> void:
+	var packed := load("res://scenes/vertical_slice/VerticalSlice.tscn") as PackedScene
+	_check(packed != null, "rebanada carga con el controlador de lluvia")
+	if packed == null:
+		return
+	var slice := packed.instantiate()
+	add_child(slice)
+	await get_tree().process_frame
+	var controller := slice.get_node_or_null("RainFx") as RainFxController
+	_check(controller != null, "controlador RainFxController presente en la rebanada")
+	if controller == null:
+		slice.queue_free()
+		return
+	_check(controller.errors.is_empty(), "controlador configura sin errores")
+	_check(controller.wetness != null and controller.wetness.panels.size() >= 8, "modelo de humedad enlazado")
+	_check(controller.droplets_glass != null and controller.droplets_paint != null, "campos de gotas enlazados")
+	_check(controller.wipers != null and controller.puddles != null, "barrido y charcos enlazados")
+	_check(controller._materials.size() >= 20, "materiales de superficie aplicados (%d)" % controller._materials.size())
+	_check(controller._wiper_pivots.size() == 2, "dos escobillas animadas por pivote")
+	_check(controller._road_materials.size() >= 1, "material de vía mojada aplicado")
+	controller.manual_mode = true
+	controller.set_weather(1.0, 0.95, 10.0, 19.0)
+	for _i in range(240):
+		controller.step_models(DELTA)
+	controller.refresh_uniforms()
+	_check(controller.wetness.get_wetness("windshield") > 0.2, "la tormenta moja el parabrisas del controlador")
+	var windshield_material := _windshield_material(controller)
+	_check(windshield_material != null, "material de parabrisas localizado")
+	if windshield_material != null:
+		var wetness_uniform = windshield_material.get_shader_parameter("wetness_value")
+		_check(
+			wetness_uniform != null and float(wetness_uniform) > 0.2,
+			"uniform wetness_value del shader sigue a SurfaceWetnessModel"
+		)
+		var density = windshield_material.get_shader_parameter("drop_density")
+		_check(density != null and float(density) >= 0.0, "uniform drop_density derivada de DropletFlowModel")
+		var wiper_on = windshield_material.get_shader_parameter("wiper_enabled")
+		_check(wiper_on != null and bool(wiper_on), "uniform wiper_enabled activa en el parabrisas")
+		var pivot_l = windshield_material.get_shader_parameter("wiper_pivot_l_mm")
+		var pivot_r = windshield_material.get_shader_parameter("wiper_pivot_r_mm")
+		_check(pivot_l != null and pivot_r != null, "pivotes de escobilla en el shader")
+		if pivot_l != null and pivot_r != null:
+			var left_mm := pivot_l as Vector2
+			var right_mm := pivot_r as Vector2
+			_check(left_mm.x < 0.0 and right_mm.x > 0.0, "pivotes izquierda/derecha en su lado (marco u = derecha)")
+			_check(absf(left_mm.y - right_mm.y) < 5.0, "ambos pivotes sobre la base del cristal")
+			_check(absf(left_mm.x + right_mm.x) < 30.0, "pivotes simétricos respecto al centro")
+	# El barrido mueve el uniform de ángulo y las mallas de las escobillas.
+	controller.wipers.set_mode("low")
+	for _i in range(60):
+		controller.step_models(DELTA)
+	controller.refresh_uniforms()
+	if windshield_material != null:
+		var angle_uniform = windshield_material.get_shader_parameter("wiper_angle_l")
+		_check(angle_uniform != null, "uniform wiper_angle_l presente")
+		if angle_uniform != null:
+			_check(absf(float(angle_uniform) - PI) > 0.01, "el barrido cambia el ángulo del shader")
+	var pivot := controller._wiper_pivots[0]
+	_check(pivot != null and not pivot.basis.is_equal_approx(Basis.IDENTITY), "la escobilla gira sobre su pivote")
+	# Los charcos visibles llegan al uniform de la vía.
+	for _i in range(600):
+		controller.step_models(0.25)
+	controller.refresh_uniforms()
+	var road_material := controller._road_materials[0] if not controller._road_materials.is_empty() else null
+	_check(road_material != null, "material de vía disponible")
+	if road_material != null:
+		var puddle_count = road_material.get_shader_parameter("puddle_count")
+		_check(puddle_count != null and int(puddle_count) >= 1, "charcos visibles en el uniform de la vía (%s)" % str(puddle_count))
+		var wetness_road = road_material.get_shader_parameter("wetness_value")
+		_check(wetness_road != null and float(wetness_road) > 0.0, "uniform de humedad de vía enlazada")
+	_check(controller._vfx != null, "VFX de lluvia construidos")
+	if controller._vfx != null:
+		_check(controller._vfx.get_child_count() == 2, "dos sistemas de partículas (estrellas y salpicaduras)")
+	slice.queue_free()
+	await get_tree().process_frame
+
+	var cabin := load("res://scenes/vehicle/CabinInteraction.tscn") as PackedScene
+	_check(cabin != null, "cabina carga con el controlador de lluvia")
+	if cabin == null:
+		return
+	var cabin_scene := cabin.instantiate()
+	add_child(cabin_scene)
+	await get_tree().process_frame
+	var cabin_controller := cabin_scene.get_node_or_null("RainFx") as RainFxController
+	_check(cabin_controller != null, "controlador RainFxController presente en la cabina")
+	if cabin_controller != null:
+		_check(cabin_controller.camera_drops, "gotas sobre cámara activas en la cabina")
+		_check(cabin_controller._camera_overlay != null, "quad de gotas sobre cámara creado")
+		cabin_controller.manual_mode = true
+		cabin_controller.set_weather(1.0, 0.95, 8.0, 19.0)
+		for _i in range(240):
+			cabin_controller.step_models(DELTA)
+		cabin_controller.refresh_uniforms()
+		if cabin_controller._camera_overlay != null:
+			var overlay_material := cabin_controller._camera_overlay.material_override as ShaderMaterial
+			_check(overlay_material != null, "material de gotas sobre cámara")
+			if overlay_material != null:
+				var overlay_density = overlay_material.get_shader_parameter("drop_density")
+				_check(
+					overlay_density != null and float(overlay_density) > 0.0,
+					"las gotas de cámara siguen al campo de gotas"
+				)
+	cabin_scene.queue_free()
+	await get_tree().process_frame
+
+
+func _windshield_material(controller: RainFxController) -> ShaderMaterial:
+	for entry in controller._materials:
+		if entry["is_windshield"]:
+			return entry["material"]
+	return null
+
+
+func _test_fx_budgets() -> void:
+	var pc: Dictionary = _spec.section("budgets").get("pc", {})
+	var mobile: Dictionary = _spec.section("budgets").get("mobile", {})
+	var pc_gpu: Dictionary = pc.get("gpu", {})
+	var mobile_gpu: Dictionary = mobile.get("gpu", {})
+	_check(int(pc_gpu.get("max_draw_calls", 0)) == 8, "presupuesto GPU PC de 8 draw calls")
+	_check(int(mobile_gpu.get("max_draw_calls", 0)) == 4, "presupuesto GPU móvil de 4 draw calls")
+	_check(int(pc_gpu.get("max_overdraw_layers", 0)) == 5, "presupuesto GPU PC de 5 capas de overdraw")
+	_check(int(mobile_gpu.get("max_overdraw_layers", 0)) == 3, "presupuesto GPU móvil de 3 capas de overdraw")
+	_check(float(pc_gpu.get("max_fill_percent", 0.0)) == 6.0, "presupuesto GPU PC de 6 % de fill")
+	_check(float(mobile_gpu.get("max_fill_percent", 0.0)) == 10.0, "presupuesto GPU móvil de 10 % de fill")
+	# Configuración real de la rebanada: VFX sin gotas de cámara.
+	var slice_fx := RainFxController.new()
+	slice_fx.enable_vfx = true
+	slice_fx.camera_drops = false
+	var slice_budget := slice_fx.estimate_gpu_budget()
+	_check(int(slice_budget["added_draw_calls"]) <= int(pc_gpu.get("max_draw_calls", 0)), "rebanada dentro de draw calls PC")
+	_check(int(slice_budget["added_draw_calls"]) <= int(mobile_gpu.get("max_draw_calls", 0)), "rebanada dentro de draw calls móvil")
+	_check(int(slice_budget["overdraw_layers"]) <= int(mobile_gpu.get("max_overdraw_layers", 0)), "rebanada dentro de overdraw móvil")
+	_check(float(slice_budget["fill_percent"]) <= float(pc_gpu.get("max_fill_percent", 0.0)), "rebanada dentro del fill PC")
+	# Configuración real de la cabina: gotas de cámara sin VFX de exteriores.
+	var cabin_fx := RainFxController.new()
+	cabin_fx.enable_vfx = false
+	cabin_fx.camera_drops = true
+	var cabin_budget := cabin_fx.estimate_gpu_budget()
+	_check(int(cabin_budget["added_draw_calls"]) <= int(mobile_gpu.get("max_draw_calls", 0)), "cabina dentro de draw calls móvil")
+	_check(int(cabin_budget["overdraw_layers"]) <= int(mobile_gpu.get("max_overdraw_layers", 0)), "cabina dentro de overdraw móvil")
+	_check(float(cabin_budget["fill_percent"]) <= float(mobile_gpu.get("max_fill_percent", 0.0)), "cabina dentro del fill móvil")
+	# Peor caso combinado nunca supera el presupuesto móvil.
+	var worst_fx := RainFxController.new()
+	worst_fx.enable_vfx = true
+	worst_fx.camera_drops = true
+	var worst := worst_fx.estimate_gpu_budget()
+	_check(int(worst["added_draw_calls"]) <= int(mobile_gpu.get("max_draw_calls", 0)), "peor caso dentro de draw calls móvil")
+	_check(int(worst["overdraw_layers"]) <= int(mobile_gpu.get("max_overdraw_layers", 0)), "peor caso dentro de overdraw móvil")
+	_check(float(worst["fill_percent"]) <= float(mobile_gpu.get("max_fill_percent", 0.0)), "peor caso dentro del fill móvil")
+	slice_fx.free()
+	cabin_fx.free()
+	worst_fx.free()
+	_check(bool(_spec.boolean("budgets.measurement.warmup_required_before_gameplay")), "warm-up obligatorio antes del gameplay")
+	print(
+		"[RAIN] Presupuesto GPU proyectado: rebanada %s, cabina %s, peor caso %s"
+		% [str(slice_budget), str(cabin_budget), str(worst)]
+	)

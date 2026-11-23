@@ -2,7 +2,7 @@ extends Control
 ## Pantalla de arranque desde la Fase 1.2 y acceso a la rebanada vertical de 1.4.
 ## Verifica los servicios base y abre el panel QA, sin mecánicas de conducción.
 
-const PHASE := "3.3"
+const PHASE := "3.4"
 const VERTICAL_SLICE_SCENE := "res://scenes/vertical_slice/VerticalSlice.tscn"
 const CABIN_SCENE := "res://scenes/vehicle/CabinInteraction.tscn"
 const REPOSITORY := "emanuelindustri-source/ruta-nocturna-1999"
@@ -30,6 +30,8 @@ const SERVICE_NAMES := [
 
 
 func _ready() -> void:
+	# Warm-up de shaders de lluvia (F3.4) antes de abrir cualquier gameplay.
+	RainFxWarmup.run(self)
 	var version: String = str(ProjectSettings.get_setting("application/config/version", "0.0.0"))
 	var active := _count_services()
 	kicker_label.text = tr("BOOT_KICKER")

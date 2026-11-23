@@ -376,4 +376,53 @@ medición.
 
 - F3.3 no implementa shaders, VFX, arte, pérdida de agarre ni vadeo.
 - La medición es de escritorio y headless; el Redmi se mide en F3.5/F10.2.
-- El warm-up de shaders sigue pendiente y es obligatorio antes de gameplay.
+
+## 16. GLSL de producción, VFX y render real (Fase 3.4)
+
+### Pruebas
+
+```powershell
+.\tools\dev\rain_test.cmd          # headless: contratos, modelos y uniforms
+.\tools\dev\render_test.cmd        # ventana Vulkan Forward+: render real y GPU
+```
+
+- La prueba de lluvia amplía sus comprobaciones con los shaders (carga,
+  uniforms, include común), el `RainFxController` (enlace de materiales,
+  uniforms que siguen a los modelos, pivotes de escobilla, charcos visibles y
+  gotas de cámara) y los presupuestos GPU proyectados contra
+  `budgets.*.gpu`.
+- `tests/render/RainFxRenderTest.tscn` carga boot, rebanada y cabina en
+  ventana, captura `build/logs/render/f34_*.png`, mide frame time medio/p95,
+  draw calls y primitivas reales, y comprueba que el warm-up termina antes de
+  activar los FX (`[RAINFX] WARMUP_*` antes de `VERTICAL_SLICE_READY`).
+- La build de Windows exportada se ejecuta 20 s y debe cerrar limpia (exit 0,
+  sin marcador de sesión residual).
+
+### Presupuesto GPU proyectado (peor caso)
+
+| Elemento | Draw calls | Overdraw | Fill estimado | Presupuesto móvil |
+|---|---|---|---|---|
+| Estrellas + salpicaduras + gotas de cámara | 3 | 3 capas | ~6 % | 4 / 3 / 10 % |
+
+Los materiales mojados sustituyen a los materiales existentes con
+`material_override` y no añaden llamadas de dibujo. El overdraw y el fill son
+estimaciones del diseño de VFX; la medición GPU real es F3.5/F10.1.
+
+### Criterios
+
+- Ningún shader contiene valores de balance: todo llega por uniform desde los
+  modelos de F3.3.
+- El warm-up se ejecuta antes del gameplay y los FX no se activan hasta que
+  termina.
+- Las llamadas de dibujo añadidas, el overdraw y el fill estimado se mantienen
+  dentro de `budgets.*.gpu` en PC y móvil.
+- El frame time medio con lluvia activa se mantiene dentro del presupuesto de
+  frame del contrato (con tolerancia de vsync a 60 Hz).
+
+### Límites
+
+- No hay pérdida de agarre, daño, vadeo ni anti-atasco: eso es F5.1.
+- La lluvia de las escenas es lookdev; la real llega con `WeatherManager` en
+  F4.4.
+- La medición GPU en ruta y dispositivo (RenderDoc, Adreno Profiler, PSS) es
+  F3.5/F10.1/F10.2.

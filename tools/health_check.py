@@ -165,6 +165,20 @@ REQUIRED_FILES = [
     "tools/dev/interaction_test.ps1",
     "tests/fixtures/save_v0_2_0.json",
     "tools/make_save_fixture.py",
+    "shaders/rain_fx_common.gdshaderinc",
+    "shaders/wet_paint.gdshader",
+    "shaders/wet_glass.gdshader",
+    "shaders/wet_road.gdshader",
+    "shaders/rain_streaks.gdshader",
+    "shaders/splash_ring.gdshader",
+    "shaders/camera_drops.gdshader",
+    "src/weather/rain_fx_controller.gd",
+    "src/weather/rain_vfx.gd",
+    "src/weather/rain_fx_warmup.gd",
+    "tests/render/RainFxRenderTest.tscn",
+    "tests/render/rain_fx_render_test.gd",
+    "tools/dev/render_test.cmd",
+    "tools/dev/render_test.ps1",
 ]
 
 REQUIRED_REPO_BINARIES = {".apk", ".aab", ".keystore", ".jks", ".p12", ".pfx"}

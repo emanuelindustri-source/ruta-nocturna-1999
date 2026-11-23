@@ -1,11 +1,13 @@
-# Lluvia, humedad y superficies (Fase 3.3)
+# Lluvia, humedad y superficies (Fase 3.3 → 3.4)
 
 **Contrato:** `data/schemas/rain_surface_fx.json` (`schema_version: 1`).  
 **Esquema:** `data/schemas/json/rain_surface_fx.schema.json`.  
 **Pruebas:** `tests/weather/RainFxTest.tscn` y `tools/dev/rain_test.cmd`.  
-**Estado:** matemática y contratos de F3.3. Sin shaders GLSL, sin VFX, sin assets
-nuevos y sin mecánicas de conducción. F3.4 implementa el GLSL; F3.5 mide la
-integración y el coste GPU real.
+**Render:** `tests/render/RainFxRenderTest.tscn` y `tools/dev/render_test.cmd`.  
+**Estado:** matemática y contratos de F3.3 + GLSL de producción y VFX de F3.4.
+Sin pérdida de agarre, vadeo ni clima real: F4.4 conecta `WeatherManager` y
+F5.1 consume charcos/vadeo. La medición GPU completa en ruta y dispositivo es
+F3.5/F10.1.
 
 ## 1. Alcance
 
@@ -224,3 +226,77 @@ Límites conocidos:
 - No hay shader todavía: la forma, el reflejo y el overdraw se validan en F3.4.
 - No hay pérdida de agarre ni vadeo: eso es F5.1.
 - La medición CPU es headless y de escritorio; el Redmi se mide en F3.5/F10.2.
+
+## 11. GLSL de producción y VFX (Fase 3.4)
+
+Los shaders viven en `shaders/` y **consumen** el estado de los modelos de
+F3.3: ningún shader integra la simulación de humedad, gotas, barrido o
+charcos. El servicio de escena `RainFxController`
+(`src/weather/rain_fx_controller.gd`) hace de puente: ejecuta los modelos y
+proyecta su estado a uniforms cada frame. `RainVFX` monta las partículas y
+`RainFxWarmup` compila las pipelines antes del gameplay.
+
+| Shader | Uso | Estado consumido (F3.3) |
+|---|---|---|
+| `rain_fx_common.gdshaderinc` | Campo procedural de gotas con fusión visual de vecinas, estelas de escurrido, sector de barrido y ondas de charco | Parámetros derivados; sin simulación |
+| `wet_paint.gdshader` | Pintura, plástico y cromo mojados | `SurfaceWetnessModel` (wetness, film) y `DropletFlowModel` (densidad, radio, desliz, escurrido) |
+| `wet_glass.gdshader` | Cristales: gotas, refracción, sector barrido y estela de goma | `SurfaceWetnessModel`, `DropletFlowModel` y `WiperKinematics` (ángulos, desgaste, eficiencia) |
+| `wet_road.gdshader` | Asfalto mojado, película, ondas de lluvia y charcos visibles | `SurfaceWetnessModel` (vía) y `PuddleModel` (profundidad normalizada por zona) |
+| `rain_streaks.gdshader` | Estrellas de lluvia (GPUParticles3D) | Intensidad de lluvia (lookdev/F4.4) |
+| `splash_ring.gdshader` | Salpicaduras de impacto en la vía | Intensidad de lluvia |
+| `camera_drops.gdshader` | Gotas sobre la lente/parabrisas desde la cabina | `DropletFlowModel` y `WiperKinematics` |
+
+Reglas de la capa visual:
+
+- La fusión visual de gotas vecinas es procedural (celdas + estela), como
+  anticipa `droplets.coalescence_note`; no hay comparaciones O(n²) en CPU.
+- El marco de cada superficie se deriva de la malla (u = derecha, v = arriba,
+  o atrás en capó/techo según `flow_dir`) y el flujo es la proyección de
+  gravedad + deriva de viento, coherente con `droplets.equations.wind_drift`.
+- El barrido renderizado usa los ángulos de `WiperKinematics` en la convención
+  del contrato (0° = +X, izquierda 180° → 80°, derecha 0° → 100°). Las mallas
+  `wiper_left`/`wiper_right` de F3.1 giran sobre los pivotes de
+  `wiper.wipers[].pivot_m` sin modificar el GLB.
+- La goma gastada deja estela (`wear.streak_gain_at_full_wear`) y el sector
+  barrido se limpia con la eficiencia del modelo; no se añade ningún mando a
+  `cabin_interaction.json` v2.
+- Los charcos visibles se colocan en el mundo desde `puddle_zones` del servicio
+  (colocación visual de F3.4) y toman su profundidad de `PuddleModel`. El
+  hidroplaneo y el vadeo siguen siendo F5.1.
+- Los valores de lluvia de las escenas son **lookdev** (`demo_*` en la escena);
+  F4.4 inyecta los reales con `RainFxController.set_weather()`.
+
+### Llamadas de dibujo y presupuestos GPU
+
+Los materiales mojados sustituyen a los `StandardMaterial3D` existentes
+(`material_override`): **0 llamadas nuevas** por carrocería, cristales y vía.
+El coste añadido son los VFX:
+
+| Elemento | Draw calls | Overdraw (capas) | Fill estimado |
+|---|---|---|---|
+| Estrellas de lluvia (rebanada) | 1 | 1 | ~2 % |
+| Salpicaduras (rebanada) | 1 | 1 | ~1 % |
+| Gotas sobre cámara (cabina) | 1 | 1 | ~3 % |
+| **Total peor caso** | **3** | **3** | **~6 %** |
+
+Dentro de `budgets.*.gpu` (PC 8/5/6 %, móvil 4/3/10 %). El overdraw y el fill
+son estimaciones del diseño de VFX; la medición GPU real (RenderDoc/Adreno
+Profiler) es F3.5/F10.1.
+
+### Warm-up
+
+`RainFxWarmup.run()` dibuja cada shader una vez en un `SubViewport` mínimo con
+`RenderingServer.force_draw()` y lo destruye. Se ejecuta en `Boot._ready`
+(antes de abrir cualquier gameplay) y de nuevo en cada escena con FX
+(`[RAINFX] WARMUP_DONE` antes de `VERTICAL_SLICE_READY`/`CABIN`); los FX solo
+se activan tras el warm-up (`fx_active`). En headless se omite con
+`[RAINFX] WARMUP_SKIP reason=headless` sin fingir compilación.
+
+## 12. Medición F3.4 (evidencia)
+
+La prueba `tests/render/RainFxRenderTest.tscn` (ventana, Vulkan Forward+)
+carga boot, rebanada y cabina con los shaders/VFX, captura
+`build/logs/render/f34_*.png` y publica `[RENDER][PERF]` con frame time
+medio/p95, draw calls y primitivas reales, más overdraw y fill proyectados.
+Las cifras medidas de esta subfase y la comparación con `budgets.*.gpu` se
+registran en `docs/status/CURRENT.md`.

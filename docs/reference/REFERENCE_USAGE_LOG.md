@@ -516,3 +516,60 @@ imágenes en contexto** y **no se copió ningún archivo** de
 - Revisión rápida: inicio y cierre de cada subfase.
 - Revisión completa: **2026-12-07**, o antes de la subfase de modelado/UI que
   corresponda (obligatoria antes de F3.4/F3.5).
+
+## 2026-11-23 — Fase 3.4 — GLSL de lluvia, gotas, barrido, charcos y VFX
+
+**Alcance:** revisión visual completa obligatoria antes de F3.4 (`AGENTS.md`,
+sección 10). Se usó el catálogo `docs/reference/reference_catalog.json` (95
+fichas) y las **hojas de contacto** `all_images.jpg` (95 fichas),
+`generated_concepts.jpg` (40 conceptos), `rain_f33_detail.jpg`,
+`exterior_f31_detail.jpg` e `interior_f32_detail.jpg`. Se generó una hoja de
+detalle nueva en `build/reference/contact_sheets/rain_f34_detail.jpg` (12
+recortes: cristales/pintura/escobillas reales y conceptos nocturnos de asfalto
+mojado, lluvia en cabina y charcos; no versionada). **No se cargaron las 40
+imágenes en contexto** y **no se copió ningún archivo** de
+`C:\Dev\fotos de ejemplo` al repositorio. La biblioteca externa quedó intacta
+(escaneo rápido: 95 archivos, sin cambios).
+
+### Referencias utilizadas
+
+| Referencia | Uso | Resultado |
+|---|---|---|
+| Catálogo de 95 fichas | Buscar fotos dedicadas de lluvia, gotas sobre pintura, escurrido, charcos o asfalto mojado | Sigue sin haber entradas dedicadas; las fotos reales del Esteem están secas y las piezas técnicas no muestran agua |
+| `all_images.jpg` (hoja de 95 fichas) | Inventario visual completo para lookdev de F3.4 | Confirmado el mismo inventario que en F3.3; sin series de lluvia ni superficies mojadas fotografiadas |
+| `generated_concepts.jpg` (40 conceptos) | Inspiración de reflejos de faros/neón sobre asfalto mojado, lluvia sobre vidrio y charcos nocturnos | Los reflejos son alargados y estrechos en la dirección de la vista, el asfalto mojado oscurece y brilla, los charcos reflejan fuentes puntuales; **no son canon ni fuente de cotas ni de texturas** |
+| `rain_f34_detail.jpg` (nueva, no versionada) | Recortes de cristales, brillo de pintura y conceptos mojados para el lookdev de gotas/película/charcos | Base de aspecto para los shaders: el brillo de la pintura se conserva y la humedad se aporta con película + gotas; no se extrajo ninguna textura ni color |
+| `exterior_f31_detail.jpg` | Brillo de pintura, cristales y escobillas apoyadas en la base del parabrisas | La pintura del coche real es lisa con highlight suave; las escobillas son dos brazos negros en reposo en la base, coherentes con `wiper_left`/`wiper_right` de `exterior_spec.json` |
+| `interior_f32_detail.jpg` | Base del parabrisas desde la cabina y zona de barrido | La zona limpia visible desde el conductor se corresponde con el sector de barrido de `rain_surface_fx.json` (pivotes UV 0,37/0,63) |
+| `ESTEEM_MECHANICAL_NOTES.md` | Confirmar límites de fuente | Sin datos de mojado, ángulo de contacto ni reflectancia del asfalto: los valores del contrato siguen siendo `design_value` |
+
+### Decisiones (F3.4)
+
+- El GLSL **consume** la matemática de F3.3 (`SurfaceWetnessModel`,
+  `DropletFlowModel`, `WiperKinematics`, `PuddleModel`): los shaders reciben
+  instancias/uniformes ya calculados y no reimplementan simulación.
+- La fusión visual de gotas vecinas se hace en el shader (ruido determinista de
+  celdas), sin comparaciones O(n²) en CPU, tal como anticipa el contrato.
+- El aspecto mojado se logra oscureciendo la albedo con la película y subiendo la
+  especular/reflejo; no se pintan texturas nuevas ni se copian de las fotos.
+- El barrido renderizado usa la cinemática `smoothstep` de F3.3 y la eficiencia
+  de goma gastada deja estela; sin mando nuevo en `cabin_interaction.json` v2.
+- Los charcos visibles se limitan a los arquetipos del contrato con
+  `visible_depth_mm`; hidroplaneo y vadeo siguen reservados a F5.1.
+- El presupuesto GPU del contrato (`budgets.*.gpu`) se mide con render real en
+  esta subfase (draw calls, overdraw, fill rate, frame time) y se documenta.
+
+### Descartado
+
+- Copiar imágenes, recortes o texturas de la biblioteca externa al repositorio.
+- Extraer mapas de normal/roughness de las fotos o de los conceptos de IA.
+- Presentar los conceptos nocturnos como canon o tomar de ellos valores de
+  reflectancia, profundidad de charco o intensidad de lluvia.
+- Implementar pérdida de agarre, daño, vadeo o anti-atasco (F5.1).
+- Reabrir F2.1–F3.2 ni duplicar la simulación de F3.3 en el shader.
+
+### Próxima revisión
+
+- Revisión rápida: inicio y cierre de cada subfase.
+- Revisión completa: **2026-12-07**, o antes de la subfase de modelado/UI que
+  corresponda (obligatoria antes de F4.3/F5.1).

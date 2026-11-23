@@ -406,3 +406,34 @@ Reglas:
   headless con `tests/weather/RainFxTest.tscn`.
 - El warm-up de shaders sigue siendo obligatorio antes del gameplay y se mide
   en F3.5/F10.1.
+
+### 13.1 GLSL y VFX (Fase 3.4)
+
+F3.4 añade la capa visual sin tocar la simulación ni los contratos:
+
+```mermaid
+flowchart LR
+    SW[SurfaceWetnessModel] --> RC[RainFxController · servicio de escena]
+    DF[DropletFlowModel] --> RC
+    WK[WiperKinematics] --> RC
+    PM[PuddleModel] --> RC
+    RC -->|uniforms| SH[wet_paint / wet_glass / wet_road]
+    RC -->|ángulos| WP[mallas wiper_left / wiper_right]
+    RC -->|intensidad| VFX[RainVFX · estrellas y salpicaduras]
+    WU[RainFxWarmup] -->|compila antes del gameplay| SH
+```
+
+- `src/weather/rain_fx_controller.gd` (`RainFxController`) es **servicio de
+  escena**, no un autoload: se instancia en `VerticalSlice.tscn` y
+  `CabinInteraction.tscn`. Expone `set_weather()` para que F4.4 inyecte lluvia
+  real de `WeatherManager`; los valores `demo_*` de las escenas son lookdev.
+- `shaders/*.gdshader(gdshaderinc)` consumen uniforms derivados de los modelos
+  de F3.3; ningún shader reimplementa humedad, gotas, barrido ni charcos.
+- Las mallas de escobillas de F3.1 se animan sobre los pivotes del contrato con
+  `WiperKinematics`; `cabin_interaction.json` v2 no cambia.
+- `src/weather/rain_vfx.gd` monta dos `GPUParticles3D` (estrellas y
+  salpicaduras) y el quad de gotas de cámara de la cabina: 3 llamadas de
+  dibujo como peor caso, dentro de `budgets.*.gpu`.
+- `src/weather/rain_fx_warmup.gd` compila las pipelines antes del gameplay
+  (marcadores `[RAINFX] WARMUP_*`); los FX quedan inactivos hasta que
+  termina.

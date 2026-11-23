@@ -1,8 +1,8 @@
 # Estado actual
 
-**Subfase:** 3.3 — Matemática de humedad, gotas, limpiaparabrisas, charcos y presupuesto  
-**Versión:** `v0.3.2`  
-**Modelo de la subfase:** DS-R (`opencode-go/deepseek-v4.1-flash#max`)  
+**Subfase:** 3.4 — GLSL de producción, gotas, barrido, escurrido, charcos, asfalto mojado y VFX  
+**Versión:** `v0.3.3`  
+**Modelo de la subfase:** MiMo Pro (`opencode-go/mimo-v2.6-pro`)  
 **Fecha:** 2026-11-23  
 **Estado:** completada y publicada.
 
@@ -17,24 +17,27 @@
 | Prueba | Resultado |
 |---|---|
 | Contratos JSON + Schemas | **8 contratos válidos**, 0 errores, 1 advertencia conocida (202 claves de datos → F8.4) |
-| Localización | 11 idiomas, 0 errores; `BOOT_KICKER` actualizado a Fase 3.3; fuentes CJK pendientes de F8.4 |
-| Assets generados | 4 manifiestos válidos (bloqueo + cabina + exterior + interior), 0 errores; F3.3 no genera ni modifica assets |
-| Contrato de lluvia (F3.3) | `rain_surface_fx.json` v1 + JSON Schema; 6 clases de superficie, 9 paneles del vehículo, 3 superficies de vía, 2 perfiles de gotas, 2 escobillas, 5 arquetipos de charco y presupuestos PC/móvil |
-| Validación cruzada F3.3 | Área del parabrisas y pivotes/longitudes de escobillas contra `exterior_spec.json`; admisión (0,68 m) y profundidad segura (0,30 m) contra `vehicle_components.json`; suma de gotas 4.096 y orden de presupuestos |
-| Prueba de lluvia | **126/126 comprobaciones**, exit 0: humedad, determinismo de gotas, barrido, desgaste, charcos, hidroplaneo, vadeo y CPU |
-| Presupuesto CPU medido | PC **~0,21 ms** media / **~0,28 ms** p95 (4.096 gotas, 24 charcos, 60 Hz); móvil **~0,17 ms** media / **~0,21 ms** p95 (1.536 gotas, 12 charcos, 30 Hz). Límites declarados: 1,0/1,6 ms y 1,5/2,4 ms |
-| Smoke test | **270/270 comprobaciones**, exit 0 (sin cambios de conteo; versión 0.3.2) |
+| Localización | 11 idiomas, 0 errores; `BOOT_KICKER` actualizado a Fase 3.4; fuentes CJK pendientes de F8.4 |
+| Assets generados | 4 manifiestos válidos, 0 errores; F3.4 no genera ni modifica assets |
+| Contrato de lluvia | `rain_surface_fx.json` v1 **sin cambios**: F3.4 solo consume humedad, gotas, barrido y charcos por uniforms |
+| Prueba de lluvia | **206/206 comprobaciones**, exit 0 (126 de F3.3 + 80 nuevas de shaders, controlador, uniforms, VFX y presupuestos GPU) |
+| Smoke test | **270/270 comprobaciones**, exit 0 (sin cambios de conteo; versión 0.3.3) |
 | Tren motriz | **125/125 comprobaciones**, exit 0 (sin cambios) |
 | Cabina y rig de manos | **46/46 comprobaciones**, exit 0 (sin cambios) |
 | Interacción contextual | **257/257 comprobaciones**, exit 0 (sin cambios) |
-| Godot import headless | exit 0; clases `RainSurfaceSpec`, `SurfaceWetnessModel`, `DropletFlowModel`, `WiperKinematics` y `PuddleModel` registradas sin errores |
-| Presets de export | Windows y Android válidos; `0.3.2`, Android `version/code=109` |
-| Build Windows exportada | `build/exports/windows/RutaNocturna1999.exe`, 103.070.208 bytes, SHA-256 `7E3065D5109EAC05CA97CD6A955F880C97C53E6C0771BC1BE266D1FC0681FE93` |
-| Prueba de juego (render real) | Boot (`BOOT_READY version=0.3.2`), rebanada vertical (`VERTICAL_SLICE_READY version=0.3.2`) y cabina con interior definitivo y 3 espejos `SubViewport`, todas en Vulkan Forward+ sin errores; build exportada ejecutada 20 s y cerrada limpia (exit 0, sin marcador de sesión residual) |
-| Referencias | Revisión visual completa del hito F3.3 con catálogo de 95 fichas, hojas de contacto existentes y hoja de detalle nueva; registro en `REFERENCE_USAGE_LOG.md`; biblioteca externa sin cambios (95 archivos) |
-| Espacio libre | 79,8 GB en `C:` (mínimo 20 GB) |
+| Godot import headless | exit 0; clases `RainFxController`, `RainVFX` y `RainFxWarmup` registradas sin errores |
+| Presets de export | Windows y Android válidos; `0.3.3`, Android `version/code=110` |
+| Prueba de render real (ventana, Vulkan Forward+) | `tests/render/RainFxRenderTest.tscn` con los shaders/VFX nuevos: **RENDER_OK** en boot, rebanada y cabina; capturas `build/logs/render/f34_*.png` |
+| Warm-up de shaders | `[RAINFX] WARMUP_DONE` **antes** de `BOOT_READY`/`VERTICAL_SLICE_READY` en las tres escenas; primera compilación ~3,4 s (Intel UHD), ~0,04 s con caché; FX inactivos hasta que termina |
+| Frame time medido | boot **16,666/17,1 ms** (media/p95); rebanada con tormenta de 90 s **16,670/16,9 ms**; cabina **16,664/17,1 ms** — 60 fps con vsync dentro del `frame_budget_ms` del contrato (tolerancia de vsync) |
+| Draw calls y primitivas | boot 12 / 548; rebanada **227** / ~15.900 (con VFX activos); cabina **195,5** / 9.227 (con gotas de cámara y 3 espejos) |
+| Presupuesto GPU (`budgets.*.gpu`) | materiales mojados con `material_override` (**0 draw calls nuevos**); VFX añaden 2 (rebanada) y 1 (cabina); peor caso proyectado **3 draw calls / 3 capas de overdraw / ~6 % de fill** contra PC 8/5/6 % y móvil 4/3/10 % |
+| Build Windows exportada | `build/exports/windows/RutaNocturna1999.exe`, 103.070.208 bytes, SHA-256 `881D5FE8E76099F94D33EB9C4D30EFB9ECE9E1F3794920876225A2037A65F1E0` |
+| Build exportada ejecutada | 20 s (`--quit-after 1200`), **exit 0** y sin marcador de sesión residual |
+| Referencias | Revisión visual completa del hito F3.4 con catálogo de 95 fichas, hojas de contacto y hoja de detalle nueva `rain_f34_detail.jpg`; registro en `REFERENCE_USAGE_LOG.md`; biblioteca externa sin cambios (95 archivos) |
+| Espacio libre | 78,4 GB en `C:` (mínimo 20 GB) |
 | Dispositivo ADB | Redmi 22101316G autorizado (`obojropz89mbwgpn`) |
-| Git | Rama `main`, commit y tag `v0.3.2` publicados |
+| Git | Rama `main`, commit y tag `v0.3.3` publicados |
 
 Advertencias conocidas:
 
@@ -43,67 +46,63 @@ Advertencias conocidas:
 - Las cotas de carrocería/interior siguen siendo `provisional_design_value`:
   verificar contra manual o medición antes de Fase 5
   (`ESTEEM_MECHANICAL_NOTES.md`).
-- Los valores de humedad, gotas, barrido y charcos de F3.3 son `design_value`
-  provisionales. La biblioteca externa no contiene fotos dedicadas de lluvia,
-  gotas o charcos: las fotos reales del Esteem están secas y los conceptos
-  nocturnos solo inspiran atmósfera (no canon, sin cotas).
-- El GLSL de producción, los VFX, la fusión visual de gotas, el barrido
-  renderizado, el asfalto mojado y los charcos visibles son F3.4. El warm-up de
-  shaders, el overdraw, el fill rate, el PSS en ruta y las capturas visuales son
-  F3.5/F10.1.
-- No se añadió un mando de limpiaparabrisas a `cabin_interaction.json` v2: el
-  contrato declara `control_source: future_cabin_stalk_or_automatic`. La
-  integración de entrada se decide en F3.4/F3.5 sin reabrir F2.3/F2.4.
-- La prueba de lluvia mide CPU headless de escritorio; no es una medición GPU ni
-  de dispositivo. El Redmi se mide en F3.5/F10.2.
-- No hay conducción real: el chasis `VehicleBody3D` y la física son F5; la
-  rebanada sigue sin cuerpos de física.
+- Los valores de humedad, gotas, barrido y charcos siguen siendo `design_value`
+  provisionales de F3.3; la biblioteca externa no contiene fotos dedicadas de
+  lluvia, gotas ni charcos (revisión F3.4 registrada en
+  `REFERENCE_USAGE_LOG.md`).
+- La lluvia de las escenas es **lookdev** (`demo_*`): F4.4 inyecta la lluvia
+  real con `RainFxController.set_weather()`. El warm-up completo en ruta y la
+  medición GPU en dispositivo (RenderDoc/Adreno, PSS) son F3.5/F10.1/F10.2.
+- El overdraw y el fill del contrato se contrastan con la proyección del
+  diseño de VFX (2+1 llamadas); la medición GPU real es F3.5/F10.1.
+- No se añadió un mando de limpiaparabrisas a `cabin_interaction.json` v2:
+  el barrido se anima con `WiperKinematics` sin controles nuevos.
+- No hay pérdida de agarre, daño, vadeo ni anti-atasco: eso es F5.1.
+- No hay conducción real: el chasis `VehicleBody3D` y la física son F5.
 - La build de Windows exportada es debug de referencia, no versionada, en
   `build/exports/`.
-- La prueba ADB completa (`test_android_adb.ps1`) no se repite en F3.3 (no es
+- La prueba ADB completa (`test_android_adb.ps1`) no se repite en F3.4 (no es
   hito Android); el dispositivo sigue autorizado y la APK nueva llega en
   F3.5/F10.2.
 
 ## Completado
 
-- **Revisión visual completa de referencias** (hito obligatorio de F3.3):
+- **Revisión visual completa de referencias** (hito obligatorio de F3.4):
   catálogo (95 fichas), hojas `all_images.jpg`, `generated_concepts.jpg`,
-  `exterior_f31_review.jpg`, `exterior_f31_detail.jpg`,
-  `interior_f32_review.jpg` e `interior_f32_detail.jpg`, más una hoja de detalle
-  nueva `build/reference/contact_sheets/rain_f33_detail.jpg`; uso registrado en
-  `docs/reference/REFERENCE_USAGE_LOG.md`. Sin copiar archivos de
-  `C:\Dev\fotos de ejemplo` y sin cargar las 40 imágenes en contexto.
-- `data/schemas/rain_surface_fx.json` (`schema_version: 1`,
-  `vehicle.esteem.rain_surface_fx`): contrato declarativo de humedad de
-  superficies, gotas, limpiaparabrisas, charcos y presupuestos, con
-  `source_status`/`source_note`, ecuaciones y `schema_history`.
-- `data/schemas/json/rain_surface_fx.schema.json` y validación ampliada en
-  `tools/validate_schemas.py` (8 contratos, referencias cruzadas con
-  `exterior_spec.json` y `vehicle_components.json`).
-- `src/weather/rain_surface_spec.gd`: cargador runtime del contrato.
-- `src/weather/surface_wetness_model.gd`: película, drenaje, evaporación,
-  infiltración, histéresis y estados `dry/damp/wet/soaked`.
-- `src/weather/droplet_flow_model.gd`: nucleación determinista, crecimiento,
-  radio crítico, desliz por gravedad/viento, evaporación, escurrido y búfer de
-  instancias de 6 floats para F3.4.
-- `src/weather/wiper_kinematics.gd`: barrido smoothstep, modos
-  off/intermitente/lento/rápido, pausas, desgaste y limpieza de sector del
-  parabrisas; sin controles nuevos de cabina.
-- `src/weather/puddle_model.gd`: arquetipos corona/hundimiento/bache/hombro/vado,
-  profundidad, drenaje, hidroplaneo informativo y estados de vadeo.
-- `tests/weather/RainFxTest.tscn` + `rain_fx_test.gd`: 126 comprobaciones
-  headless; `tools/dev/rain_test.cmd` y `rain_test.ps1`; `health_check.py`
-  ejecuta `rain_tests` y la CI la ejecuta en Linux.
-- `docs/architecture/RAIN_AND_SURFACE_FX.md` con ecuaciones, integración
-  F3.4/F4.4/F5.1, presupuestos medidos y límites; secciones nuevas en
-  `DATA_CONTRACTS.md`, `SYSTEM_ARCHITECTURE.md`, `STATE_MACHINES.md`,
-  `QA_AND_RECOVERY.md` y `BUILD_AND_RELEASE.md`.
-- Versión `0.3.2` en `VERSION`, `project.godot`, `export_presets.cfg`
-  (`version/code=109`), `EXPECTED_VERSION` del smoke test, `PHASE` de Boot y
-  `BOOT_KICKER` en once idiomas.
+  `rain_f33_detail.jpg`, `exterior_f31_detail.jpg` e `interior_f32_detail.jpg`,
+  más una hoja de detalle nueva
+  `build/reference/contact_sheets/rain_f34_detail.jpg` (recortes de
+  cristales/pintura/escobillas y conceptos mojados; no versionada); uso
+  registrado en `docs/reference/REFERENCE_USAGE_LOG.md`. Sin copiar archivos
+  de `C:\Dev\fotos de ejemplo` y sin cargar las 40 imágenes en contexto.
+- **GLSL de producción** en `shaders/`: `rain_fx_common.gdshaderinc` (campo de
+  gotas con fusión visual, estelas, sector de barrido, ondas de charco),
+  `wet_paint.gdshader`, `wet_glass.gdshader` (gotas, refracción, zona limpia y
+  estela de goma), `wet_road.gdshader` (película, asfalto mojado y charcos de
+  `PuddleModel`), `rain_streaks.gdshader`, `splash_ring.gdshader` y
+  `camera_drops.gdshader`.
+- `src/weather/rain_fx_controller.gd` (`RainFxController`, servicio de escena):
+  consume los cinco modelos de F3.3 por uniforms, aplica `material_override`
+  mojado a 24 piezas del exterior y a la vía, anima las escobillas de F3.1
+  sobre los pivotes del contrato y expone `set_weather()` para F4.4.
+- `src/weather/rain_vfx.gd` (estrellas y salpicaduras con `draw_pass_1`) y
+  `src/weather/rain_fx_warmup.gd` (warm-up antes del gameplay en Boot y en
+  cada escena con FX).
+- Integración en `VerticalSlice.tscn` (tormenta lookdev con charcos visibles)
+  y `CabinInteraction.tscn` (gotas sobre cámara con barrido), sin tocar los
+  assets ni contratos de F2.1–F3.2.
+- `tests/render/RainFxRenderTest.tscn` + `tools/dev/render_test.cmd`: render
+  real con capturas, frame time, draw calls, primitivas y verificación de
+  warm-up; `RainFxProbe.tscn` como sonda de diagnóstico de lookdev.
+- Prueba de lluvia ampliada a **206 comprobaciones** y documentación F3.4 en
+  `RAIN_AND_SURFACE_FX.md`, `SYSTEM_ARCHITECTURE.md`, `DATA_CONTRACTS.md`,
+  `STATE_MACHINES.md` y `QA_AND_RECOVERY.md`.
+- Versión `0.3.3` en `VERSION`, `project.godot`, `export_presets.cfg`
+  (`version/code=110`), `EXPECTED_VERSION` del smoke y la lluvia, `PHASE` de
+  Boot y `BOOT_KICKER` en once idiomas.
 
 ## Siguiente
 
-Fase **3.4 con MiMo Pro**: GLSL de producción, gotas, barrido, escurrido,
-charcos, asfalto mojado y VFX (tag `v0.3.3`). No se inicia en este chat. El
+Fase **3.5 con MiMo Flash**: integración, compresión, warm-up, rendimiento y
+capturas de referencia visual (tag `v0.3.4`). No se inicia en este chat. El
 prompt completo está en `docs/status/HANDOFF.md`.

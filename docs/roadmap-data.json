@@ -2,11 +2,11 @@
   "project": "Ruta Nocturna: 1999",
   "repository": "emanuelindustri-source/ruta-nocturna-1999",
   "generated_from": "ROADMAP.md",
-  "source_sha256": "cb3acd068dee54d5000e2b2f44b757945081423cd28f541734a90dde75e6b788",
-  "current_version": "v0.3.2",
-  "version_file": "0.3.2",
-  "current_subphase": "3.3",
-  "global_status": "Fase 1 y Fase 2 completadas; Fase 3 en marcha (3.3); siguiente gate 3.4",
+  "source_sha256": "a8823ca8d6a3387643266eb7fe3315a465fa4614e6c5fc5523e8bfa3cbc84f85",
+  "current_version": "v0.3.3",
+  "version_file": "0.3.3",
+  "current_subphase": "3.4",
+  "global_status": "Fase 1 y Fase 2 completadas; Fase 3 en marcha (3.4); siguiente gate 3.5",
   "models": {
     "DS-R": "DeepSeek V4.1 Flash 1017 · Razonamiento",
     "DS-S": "DeepSeek V4.1 Flash 1017 · Estándar",
@@ -14,11 +14,11 @@
     "MiMo Flash": "MiMo-V2.6-Flash"
   },
   "summary": {
-    "completed": 11,
+    "completed": 12,
     "in_progress": 0,
-    "pending": 34,
+    "pending": 33,
     "total": 45,
-    "percent": 24.4
+    "percent": 26.7
   },
   "phases": [
     {
@@ -162,9 +162,9 @@
           "version": "v0.3.3",
           "model": "MiMo Pro",
           "model_label": "MiMo-V2.6-Pro",
-          "summary": "GLSL de producción, gotas, barrido, escurrido, charcos, asfalto mojado y VFX.",
-          "status": "pending",
-          "status_label": "Pendiente"
+          "summary": "GLSL de producción, gotas, barrido, escurrido, charcos, asfalto mojado y VFX. Validado y publicado.",
+          "status": "completed",
+          "status_label": "Completada"
         },
         {
           "id": "3.5",
@@ -180,9 +180,9 @@
       "status": "in_progress",
       "status_label": "En curso",
       "progress": {
-        "completed": 3,
+        "completed": 4,
         "in_progress": 0,
-        "pending": 2,
+        "pending": 1,
         "total": 5
       }
     },

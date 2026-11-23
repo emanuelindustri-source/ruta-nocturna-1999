@@ -466,3 +466,21 @@ Reglas:
   coste GPU, el warm-up y el PSS se miden en F3.4/F3.5/F10.1.
 - Cambiar la estructura exige incrementar `schema_version`; cambiar un valor
   exige actualizar su `source_status`/`source_note`.
+
+### 18.1 GLSL de producción (Fase 3.4, contrato sin cambios)
+
+F3.4 consume este contrato **sin modificarlo** (`schema_version` sigue en 1):
+
+- `src/weather/rain_fx_controller.gd` proyecta `wetness`, `droplets`, `wiper` y
+  `puddles` a uniforms de `shaders/wet_*.gdshader`. Los shaders no contienen
+  valores de balance: todo llega por uniform desde los modelos de F3.3.
+- El búfer de instancias (`droplets.instance_stride: 6`) conserva su layout;
+  F3.4 usa los contadores y estadísticas del campo para la densidad/radio/
+  desliz visibles y deja la fusión visual de gotas al shader
+  (`droplets.coalescence_note`).
+- `budgets.*.gpu` sigue declarado `pending_f34_f35`: F3.4 deja evidencia de
+  render y proyecciones (`tests/render/RainFxRenderTest.tscn`); la medición
+  GPU completa en ruta y dispositivo la cierran F3.5/F10.1.
+- Los ángulos de barrido renderizados usan la convención del contrato
+  (rest 180°/0°, sweep ∓100°) sobre los pivotes `pivot_m` derivados de
+  `exterior_spec.json`.

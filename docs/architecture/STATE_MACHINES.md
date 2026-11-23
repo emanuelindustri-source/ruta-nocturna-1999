@@ -124,6 +124,9 @@ barrido limpia un sector del parabrisas y el desgaste reduce la eficiencia sin
 bloquear los controles. Los charcos pasan por `dry → damp → standing → deep` y
 drenan cuando deja de llover. El contrato es
 `data/schemas/rain_surface_fx.json`; la mecánica de hidroplaneo y vadeo es F5.1.
+En F3.4 estos estados se **representan** en GLSL (`RainFxController` proyecta
+`wetness`, gotas, barrido y charcos a uniforms); la máquina de estados no cambia
+y sigue viviendo en los modelos de F3.3.
 
 ## 3. Entidad del folclore
 
