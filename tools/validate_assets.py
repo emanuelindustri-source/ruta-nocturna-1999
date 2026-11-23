@@ -180,10 +180,96 @@ def validate_spec(spec_path: Path, errors: list[str]) -> None:
         errors.append(f"blockout_spec: presupuestos de LOD no decrecientes: {budgets}")
 
 
+def validate_exterior_spec(spec_path: Path, blockout_path: Path, errors: list[str]) -> None:
+    """Invariantes del exterior: coherencia con el bloqueo y con los espejos."""
+    if not spec_path.exists():
+        errors.append(f"Falta {spec_path.relative_to(ROOT)}")
+        return
+    if not blockout_path.exists():
+        errors.append(f"Falta {blockout_path.relative_to(ROOT)}")
+        return
+    spec = load_json(spec_path)
+    blockout = load_json(blockout_path)
+
+    base = spec["base_dimensions"]
+    for key in ("length_m", "width_m", "height_m", "wheelbase_m", "track_m", "wheel_radius_m"):
+        if abs(float(base[key]) - float(blockout["dimensions"][key])) > 0.001:
+            errors.append(f"exterior_spec: {key} no coincide con blockout_spec")
+
+    tolerance = float(spec.get("validation_rules", {}).get("tolerance_m", 0.02))
+    overhang = float(spec.get("validation_rules", {}).get("pieces_overhang_m", 0.0))
+    bounds_x = float(base["width_m"]) / 2.0 + overhang
+    bounds_z = float(base["length_m"]) / 2.0 + overhang
+    bounds = spec.get("validation_rules", {}).get("anchor_bounds_m", {})
+    for piece in spec.get("pieces", []):
+        min_m, max_m = piece["min_m"], piece["max_m"]
+        if min_m[0] < -bounds_x - tolerance or max_m[0] > bounds_x + tolerance:
+            errors.append(f"exterior_spec: la pieza {piece['id']} excede el ancho")
+        if min_m[1] < 0.0 or max_m[1] > float(base["height_m"]) + tolerance:
+            errors.append(f"exterior_spec: la pieza {piece['id']} excede la altura")
+        if min_m[2] < -bounds_z - tolerance or max_m[2] > bounds_z + tolerance:
+            errors.append(f"exterior_spec: la pieza {piece['id']} excede el largo")
+        if min_m[0] >= max_m[0] or min_m[1] >= max_m[1] or min_m[2] >= max_m[2]:
+            errors.append(f"exterior_spec: la pieza {piece['id']} tiene bounds invertidos")
+        if piece["material"] not in spec["materials"]:
+            errors.append(f"exterior_spec: material desconocido en {piece['id']}: {piece['material']}")
+
+    ids = [piece["id"] for piece in spec.get("pieces", [])]
+    ids += [panel["id"] for panel in spec.get("glass_panels", [])]
+    if len(ids) != len(set(ids)):
+        errors.append("exterior_spec: IDs de pieza duplicados")
+
+    # Los espejos del exterior deben envolver las anclas anchor_mirror_* del bloqueo
+    # donde F2.4 monta las superficies funcionales (mirrors.budget de cabin_interaction).
+    anchors = {anchor["id"]: anchor["position_m"] for anchor in blockout["rig_anchor"]["anchors"]}
+    for side in ("left", "right"):
+        anchor = anchors.get(f"anchor_mirror_{side}")
+        shell = next((p for p in spec.get("pieces", []) if p["id"] == f"mirror_{side}_shell"), None)
+        if anchor is None or shell is None:
+            errors.append(f"exterior_spec: falta el espejo {side} o su ancla en el bloqueo")
+            continue
+        for axis in range(3):
+            inside = shell["min_m"][axis] - tolerance <= anchor[axis] <= shell["max_m"][axis] + tolerance
+            if not inside:
+                errors.append(
+                    f"exterior_spec: la carcasa mirror_{side}_shell no envuelve anchor_mirror_{side}"
+                )
+                break
+
+    # Ruedas coherentes con track/wheelbase/radius del bloqueo.
+    half_track = float(base["track_m"]) / 2.0
+    half_wheelbase = float(base["wheelbase_m"]) / 2.0
+    for wheel_id, expected in (
+        ("anchor_wheel_fl", (-half_track, half_wheelbase)),
+        ("anchor_wheel_fr", (half_track, half_wheelbase)),
+        ("anchor_wheel_rl", (-half_track, half_wheelbase)),
+        ("anchor_wheel_rr", (half_track, half_wheelbase)),
+    ):
+        anchor = anchors.get(wheel_id)
+        if anchor is None:
+            errors.append(f"exterior_spec: falta la ancla {wheel_id} en el bloqueo")
+            continue
+        if abs(abs(anchor[0]) - abs(expected[0])) > 0.001 or abs(abs(anchor[2]) - abs(expected[1])) > 0.001:
+            errors.append(f"exterior_spec: la rueda {wheel_id} no coincide con track/wheelbase")
+
+    lods = spec.get("lods", [])
+    lod_numbers = [int(lod["id"].replace("lod", "")) for lod in lods]
+    if sorted(lod_numbers) != [0, 1, 2]:
+        errors.append(f"exterior_spec: el spec debe declarar LOD0/LOD1/LOD2; hay {lod_numbers}")
+    budgets = [lod["max_triangles"] for lod in sorted(lods, key=lambda item: item["id"])]
+    if not all(budgets[i] > budgets[i + 1] for i in range(len(budgets) - 1)):
+        errors.append(f"exterior_spec: presupuestos de LOD no decrecientes: {budgets}")
+
+
 def validate() -> tuple[list[str], list[str]]:
     errors: list[str] = []
     warnings: list[str] = []
     validate_spec(ROOT / "data" / "vehicle" / "blockout_spec.json", errors)
+    validate_exterior_spec(
+        ROOT / "data" / "vehicle" / "exterior_spec.json",
+        ROOT / "data" / "vehicle" / "blockout_spec.json",
+        errors,
+    )
     if not MANIFEST_DIR.exists():
         errors.append("Falta assets/manifests/")
         return errors, warnings

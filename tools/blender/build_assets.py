@@ -53,6 +53,13 @@ TARGETS = [
         "manifest": "assets/manifests/esteem_cabin.manifest.json",
         "anchor_mode": "armature",
     },
+    {
+        "asset_id": "vehicle.esteem.exterior",
+        "script": "tools/blender/esteem_exterior.py",
+        "spec": "data/vehicle/exterior_spec.json",
+        "manifest": "assets/manifests/esteem_exterior.manifest.json",
+        "anchor_mode": "armature",
+    },
 ]
 
 

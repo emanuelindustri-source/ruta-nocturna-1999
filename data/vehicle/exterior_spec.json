@@ -1,0 +1,671 @@
+{
+  "schema_version": 1,
+  "asset_id": "vehicle.esteem.exterior",
+  "vehicle_id": "chevrolet_esteem_1999_auto_beige",
+  "content_status": "exterior_definitive_pbr",
+  "description": "Especificacion declarativa del exterior definitivo del Esteem 1999: carroceria con piezas separadas (capo, tapa de maletero, cuatro puertas, parachoques, molduras, parrilla), faros, pilotos traseros, espejos, llantas, antena, tapa de combustible, limpiaparabrisas y vidrios, con materiales PBR propios y LOD0/LOD1/LOD2. La fabrica de assets en tools/blender genera las mallas a partir de este archivo. Sin mecanicas de conduccion.",
+  "units": "meters",
+  "axes": "godot_y_up_forward_minus_z_right_plus_x",
+  "axes_note": "Coordenadas de runtime: X+ derecha, Y+ arriba, Z+ detras (el frente del vehiculo apunta a -Z). La fabrica convierte a coordenadas Blender (Z+ arriba, Y+ frente) al exportar.",
+  "source_policy": "Cotas globales heredadas de blockout_spec.json (provisional_design_value). Detalle de exterior observado en la hoja de contacto de exterior de F3.1 (build/reference/contact_sheets/exterior_f31_review.jpg y exterior_f31_detail.jpg). Sin texturas, mallas ni colores de la biblioteca externa. Sin marcas ni emblemas (Chevrolet, PDV, Suzuki u otros).",
+  "base_dimensions": {
+    "length_m": 4.37,
+    "width_m": 1.69,
+    "height_m": 1.4,
+    "wheelbase_m": 2.48,
+    "front_overhang_m": 0.945,
+    "rear_overhang_m": 0.945,
+    "track_m": 1.44,
+    "wheel_radius_m": 0.3,
+    "wheel_width_m": 0.19,
+    "source_status": "provisional_design_value",
+    "source_note": "Identicas a data/vehicle/blockout_spec.json. Se verifican contra manual o medicion antes de Fase 5; el validador comprueba la coincidencia entre ambos specs."
+  },
+  "body_shell": {
+    "type": "loft",
+    "material": "paint_body",
+    "note": "Banera de carroceria: laterales, bajos, aletas y hombros. Secciones transversales de 6 puntos (borde inferior, hombro y corona por lado). El borde inferior se levanta sobre los ejes para formar las arcadas de rueda.",
+    "sections": [
+      { "z_m": -2.185, "half_width_m": 0.60, "bottom_m": 0.34, "shoulder_m": 0.72, "crown_m": 0.86 },
+      { "z_m": -2.02, "half_width_m": 0.74, "bottom_m": 0.30, "shoulder_m": 0.80, "crown_m": 0.94 },
+      { "z_m": -1.75, "half_width_m": 0.80, "bottom_m": 0.30, "shoulder_m": 0.84, "crown_m": 0.98 },
+      { "z_m": -1.55, "half_width_m": 0.83, "bottom_m": 0.36, "shoulder_m": 0.86, "crown_m": 1.00 },
+      { "z_m": -1.38, "half_width_m": 0.845, "bottom_m": 0.50, "shoulder_m": 0.88, "crown_m": 1.02 },
+      { "z_m": -1.15, "half_width_m": 0.845, "bottom_m": 0.55, "shoulder_m": 0.88, "crown_m": 1.02 },
+      { "z_m": -0.95, "half_width_m": 0.845, "bottom_m": 0.42, "shoulder_m": 0.88, "crown_m": 1.02 },
+      { "z_m": -0.70, "half_width_m": 0.845, "bottom_m": 0.30, "shoulder_m": 0.88, "crown_m": 1.02 },
+      { "z_m": 0.0, "half_width_m": 0.845, "bottom_m": 0.28, "shoulder_m": 0.88, "crown_m": 1.02 },
+      { "z_m": 0.70, "half_width_m": 0.845, "bottom_m": 0.30, "shoulder_m": 0.88, "crown_m": 1.02 },
+      { "z_m": 0.95, "half_width_m": 0.845, "bottom_m": 0.42, "shoulder_m": 0.88, "crown_m": 1.02 },
+      { "z_m": 1.15, "half_width_m": 0.845, "bottom_m": 0.55, "shoulder_m": 0.88, "crown_m": 1.02 },
+      { "z_m": 1.38, "half_width_m": 0.845, "bottom_m": 0.50, "shoulder_m": 0.88, "crown_m": 1.02 },
+      { "z_m": 1.55, "half_width_m": 0.83, "bottom_m": 0.36, "shoulder_m": 0.86, "crown_m": 1.00 },
+      { "z_m": 1.75, "half_width_m": 0.80, "bottom_m": 0.30, "shoulder_m": 0.84, "crown_m": 0.98 },
+      { "z_m": 2.02, "half_width_m": 0.74, "bottom_m": 0.30, "shoulder_m": 0.80, "crown_m": 0.96 },
+      { "z_m": 2.185, "half_width_m": 0.62, "bottom_m": 0.34, "shoulder_m": 0.74, "crown_m": 0.90 }
+    ]
+  },
+  "canopy": {
+    "type": "loft",
+    "material": "paint_body",
+    "note": "Invernadero (parabrisas, montantes, techo y luneta). Secciones de 4 puntos (base y coronamiento por lado). El vidrio se modela aparte como paneles.",
+    "sections": [
+      { "z_m": -0.72, "half_width_m": 0.72, "sill_m": 1.00, "top_m": 1.10 },
+      { "z_m": -0.30, "half_width_m": 0.68, "sill_m": 1.02, "top_m": 1.36 },
+      { "z_m": 0.10, "half_width_m": 0.67, "sill_m": 1.02, "top_m": 1.40 },
+      { "z_m": 0.60, "half_width_m": 0.67, "sill_m": 1.02, "top_m": 1.40 },
+      { "z_m": 1.02, "half_width_m": 0.68, "sill_m": 1.02, "top_m": 1.34 },
+      { "z_m": 1.32, "half_width_m": 0.72, "sill_m": 1.00, "top_m": 1.12 }
+    ]
+  },
+  "pieces": [
+    {
+      "id": "hood",
+      "kind": "box",
+      "material": "paint_body",
+      "min_m": [-0.78, 1.0, -2.15],
+      "max_m": [0.78, 1.075, -0.72],
+      "rotation_deg": [3.0, 0.0, 0.0],
+      "features": ["hood"],
+      "note": "Capo con caida corta hacia la parrilla (3 grados). El vano motor sigue reservado debajo."
+    },
+    {
+      "id": "trunk_lid",
+      "kind": "box",
+      "material": "paint_body",
+      "min_m": [-0.78, 1.02, 1.24],
+      "max_m": [0.78, 1.10, 2.15],
+      "rotation_deg": [-2.0, 0.0, 0.0],
+      "features": ["trunk_lid"],
+      "note": "Tapa de maletero con caida marcada y borde superior liso. Sin texto ni emblema."
+    },
+    {
+      "id": "door_front_left",
+      "kind": "box",
+      "material": "paint_body",
+      "min_m": [-0.865, 0.42, -0.66],
+      "max_m": [-0.835, 1.02, 0.30],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["doors"],
+      "note": "Puerta delantera izquierda: panel de pieza separada sobre el lateral."
+    },
+    {
+      "id": "door_front_right",
+      "kind": "box",
+      "material": "paint_body",
+      "min_m": [0.835, 0.42, -0.66],
+      "max_m": [0.865, 1.02, 0.30],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["doors"],
+      "note": "Puerta delantera derecha."
+    },
+    {
+      "id": "door_rear_left",
+      "kind": "box",
+      "material": "paint_body",
+      "min_m": [-0.865, 0.42, 0.32],
+      "max_m": [-0.835, 1.02, 1.22],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["doors"],
+      "note": "Puerta trasera izquierda."
+    },
+    {
+      "id": "door_rear_right",
+      "kind": "box",
+      "material": "paint_body",
+      "min_m": [0.835, 0.42, 0.32],
+      "max_m": [0.865, 1.02, 1.22],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["doors"],
+      "note": "Puerta trasera derecha."
+    },
+    {
+      "id": "door_handle_front_left",
+      "kind": "box",
+      "material": "plastic_black",
+      "min_m": [-0.882, 0.90, -0.14],
+      "max_m": [-0.866, 0.955, 0.06],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["door_handles"],
+      "note": "Manija tipo tirador (referencia: fotos de piezas de la hoja de contacto). Sin texto."
+    },
+    {
+      "id": "door_handle_front_right",
+      "kind": "box",
+      "material": "plastic_black",
+      "min_m": [0.866, 0.90, -0.14],
+      "max_m": [0.882, 0.955, 0.06],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["door_handles"],
+      "note": "Manija delantera derecha."
+    },
+    {
+      "id": "door_handle_rear_left",
+      "kind": "box",
+      "material": "plastic_black",
+      "min_m": [-0.882, 0.90, 0.74],
+      "max_m": [-0.866, 0.955, 0.94],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["door_handles"],
+      "note": "Manija trasera izquierda."
+    },
+    {
+      "id": "door_handle_rear_right",
+      "kind": "box",
+      "material": "plastic_black",
+      "min_m": [0.866, 0.90, 0.74],
+      "max_m": [0.882, 0.955, 0.94],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["door_handles"],
+      "note": "Manija trasera derecha."
+    },
+    {
+      "id": "bumper_front",
+      "kind": "box",
+      "material": "paint_body",
+      "min_m": [-0.845, 0.36, -2.185],
+      "max_m": [0.845, 0.74, -2.04],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["bumpers"],
+      "note": "Parachoques delantero integrado, pieza separada con refuerzo interior (despiece de manual esteem-16.webp)."
+    },
+    {
+      "id": "bumper_front_intake",
+      "kind": "box",
+      "material": "plastic_black",
+      "min_m": [-0.52, 0.44, -2.19],
+      "max_m": [0.52, 0.62, -2.12],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["bumpers"],
+      "note": "Boca de aire inferior del parachoques delantero."
+    },
+    {
+      "id": "bumper_rear",
+      "kind": "box",
+      "material": "paint_body",
+      "min_m": [-0.845, 0.38, 2.04],
+      "max_m": [0.845, 0.76, 2.185],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["bumpers"],
+      "note": "Parachoques trasero integrado, pieza separada."
+    },
+    {
+      "id": "grille",
+      "kind": "box",
+      "material": "plastic_black",
+      "min_m": [-0.52, 0.82, -2.19],
+      "max_m": [0.52, 0.98, -2.11],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "slats": 3,
+      "features": ["grille_slats"],
+      "note": "Parrilla neutra de listones horizontales. Sin emblema ni marca: el lugar del emblema queda liso."
+    },
+    {
+      "id": "headlight_left_housing",
+      "kind": "box",
+      "material": "plastic_black",
+      "min_m": [-0.82, 0.86, -2.16],
+      "max_m": [-0.50, 1.02, -2.02],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["lamps"],
+      "note": "Carcasa del faro delantero izquierdo."
+    },
+    {
+      "id": "headlight_left_lens",
+      "kind": "box",
+      "material": "lens_clear",
+      "min_m": [-0.83, 0.87, -2.165],
+      "max_m": [-0.51, 1.01, -2.10],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["lamp_lenses"],
+      "note": "Lente clara del faro izquierdo (unidad horizontal alargada, referencia exterior A)."
+    },
+    {
+      "id": "headlight_left_indicator",
+      "kind": "box",
+      "material": "lens_amber",
+      "min_m": [-0.835, 0.87, -2.168],
+      "max_m": [-0.71, 1.01, -2.102],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["lamp_lenses"],
+      "note": "Piloto de giro ambar en la esquina externa del faro izquierdo."
+    },
+    {
+      "id": "headlight_right_housing",
+      "kind": "box",
+      "material": "plastic_black",
+      "min_m": [0.50, 0.86, -2.16],
+      "max_m": [0.82, 1.02, -2.02],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["lamps"],
+      "note": "Carcasa del faro delantero derecho."
+    },
+    {
+      "id": "headlight_right_lens",
+      "kind": "box",
+      "material": "lens_clear",
+      "min_m": [0.51, 0.87, -2.165],
+      "max_m": [0.83, 1.01, -2.10],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["lamp_lenses"],
+      "note": "Lente clara del faro derecho."
+    },
+    {
+      "id": "headlight_right_indicator",
+      "kind": "box",
+      "material": "lens_amber",
+      "min_m": [0.71, 0.87, -2.168],
+      "max_m": [0.835, 1.01, -2.102],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["lamp_lenses"],
+      "note": "Piloto de giro ambar en la esquina externa del faro derecho."
+    },
+    {
+      "id": "taillight_left_body",
+      "kind": "box",
+      "material": "plastic_black",
+      "min_m": [-0.83, 0.78, 2.02],
+      "max_m": [-0.62, 1.08, 2.17],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["lamps"],
+      "note": "Carcasa del piloto trasero izquierdo (unidad vertical en la esquina, referencia exterior C)."
+    },
+    {
+      "id": "taillight_left_red_top",
+      "kind": "box",
+      "material": "lens_red",
+      "min_m": [-0.835, 0.975, 2.015],
+      "max_m": [-0.625, 1.085, 2.165],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["lamp_lenses"],
+      "note": "Franja superior roja (posicion/freno) del piloto trasero izquierdo."
+    },
+    {
+      "id": "taillight_left_amber",
+      "kind": "box",
+      "material": "lens_amber",
+      "min_m": [-0.835, 0.885, 2.015],
+      "max_m": [-0.625, 0.965, 2.165],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["lamp_lenses"],
+      "note": "Franja media ambar (intermitente) del piloto trasero izquierdo."
+    },
+    {
+      "id": "taillight_left_red_bottom",
+      "kind": "box",
+      "material": "lens_red",
+      "min_m": [-0.835, 0.775, 2.015],
+      "max_m": [-0.625, 0.875, 2.165],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["lamp_lenses"],
+      "note": "Franja inferior roja (marcha atras/antiniebla) del piloto trasero izquierdo."
+    },
+    {
+      "id": "taillight_right_body",
+      "kind": "box",
+      "material": "plastic_black",
+      "min_m": [0.62, 0.78, 2.02],
+      "max_m": [0.83, 1.08, 2.17],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["lamps"],
+      "note": "Carcasa del piloto trasero derecho."
+    },
+    {
+      "id": "taillight_right_red_top",
+      "kind": "box",
+      "material": "lens_red",
+      "min_m": [0.625, 0.975, 2.015],
+      "max_m": [0.835, 1.085, 2.165],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["lamp_lenses"],
+      "note": "Franja superior roja del piloto trasero derecho."
+    },
+    {
+      "id": "taillight_right_amber",
+      "kind": "box",
+      "material": "lens_amber",
+      "min_m": [0.625, 0.885, 2.015],
+      "max_m": [0.835, 0.965, 2.165],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["lamp_lenses"],
+      "note": "Franja media ambar del piloto trasero derecho."
+    },
+    {
+      "id": "taillight_right_red_bottom",
+      "kind": "box",
+      "material": "lens_red",
+      "min_m": [0.625, 0.775, 2.015],
+      "max_m": [0.835, 0.875, 2.165],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["lamp_lenses"],
+      "note": "Franja inferior roja del piloto trasero derecho."
+    },
+    {
+      "id": "mirror_left_shell",
+      "kind": "box",
+      "material": "paint_body",
+      "min_m": [-0.825, 1.035, -0.79],
+      "max_m": [-0.70, 1.165, -0.61],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["mirrors"],
+      "note": "Carcasa del retrovisor lateral izquierdo sobre anchor_mirror_left (-0.82, 1.1, -0.7). La superficie reflectante funcional de F2.4 (cabin_mirrors.gd) queda en x=-0.82; aqui solo va la carcasa y el vidrio visual."
+    },
+    {
+      "id": "mirror_left_glass",
+      "kind": "box",
+      "material": "chrome",
+      "min_m": [-0.829, 1.05, -0.775],
+      "max_m": [-0.822, 1.15, -0.625],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["mirror_glass"],
+      "note": "Vidrio visual del espejo izquierdo (muestra reflejo estatico cuando los SubViewport de F2.4 no estan activos)."
+    },
+    {
+      "id": "mirror_left_arm",
+      "kind": "box",
+      "material": "plastic_black",
+      "min_m": [-0.885, 1.06, -0.725],
+      "max_m": [-0.82, 1.125, -0.675],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["mirrors"],
+      "note": "Brazo del espejo izquierdo hacia el triangulo de la puerta."
+    },
+    {
+      "id": "mirror_right_shell",
+      "kind": "box",
+      "material": "paint_body",
+      "min_m": [0.70, 1.035, -0.79],
+      "max_m": [0.825, 1.165, -0.61],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["mirrors"],
+      "note": "Carcasa del retrovisor lateral derecho sobre anchor_mirror_right (0.82, 1.1, -0.7)."
+    },
+    {
+      "id": "mirror_right_glass",
+      "kind": "box",
+      "material": "chrome",
+      "min_m": [0.822, 1.05, -0.775],
+      "max_m": [0.829, 1.15, -0.625],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["mirror_glass"],
+      "note": "Vidrio visual del espejo derecho."
+    },
+    {
+      "id": "mirror_right_arm",
+      "kind": "box",
+      "material": "plastic_black",
+      "min_m": [0.82, 1.06, -0.725],
+      "max_m": [0.885, 1.125, -0.675],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["mirrors"],
+      "note": "Brazo del espejo derecho."
+    },
+    {
+      "id": "antenna_mast",
+      "kind": "box",
+      "material": "plastic_black",
+      "min_m": [0.697, 1.02, -1.222],
+      "max_m": [0.707, 1.36, -1.212],
+      "rotation_deg": [-8.0, 0.0, 0.0],
+      "features": ["antenna"],
+      "note": "Antena de varilla sobre el guardabarros delantero derecho (coherente con body.antenna de vehicle_components.json)."
+    },
+    {
+      "id": "antenna_base",
+      "kind": "box",
+      "material": "plastic_black",
+      "min_m": [0.672, 0.99, -1.245],
+      "max_m": [0.728, 1.05, -1.19],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["antenna"],
+      "note": "Base de la antena."
+    },
+    {
+      "id": "fuel_door",
+      "kind": "box",
+      "material": "paint_body",
+      "min_m": [-0.858, 0.78, 1.28],
+      "max_m": [-0.836, 0.94, 1.44],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["fuel_door"],
+      "note": "Tapa de combustible en el guardabarros trasero IZQUIERDO (observado en images (15).jpg). Sin logotipo."
+    },
+    {
+      "id": "wiper_left",
+      "kind": "box",
+      "material": "plastic_black",
+      "min_m": [-0.62, 1.045, -0.735],
+      "max_m": [-0.16, 1.075, -0.675],
+      "rotation_deg": [0.0, 0.0, 6.0],
+      "features": ["wipers"],
+      "note": "Limpiaparabrisas izquierdo (brazo delgado en reposo sobre la base del parabrisas)."
+    },
+    {
+      "id": "wiper_right",
+      "kind": "box",
+      "material": "plastic_black",
+      "min_m": [0.16, 1.045, -0.735],
+      "max_m": [0.62, 1.075, -0.675],
+      "rotation_deg": [0.0, 0.0, -6.0],
+      "features": ["wipers"],
+      "note": "Limpiaparabrisas derecho."
+    },
+    {
+      "id": "molding_left",
+      "kind": "box",
+      "material": "plastic_black",
+      "min_m": [-0.868, 0.70, -1.9],
+      "max_m": [-0.845, 0.78, 1.95],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["moldings"],
+      "note": "Moldura lateral izquierda a media altura (referencia exterior B/E)."
+    },
+    {
+      "id": "molding_right",
+      "kind": "box",
+      "material": "plastic_black",
+      "min_m": [0.845, 0.70, -1.9],
+      "max_m": [0.868, 0.78, 1.95],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["moldings"],
+      "note": "Moldura lateral derecha."
+    },
+    {
+      "id": "plate_rear",
+      "kind": "box",
+      "material": "plate_white",
+      "min_m": [-0.19, 0.86, 2.183],
+      "max_m": [0.19, 1.00, 2.195],
+      "rotation_deg": [0.0, 0.0, 0.0],
+      "features": ["plate"],
+      "note": "Soporte de matricula trasera neutro: sin texto, sin region y sin marca."
+    }
+  ],
+  "glass_panels": [
+    {
+      "id": "windshield",
+      "material": "glass_dark",
+      "thickness_m": 0.012,
+      "corners_m": [
+        [-0.615, 1.065, -0.705],
+        [0.615, 1.065, -0.705],
+        [0.565, 1.375, -0.335],
+        [-0.565, 1.375, -0.335]
+      ],
+      "features": ["glass_panels"],
+      "note": "Parabrisas inclinado (referencia exterior A/E)."
+    },
+    {
+      "id": "rear_window",
+      "material": "glass_dark",
+      "thickness_m": 0.012,
+      "corners_m": [
+        [-0.60, 1.075, 1.285],
+        [0.60, 1.075, 1.285],
+        [0.545, 1.335, 1.015],
+        [-0.545, 1.335, 1.015]
+      ],
+      "features": ["glass_panels"],
+      "note": "Luneta trasera."
+    },
+    {
+      "id": "window_front_left",
+      "material": "glass_dark",
+      "thickness_m": 0.012,
+      "corners_m": [
+        [-0.690, 1.045, -0.58],
+        [-0.690, 1.045, 0.26],
+        [-0.668, 1.315, 0.18],
+        [-0.668, 1.315, -0.42]
+      ],
+      "features": ["glass_panels"],
+      "note": "Ventanilla delantera izquierda."
+    },
+    {
+      "id": "window_front_right",
+      "material": "glass_dark",
+      "thickness_m": 0.012,
+      "corners_m": [
+        [0.690, 1.045, -0.58],
+        [0.690, 1.045, 0.26],
+        [0.668, 1.315, 0.18],
+        [0.668, 1.315, -0.42]
+      ],
+      "features": ["glass_panels"],
+      "note": "Ventanilla delantera derecha."
+    },
+    {
+      "id": "window_rear_left",
+      "material": "glass_dark",
+      "thickness_m": 0.012,
+      "corners_m": [
+        [-0.690, 1.045, 0.32],
+        [-0.690, 1.045, 1.16],
+        [-0.668, 1.315, 1.02],
+        [-0.668, 1.315, 0.42]
+      ],
+      "features": ["glass_panels"],
+      "note": "Ventanilla trasera izquierda."
+    },
+    {
+      "id": "window_rear_right",
+      "material": "glass_dark",
+      "thickness_m": 0.012,
+      "corners_m": [
+        [0.690, 1.045, 0.32],
+        [0.690, 1.045, 1.16],
+        [0.668, 1.315, 1.02],
+        [0.668, 1.315, 0.42]
+      ],
+      "features": ["glass_panels"],
+      "note": "Ventanilla trasera derecha."
+    }
+  ],
+  "wheels": {
+    "ids": ["wheel_fl", "wheel_fr", "wheel_rl", "wheel_rr"],
+    "position_rule": "derived_from_track_wheelbase_radius",
+    "materials": {
+      "tire": "rubber",
+      "rim": "steel_wheel",
+      "hubcap": "chrome"
+    },
+    "hubcap_spokes": 6,
+    "note": "Llantas de acero con tapacubo (referencias B/D/E: tapacubos plateados; ejemplares sin tapacubo con llanta negra). Posiciones derivadas de track_m, wheelbase_m y wheel_radius_m del bloqueo."
+  },
+  "materials": {
+    "paint_body": { "base_color": [0.62, 0.58, 0.5, 1.0], "roughness": 0.38, "metallic": 0.8, "note": "Pintura metalizada beige/arena del vehicle_id auto_beige. Color propio del proyecto." },
+    "glass_dark": { "base_color": [0.06, 0.07, 0.08, 1.0], "roughness": 0.08, "metallic": 0.0, "transmission": 0.9, "ior": 1.45 },
+    "plastic_black": { "base_color": [0.05, 0.05, 0.06, 1.0], "roughness": 0.65, "metallic": 0.0 },
+    "rubber": { "base_color": [0.03, 0.03, 0.03, 1.0], "roughness": 0.92, "metallic": 0.0 },
+    "chrome": { "base_color": [0.85, 0.86, 0.88, 1.0], "roughness": 0.12, "metallic": 1.0 },
+    "steel_wheel": { "base_color": [0.35, 0.36, 0.38, 1.0], "roughness": 0.55, "metallic": 0.75 },
+    "lens_clear": { "base_color": [0.9, 0.92, 0.95, 1.0], "roughness": 0.08, "metallic": 0.0, "transmission": 0.8, "ior": 1.45, "emission_color": [1.0, 1.0, 0.95, 1.0], "emission_strength": 0.15 },
+    "lens_amber": { "base_color": [0.9, 0.55, 0.08, 1.0], "roughness": 0.15, "metallic": 0.0, "emission_color": [1.0, 0.55, 0.08, 1.0], "emission_strength": 0.25 },
+    "lens_red": { "base_color": [0.75, 0.06, 0.05, 1.0], "roughness": 0.15, "metallic": 0.0, "emission_color": [1.0, 0.06, 0.05, 1.0], "emission_strength": 0.25 },
+    "plate_white": { "base_color": [0.85, 0.85, 0.82, 1.0], "roughness": 0.6, "metallic": 0.0 }
+  },
+  "materials_note": "Materiales PBR (metallic-roughness) originales del proyecto, exportados por glTF. Ninguna textura, color o malla procede de la biblioteca externa de referencias. Sin marcas, emblemas ni texto visible en la malla.",
+  "lods": [
+    {
+      "id": "lod0",
+      "output": "assets/generated/vehicle/esteem_exterior_lod0.glb",
+      "detail": "full",
+      "section_step": 1,
+      "wheel_segments": 28,
+      "bevel_width_m": 0.012,
+      "bevel_segments": 2,
+      "features": ["hood", "trunk_lid", "doors", "door_handles", "bumpers", "grille_slats", "lamps", "lamp_lenses", "mirrors", "mirror_glass", "antenna", "fuel_door", "wipers", "moldings", "glass_panels", "plate", "hubcaps", "spokes"],
+      "max_triangles": 20000
+    },
+    {
+      "id": "lod1",
+      "output": "assets/generated/vehicle/esteem_exterior_lod1.glb",
+      "detail": "medium",
+      "section_step": 2,
+      "wheel_segments": 14,
+      "bevel_width_m": 0.008,
+      "bevel_segments": 1,
+      "features": ["hood", "trunk_lid", "doors", "bumpers", "grille_slats", "lamps", "lamp_lenses", "mirrors", "antenna", "moldings", "glass_panels", "hubcaps"],
+      "max_triangles": 9000
+    },
+    {
+      "id": "lod2",
+      "output": "assets/generated/vehicle/esteem_exterior_lod2.glb",
+      "detail": "coarse",
+      "section_step": 4,
+      "wheel_segments": 8,
+      "bevel_width_m": 0.0,
+      "bevel_segments": 0,
+      "features": ["hood", "trunk_lid", "bumpers", "lamps"],
+      "max_triangles": 4000
+    }
+  ],
+  "lod_policy": {
+    "required_levels": [0, 1, 2],
+    "strictly_decreasing": true,
+    "budget_note": "Ninguna malla entra al juego sin LOD0/LOD1/LOD2 (AGENTS.md seccion 9). El presupuesto visible movil es 120.000 triangulos e incluye los tres pasos de render de los espejos de F2.4 (mirrors.budget de cabin_interaction.json). La medicion en ruta real es F3.5/F10.1.",
+    "wheels_as_part_of_mesh": true
+  },
+  "rig_anchor": {
+    "output": "assets/generated/vehicle/esteem_exterior_rig_anchor.glb",
+    "armature_name": "EsteemExteriorRigAnchor",
+    "root_bone": "anchor_root",
+    "bind_to_meshes": false,
+    "note": "Mismas 17 anclas que data/vehicle/blockout_spec.json para que el exterior sea compatible con el rig, la cabina (F2.2/F2.3) y los espejos de F2.4 (anchor_mirror_left/right). Sin piel ni animacion.",
+    "anchors": [
+      { "id": "anchor_root", "position_m": [0.0, 0.0, 0.0], "purpose": "origen del vehiculo sobre el suelo, centro de la batalla" },
+      { "id": "anchor_wheel_fl", "position_m": [-0.72, 0.3, -1.24], "purpose": "centro de rueda delantera izquierda (giro y suspension)" },
+      { "id": "anchor_wheel_fr", "position_m": [0.72, 0.3, -1.24], "purpose": "centro de rueda delantera derecha (giro y suspension)" },
+      { "id": "anchor_wheel_rl", "position_m": [-0.72, 0.3, 1.24], "purpose": "centro de rueda trasera izquierda (giro y suspension)" },
+      { "id": "anchor_wheel_rr", "position_m": [0.72, 0.3, 1.24], "purpose": "centro de rueda trasera derecha (giro y suspension)" },
+      { "id": "anchor_driver_seat", "position_m": [-0.35, 1.0, -0.1], "purpose": "asiento del conductor (LHD); base de manos IK y camara interior" },
+      { "id": "anchor_passenger_seat", "position_m": [0.35, 1.0, -0.1], "purpose": "asiento del acompanante; pasajeros de Fase 7" },
+      { "id": "anchor_steering_wheel", "position_m": [-0.35, 1.1, -0.75], "purpose": "centro del volante; objetivo de manos IK en F2.2" },
+      { "id": "anchor_gear_lever", "position_m": [0.0, 0.95, -0.45], "purpose": "palanca automatica P-R-N-D-2-L con boton de Overdrive" },
+      { "id": "anchor_handbrake", "position_m": [-0.15, 0.92, -0.15], "purpose": "freno de mano" },
+      { "id": "anchor_camera_driver", "position_m": [-0.35, 1.22, -0.62], "purpose": "camara de cabina (ojos del conductor)" },
+      { "id": "anchor_camera_chase", "position_m": [0.0, 1.8, 4.6], "purpose": "camara de persecucion detras del vehiculo" },
+      { "id": "anchor_hood_center", "position_m": [0.0, 1.08, -1.4], "purpose": "apertura del capo / acceso al vano motor" },
+      { "id": "anchor_trunk_center", "position_m": [0.0, 1.1, 1.7], "purpose": "apertura del maletero / herramientas" },
+      { "id": "anchor_mirror_left", "position_m": [-0.82, 1.1, -0.7], "purpose": "espejo retrovisor lateral izquierdo" },
+      { "id": "anchor_mirror_right", "position_m": [0.82, 1.1, -0.7], "purpose": "espejo retrovisor lateral derecho" },
+      { "id": "anchor_roof_center", "position_m": [0.0, 1.42, 0.28], "purpose": "centro del techo (luz interior, goteo de lluvia)" }
+    ]
+  },
+  "validation_rules": {
+    "dimensions_match_blockout": true,
+    "tolerance_m": 0.02,
+    "pieces_overhang_m": 0.06,
+    "wheels_match_track_and_wheelbase": true,
+    "mirrors_match_anchor_mirror_left_right": true,
+    "anchor_ids_prefixed": "anchor_",
+    "anchor_bounds_m": { "x": 1.5, "y_min": -0.5, "y_max": 3.0, "z": 6.0 },
+    "pieces_within_dimensions": true
+  },
+  "reference_notes": [
+    "Exterior revisado con la hoja de contacto de F3.1 (build/reference/contact_sheets/exterior_f31_review.jpg y exterior_f31_detail.jpg) y las copias de trabajo de build/reference/review_f31/; registro en docs/reference/REFERENCE_USAGE_LOG.md.",
+    "Sin marcas, emblemas, texto de modelo ni texturas derivadas de las fotografias (Chevrolet, PDV, Suzuki y otras omitidas).",
+    "Tapa de combustible en el guardabarros trasero izquierdo y antena en el delantero derecho, segun las fotos revisadas.",
+    "Cotas de carroceria provisionales: no publicar como especificacion oficial del vehiculo."
+  ]
+}

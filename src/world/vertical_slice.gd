@@ -1,5 +1,5 @@
 extends Node3D
-## Rebanada vertical de la Fase 1.4: coche gris sobre carretera gris.
+## Rebanada vertical: exterior definitivo del Esteem (F3.1) sobre carretera gris.
 ## No hay conducción, física, tráfico ni entidades. Es una escena estática de
 ## presentación para validar la build de Windows y Android.
 
@@ -11,7 +11,7 @@ const DASH_SPACING_M := 6.0
 @onready var title_label: Label = $Overlay/Panel/Margin/VBox/Title
 @onready var subtitle_label: Label = $Overlay/Panel/Margin/VBox/Subtitle
 @onready var back_button: Button = $Overlay/Panel/Margin/VBox/BackButton
-@onready var vehicle: Node3D = $EsteemBlockout
+@onready var vehicle: Node3D = $EsteemExterior
 
 
 func _ready() -> void:

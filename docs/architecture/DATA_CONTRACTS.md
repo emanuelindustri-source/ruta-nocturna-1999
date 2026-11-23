@@ -342,3 +342,41 @@ Reglas:
   otro script de `src/vehicle/` contiene `InputEventJoypad`, y el núcleo de
   F2.3 (controlador, controles, IK, UI) sigue sin eventos de gamepad.
 - El guardado no entra en este contrato: su contrato es la sección 9.
+
+## 16. Exterior definitivo (Fase 3.1)
+
+El exterior es un contrato de **assets 3D**, no de sistemas:
+`data/vehicle/exterior_spec.json` (`schema_version: 1`) describe de forma
+declarativa el exterior definitivo del Esteem. Su validación vive en
+`tools/validate_assets.py` (mismo patrón que bloqueo y cabina) y no en
+`validate_schemas.py`.
+
+Secciones:
+
+| Sección | Contenido |
+|---|---|
+| `base_dimensions` | Cotas globales idénticas a `blockout_spec.json` (provisionales); el validador exige coincidencia |
+| `body_shell` / `canopy` | Bañera de carrocería e invernadero como lofts de secciones transversales |
+| `pieces` | Piezas separadas: capó, maletero, puertas, manijas, parachoques, parrilla, faros, pilotos, espejos, antena, tapa de combustible, limpiaparabrisas, molduras y matrícula |
+| `glass_panels` | Parabrisas, luneta y cuatro ventanillas como paneles de grosor finito |
+| `wheels` | Neumático + llanta + tapacubo, posiciones derivadas de track/batalla/radio del bloqueo |
+| `materials` | Materiales PBR propios (pintura, vidrio con transmisión, plástico, goma, cromo, acero, lentes con emisión) |
+| `lods` | LOD0/LOD1/LOD2 con `section_step`, `wheel_segments`, `features` y `max_triangles` estrictamente decrecientes |
+| `rig_anchor` | Armazón `EsteemExteriorRigAnchor` con las 17 anclas `anchor_*` del bloqueo |
+
+Reglas:
+
+- Las carcasas de espejo deben **envolver** `anchor_mirror_left/right` (donde
+  F2.4 monta las superficies funcionales de `mirrors.budget`); lo comprueba
+  `tools/validate_assets.py`. Los espejos funcionales siguen siendo solo los de
+  `cabin_mirrors.gd`; el exterior no duplica superficies reflectantes vivas.
+- Las ruedas deben coincidir con `track_m`, `wheelbase_m` y
+  `wheel_radius_m` del bloqueo.
+- Las piezas pueden sobresalir del ancho de carrocería solo dentro del margen
+  `validation_rules.pieces_overhang_m` (manijas, molduras y brazos de espejo).
+- No hay marcas, emblemas ni texto visible en la malla; la parrilla y la
+  matrícula son neutras. Ningún material procede de la biblioteca externa.
+- Cambiar la estructura exige incrementar `schema_version`; cambiar una cota o
+  un material exige actualizar su nota de fuente (`source_status` /
+  `source_note`). Las cotas de carrocería siguen siendo provisionales hasta la
+  verificación contra manual o medición.

@@ -222,3 +222,56 @@ Presupuestos: las superficies de espejo suman 6 triángulos (presupuesto
 declarado: 12) y los tres pasos de render cuentan en el presupuesto móvil de
 120.000 (`mirrors.budget.counted_in_mobile_budget`). La medición de los pasos
 reales con la escena cargada es F3.5/F10.1.
+
+## 12. Exterior definitivo (Fase 3.1)
+
+El exterior es el tercer asset de la fábrica y sigue el mismo contrato que el
+bloqueo y la cabina: un spec declarativo, un script `bpy` reproducible, mallas
+LOD0/LOD1/LOD2 y una salida `rig_anchor`, todo con manifiesto, hashes, autor,
+licencia y fecha.
+
+- Spec: `data/vehicle/exterior_spec.json` (`vehicle.esteem.exterior`,
+  `schema_version: 1`). Describe la carrocería y el invernadero como **lofts de
+  secciones transversales** (con arcadas formadas por el borde inferior de las
+  secciones sobre los ejes), las **piezas separadas** (capó, tapa de maletero,
+  cuatro puertas con manijas, parachoques con boca de aire, parrilla neutra de
+  listones, faros con carcasa/lente/indicador ámbar, pilotos traseros de tres
+  franjas, carcasas y brazos de espejo, antena, tapa de combustible,
+  limpiaparabrisas, molduras y matrícula neutra), los **paneles de vidrio**
+  (parabrisas, luneta y cuatro ventanillas), las **llantas** (neumático +
+  llanta de acero + tapacubo con radios) y los **materiales PBR** propios.
+- Script: `tools/blender/esteem_exterior.py` (target `vehicle.esteem.exterior`).
+- Salidas: `esteem_exterior_lod0.glb` (6.024 triángulos, máx. 20.000),
+  `esteem_exterior_lod1.glb` (2.044, máx. 9.000), `esteem_exterior_lod2.glb`
+  (408, máx. 4.000) y `esteem_exterior_rig_anchor.glb` (17 anclas, las mismas
+  que `blockout_spec.json` para compatibilidad con cabina, IK y espejos).
+- Manifiesto: `assets/manifests/esteem_exterior.manifest.json`.
+- Escena: `scenes/vehicle/EsteemExterior.tscn` (solo LOD0 visible). La
+  rebanada vertical instancia esta escena desde F3.1.
+
+Materiales PBR (glTF metallic-roughness): pintura metalizada, vidrio con
+transmisión, plástico, goma, cromo, acero y lentes con emisión tenue
+(ámbar/roja/clara). Todo es procedural y propio: ninguna textura, color o
+malla procede de la biblioteca externa, y no hay marcas, emblemas ni texto
+visible (la parrilla y la matrícula son neutras).
+
+Detalle derivado de la revisión visual de F3.1 (`REFERENCE_USAGE_LOG.md`):
+faros horizontales con indicador ámbar en la esquina externa, pilotos
+traseros verticales con franjas roja/ámbar/roja, antena en el guardabarros
+delantero derecho, **tapa de combustible en el guardabarros trasero izquierdo**
+y molduras laterales. Las cotas globales siguen siendo las provisionales del
+bloqueo y no se publican como especificación oficial.
+
+### Espejos y presupuestos
+
+- Los espejos **funcionales** siguen siendo F2.4 (`cabin_mirrors.gd`:
+  superficies `QuadMesh` + `SubViewport`). El exterior añade carcasa, brazo y
+  vidrio visual sobre las mismas anclas `anchor_mirror_left/right`; el validador
+  comprueba que la carcasa envuelve el ancla y que las cotas coinciden con el
+  bloqueo.
+- `mirrors.budget` de `cabin_interaction.json` (v2) no cambia: 6/12 triángulos
+  de superficie y 3 pasos de render contados en el presupuesto móvil.
+- Política LOD idéntica: LOD0/LOD1/LOD2 obligatorios, triángulos estrictamente
+  decrecientes y cada nivel dentro de su presupuesto. El exterior LOD0 (6.024)
+  queda muy por debajo del presupuesto móvil de 120.000; el conteo total con
+  cabina, espejos y mundo se medirá en F3.5/F10.1.

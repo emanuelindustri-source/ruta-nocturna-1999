@@ -2,11 +2,11 @@
   "project": "Ruta Nocturna: 1999",
   "repository": "emanuelindustri-source/ruta-nocturna-1999",
   "generated_from": "ROADMAP.md",
-  "source_sha256": "0b761bf2864ea8700b7e061fd943647d038bb60fab382594de8599fa0b941509",
-  "current_version": "v0.2.3",
-  "version_file": "0.2.3",
-  "current_subphase": "3.1",
-  "global_status": "Fase 1 completada; Fase 2 completada (2.1–2.4); siguiente gate 3.1",
+  "source_sha256": "e1af2a565cf2989bb800ffe221f06bb882b1bf9b10cb07dd9b81e7307931f9f5",
+  "current_version": "v0.3.0",
+  "version_file": "0.3.0",
+  "current_subphase": "3.2",
+  "global_status": "Fase 1 y Fase 2 completadas; Fase 3 en marcha (3.1); siguiente gate 3.2",
   "models": {
     "DS-R": "DeepSeek V4.1 Flash 1017 · Razonamiento",
     "DS-S": "DeepSeek V4.1 Flash 1017 · Estándar",
@@ -14,11 +14,11 @@
     "MiMo Flash": "MiMo-V2.6-Flash"
   },
   "summary": {
-    "completed": 8,
+    "completed": 9,
     "in_progress": 0,
-    "pending": 37,
+    "pending": 36,
     "total": 45,
-    "percent": 17.8
+    "percent": 20.0
   },
   "phases": [
     {
@@ -135,9 +135,9 @@
           "version": "v0.3.0",
           "model": "MiMo Pro",
           "model_label": "MiMo-V2.6-Pro",
-          "summary": "Exterior final, piezas separadas, LODs, PBR, llantas, faros y espejos.",
-          "status": "pending",
-          "status_label": "Pendiente"
+          "summary": "Exterior final, piezas separadas, LODs, PBR, llantas, faros y espejos. Validado y publicado.",
+          "status": "completed",
+          "status_label": "Completada"
         },
         {
           "id": "3.2",
@@ -177,12 +177,12 @@
         }
       ],
       "version_range": "v0.3.0 → v0.3.4",
-      "status": "pending",
-      "status_label": "Pendiente",
+      "status": "in_progress",
+      "status_label": "En curso",
       "progress": {
-        "completed": 0,
+        "completed": 1,
         "in_progress": 0,
-        "pending": 5,
+        "pending": 4,
         "total": 5
       }
     },

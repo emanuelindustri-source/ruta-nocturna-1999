@@ -4,6 +4,65 @@ Todas las fechas usan ISO 8601. Las versiones siguen SemVer.
 
 ## [Unreleased]
 
+## [0.3.0] — 2026-11-22
+
+### Añadido
+
+- `data/vehicle/exterior_spec.json` (`schema_version: 1`, asset
+  `vehicle.esteem.exterior`): contrato declarativo del **exterior definitivo**
+  del Esteem con piezas separadas (carrocería tipo bañera e invernadero por
+  secciones, capó, tapa de maletero, cuatro puertas con manijas, parachoques
+  delantero/trasero con boca de aire, parrilla neutra con listones, faros con
+  piloto ámbar, pilotos traseros de tres franjas, carcasas de espejo, antena,
+  tapa de combustible, limpiaparabrisas, molduras, vidrios y matrícula
+  neutra), materiales PBR propios, llantas con tapacubo y LOD0/LOD1/LOD2 con
+  presupuestos decrecientes.
+- `tools/blender/esteem_exterior.py`: generador `bpy` reproducible del exterior
+  (lofts de secciones, paneles de vidrio, ruedas con neumático/llanta/tapacubo
+  y radios, materiales Principled PBR con transmisión y emisión para lentes).
+  Nuevo target `vehicle.esteem.exterior` en `tools/blender/build_assets.py`.
+- Salidas generadas: `esteem_exterior_lod0.glb` (6.024 triángulos, máx.
+  20.000), `esteem_exterior_lod1.glb` (2.044, máx. 9.000),
+  `esteem_exterior_lod2.glb` (408, máx. 4.000) y
+  `esteem_exterior_rig_anchor.glb` (17 anclas idénticas al bloqueo), con
+  manifiesto reproducible `assets/manifests/esteem_exterior.manifest.json`.
+- `tools/validate_assets.py`: validación del spec de exterior (coherencia de
+  cotas y ruedas con `blockout_spec.json`, carcasas de espejo que envuelven
+  `anchor_mirror_left/right`, IDs únicos, materiales declarados, presupuestos
+  decrecientes y margen de sobresalida de herrajes `pieces_overhang_m`).
+- `scenes/vehicle/EsteemExterior.tscn`: LOD0 visible, LOD1/LOD2 ocultos y
+  `RigAnchor`. La rebanada vertical (`VerticalSlice.tscn`) ahora instancia el
+  exterior definitivo en lugar del bloqueo.
+- `tests/smoke/SmokeTest.tscn`: **232 comprobaciones** (eran 198) con la
+  verificación completa del exterior (manifiesto, hashes, LODs decrecientes,
+  presupuesto móvil, anclas) y el anclaje de los espejos de F2.4 sobre el nuevo
+  exterior (`mirrors.budget` respetado). Tren motriz (125), cabina (46) e
+  interacción (257) sin cambios.
+- Render QA del exterior en `build/reference/exterior_qa/` (no versionado) con
+  cuatro vistas verificadas contra la hoja de contacto de F3.1.
+
+### Cambiado
+
+- Versión del proyecto a `0.3.0` (`VERSION`, `project.godot`,
+  `export_presets.cfg`, `EXPECTED_VERSION` del smoke test y `PHASE` de Boot).
+  Android `version/name=0.3.0`, `version/code=107`; Windows `0.3.0.0`.
+- `BOOT_KICKER` a Fase 3.1 en los once idiomas.
+- `health_check.py`: artefactos de F3.1 en `REQUIRED_FILES` (spec, script,
+  manifiesto y escena del exterior).
+- Revisión visual completa de referencias antes de modelar (hito F3.1): hojas
+  de contacto de exterior generadas en `build/reference/contact_sheets/` y
+  registro en `docs/reference/REFERENCE_USAGE_LOG.md`; biblioteca externa sin
+  cambios y sin copiar archivos.
+
+### Sin cambios
+
+- F2.1–F2.4 intactos: tren motriz, cabina, interacción contextual, espejos
+  `SubViewport`, HUD, gamepad/D-Pad y guardado `v0.2.0` con fixture. Los
+  espejos funcionales siguen anclados a `anchor_mirror_left/right` y
+  respetan `mirrors.budget` de `cabin_interaction.json` (`schema_version: 2`).
+- Sin marcas ni emblemas (Chevrolet, PDV, Suzuki u otros) y sin texto visible
+  en la malla. Sin texturas de la biblioteca externa.
+
 ## [0.2.3] — 2026-11-22
 
 ### Añadido

@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://src/world/vertical_slice.gd" id="1_slice"]
-[ext_resource type="PackedScene" path="res://scenes/vehicle/EsteemBlockout.tscn" id="2_esteem"]
+[ext_resource type="PackedScene" path="res://scenes/vehicle/EsteemExterior.tscn" id="2_esteem"]
 
 [sub_resource type="Environment" id="Environment_night"]
 background_mode = 1
@@ -65,7 +65,7 @@ mesh = SubResource("Mesh_shoulder")
 position = Vector3(4.45, 0.01, 0)
 mesh = SubResource("Mesh_shoulder")
 
-[node name="EsteemBlockout" parent="." instance=ExtResource("2_esteem")]
+[node name="EsteemExterior" parent="." instance=ExtResource("2_esteem")]
 position = Vector3(0, 0, 1.5)
 
 [node name="Camera3D" type="Camera3D" parent="."]

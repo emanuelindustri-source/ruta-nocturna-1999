@@ -1,13 +1,14 @@
 extends Node
-## Smoke test de servicios base y del bloqueo del Esteem (Fase 1.3).
+## Smoke test de servicios base, del bloqueo y del exterior del Esteem (F3.1).
 ## Sin mecánicas de conducción.
 ##
 ## Ejecutar:
 ##   .\tools\dev\smoke_test.cmd
 ## El proceso devuelve 0 solo si todos los servicios base responden y el
-## bloqueo del Esteem conserva LOD0/LOD1/LOD2, manifiesto y ancla de rig.
+## bloqueo (F1.3) y el exterior definitivo (F3.1) conservan LOD0/LOD1/LOD2,
+## manifiesto y ancla de rig.
 
-const EXPECTED_VERSION := "0.2.3"
+const EXPECTED_VERSION := "0.3.0"
 const AUTOLOADS := [
 	"EventBus",
 	"HardwareProfiler",
@@ -47,6 +48,7 @@ func _ready() -> void:
 	await _test_creator_qa_menu()
 	_test_scene_router()
 	await _test_vehicle_blockout()
+	await _test_vehicle_exterior()
 	await _test_vertical_slice()
 	await _test_powertrain()
 	_test_gamepad_menu_input()
@@ -451,6 +453,105 @@ func _test_vehicle_blockout() -> void:
 	await get_tree().process_frame
 
 
+func _test_vehicle_exterior() -> void:
+	var manifest_text := FileAccess.get_file_as_string("res://assets/manifests/esteem_exterior.manifest.json")
+	_check(not manifest_text.is_empty(), "manifiesto del exterior presente")
+	var manifest: Variant = JSON.parse_string(manifest_text)
+	_check(manifest is Dictionary, "manifiesto del exterior es JSON")
+	var lod_triangles := {}
+	if manifest is Dictionary:
+		var outputs: Array = manifest.get("outputs", [])
+		_check(outputs.size() == 4, "manifiesto del exterior con cuatro salidas generadas")
+		for output in outputs:
+			if not (output is Dictionary):
+				continue
+			var relative := str(output.get("file", ""))
+			var path := "res://" + relative
+			_check(FileAccess.file_exists(path), "salida generada %s" % relative)
+			var expected_hash := str(output.get("sha256", ""))
+			if not expected_hash.is_empty() and FileAccess.file_exists(path):
+				_check(FileAccess.get_sha256(path) == expected_hash, "hash SHA-256 verificado en %s" % relative)
+			if str(output.get("kind", "")) == "mesh_lod":
+				lod_triangles[int(output.get("lod", -1))] = int(output.get("triangles", 0))
+		_check(lod_triangles.has(0) and lod_triangles.has(1) and lod_triangles.has(2), "exterior con LOD0/LOD1/LOD2 declarados")
+		_check(
+			int(lod_triangles.get(0, 0)) > int(lod_triangles.get(1, 0))
+				and int(lod_triangles.get(1, 0)) > int(lod_triangles.get(2, 0)),
+			"triángulos decrecientes entre LODs del exterior"
+		)
+	var spec_text := FileAccess.get_file_as_string("res://data/vehicle/exterior_spec.json")
+	var spec: Variant = JSON.parse_string(spec_text)
+	_check(spec is Dictionary, "spec del exterior accesible")
+	var packed := load("res://scenes/vehicle/EsteemExterior.tscn") as PackedScene
+	_check(packed != null, "escena EsteemExterior carga")
+	if packed == null:
+		return
+	var exterior := packed.instantiate()
+	add_child(exterior)
+	var previous_triangles := 1 << 30
+	for lod_index in range(3):
+		var lod_node := exterior.get_node_or_null("LOD%d" % lod_index)
+		_check(lod_node != null, "nodo LOD%d en la escena del exterior" % lod_index)
+		if lod_node == null:
+			continue
+		var triangles := _count_triangles(lod_node)
+		_check(triangles > 0, "mallas del LOD%d del exterior con triángulos" % lod_index)
+		_check(triangles == int(lod_triangles.get(lod_index, -1)), "triángulos del LOD%d del exterior coinciden con el manifiesto" % lod_index)
+		_check(triangles < previous_triangles, "LOD%d del exterior menor que el nivel anterior" % lod_index)
+		previous_triangles = triangles
+		if lod_index == 0:
+			_check(triangles <= 120000, "exterior LOD0 dentro del presupuesto móvil (%d)" % triangles)
+	var anchor := exterior.get_node_or_null("RigAnchor")
+	_check(anchor != null, "ancla de rig presente en la escena del exterior")
+	if anchor != null and spec is Dictionary:
+		var skeleton := _find_skeleton(anchor)
+		_check(skeleton != null, "Skeleton3D del ancla de rig del exterior")
+		if skeleton != null:
+			var anchors: Array = spec.get("rig_anchor", {}).get("anchors", [])
+			var all_found := true
+			for entry in anchors:
+				if not (entry is Dictionary):
+					continue
+				var bone_name := str(entry.get("id", ""))
+				if skeleton.find_bone(bone_name) == -1:
+					all_found = false
+					print("[SMOKE]     hueso ausente: %s" % bone_name)
+			_check(all_found, "los %d huesos del ancla del exterior existen" % anchors.size())
+			_check(skeleton.find_bone("anchor_root") != -1, "hueso raíz anchor_root en el exterior")
+	# Los espejos funcionales de F2.4 siguen anclados al nuevo exterior.
+	var interaction_text := FileAccess.get_file_as_string("res://data/schemas/cabin_interaction.json")
+	var interaction: Variant = JSON.parse_string(interaction_text)
+	if interaction is Dictionary and spec is Dictionary:
+		var mirror_entries: Array = interaction.get("mirrors", {}).get("entries", [])
+		var exterior_anchors: Dictionary = {}
+		for entry in spec.get("rig_anchor", {}).get("anchors", []):
+			exterior_anchors[str(entry.get("id", ""))] = entry.get("position_m", [])
+		var mirrors_anchored := mirror_entries.size() == 3
+		for mirror_entry in mirror_entries:
+			if not (mirror_entry is Dictionary):
+				mirrors_anchored = false
+				continue
+			if str(mirror_entry.get("kind", "")) != "side":
+				continue
+			var anchor_id := str(mirror_entry.get("anchor", ""))
+			var anchor_position: Array = exterior_anchors.get(anchor_id, [])
+			var mirror_position: Array = mirror_entry.get("position_m", [])
+			if anchor_position.size() != 3 or mirror_position.size() != 3:
+				mirrors_anchored = false
+				continue
+			for axis in range(3):
+				if absf(float(anchor_position[axis]) - float(mirror_position[axis])) > 0.01:
+					mirrors_anchored = false
+		_check(mirrors_anchored, "espejos laterales de F2.4 anclados sobre el exterior")
+		var budget: Dictionary = interaction.get("mirrors", {}).get("budget", {})
+		_check(
+			int(budget.get("scene_passes", 0)) == 3 and budget.get("counted_in_mobile_budget", false) == true,
+			"mirrors.budget respetado por el exterior (3 pasos, dentro del presupuesto móvil)"
+		)
+	exterior.queue_free()
+	await get_tree().process_frame
+
+
 func _test_vertical_slice() -> void:
 	var packed := load("res://scenes/vertical_slice/VerticalSlice.tscn") as PackedScene
 	_check(packed != null, "escena VerticalSlice carga")
@@ -462,16 +563,16 @@ func _test_vertical_slice() -> void:
 	_check(slice.get_node_or_null("Road") != null, "rebanada con carretera gris")
 	_check(slice.get_node_or_null("Ground") != null, "rebanada con terreno")
 	_check(slice.get_node_or_null("Camera3D") != null, "rebanada con cámara")
-	_check(slice.get_node_or_null("EsteemBlockout") != null, "rebanada con el bloqueo del Esteem")
+	_check(slice.get_node_or_null("EsteemExterior") != null, "rebanada con el exterior del Esteem")
 	var dashes := slice.get_node_or_null("LaneDashes")
 	_check(dashes != null and dashes.get_child_count() >= 20, "marcas de carril generadas")
 	var back_button := slice.get_node_or_null("Overlay/Panel/Margin/VBox/BackButton") as Button
 	_check(back_button != null and not back_button.text.is_empty(), "botón de retorno localizado")
 	var triangles := _count_triangles(slice)
 	_check(triangles > 0 and triangles <= 120000, "triángulos de la rebanada dentro del presupuesto móvil (%d)" % triangles)
-	var lod0 := slice.get_node_or_null("EsteemBlockout/LOD0") as Node3D
-	var lod1 := slice.get_node_or_null("EsteemBlockout/LOD1") as Node3D
-	var lod2 := slice.get_node_or_null("EsteemBlockout/LOD2") as Node3D
+	var lod0 := slice.get_node_or_null("EsteemExterior/LOD0") as Node3D
+	var lod1 := slice.get_node_or_null("EsteemExterior/LOD1") as Node3D
+	var lod2 := slice.get_node_or_null("EsteemExterior/LOD2") as Node3D
 	_check(
 		lod0 != null and lod0.visible and lod1 != null and not lod1.visible and lod2 != null and not lod2.visible,
 		"solo LOD0 visible en la rebanada"

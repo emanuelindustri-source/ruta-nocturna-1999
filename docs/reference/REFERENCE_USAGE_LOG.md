@@ -322,8 +322,75 @@ las 40 imágenes en contexto** y **no se copió ningún archivo** de
 - Replicar el mockup de HUD con parrilla de botones.
 - Tomar fotos como fuente de cotas de espejos o de ángulos de visión.
 
+## 2026-11-22 - Fase 3.1 - exterior definitivo (revisión visual completa de exterior)
+
+**Alcance:** revisión visual completa obligatoria antes de F3.1 (`AGENTS.md`,
+sección 10). Se usó el catálogo `docs/reference/reference_catalog.json` (95
+fichas) y **hojas de contacto generadas a `build/reference/contact_sheets/`**
+(`exterior_f31_review.jpg`, 48 referencias de vehículo; y
+`exterior_f31_detail.jpg`, mosaico de detalle). **No se cargaron las 40
+imágenes en contexto** y **no se copió ningún archivo** de
+`C:\Dev\fotos de ejemplo` al repositorio. Solo se abrieron a tamaño real
+**seis** fotografías clave de exterior, como copias de trabajo ampliadas ×2 en
+`build/reference/review_f31/` (ignoradas por Git; originales intactos).
+
+### Referencias utilizadas
+
+| Referencia | Uso | Resultado |
+|---|---|---|
+| Hoja de contacto de exterior (48 fotos de vehículo/técnicas) | Inventario visual de exterior, piezas y despieces | Identificadas las fotos de exterior (frente, trasera, perfil, tres cuartos) frente a interiores, mecánica y piezas sueltas |
+| `D_NQ_NP_992627-MLV113346707105_062026-O.webp` (Esteem rojo, tres cuartos delantera) | Faros, parrilla, capó y parachoques delantero | Faros horizontales alargados con indicador ámbar en la esquina externa; parrilla de listones horizontales con emblema central; parachoques integrado con boca de aire inferior y entradas laterales; espejo color carrocería |
+| `RT_PU_92a67511c7434a42bbdec44622d73a0b.webp` (Esteem plata, tres cuartos delantera der.) | Faros, antena, molduras y llantas | Antena delgada sobre el guardabarros delantero derecho; moldura lateral oscura a media altura; llantas de acero (con/sin tapacubos según ejemplar) |
+| `images (15).jpg` (Esteem plata, trasera pura) | Pilotos traseros, maletero y parachoques trasero | Pilotos verticales/rectangulares en las esquinas con franjas roja-ámbar-roja/blanca; matrícula central sobre la tapa; parachoques con moldura; salida de escape a la derecha; **tapa de combustible redonda en el guardabarros trasero izquierdo** |
+| `images (14).jpg` (Esteem plata, tres cuartos trasera der.) | Envoltura de pilotos, tapacubos y caída de maletero | Los pilotos envuelven ligeramente la esquina; tapacubos plateados sobre llanta de acero; caída de maletero corta con borde superior liso |
+| `images (16).jpg` (Esteem blanco, perfil lateral puro) | Proporciones globales y caídas | Sedán de tres cajas: capó corto, cabina retrasada, maletero corto; cuatro puertas con manijas tipo tirador; montante B oscuro |
+| `esteem-16.webp` (despiece de parachoques, página de manual) | Separación de piezas del exterior | Confirma parachoques delantero/trasero como piezas desmontables con refuerzo/absorbedor interior; base para el reparto de piezas separadas del exterior |
+| Hoja de contacto + fichas del catálogo (piezas sueltas `images (8/9).jpg`, `D_Q_NP_*`) | Manijas y herrajes | Manijas tipo tirador con botón; llaves/cilindros como referencia de herrajes (no se modelan en F3.1) |
+| `ESTEEM_MECHANICAL_NOTES.md` | Confirmar lo ya documentado | Cotas de carrocería siguen sin constar en el manual disponible; se mantienen como provisionales |
+
+### Decisiones de modelado (F3.1)
+
+- El exterior se genera como **piezas separadas** en un spec declarativo nuevo
+  (`data/vehicle/exterior_spec.json`): carrocería base, capó, tapa de
+  maletero, cuatro puertas, parachoques delantero/trasero, molduras,
+  parrilla, faros, pilotos traseros, espejos, llantas, antena, tapa de
+  combustible y limpiaparabrisas. Todo con scripts `bpy` reproducibles; nada
+  de `.blend` editados a mano.
+- Se conserva la silueta de tres cajas del bloqueo de F1.3 (mismas cotas
+  globales provisionales de `blockout_spec.json`): capó corto, cabina
+  retrasada, maletero corto con caída marcada.
+- Los faros son unidades horizontales con **piloto ámbar en la esquina
+  externa**; los pilotos traseros son unidades verticales con franjas
+  roja/ámbar/rojo-blancas. Son geometría y materiales propios: **sin texto,
+  sin emblemas y sin marcas** (Chevrolet, PDV, Suzuki u otras): la parrilla se
+  modela neutra y los lugares de emblemas quedan lisos.
+- La **tapa de combustible** se coloca en el guardabarros trasero izquierdo
+  (observado en las fotos), no en el derecho.
+- **Antena** delgada sobre el guardabarros delantero derecho (coherente con
+  `body.antenna` de `vehicle_components.json`, `front_right_fender`).
+- Llantas: neumático + llanta de acero + tapacubo, con LODs propios; las
+  posiciones siguen `track_m`/`wheelbase_m`/`wheel_radius_m` de
+  `blockout_spec.json`.
+- Los espejos laterales del exterior se modelan como carcasa + superficie
+  reflectante en las anclas `anchor_mirror_left/right`; **los espejos
+  funcionales de F2.4 (`cabin_mirrors.gd`) siguen siendo los únicos que
+  reflejan** y respetan `mirrors.budget` de `cabin_interaction.json` v2.
+- Materiales PBR **originales del proyecto** (pintura, vidrio, plástico,
+  goma, cromo, lente, reflector): ninguna textura ni color procede de la
+  biblioteca externa. Las cotas de exterior siguen siendo provisionales y no
+  se publican como especificación oficial.
+
+### Descartado
+
+- Copiar imágenes, recortes o texturas de la biblioteca externa al repositorio.
+- Reproducir emblemas, logos o texto de marca (Chevrolet, PDV, Suzuki u otros),
+  incluidos los letreros de la tapa de maletero observados en las fotos.
+- Tomar cotas de las fotos como medidas del manual.
+- Usar las fotos como capturas de tienda o assets del juego.
+- Implementar el interior definitivo (F3.2) o la física de conducción.
+
 ## Próxima revisión
 
 - Revisión rápida: inicio y cierre de cada subfase.
 - Revisión completa: **2026-12-06**, o antes de la subfase de modelado/UI que
-  corresponda (obligatoria antes de F3.1 y F3.2).
+  corresponda (obligatoria antes de F3.2).
