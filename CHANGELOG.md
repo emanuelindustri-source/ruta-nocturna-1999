@@ -4,6 +4,67 @@ Todas las fechas usan ISO 8601. Las versiones siguen SemVer.
 
 ## [Unreleased]
 
+## [0.3.2] — 2026-11-23
+
+### Añadido
+
+- `data/schemas/rain_surface_fx.json` (`schema_version: 1`, contrato
+  `vehicle.esteem.rain_surface_fx`): **matemática de lluvia física** con
+  humedad de superficies, flujo de gotas, limpiaparabrisas, charcos y
+  presupuestos declarativos para PC y móvil.
+- `data/schemas/json/rain_surface_fx.schema.json`: JSON Schema del contrato de
+  lluvia; `tools/validate_schemas.py` valida ocho contratos y comprueba el área
+  del parabrisas y los pivotes/longitudes de las escobillas contra
+  `exterior_spec.json`, la admisión y la profundidad segura contra
+  `vehicle_components.json`, la suma de gotas y el orden de los presupuestos.
+- `src/weather/rain_surface_spec.gd`: cargador runtime del contrato.
+- `src/weather/surface_wetness_model.gd`: película, drenaje, evaporación,
+  infiltración, histéresis y estados `dry/damp/wet/soaked`.
+- `src/weather/droplet_flow_model.gd`: nucleación determinista, crecimiento,
+  radio crítico, desliz por gravedad/viento, evaporación, escurrido y búfer de
+  instancias de 6 floats para F3.4.
+- `src/weather/wiper_kinematics.gd`: dos escobillas con barrido smoothstep,
+  modos off/intermitente/lento/rápido, pausas, desgaste y limpieza de sector del
+  parabrisas; sin controles nuevos de cabina.
+- `src/weather/puddle_model.gd`: arquetipos de corona, hundimiento, bache,
+  hombro y vado; profundidad, drenaje, hidroplaneo informativo y estados de
+  vadeo enlazados con `specs.water`.
+- `tests/weather/RainFxTest.tscn` + `tests/weather/rain_fx_test.gd`:
+  **126 comprobaciones** headless de contrato, humedad, determinismo de gotas,
+  barrido, desgaste, charcos, hidroplaneo, vadeo y presupuesto CPU.
+- `tools/dev/rain_test.cmd` y `tools/dev/rain_test.ps1`: prueba de lluvia con
+  log en `build/logs/rain/latest.log`; `health_check.py` la ejecuta como
+  `rain_tests` y la CI la ejecuta en Linux.
+- `docs/architecture/RAIN_AND_SURFACE_FX.md`: ecuaciones, integración con
+  F3.4/F4.4/F5.1, presupuestos y límites.
+
+### Cambiado
+
+- Versión `0.3.2` en `VERSION`, `project.godot`, `export_presets.cfg`
+  (`version/name` y `version/code=109`), `EXPECTED_VERSION` del smoke test,
+  `PHASE` de Boot y `BOOT_KICKER` en once idiomas.
+- Presupuesto CPU medido en escritorio/headless: **PC ~0,21 ms de media y
+  ~0,28 ms p95** con 4.096 gotas, 24 charcos y 2 escobillas; **móvil ~0,17 ms
+  de media y ~0,21 ms p95** con 1.536 gotas, 12 charcos y 30 Hz. El coste GPU,
+  el overdraw y el warm-up quedan para F3.4/F3.5.
+- Revisión visual completa del hito F3.3 registrada en
+  `docs/reference/REFERENCE_USAGE_LOG.md`; se usaron las hojas de contacto
+  existentes y una hoja de detalle nueva, sin copiar archivos externos.
+- `docs/architecture/DATA_CONTRACTS.md`, `SYSTEM_ARCHITECTURE.md`,
+  `STATE_MACHINES.md`, `QA_AND_RECOVERY.md` y `BUILD_AND_RELEASE.md` documentan
+  el contrato y la prueba de lluvia.
+
+### Notas
+
+- No se añadieron assets, mallas, materiales, manifiestos ni escenas de
+  vehículo. F2.1–F3.2 siguen intactos.
+- No se implementaron shaders GLSL, VFX, pérdida de agarre, vadeo ni mecánicas
+  de conducción; eso corresponde a F3.4/F5.1.
+- Smoke test **270**, tren motriz **125**, cabina **46**, interacción **257** y
+  lluvia **126**; todos exit 0.
+- La build Windows de referencia y los renders reales se validaron en el cierre
+  de la subfase; los binarios no se versionan.
+
 ## [0.3.1] — 2026-11-22
 
 ### Añadido

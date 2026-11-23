@@ -1,0 +1,599 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ruta-nocturna:schemas:rain_surface_fx:1",
+  "title": "Contrato de lluvia fisica, humedad y limpiaparabrisas del Esteem 1999",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema_version",
+    "contract_id",
+    "vehicle_id",
+    "content_status",
+    "description",
+    "schema_history",
+    "units",
+    "axes",
+    "source_policy",
+    "references",
+    "precipitation",
+    "surfaces",
+    "wetness",
+    "droplets",
+    "wiper",
+    "puddles",
+    "budgets",
+    "states",
+    "source_notes"
+  ],
+  "properties": {
+    "schema_version": {"type": "integer", "minimum": 1},
+    "contract_id": {"type": "string", "minLength": 3},
+    "vehicle_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+    "content_status": {"type": "string", "minLength": 3},
+    "description": {"type": "string", "minLength": 20},
+    "schema_history": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["version", "note"],
+        "properties": {
+          "version": {"type": "integer", "minimum": 1},
+          "note": {"type": "string", "minLength": 10}
+        }
+      }
+    },
+    "units": {"type": "object"},
+    "axes": {"type": "string", "minLength": 3},
+    "axes_note": {"type": "string"},
+    "source_policy": {"type": "string", "minLength": 20},
+    "references": {"type": "object"},
+    "precipitation": {
+      "type": "object",
+      "required": [
+        "rain_intensity_to_mm_h",
+        "intensity_min",
+        "intensity_max",
+        "max_wind_mps",
+        "humidity_drying_exponent",
+        "default_seed",
+        "max_step_s",
+        "source_status",
+        "source_note"
+      ],
+      "properties": {
+        "rain_intensity_to_mm_h": {"type": "number", "exclusiveMinimum": 0},
+        "intensity_min": {"type": "number", "minimum": 0},
+        "intensity_max": {"type": "number", "exclusiveMinimum": 0},
+        "max_wind_mps": {"type": "number", "exclusiveMinimum": 0},
+        "humidity_drying_exponent": {"type": "number", "exclusiveMinimum": 0},
+        "default_seed": {"type": "integer", "minimum": 0},
+        "max_step_s": {"type": "number", "exclusiveMinimum": 0, "maximum": 1.0},
+        "source_status": {"type": "string", "minLength": 3},
+        "source_note": {"type": "string", "minLength": 10}
+      }
+    },
+    "surfaces": {
+      "type": "object",
+      "required": ["classes", "vehicle_panels", "road_surfaces"],
+      "properties": {
+        "classes": {
+          "type": "array",
+          "minItems": 6,
+          "items": {"$ref": "#/$defs/surface_class"}
+        },
+        "vehicle_panels": {
+          "type": "array",
+          "minItems": 8,
+          "items": {"$ref": "#/$defs/vehicle_panel"}
+        },
+        "road_surfaces": {
+          "type": "array",
+          "minItems": 3,
+          "items": {"$ref": "#/$defs/road_surface"}
+        }
+      }
+    },
+    "wetness": {
+      "type": "object",
+      "required": [
+        "equation",
+        "state_thresholds",
+        "state_hysteresis",
+        "drying_temperature_reference_c",
+        "pc_update_hz",
+        "mobile_update_hz",
+        "note"
+      ],
+      "properties": {
+        "equation": {"type": "object"},
+        "state_thresholds": {
+          "type": "object",
+          "required": ["dry", "damp", "wet", "soaked"],
+          "properties": {
+            "dry": {"type": "number", "minimum": 0, "maximum": 1},
+            "damp": {"type": "number", "minimum": 0, "maximum": 1},
+            "wet": {"type": "number", "minimum": 0, "maximum": 1},
+            "soaked": {"type": "number", "minimum": 0, "maximum": 1}
+          }
+        },
+        "state_hysteresis": {"type": "number", "minimum": 0, "maximum": 0.2},
+        "drying_temperature_reference_c": {"type": "number"},
+        "pc_update_hz": {"type": "integer", "minimum": 1},
+        "mobile_update_hz": {"type": "integer", "minimum": 1},
+        "note": {"type": "string", "minLength": 10}
+      }
+    },
+    "droplets": {
+      "type": "object",
+      "required": ["instance_stride", "instance_layout", "profiles", "equations", "coalescence_note", "runoff_note"],
+      "properties": {
+        "instance_stride": {"type": "integer", "minimum": 1},
+        "instance_layout": {
+          "type": "array",
+          "minItems": 4,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "profiles": {
+          "type": "array",
+          "minItems": 2,
+          "items": {"$ref": "#/$defs/droplet_profile"}
+        },
+        "equations": {"type": "object"},
+        "coalescence_note": {"type": "string", "minLength": 10},
+        "runoff_note": {"type": "string", "minLength": 10}
+      }
+    },
+    "wiper": {
+      "type": "object",
+      "required": [
+        "vehicle_id",
+        "control_source",
+        "wiper_count",
+        "panel",
+        "ease_profile",
+        "contact_pressure_n",
+        "contact_width_mm",
+        "wipers",
+        "modes",
+        "wear",
+        "budget",
+        "anti_softlock"
+      ],
+      "properties": {
+        "vehicle_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+        "control_source": {"type": "string", "minLength": 3},
+        "wiper_count": {"type": "integer", "minimum": 1, "maximum": 4},
+        "panel": {"type": "string", "minLength": 3},
+        "ease_profile": {"enum": ["linear", "smoothstep"]},
+        "contact_pressure_n": {"type": "number", "exclusiveMinimum": 0},
+        "contact_width_mm": {"type": "number", "exclusiveMinimum": 0},
+        "wipers": {
+          "type": "array",
+          "minItems": 2,
+          "items": {"$ref": "#/$defs/wiper_entry"}
+        },
+        "modes": {
+          "type": "object",
+          "required": ["off", "intermittent", "low", "high"],
+          "properties": {
+            "off": {"$ref": "#/$defs/wiper_mode"},
+            "intermittent": {"$ref": "#/$defs/wiper_mode_intermittent"},
+            "low": {"$ref": "#/$defs/wiper_mode"},
+            "high": {"$ref": "#/$defs/wiper_mode"}
+          }
+        },
+        "wear": {
+          "type": "object",
+          "required": ["per_1000_cycles", "service_limit", "replace_limit", "clearing_loss_at_full_wear", "streak_gain_at_full_wear", "note"],
+          "properties": {
+            "per_1000_cycles": {"type": "number", "exclusiveMinimum": 0},
+            "service_limit": {"type": "number", "minimum": 0, "maximum": 1},
+            "replace_limit": {"type": "number", "minimum": 0, "maximum": 1},
+            "clearing_loss_at_full_wear": {"type": "number", "minimum": 0, "maximum": 1},
+            "streak_gain_at_full_wear": {"type": "number", "minimum": 0, "maximum": 1},
+            "note": {"type": "string", "minLength": 10}
+          }
+        },
+        "budget": {
+          "type": "object",
+          "required": ["max_updates_per_frame", "max_cpu_ms", "wipe_test_capacity"],
+          "properties": {
+            "max_updates_per_frame": {"type": "integer", "minimum": 1},
+            "max_cpu_ms": {"type": "number", "exclusiveMinimum": 0},
+            "wipe_test_capacity": {"type": "integer", "minimum": 1}
+          }
+        },
+        "anti_softlock": {
+          "type": "object",
+          "required": ["wear_blocks_driving", "failure_blocks_controls", "recovery"],
+          "properties": {
+            "wear_blocks_driving": {"const": false},
+            "failure_blocks_controls": {"const": false},
+            "recovery": {"type": "string", "minLength": 10}
+          }
+        }
+      }
+    },
+    "puddles": {
+      "type": "object",
+      "required": ["equation", "zone_archetypes", "drying", "hydroplane", "vehicle_water_link", "state_thresholds", "wading_states", "note"],
+      "properties": {
+        "equation": {"type": "object"},
+        "zone_archetypes": {
+          "type": "array",
+          "minItems": 5,
+          "items": {"$ref": "#/$defs/puddle_zone"}
+        },
+        "drying": {
+          "type": "object",
+          "required": ["wind_gain_per_mps", "temperature_gain_per_c", "source_status", "source_note"],
+          "properties": {
+            "wind_gain_per_mps": {"type": "number", "minimum": 0},
+            "temperature_gain_per_c": {"type": "number", "minimum": 0},
+            "source_status": {"type": "string", "minLength": 3},
+            "source_note": {"type": "string", "minLength": 10}
+          }
+        },
+        "hydroplane": {
+          "type": "object",
+          "required": ["min_speed_kph", "full_speed_kph", "depth_factor", "speed_factor", "risk", "note"],
+          "properties": {
+            "min_speed_kph": {"type": "number", "minimum": 0},
+            "full_speed_kph": {"type": "number", "exclusiveMinimum": 0},
+            "depth_factor": {"type": "string", "minLength": 10},
+            "speed_factor": {"type": "string", "minLength": 10},
+            "risk": {"type": "string", "minLength": 5},
+            "note": {"type": "string", "minLength": 10}
+          }
+        },
+        "vehicle_water_link": {
+          "type": "object",
+          "required": ["air_intake_height_m", "safe_wading_depth_m", "cross_reference", "source_status", "source_note"],
+          "properties": {
+            "air_intake_height_m": {"type": "number", "exclusiveMinimum": 0},
+            "safe_wading_depth_m": {"type": "number", "exclusiveMinimum": 0},
+            "cross_reference": {"type": "string", "minLength": 10},
+            "source_status": {"type": "string", "minLength": 3},
+            "source_note": {"type": "string", "minLength": 10}
+          }
+        },
+        "state_thresholds": {
+          "type": "object",
+          "required": ["dry", "damp", "standing", "deep"],
+          "properties": {
+            "dry": {"type": "number", "minimum": 0, "maximum": 1},
+            "damp": {"type": "number", "minimum": 0, "maximum": 1},
+            "standing": {"type": "number", "minimum": 0, "maximum": 1},
+            "deep": {"type": "number", "minimum": 0, "maximum": 1}
+          }
+        },
+        "wading_states": {
+          "type": "array",
+          "minItems": 3,
+          "uniqueItems": true,
+          "items": {"enum": ["safe", "caution", "danger"]}
+        },
+        "note": {"type": "string", "minLength": 10}
+      }
+    },
+    "budgets": {
+      "type": "object",
+      "required": ["pc", "mobile", "measurement"],
+      "properties": {
+        "pc": {"$ref": "#/$defs/budget_profile"},
+        "mobile": {"$ref": "#/$defs/budget_profile"},
+        "measurement": {
+          "type": "object",
+          "required": ["method", "test", "warmup_steps", "measured_steps", "gpu_status", "warmup_required_before_gameplay", "note"],
+          "properties": {
+            "method": {"type": "string", "minLength": 5},
+            "test": {"type": "string", "minLength": 5},
+            "warmup_steps": {"type": "integer", "minimum": 1},
+            "measured_steps": {"type": "integer", "minimum": 1},
+            "gpu_status": {"type": "string", "minLength": 3},
+            "warmup_required_before_gameplay": {"const": true},
+            "note": {"type": "string", "minLength": 10}
+          }
+        }
+      }
+    },
+    "states": {
+      "type": "object",
+      "required": ["surface", "droplet", "wiper", "puddle", "note"],
+      "properties": {
+        "surface": {"type": "array", "minItems": 4, "uniqueItems": true, "items": {"type": "string"}},
+        "droplet": {"type": "array", "minItems": 5, "uniqueItems": true, "items": {"type": "string"}},
+        "wiper": {"type": "array", "minItems": 4, "uniqueItems": true, "items": {"type": "string"}},
+        "puddle": {"type": "array", "minItems": 4, "uniqueItems": true, "items": {"type": "string"}},
+        "note": {"type": "string", "minLength": 10}
+      }
+    },
+    "source_notes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 10}
+    }
+  },
+  "$defs": {
+    "sourced": {
+      "type": "object",
+      "required": ["source_status", "source_note"],
+      "properties": {
+        "source_status": {"type": "string", "minLength": 3},
+        "source_note": {"type": "string", "minLength": 10}
+      }
+    },
+    "surface_class": {
+      "allOf": [{"$ref": "#/$defs/sourced"}],
+      "type": "object",
+      "required": [
+        "id",
+        "exposure",
+        "rain_capture",
+        "max_film_mm",
+        "retention_mm",
+        "saturation_wetness",
+        "nucleation_wetness",
+        "drainage_rate_per_s",
+        "evaporation_rate_per_s",
+        "infiltration_rate_per_s",
+        "wind_drying_gain",
+        "temperature_drying_gain",
+        "contact_angle_deg",
+        "adhesion",
+        "runoff_to_puddle",
+        "visible_droplets"
+      ],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+        "exposure": {"type": "number", "minimum": 0, "maximum": 1},
+        "rain_capture": {"type": "number", "minimum": 0, "maximum": 1},
+        "max_film_mm": {"type": "number", "exclusiveMinimum": 0},
+        "retention_mm": {"type": "number", "minimum": 0},
+        "saturation_wetness": {"type": "number", "minimum": 0, "maximum": 1},
+        "nucleation_wetness": {"type": "number", "minimum": 0, "maximum": 1},
+        "drainage_rate_per_s": {"type": "number", "minimum": 0},
+        "evaporation_rate_per_s": {"type": "number", "minimum": 0},
+        "infiltration_rate_per_s": {"type": "number", "minimum": 0},
+        "wind_drying_gain": {"type": "number", "minimum": 0},
+        "temperature_drying_gain": {"type": "number", "minimum": 0},
+        "contact_angle_deg": {"type": "number", "minimum": 0, "maximum": 180},
+        "adhesion": {"type": "number", "minimum": 0, "maximum": 1},
+        "runoff_to_puddle": {"type": "number", "minimum": 0, "maximum": 1},
+        "visible_droplets": {"type": "boolean"}
+      }
+    },
+    "vehicle_panel": {
+      "allOf": [{"$ref": "#/$defs/sourced"}],
+      "type": "object",
+      "required": [
+        "id",
+        "surface_class",
+        "droplet_profile",
+        "area_m2",
+        "surface_size_m",
+        "flow_dir",
+        "slope_deg",
+        "exposure",
+        "wiper_zone"
+      ],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+        "surface_class": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+        "droplet_profile": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+        "area_m2": {"type": "number", "exclusiveMinimum": 0},
+        "surface_size_m": {
+          "type": "array",
+          "prefixItems": [{"type": "number", "exclusiveMinimum": 0}, {"type": "number", "exclusiveMinimum": 0}],
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "flow_dir": {
+          "type": "array",
+          "prefixItems": [{"type": "number"}, {"type": "number"}],
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "slope_deg": {"type": "number", "minimum": -90, "maximum": 90},
+        "exposure": {"type": "number", "minimum": 0, "maximum": 1},
+        "wiper_zone": {"enum": ["windshield", "none"]}
+      }
+    },
+    "road_surface": {
+      "allOf": [{"$ref": "#/$defs/sourced"}],
+      "type": "object",
+      "required": ["id", "surface_class", "area_m2", "rain_capture", "exposure", "runoff_to_puddle"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+        "surface_class": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+        "area_m2": {"type": "number", "exclusiveMinimum": 0},
+        "rain_capture": {"type": "number", "minimum": 0, "maximum": 1},
+        "exposure": {"type": "number", "minimum": 0, "maximum": 1},
+        "runoff_to_puddle": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "droplet_profile": {
+      "allOf": [{"$ref": "#/$defs/sourced"}],
+      "type": "object",
+      "required": [
+        "id",
+        "max_droplets",
+        "area_m2",
+        "nucleation_per_m2_s",
+        "nucleation_wetness",
+        "growth_wetness",
+        "initial_radius_mm",
+        "min_radius_mm",
+        "max_radius_mm",
+        "growth_mm_per_s",
+        "critical_radius_mm",
+        "slide_wetness_gain",
+        "terminal_speed_mps",
+        "accel_mps2",
+        "evaporation_shrink_mm_per_s",
+        "wind_drift_per_mps",
+        "bounds_m",
+        "trail_width_mm",
+        "seed"
+      ],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+        "max_droplets": {"type": "integer", "minimum": 1},
+        "area_m2": {"type": "number", "exclusiveMinimum": 0},
+        "nucleation_per_m2_s": {"type": "number", "minimum": 0},
+        "nucleation_wetness": {"type": "number", "minimum": 0, "maximum": 1},
+        "growth_wetness": {"type": "number", "minimum": 0, "maximum": 1},
+        "initial_radius_mm": {"type": "number", "exclusiveMinimum": 0},
+        "min_radius_mm": {"type": "number", "exclusiveMinimum": 0},
+        "max_radius_mm": {"type": "number", "exclusiveMinimum": 0},
+        "growth_mm_per_s": {"type": "number", "minimum": 0},
+        "critical_radius_mm": {"type": "number", "exclusiveMinimum": 0},
+        "slide_wetness_gain": {"type": "number", "minimum": 0, "maximum": 1},
+        "terminal_speed_mps": {"type": "number", "exclusiveMinimum": 0},
+        "accel_mps2": {"type": "number", "exclusiveMinimum": 0},
+        "evaporation_shrink_mm_per_s": {"type": "number", "minimum": 0},
+        "wind_drift_per_mps": {"type": "number", "minimum": 0},
+        "bounds_m": {
+          "type": "array",
+          "prefixItems": [{"type": "number", "exclusiveMinimum": 0}, {"type": "number", "exclusiveMinimum": 0}],
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "trail_width_mm": {"type": "number", "exclusiveMinimum": 0},
+        "seed": {"type": "integer", "minimum": 0}
+      }
+    },
+    "wiper_entry": {
+      "allOf": [{"$ref": "#/$defs/sourced"}],
+      "type": "object",
+      "required": [
+        "id",
+        "node_hint",
+        "pivot_m",
+        "pivot_uv",
+        "blade_length_m",
+        "rest_angle_deg",
+        "sweep_delta_deg",
+        "park_angle_deg",
+        "driver_side",
+        "clearing_efficiency_new",
+        "clearing_efficiency_worn"
+      ],
+      "properties": {
+        "id": {"enum": ["left", "right"]},
+        "node_hint": {"type": "string", "minLength": 3},
+        "pivot_m": {
+          "type": "array",
+          "prefixItems": [{"type": "number"}, {"type": "number"}, {"type": "number"}],
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "pivot_uv": {
+          "type": "array",
+          "prefixItems": [{"type": "number", "minimum": 0, "maximum": 1}, {"type": "number", "minimum": 0, "maximum": 1}],
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "blade_length_m": {"type": "number", "exclusiveMinimum": 0},
+        "rest_angle_deg": {"type": "number"},
+        "sweep_delta_deg": {"type": "number", "exclusiveMinimum": -180, "maximum": 180},
+        "park_angle_deg": {"type": "number"},
+        "driver_side": {"type": "boolean"},
+        "clearing_efficiency_new": {"type": "number", "minimum": 0, "maximum": 1},
+        "clearing_efficiency_worn": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "wiper_mode": {
+      "type": "object",
+      "required": ["cycles_per_min", "kind"],
+      "properties": {
+        "cycles_per_min": {"type": "number", "minimum": 0},
+        "kind": {"enum": ["park", "continuous", "intermittent"]}
+      }
+    },
+    "wiper_mode_intermittent": {
+      "type": "object",
+      "required": ["cycles_per_min", "kind", "delays_s", "default_index"],
+      "properties": {
+        "cycles_per_min": {"type": "number", "exclusiveMinimum": 0},
+        "kind": {"const": "intermittent"},
+        "delays_s": {
+          "type": "array",
+          "minItems": 2,
+          "items": {"type": "number", "exclusiveMinimum": 0}
+        },
+        "default_index": {"type": "integer", "minimum": 0}
+      }
+    },
+    "puddle_zone": {
+      "allOf": [{"$ref": "#/$defs/sourced"}],
+      "type": "object",
+      "required": [
+        "id",
+        "area_m2",
+        "capacity_mm",
+        "rain_capture",
+        "exposure",
+        "upstream_runoff_gain",
+        "drainage_rate_per_s",
+        "infiltration_rate_per_s",
+        "evaporation_rate_per_s",
+        "visible_depth_mm",
+        "hydroplane_depth_mm"
+      ],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+        "area_m2": {"type": "number", "exclusiveMinimum": 0},
+        "capacity_mm": {"type": "number", "exclusiveMinimum": 0},
+        "rain_capture": {"type": "number", "minimum": 0, "maximum": 1},
+        "exposure": {"type": "number", "minimum": 0, "maximum": 1},
+        "upstream_runoff_gain": {"type": "number", "minimum": 0},
+        "drainage_rate_per_s": {"type": "number", "minimum": 0},
+        "infiltration_rate_per_s": {"type": "number", "minimum": 0},
+        "evaporation_rate_per_s": {"type": "number", "minimum": 0},
+        "visible_depth_mm": {"type": "number", "minimum": 0},
+        "hydroplane_depth_mm": {"type": "number", "minimum": 0}
+      }
+    },
+    "budget_profile": {
+      "type": "object",
+      "required": [
+        "target_fps",
+        "frame_budget_ms",
+        "rain_cpu_budget_ms",
+        "rain_cpu_p95_budget_ms",
+        "max_droplets_total",
+        "max_puddle_zones",
+        "simulation_hz",
+        "max_wiper_updates_per_frame",
+        "added_triangles",
+        "added_draw_calls",
+        "gpu"
+      ],
+      "properties": {
+        "target_fps": {"type": "integer", "minimum": 1},
+        "minimum_fps": {"type": "integer", "minimum": 1},
+        "frame_budget_ms": {"type": "number", "exclusiveMinimum": 0},
+        "rain_cpu_budget_ms": {"type": "number", "exclusiveMinimum": 0},
+        "rain_cpu_p95_budget_ms": {"type": "number", "exclusiveMinimum": 0},
+        "max_droplets_total": {"type": "integer", "minimum": 0},
+        "max_puddle_zones": {"type": "integer", "minimum": 0},
+        "simulation_hz": {"type": "integer", "minimum": 1},
+        "max_wiper_updates_per_frame": {"type": "integer", "minimum": 0},
+        "added_triangles": {"type": "integer", "minimum": 0},
+        "added_draw_calls": {"type": "integer", "minimum": 0},
+        "gpu": {
+          "type": "object",
+          "required": ["status", "max_draw_calls", "max_overdraw_layers", "max_fill_percent"],
+          "properties": {
+            "status": {"type": "string", "minLength": 3},
+            "max_draw_calls": {"type": "integer", "minimum": 0},
+            "max_overdraw_layers": {"type": "integer", "minimum": 0},
+            "max_fill_percent": {"type": "number", "minimum": 0, "maximum": 100}
+          }
+        }
+      }
+    }
+  }
+}

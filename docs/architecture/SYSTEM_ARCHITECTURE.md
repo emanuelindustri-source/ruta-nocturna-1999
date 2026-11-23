@@ -362,3 +362,47 @@ Reglas:
   migraciones encadenadas completas son F9.4.
 - `GameState` sigue sin llamar a `SaveManager`; el panel QA usa las APIs
   directas de `SaveManager` permitidas al UI en el grafo de dependencias.
+
+## 13. Humedad, gotas, limpiaparabrisas y charcos (Fase 3.3)
+
+La lluvia física de F3.3 son **modelos de escena**, no autoloads nuevos. El
+contrato es `data/schemas/rain_surface_fx.json` y la nota de arquitectura es
+`docs/architecture/RAIN_AND_SURFACE_FX.md`. F3.4 implementa el GLSL y F4.4
+conecta el clima.
+
+```mermaid
+flowchart LR
+    WM[WeatherManager · F4.4] -->|rain, humidity, wind, temp| SW[SurfaceWetnessModel]
+    SW --> DF[DropletFlowModel]
+    SW --> PM[PuddleModel]
+    WK[WiperKinematics] -->|limpia sector| DF
+    DF -->|instances| SH[Shader GLSL · F3.4]
+    PM -->|depth, risk| F51[Vadeo y agarre · F5.1]
+    RC[(rain_surface_fx.json)] -. carga .-> SW
+    RC -. carga .-> DF
+    RC -. carga .-> WK
+    RC -. carga .-> PM
+```
+
+| Componente | Responsabilidad | No debe hacer |
+|---|---|---|
+| `RainSurfaceSpec` | Cargar y validar la estructura runtime del contrato | Sustituir la validación Python ni interpretar UI |
+| `SurfaceWetnessModel` | Película, drenaje, evaporación, infiltración y estados | Dibujar, cambiar materiales o decidir misiones |
+| `DropletFlowModel` | Nucleación, crecimiento, desliz, escurrido y búfer de instancias | Crear mallas, shaders o gotas visuales |
+| `WiperKinematics` | Barrido, modos, intermitencia, desgaste y limpieza de gotas | Añadir controles a la cabina o bloquear la conducción |
+| `PuddleModel` | Profundidad, drenaje, hidroplaneo informativo y estados de vadeo | Aplicar pérdida de agarre o daño antes de F5.1 |
+
+Reglas:
+
+- `WeatherManager` sigue siendo el único autoload de clima. Los modelos se
+  instancian en la escena que los necesite y no se referencian entre autoloads.
+- No hay dependencias circulares: `WeatherManager` no conoce estos modelos;
+  F4.4 inyecta sus valores desde el director de escena.
+- No se duplican reglas del tren motriz ni de la cabina. El limpiaparabrisas
+  no crea un control nuevo en `cabin_interaction.json` v2.
+- Todo valor de balance vive en el contrato; el runtime no contiene números de
+  humedad, gotas o charcos dispersos.
+- La fusión visual de gotas y el coste GPU son F3.4/F3.5. F3.3 solo mide CPU
+  headless con `tests/weather/RainFxTest.tscn`.
+- El warm-up de shaders sigue siendo obligatorio antes del gameplay y se mide
+  en F3.5/F10.1.

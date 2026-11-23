@@ -1,9 +1,9 @@
 # ROADMAP — Ruta Nocturna: 1999
 
-**Versión actual:** `v0.3.1`  
-**Subfase actual:** **3.2 — Interior definitivo del Esteem; cerrada y publicada; pendiente de abrir 3.3 en un chat nuevo**  
-**Estado global:** Fase 1 y Fase 2 completadas; Fase 3 en marcha (3.2); siguiente gate 3.3  
-**Última fuente:** cierre de Fase 3.2 en GitHub
+**Versión actual:** `v0.3.2`  
+**Subfase actual:** **3.3 — Matemática de humedad, gotas, limpiaparabrisas, charcos y presupuesto; cerrada y publicada; pendiente de abrir 3.4 en un chat nuevo**  
+**Estado global:** Fase 1 y Fase 2 completadas; Fase 3 en marcha (3.3); siguiente gate 3.4  
+**Última fuente:** cierre de Fase 3.3 en GitHub
 
 Esta es la fuente de verdad del desarrollo. Cada fila es un gate cerrado: no se
 avanza sin validación, actualización de estado, commit, tag y cambio de chat.
@@ -79,11 +79,11 @@ invertir en arte o mecánicas complejas.
 |---|---|---|---|---|
 | **3.1** | `v0.3.0` | **MiMo Pro** | Exterior final, piezas separadas, LODs, PBR, llantas, faros y espejos. Validado y publicado. | Completada |
 | **3.2** | `v0.3.1` | **MiMo Pro** | Interior final, tablero, telas, asientos, herramientas, maletero y manos. Validado y publicado. | Completada |
-| **3.3** | `v0.3.2` | **DS-R** | Matemática de humedad, flujo de gotas, limpiaparabrisas, charcos y presupuesto. | Pendiente |
+| **3.3** | `v0.3.2` | **DS-R** | Matemática de humedad, flujo de gotas, limpiaparabrisas, charcos y presupuesto. Validado y publicado. | Completada |
 | **3.4** | `v0.3.3` | **MiMo Pro** | GLSL de producción, gotas, barrido, escurrido, charcos, asfalto mojado y VFX. | Pendiente |
 | **3.5** | `v0.3.4` | **MiMo Flash** | Integración, compresión, warm-up, rendimiento y capturas de referencia visual. | Pendiente |
 
-**Cierre:** revisión de fotos y conceptos antes de 3.1/3.2; `/new` tras cada fila.
+**Cierre:** revisión de fotos y conceptos antes de 3.1–3.4; `/new` tras cada fila.
 
 ---
 

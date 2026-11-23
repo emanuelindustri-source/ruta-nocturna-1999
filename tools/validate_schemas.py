@@ -20,6 +20,7 @@ PAIRS = {
     "vehicle_components": "vehicle_components",
     "vehicle_powertrain": "vehicle_powertrain",
     "cabin_interaction": "cabin_interaction",
+    "rain_surface_fx": "rain_surface_fx",
     "inventory_tools": "inventory_tools",
     "folklore_entities": "folklore_entities",
     "dialogue_and_endings": "dialogue_and_endings",
@@ -28,6 +29,7 @@ PAIRS = {
 
 BLOCKOUT_SPEC = ROOT / "data" / "vehicle" / "blockout_spec.json"
 CABIN_SPEC = ROOT / "data" / "vehicle" / "cabin_spec.json"
+EXTERIOR_SPEC = ROOT / "data" / "vehicle" / "exterior_spec.json"
 
 REQUIRED_AUTOLOADS = {
     "EventBus",
@@ -68,6 +70,26 @@ def duplicate_values(values: list[str]) -> list[str]:
             duplicates.append(value)
         seen.add(value)
     return duplicates
+
+
+def polygon_area_3d(points: list[list[float]]) -> float:
+    """Area of a planar polygon given as 3D vertices in order."""
+    if len(points) < 3:
+        return 0.0
+    origin = points[0]
+    total = 0.0
+    for index in range(1, len(points) - 1):
+        ax = points[index][0] - origin[0]
+        ay = points[index][1] - origin[1]
+        az = points[index][2] - origin[2]
+        bx = points[index + 1][0] - origin[0]
+        by = points[index + 1][1] - origin[1]
+        bz = points[index + 1][2] - origin[2]
+        cx = ay * bz - az * by
+        cy = az * bx - ax * bz
+        cz = ax * by - ay * bx
+        total += (cx * cx + cy * cy + cz * cz) ** 0.5 * 0.5
+    return total
 
 
 def localization_keys() -> set[str]:
@@ -596,6 +618,272 @@ def validate() -> tuple[list[str], list[str]]:
         errors.append("cabin_interaction: gamepad.cabin requiere botones de foco")
     if next_buttons & previous_buttons:
         errors.append("cabin_interaction: botones de foco solapados en gamepad.cabin")
+
+    # --- F3.3: lluvia fisica, humedad, gotas, limpiaparabrisas y charcos -----
+    rain = data["rain_surface_fx"]
+    if rain.get("vehicle_id") != vehicle.get("vehicle_id"):
+        errors.append("rain_surface_fx: vehicle_id no coincide con vehicle_components")
+    if int(rain.get("schema_version", 0)) != 1:
+        errors.append("rain_surface_fx: schema_version debe ser 1")
+    rain_history = [
+        int(entry.get("version", 0)) for entry in rain.get("schema_history", []) if isinstance(entry, dict)
+    ]
+    if rain_history != [1]:
+        errors.append("rain_surface_fx: schema_history debe documentar v1")
+
+    surfaces = rain.get("surfaces", {})
+    surface_classes = surfaces.get("classes", [])
+    class_ids = [str(item.get("id", "")) for item in surface_classes if isinstance(item, dict)]
+    for duplicate in duplicate_values(class_ids):
+        errors.append(f"rain_surface_fx: clase de superficie repetida {duplicate}")
+    for item in surface_classes:
+        if not isinstance(item, dict):
+            continue
+        class_id = str(item.get("id", ""))
+        if float(item.get("nucleation_wetness", 1.0)) > float(item.get("saturation_wetness", 0.0)):
+            errors.append(f"rain_surface_fx: {class_id} nucleation_wetness supera saturation_wetness")
+        if float(item.get("retention_mm", 0.0)) >= float(item.get("max_film_mm", 0.0)):
+            errors.append(f"rain_surface_fx: {class_id} retention_mm debe ser menor que max_film_mm")
+
+    panels = surfaces.get("vehicle_panels", [])
+    panel_ids = [str(item.get("id", "")) for item in panels if isinstance(item, dict)]
+    for duplicate in duplicate_values(panel_ids):
+        errors.append(f"rain_surface_fx: panel de vehiculo repetido {duplicate}")
+    panels_by_id = {str(item.get("id", "")): item for item in panels if isinstance(item, dict)}
+    for required_panel in ("windshield", "rear_window", "hood", "roof", "trunk_lid", "side_glass"):
+        if required_panel not in panels_by_id:
+            errors.append(f"rain_surface_fx: falta el panel obligatorio {required_panel}")
+    for panel in panels:
+        if not isinstance(panel, dict):
+            continue
+        panel_id = str(panel.get("id", ""))
+        if str(panel.get("surface_class", "")) not in class_ids:
+            errors.append(f"rain_surface_fx: panel {panel_id} usa clase inexistente {panel.get('surface_class')}")
+        if str(panel.get("droplet_profile", "")) not in {"glass", "paint"}:
+            errors.append(f"rain_surface_fx: panel {panel_id} usa perfil de gotas desconocido")
+        size = panel.get("surface_size_m", [])
+        if len(size) != 2 or any(float(value) <= 0 for value in size):
+            errors.append(f"rain_surface_fx: panel {panel_id} tiene surface_size_m invalido")
+        flow = panel.get("flow_dir", [])
+        if len(flow) != 2 or (float(flow[0]) == 0.0 and float(flow[1]) == 0.0):
+            errors.append(f"rain_surface_fx: panel {panel_id} tiene flow_dir invalido")
+    if panels_by_id.get("windshield", {}).get("wiper_zone") != "windshield":
+        errors.append("rain_surface_fx: el parabrisas debe declarar wiper_zone windshield")
+    for panel_id, panel in panels_by_id.items():
+        if panel_id != "windshield" and panel.get("wiper_zone") != "none":
+            errors.append(f"rain_surface_fx: el panel {panel_id} no debe declarar limpiaparabrisas")
+
+    road_surfaces = surfaces.get("road_surfaces", [])
+    road_ids = [str(item.get("id", "")) for item in road_surfaces if isinstance(item, dict)]
+    for duplicate in duplicate_values(road_ids):
+        errors.append(f"rain_surface_fx: superficie de via repetida {duplicate}")
+    for road in road_surfaces:
+        if not isinstance(road, dict):
+            continue
+        if str(road.get("surface_class", "")) not in class_ids:
+            errors.append(
+                f"rain_surface_fx: superficie de via {road.get('id')} usa clase inexistente {road.get('surface_class')}"
+            )
+
+    wetness = rain.get("wetness", {})
+    wet_thresholds = wetness.get("state_thresholds", {})
+    wet_values = [float(wet_thresholds.get(name, -1)) for name in ("dry", "damp", "wet", "soaked")]
+    if not all(0.0 <= value <= 1.0 for value in wet_values) or wet_values != sorted(wet_values) or len(set(wet_values)) != 4:
+        errors.append("rain_surface_fx: wetness.state_thresholds debe ser creciente y estar en 0..1")
+    if int(wetness.get("pc_update_hz", 0)) < int(wetness.get("mobile_update_hz", 0)):
+        errors.append("rain_surface_fx: la actualizacion PC no puede ser menor que la movil")
+
+    droplets = rain.get("droplets", {})
+    profiles = droplets.get("profiles", [])
+    profile_ids = [str(item.get("id", "")) for item in profiles if isinstance(item, dict)]
+    for duplicate in duplicate_values(profile_ids):
+        errors.append(f"rain_surface_fx: perfil de gotas repetido {duplicate}")
+    for required_profile in ("glass", "paint"):
+        if required_profile not in profile_ids:
+            errors.append(f"rain_surface_fx: falta el perfil de gotas {required_profile}")
+    for profile in profiles:
+        if not isinstance(profile, dict):
+            continue
+        profile_id = str(profile.get("id", ""))
+        if float(profile.get("min_radius_mm", 0)) >= float(profile.get("max_radius_mm", 0)):
+            errors.append(f"rain_surface_fx: {profile_id} tiene radios de gota fuera de orden")
+        if float(profile.get("initial_radius_mm", 0)) < float(profile.get("min_radius_mm", 0)):
+            errors.append(f"rain_surface_fx: {profile_id} initial_radius_mm menor que min_radius_mm")
+        if float(profile.get("nucleation_wetness", 1)) > float(profile.get("growth_wetness", 0)):
+            errors.append(f"rain_surface_fx: {profile_id} nucleation_wetness supera growth_wetness")
+        bounds = profile.get("bounds_m", [])
+        if len(bounds) != 2 or any(float(value) <= 0 for value in bounds):
+            errors.append(f"rain_surface_fx: {profile_id} tiene bounds_m invalido")
+    stride = int(droplets.get("instance_stride", 0))
+    if stride != len(droplets.get("instance_layout", [])):
+        errors.append("rain_surface_fx: instance_stride no coincide con instance_layout")
+
+    wiper = rain.get("wiper", {})
+    if wiper.get("vehicle_id") != vehicle.get("vehicle_id"):
+        errors.append("rain_surface_fx: wiper.vehicle_id no coincide con vehicle_components")
+    wipers = wiper.get("wipers", [])
+    wiper_ids = [str(item.get("id", "")) for item in wipers if isinstance(item, dict)]
+    if wiper_ids != ["left", "right"]:
+        errors.append("rain_surface_fx: se esperan los limpiaparabrisas left/right en orden")
+    if int(wiper.get("wiper_count", 0)) != len(wipers):
+        errors.append("rain_surface_fx: wiper_count no coincide con wipers")
+    wipers_by_id = {str(item.get("id", "")): item for item in wipers if isinstance(item, dict)}
+    for wiper_entry in wipers:
+        if not isinstance(wiper_entry, dict):
+            continue
+        wiper_id = str(wiper_entry.get("id", ""))
+        if abs(float(wiper_entry.get("rest_angle_deg", 0)) - float(wiper_entry.get("park_angle_deg", 0))) > 0.01:
+            errors.append(f"rain_surface_fx: {wiper_id} rest_angle_deg debe coincidir con park_angle_deg")
+        if abs(float(wiper_entry.get("sweep_delta_deg", 0))) < 10:
+            errors.append(f"rain_surface_fx: {wiper_id} tiene un barrido demasiado pequeno")
+        if float(wiper_entry.get("clearing_efficiency_worn", 1)) >= float(
+            wiper_entry.get("clearing_efficiency_new", 0)
+        ):
+            errors.append(f"rain_surface_fx: {wiper_id} la goma gastada no puede limpiar igual que la nueva")
+    if "left" in wipers_by_id and "right" in wipers_by_id:
+        left_sweep = float(wipers_by_id["left"].get("sweep_delta_deg", 0))
+        right_sweep = float(wipers_by_id["right"].get("sweep_delta_deg", 0))
+        if left_sweep * right_sweep >= 0:
+            errors.append("rain_surface_fx: los barridos left/right deben ser espejo")
+    modes = wiper.get("modes", {})
+    low_cycles = float(modes.get("low", {}).get("cycles_per_min", 0))
+    high_cycles = float(modes.get("high", {}).get("cycles_per_min", 0))
+    if not (0 < low_cycles < high_cycles):
+        errors.append("rain_surface_fx: las velocidades low/high de limpiaparabrisas estan fuera de orden")
+    if float(modes.get("off", {}).get("cycles_per_min", -1)) != 0:
+        errors.append("rain_surface_fx: el modo off debe detener el limpiaparabrisas")
+    intermittent = modes.get("intermittent", {})
+    delays = [float(value) for value in intermittent.get("delays_s", [])]
+    if len(delays) < 2 or delays != sorted(delays) or len(set(delays)) != len(delays):
+        errors.append("rain_surface_fx: los retardos intermitentes deben ser crecientes")
+    default_index = int(intermittent.get("default_index", -1))
+    if default_index < 0 or default_index >= len(delays):
+        errors.append("rain_surface_fx: intermittent.default_index fuera de rango")
+    if wiper.get("anti_softlock", {}).get("wear_blocks_driving") is not False:
+        errors.append("rain_surface_fx: el desgaste del limpiaparabrisas no puede bloquear la conduccion")
+    if wiper.get("anti_softlock", {}).get("failure_blocks_controls") is not False:
+        errors.append("rain_surface_fx: el fallo del limpiaparabrisas no puede bloquear los controles")
+
+    if EXTERIOR_SPEC.exists():
+        exterior = load_json(EXTERIOR_SPEC)
+        windshield = next(
+            (
+                item
+                for item in exterior.get("glass_panels", [])
+                if isinstance(item, dict) and item.get("id") == "windshield"
+            ),
+            None,
+        )
+        if windshield is None:
+            errors.append("rain_surface_fx: exterior_spec.json no declara el panel windshield")
+        else:
+            corners = windshield.get("corners_m", [])
+            computed_area = polygon_area_3d(corners) if isinstance(corners, list) else 0.0
+            declared_area = float(panels_by_id.get("windshield", {}).get("area_m2", 0))
+            if computed_area <= 0:
+                errors.append("rain_surface_fx: no se pudo calcular el area del parabrisas")
+            elif abs(declared_area - computed_area) > max(0.08 * computed_area, 0.01):
+                errors.append(
+                    "rain_surface_fx: el area del parabrisas no coincide con exterior_spec.json "
+                    f"({declared_area:.3f} vs {computed_area:.3f} m2)"
+                )
+        pieces = {
+            str(item.get("id", "")): item for item in exterior.get("pieces", []) if isinstance(item, dict)
+        }
+        for side, piece_id in (("left", "wiper_left"), ("right", "wiper_right")):
+            piece = pieces.get(piece_id)
+            entry = wipers_by_id.get(side)
+            if piece is None or entry is None:
+                errors.append(f"rain_surface_fx: falta {piece_id} en exterior_spec.json o en el contrato")
+                continue
+            minimum = [float(value) for value in piece.get("min_m", [0, 0, 0])]
+            maximum = [float(value) for value in piece.get("max_m", [0, 0, 0])]
+            box_length = maximum[0] - minimum[0]
+            declared_length = float(entry.get("blade_length_m", 0))
+            if abs(box_length - declared_length) > 0.02:
+                errors.append(
+                    f"rain_surface_fx: {side}.blade_length_m no coincide con {piece_id} "
+                    f"({declared_length:.3f} vs {box_length:.3f} m)"
+                )
+            pivot = [float(value) for value in entry.get("pivot_m", [0, 0, 0])]
+            inner_x = maximum[0] if side == "left" else minimum[0]
+            center_y = (minimum[1] + maximum[1]) * 0.5
+            center_z = (minimum[2] + maximum[2]) * 0.5
+            if abs(inner_x - pivot[0]) > 0.02 or abs(center_y - pivot[1]) > 0.06 or abs(center_z - pivot[2]) > 0.06:
+                errors.append(f"rain_surface_fx: {side}.pivot_m no coincide con el extremo interior de {piece_id}")
+    else:
+        errors.append("rain_surface_fx: falta data/vehicle/exterior_spec.json")
+
+    puddles = rain.get("puddles", {})
+    zones = puddles.get("zone_archetypes", [])
+    zone_ids = [str(item.get("id", "")) for item in zones if isinstance(item, dict)]
+    for duplicate in duplicate_values(zone_ids):
+        errors.append(f"rain_surface_fx: arquetipo de charco repetido {duplicate}")
+    for required_zone in ("asphalt_crown", "asphalt_low_spot", "pothole", "dirt_shoulder", "ford_crossing"):
+        if required_zone not in zone_ids:
+            errors.append(f"rain_surface_fx: falta el arquetipo de charco {required_zone}")
+    for zone in zones:
+        if not isinstance(zone, dict):
+            continue
+        zone_id = str(zone.get("id", ""))
+        capacity = float(zone.get("capacity_mm", 0))
+        hydroplane_depth = float(zone.get("hydroplane_depth_mm", 0))
+        visible_depth = float(zone.get("visible_depth_mm", 0))
+        if not (0 <= visible_depth < capacity):
+            errors.append(f"rain_surface_fx: {zone_id} visible_depth_mm debe quedar dentro de capacity_mm")
+        if not (0 <= hydroplane_depth < capacity):
+            errors.append(f"rain_surface_fx: {zone_id} hydroplane_depth_mm debe quedar dentro de capacity_mm")
+    water = vehicle.get("specs", {}).get("water", {})
+    link = puddles.get("vehicle_water_link", {})
+    if abs(float(link.get("air_intake_height_m", -1)) - float(water.get("air_intake_height_m", -2))) > 0.001:
+        errors.append("rain_surface_fx: air_intake_height_m no coincide con vehicle_components")
+    if abs(float(link.get("safe_wading_depth_m", -1)) - float(water.get("safe_wading_depth_m", -2))) > 0.001:
+        errors.append("rain_surface_fx: safe_wading_depth_m no coincide con vehicle_components")
+    puddle_thresholds = puddles.get("state_thresholds", {})
+    puddle_values = [float(puddle_thresholds.get(name, -1)) for name in ("dry", "damp", "standing", "deep")]
+    if not all(0.0 <= value <= 1.0 for value in puddle_values) or puddle_values != sorted(puddle_values) or len(set(puddle_values)) != 4:
+        errors.append("rain_surface_fx: puddles.state_thresholds debe ser creciente y estar en 0..1")
+    if puddles.get("wading_states") != ["safe", "caution", "danger"]:
+        errors.append("rain_surface_fx: wading_states debe declarar safe/caution/danger")
+    if not (float(puddles.get("hydroplane", {}).get("min_speed_kph", 0)) < float(
+        puddles.get("hydroplane", {}).get("full_speed_kph", 0)
+    )):
+        errors.append("rain_surface_fx: hydroplane min_speed_kph debe ser menor que full_speed_kph")
+
+    budgets = rain.get("budgets", {})
+    pc = budgets.get("pc", {})
+    mobile = budgets.get("mobile", {})
+    if int(mobile.get("max_droplets_total", 0)) > int(pc.get("max_droplets_total", 0)):
+        errors.append("rain_surface_fx: el presupuesto movil de gotas no puede superar al de PC")
+    if int(mobile.get("max_puddle_zones", 0)) > int(pc.get("max_puddle_zones", 0)):
+        errors.append("rain_surface_fx: el presupuesto movil de charcos no puede superar al de PC")
+    if int(mobile.get("simulation_hz", 0)) > int(pc.get("simulation_hz", 0)):
+        errors.append("rain_surface_fx: la simulacion movil no puede superar la frecuencia de PC")
+    for profile_name, profile in (("pc", pc), ("mobile", mobile)):
+        frame_budget = float(profile.get("frame_budget_ms", 0))
+        cpu_budget = float(profile.get("rain_cpu_budget_ms", 0))
+        p95_budget = float(profile.get("rain_cpu_p95_budget_ms", 0))
+        if not (0 < cpu_budget <= frame_budget * 0.1):
+            errors.append(f"rain_surface_fx: budgets.{profile_name}.rain_cpu_budget_ms debe ser <= 10 % del frame")
+        if not (cpu_budget <= p95_budget <= frame_budget * 0.15):
+            errors.append(f"rain_surface_fx: budgets.{profile_name}.rain_cpu_p95_budget_ms fuera de rango")
+        if int(profile.get("added_triangles", -1)) != 0 or int(profile.get("added_draw_calls", -1)) != 0:
+            errors.append(f"rain_surface_fx: budgets.{profile_name} debe declarar cero triangulos/draw calls en F3.3")
+    total_profile_droplets = sum(int(item.get("max_droplets", 0)) for item in profiles if isinstance(item, dict))
+    if total_profile_droplets != int(pc.get("max_droplets_total", -1)):
+        errors.append(
+            "rain_surface_fx: la suma de max_droplets de los perfiles debe igualar budgets.pc.max_droplets_total"
+        )
+    expected_states = {
+        "surface": ["dry", "damp", "wet", "soaked"],
+        "droplet": ["nucleated", "growing", "sliding", "evaporating", "removed"],
+        "wiper": ["off", "intermittent_wait", "sweeping", "parked"],
+        "puddle": ["dry", "damp", "standing", "deep"],
+    }
+    states = rain.get("states", {})
+    for key, expected in expected_states.items():
+        if states.get(key) != expected:
+            errors.append(f"rain_surface_fx: states.{key} no coincide con el contrato")
 
     known_loc = localization_keys()
     all_loc_uses: list[tuple[str, str]] = []

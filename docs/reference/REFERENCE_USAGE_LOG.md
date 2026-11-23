@@ -454,8 +454,65 @@ las 40 imágenes en contexto** y **no se copió ningún archivo** de
 - Tomar cotas de las fotos como medidas del manual.
 - Implementar mecánicas de inventario, reparación o física (F5.1).
 
-## Próxima revisión
+## 2026-11-22/23 — Fase 3.3 — lluvia, humedad, limpiaparabrisas y charcos
+
+**Alcance:** revisión visual completa obligatoria antes de F3.3 (`AGENTS.md`,
+sección 10). Se usó el catálogo `docs/reference/reference_catalog.json` (95
+fichas) y las **hojas de contacto ya existentes** `all_images.jpg` (95 fichas),
+`generated_concepts.jpg` (40 conceptos), `exterior_f31_review.jpg`,
+`exterior_f31_detail.jpg`, `interior_f32_review.jpg` e `interior_f32_detail.jpg`.
+Se generó una hoja de detalle nueva en
+`build/reference/contact_sheets/rain_f33_detail.jpg` (12 recortes de parabrisas,
+luneta, tablero y conceptos nocturnos; no versionada). **No se cargaron las 40
+imágenes en contexto** y **no se copió ningún archivo** de
+`C:\Dev\fotos de ejemplo` al repositorio. La biblioteca externa quedó intacta
+(escaneo rápido: 95 archivos, sin cambios).
+
+### Referencias utilizadas
+
+| Referencia | Uso | Resultado |
+|---|---|---|
+| Catálogo de 95 fichas | Buscar fotos dedicadas de lluvia, gotas, charcos, vidrio mojado o limpiaparabrisas | No hay entradas dedicadas; las fotos del Esteem son de exterior/interior seco y las piezas técnicas no muestran agua |
+| `all_images.jpg` (hoja de 95 fichas) | Inventario visual completo y descarte de candidatos | Confirmado que no hay una serie de lluvia; los conceptos nocturnos son la única referencia de atmósfera mojada |
+| `generated_concepts.jpg` (40 conceptos) | Inspiración de noche, asfalto mojado, reflejos, lluvia en cabina y charcos | Se observan reflejos alargados de faros y letreros, superficies oscuras con brillo y lluvia sobre el parabrisas; **no son canon ni fuente de cotas** |
+| `exterior_f31_review.jpg` y `exterior_f31_detail.jpg` | Parabrisas, luneta, base de limpiaparabrisas y paneles | Dos escobillas negras apoyadas en la base del parabrisas; luneta sin limpiaparabrisas; superficie del vidrio lisa y sin marco grueso |
+| `interior_f32_review.jpg` e `interior_f32_detail.jpg` | Cabecera del parabrisas, tablero y visibilidad desde la cabina | Confirma la zona de barrido frente al conductor y el espejo interior; el tablero no muestra mandos de limpiaparabrisas identificables en las fotos |
+| `rain_f33_detail.jpg` (nueva, no versionada) | Detalle de parabrisas/luneta, tablero y conceptos de lluvia | Base visual para el contrato; no se usó ninguna textura, color o forma de las fotos |
+| `images (16).jpg`, `RT_PU_92a67511c7434a42bbdec44622d73a0b.webp`, `D_NQ_NP_992627-MLV113346707105_062026-O.webp`, `images (14/15).jpg`, `images (10).jpg`, `adentro esteem.jpg` | Geometría observada de cristales y limpias | Coherente con las cajas `wiper_left`/`wiper_right` y el panel `windshield` ya declarados en `exterior_spec.json` (F3.1) |
+| `ESTEEM_MECHANICAL_NOTES.md` | Confirmar lo ya documentado | El manual disponible no incluye cotas de cristales, ángulos de barrido ni curvas de secado; siguen siendo valores provisionales |
+
+### Decisiones (F3.3)
+
+- No se modela ni texturiza nada: la lluvia de F3.3 es **matemática y contrato**.
+  La geometría de parabrisas y escobillas se toma de `exterior_spec.json`; no se
+  modifica la malla, el material ni el manifiesto de F3.1.
+- El barrido se declara con pivotes en el extremo interior de las cajas de F3.1,
+  longitud de 0,46 m, barrido de ±100° y modos off/intermitente/lento/rápido.
+  Los ángulos, tiempos y desgaste son `design_value`, no datos del manual.
+- La humedad, las gotas y los charcos son valores de diseño calibrables. Las
+  fotos reales están secas y los conceptos nocturnos solo inspiran la atmósfera;
+  no se derivan cotas ni curvas de ellas.
+- Los conceptos de lluvia se usan solo como referencia de **reflejos alargados,
+  superficies oscuras y lluvia sobre vidrio**; no se copian colores, texturas ni
+  composiciones.
+- La zona limpia del parabrisas se modela por sector geométrico con eficiencia
+  de goma nueva/gastada; la fusión visual de gotas y el barrido GLSL son F3.4.
+- Los charcos se declaran por arquetipos (corona, hundimiento, bache, hombro y
+  vado) y el vadeo se enlaza con `vehicle_components.json#specs.water`; la
+  mecánica es F5.1.
+
+### Descartado
+
+- Copiar imágenes, recortes o texturas de la biblioteca externa al repositorio.
+- Inventar fotos de lluvia o presentar los conceptos de IA como canon.
+- Tomar ángulos de barrido, curvas de secado o profundidades de charco de las
+  fotos como si fueran medidas.
+- Implementar shaders, VFX, arte, pérdida de agarre o vadeo en F3.3.
+- Añadir un mando de limpiaparabrisas a `cabin_interaction.json` v2 o reabrir
+  F2.3/F2.4.
+
+### Próxima revisión
 
 - Revisión rápida: inicio y cierre de cada subfase.
-- Revisión completa: **2026-12-06**, o antes de la subfase de modelado/UI que
-  corresponda (obligatoria antes de F3.3/F3.4).
+- Revisión completa: **2026-12-07**, o antes de la subfase de modelado/UI que
+  corresponda (obligatoria antes de F3.4/F3.5).

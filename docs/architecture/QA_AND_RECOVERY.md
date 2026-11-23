@@ -329,3 +329,51 @@ mide en F3.5/F10.1.
   oficiales del manual.
 - No sustituye la prueba Android/ADB de un hito de build. En 2.1 se comprueba que
   el dispositivo siga autorizado, pero no se publica una APK nueva.
+
+## 15. Lluvia, humedad y presupuestos (Fase 3.3)
+
+### Pruebas
+
+```powershell
+.\tools\dev\rain_test.cmd
+```
+
+- `tests/weather/RainFxTest.tscn` ejecuta **126 comprobaciones** headless:
+  contrato, humedad, determinismo de gotas, barrido, desgaste, charcos,
+  hidroplaneo, vadeo y presupuesto CPU.
+- El log queda en `build/logs/rain/latest.log` (ignorado por Git).
+- `health_check.py` ejecuta la prueba como chequeo independiente
+  (`rain_tests`). `--skip-godot`/`--skip-smoke` la omiten con el resto.
+- La CI ejecuta la prueba en Linux después del import.
+
+### Presupuesto medido (2026-11-23)
+
+| Perfil | Configuración | Media | p95 | Presupuesto |
+|---|---|---|---|---|
+| PC | 4.096 gotas, 24 charcos, 2 escobillas, 60 Hz | ~0,21 ms | ~0,28 ms | 1,0 / 1,6 ms |
+| Móvil | 1.536 gotas, 12 charcos, 2 escobillas, 30 Hz | ~0,17 ms | ~0,21 ms | 1,5 / 2,4 ms |
+
+La prueba llena los campos a su capacidad y mide 300 pasos tras 120 de warm-up.
+El máximo observado (3,3 ms PC / 1,8 ms móvil) incluye picos de depuración y no
+se usa como criterio de frame. El coste GPU, el overdraw, el warm-up de shaders
+y el PSS en ruta se miden en F3.4/F3.5/F10.1; no se declaran optimizaciones sin
+medición.
+
+### Criterios
+
+- El contrato debe validar y coincidir con `exterior_spec.json` (parabrisas y
+  escobillas) y `vehicle_components.json` (admisión y profundidad segura).
+- La humedad nunca sale de 0..1; la película nunca es negativa.
+- Las gotas no superan la capacidad, no salen de bounds sin contabilizarse y no
+  producen NaN.
+- El limpiaparabrisas completa ciclos, respeta la intermitencia y degrada la
+  limpieza con el desgaste sin bloquear controles.
+- Los charcos no superan su capacidad, drenan al dejar de llover y el riesgo de
+  hidroplaneo crece con profundidad y velocidad.
+- La media y el p95 de CPU deben quedar dentro del contrato en PC y móvil.
+
+### Límites
+
+- F3.3 no implementa shaders, VFX, arte, pérdida de agarre ni vadeo.
+- La medición es de escritorio y headless; el Redmi se mide en F3.5/F10.2.
+- El warm-up de shaders sigue pendiente y es obligatorio antes de gameplay.

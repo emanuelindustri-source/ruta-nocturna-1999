@@ -57,6 +57,7 @@ REQUIRED_FILES = [
     "docs/architecture/DATA_CONTRACTS.md",
     "docs/architecture/QA_AND_RECOVERY.md",
     "docs/architecture/BUILD_AND_RELEASE.md",
+    "docs/architecture/RAIN_AND_SURFACE_FX.md",
     "data/schemas/vehicle_components.json",
     "data/schemas/vehicle_powertrain.json",
     "data/schemas/folklore_entities.json",
@@ -135,6 +136,17 @@ REQUIRED_FILES = [
     "tools/dev/cabin_test.ps1",
     "data/schemas/cabin_interaction.json",
     "data/schemas/json/cabin_interaction.schema.json",
+    "data/schemas/rain_surface_fx.json",
+    "data/schemas/json/rain_surface_fx.schema.json",
+    "src/weather/rain_surface_spec.gd",
+    "src/weather/surface_wetness_model.gd",
+    "src/weather/droplet_flow_model.gd",
+    "src/weather/wiper_kinematics.gd",
+    "src/weather/puddle_model.gd",
+    "tests/weather/RainFxTest.tscn",
+    "tests/weather/rain_fx_test.gd",
+    "tools/dev/rain_test.cmd",
+    "tools/dev/rain_test.ps1",
     "src/vehicle/cabin_interaction_spec.gd",
     "src/vehicle/cabin_controls.gd",
     "src/vehicle/hand_ik_driver.gd",
@@ -582,6 +594,27 @@ def check_interaction_test(checks: list[Check], skip_smoke: bool) -> None:
     )
 
 
+def check_rain_test(checks: list[Check], skip_smoke: bool) -> None:
+    if skip_smoke:
+        result(checks, "rain_tests", True, "Omitido por --skip-godot/--skip-smoke", warn=True)
+        return
+    if not GODOT.exists():
+        result(checks, "rain_tests", False, "Godot no está instalado en la ruta esperada")
+        return
+    code, output = run_command(
+        [str(GODOT), "--headless", "--path", str(ROOT), "res://tests/weather/RainFxTest.tscn"],
+        timeout=240,
+    )
+    ok = code == 0 and "[RAIN] OK" in output
+    result(
+        checks,
+        "rain_tests",
+        ok,
+        f"Exit {code}; {'lluvia, humedad y charcos superados' if ok else 'sin marca de éxito'}",
+        {"exit_code": code, "tail": "\n".join(output.splitlines()[-30:])},
+    )
+
+
 def check_godot_import(checks: list[Check], skip_import: bool) -> None:
     if skip_import:
         result(checks, "godot_import", True, "Omitido por --skip-godot", warn=True)
@@ -677,6 +710,7 @@ def main() -> int:
     check_powertrain_test(checks, args.skip_godot or args.skip_smoke)
     check_cabin_test(checks, args.skip_godot or args.skip_smoke)
     check_interaction_test(checks, args.skip_godot or args.skip_smoke)
+    check_rain_test(checks, args.skip_godot or args.skip_smoke)
 
     report = build_report(checks, mode)
     REPORT_DIR.mkdir(parents=True, exist_ok=True)

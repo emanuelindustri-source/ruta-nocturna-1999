@@ -2,11 +2,11 @@
   "project": "Ruta Nocturna: 1999",
   "repository": "emanuelindustri-source/ruta-nocturna-1999",
   "generated_from": "ROADMAP.md",
-  "source_sha256": "eafff56cd525cb2a2b078ae501909fc36ad7c0b11524cc81c77980025f1cbbdc",
-  "current_version": "v0.3.1",
-  "version_file": "0.3.1",
-  "current_subphase": "3.2",
-  "global_status": "Fase 1 y Fase 2 completadas; Fase 3 en marcha (3.2); siguiente gate 3.3",
+  "source_sha256": "cb3acd068dee54d5000e2b2f44b757945081423cd28f541734a90dde75e6b788",
+  "current_version": "v0.3.2",
+  "version_file": "0.3.2",
+  "current_subphase": "3.3",
+  "global_status": "Fase 1 y Fase 2 completadas; Fase 3 en marcha (3.3); siguiente gate 3.4",
   "models": {
     "DS-R": "DeepSeek V4.1 Flash 1017 · Razonamiento",
     "DS-S": "DeepSeek V4.1 Flash 1017 · Estándar",
@@ -14,11 +14,11 @@
     "MiMo Flash": "MiMo-V2.6-Flash"
   },
   "summary": {
-    "completed": 10,
+    "completed": 11,
     "in_progress": 0,
-    "pending": 35,
+    "pending": 34,
     "total": 45,
-    "percent": 22.2
+    "percent": 24.4
   },
   "phases": [
     {
@@ -153,9 +153,9 @@
           "version": "v0.3.2",
           "model": "DS-R",
           "model_label": "DeepSeek V4.1 Flash 1017 · Razonamiento",
-          "summary": "Matemática de humedad, flujo de gotas, limpiaparabrisas, charcos y presupuesto.",
-          "status": "pending",
-          "status_label": "Pendiente"
+          "summary": "Matemática de humedad, flujo de gotas, limpiaparabrisas, charcos y presupuesto. Validado y publicado.",
+          "status": "completed",
+          "status_label": "Completada"
         },
         {
           "id": "3.4",
@@ -180,9 +180,9 @@
       "status": "in_progress",
       "status_label": "En curso",
       "progress": {
-        "completed": 2,
+        "completed": 3,
         "in_progress": 0,
-        "pending": 3,
+        "pending": 2,
         "total": 5
       }
     },

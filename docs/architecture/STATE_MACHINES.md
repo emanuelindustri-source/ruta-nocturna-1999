@@ -93,6 +93,38 @@ Las transiciones tienen duración, intensidad y probabilidad. El trueno se
 retrasa según la distancia del rayo; la humedad alimenta gotas, limpiaparabrisas
 y charcos.
 
+### 2.1 Humedad, gotas y limpiaparabrisas (F3.3)
+
+```mermaid
+stateDiagram-v2
+    [*] --> Dry
+    Dry --> Damp: lluvia
+    Damp --> Wet: película
+    Wet --> Soaked: saturación
+    Soaked --> Wet: drenaje
+    Wet --> Damp: evaporación
+    Damp --> Dry: secado
+    Wet --> Dry: viento y temperatura
+```
+
+```mermaid
+stateDiagram-v2
+    [*] --> Off
+    Off --> IntermittentWait: mando intermitente
+    IntermittentWait --> Sweeping: fin de espera
+    Off --> Sweeping: mando lento/rápido
+    Sweeping --> Parked: vuelta al reposo
+    Parked --> Sweeping: nuevo ciclo
+    Sweeping --> IntermittentWait: pausa intermitente
+```
+
+La humedad es una película continua; las gotas nacen cuando supera el umbral de
+nucleación, crecen con la película y deslizan al superar el radio crítico. El
+barrido limpia un sector del parabrisas y el desgaste reduce la eficiencia sin
+bloquear los controles. Los charcos pasan por `dry → damp → standing → deep` y
+drenan cuando deja de llover. El contrato es
+`data/schemas/rain_surface_fx.json`; la mecánica de hidroplaneo y vadeo es F5.1.
+
 ## 3. Entidad del folclore
 
 ```mermaid

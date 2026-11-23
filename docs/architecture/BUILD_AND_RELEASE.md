@@ -74,12 +74,12 @@ Notas de dispositivo:
 
 `.github/workflows/ci.yml` tiene dos trabajos:
 
-- **contracts:** instala Python, valida los seis contratos, la localización, los
+- **contracts:** instala Python, valida los ocho contratos, la localización, los
   presets de export, la sincronización del roadmap y rechaza binarios/secretos
   versionados.
 - **godot:** descarga Godot 4.7.2 stable para Linux, importa el proyecto en
-  headless, ejecuta el smoke test y falla si aparecen `SCRIPT ERROR`, `Parse Error`
-  o `Failed to load`.
+  headless, ejecuta el smoke test, el tren motriz y las pruebas de lluvia, y
+  falla si aparecen `SCRIPT ERROR`, `Parse Error` o `Failed to load`.
 
 La CI no publica binarios. Los artefactos de release se generan localmente y, si se
 decide publicarlos, van a GitHub Releases, nunca al repositorio.

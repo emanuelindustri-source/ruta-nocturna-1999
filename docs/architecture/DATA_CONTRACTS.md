@@ -9,6 +9,7 @@ se implementó en Fase 1.2. Las mecánicas se implementan después.
 |---|---|
 | `data/schemas/vehicle_components.json` | Piezas, fallos, síntomas, costos, herramientas y especificaciones del Esteem |
 | `data/schemas/vehicle_powertrain.json` | Simulación del motor, caja automática, frenos, combustible, térmica y masa longitudinal |
+| `data/schemas/rain_surface_fx.json` | Humedad, gotas, limpiaparabrisas, charcos y presupuestos de lluvia |
 | `data/schemas/inventory_tools.json` | Herramientas y consumibles referenciados por el vehículo y la defensa |
 | `data/schemas/folklore_entities.json` | Reglas de aparición, percepción, audio, evasión y combate |
 | `data/schemas/dialogue_and_endings.json` | Pasajeros, confianza, nodos de diálogo y finales |
@@ -427,3 +428,41 @@ Reglas:
 - Cambiar la estructura exige incrementar `schema_version`; cambiar una cota o
   un material exige actualizar su nota de fuente (`source_status` /
   `source_note`).
+
+## 18. Lluvia, humedad y superficies (Fase 3.3)
+
+La lluvia física es un contrato de **sistemas**, no de assets:
+`data/schemas/rain_surface_fx.json` (`schema_version: 1`,
+`contract_id: vehicle.esteem.rain_surface_fx`). Su JSON Schema vive en
+`data/schemas/json/rain_surface_fx.schema.json`, se valida en
+`tools/validate_schemas.py` y sus ecuaciones se detallan en
+`docs/architecture/RAIN_AND_SURFACE_FX.md`.
+
+Secciones:
+
+| Sección | Contenido |
+|---|---|
+| `precipitation` | Conversión de intensidad normalizada a mm/h, viento máximo, humedad y paso máximo |
+| `surfaces` | Clases de material (pintura, vidrio, asfalto, tierra, cromo, plástico), paneles del vehículo y superficies de vía |
+| `wetness` | Ecuaciones de película, drenaje, evaporación, infiltración, umbrales e histéresis |
+| `droplets` | Perfiles `glass`/`paint`, nucleación, crecimiento, radio crítico, desliz, viento, evaporación y layout de instancias |
+| `wiper` | Dos escobillas derivadas de `exterior_spec.json`, barrido, modos, intermitencia, desgaste y anti-softlock |
+| `puddles` | Arquetipos de charco, drenaje, infiltración, hidroplaneo y enlace con `specs.water` |
+| `budgets` | Límites PC/móvil de gotas, charcos, CPU, frame y objetivos GPU pendientes |
+| `states` | Estados internos de superficie, gota, limpiaparabrisas y charco |
+
+Reglas:
+
+- El contrato **no** implementa shaders, VFX, arte, controles de cabina ni
+  pérdida de agarre. F3.4 implementa el GLSL, F4.4 conecta `WeatherManager` y
+  F5.1 consume charcos y vadeo.
+- `tools/validate_schemas.py` comprueba el área del parabrisas y los pivotes y
+  longitudes de las escobillas contra `exterior_spec.json`, y la altura de
+  admisión y profundidad segura contra `vehicle_components.json`.
+- Los perfiles de gotas suman exactamente `budgets.pc.max_droplets_total`
+  (4.096). El presupuesto móvil (1.536) es un subconjunto y no puede superar al
+  de PC.
+- La medición CPU de F3.3 se ejecuta en `tests/weather/RainFxTest.tscn`; el
+  coste GPU, el warm-up y el PSS se miden en F3.4/F3.5/F10.1.
+- Cambiar la estructura exige incrementar `schema_version`; cambiar un valor
+  exige actualizar su `source_status`/`source_note`.

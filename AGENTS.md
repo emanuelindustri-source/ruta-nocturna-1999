@@ -142,6 +142,7 @@ Los sistemas de juego se implementan solo después de que existan y validen:
 
 - `data/schemas/vehicle_components.json`
 - `data/schemas/vehicle_powertrain.json`
+- `data/schemas/rain_surface_fx.json`
 - `data/schemas/folklore_entities.json`
 - `data/schemas/dialogue_and_endings.json`
 - `data/schemas/inventory_tools.json`
