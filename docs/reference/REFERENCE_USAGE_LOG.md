@@ -229,6 +229,59 @@ detalles de modelado; las copias de trabajo derivadas quedan en
 - Implementar interacción “mirar/tocar”, espejos, HUD, gamepad o guardado (F2.3/F2.4).
 - Usar las fotos como capturas de tienda o assets del juego.
 
+## 2026-11-22 — Fase 2.3 — interacción contextual y mandos de cabina
+
+**Alcance:** revisión de las referencias de interior necesarias para la
+interacción "mirar/tocar" y para los mandos de puertas, vidrios, luces, antena y
+radio. Se usaron el catálogo y **tres copias de trabajo ya derivadas en F2.2**
+(`build/reference/review_f22/INTERIOR_ESTEEM_review.jpg`,
+`images_(10)_review.jpg` e `images_(7)_review.jpg`), no los originales. **No se
+cargaron las 40 imágenes en contexto** y **no se copió ningún archivo** de
+`C:\Dev\fotos de ejemplo` al repositorio.
+
+### Referencias utilizadas
+
+| Referencia | Uso | Resultado |
+|---|---|---|
+| `INTERIOR_ESTEEM_review.jpg` (copia de trabajo de `INTERIOR ESTEEM.jpg`) | Palanca automática y consola | Palanca tipo T/pistón con botón lateral **OVER DRIVE** en la cara izquierda del pomo; clima con deslizantes sobre la consola; freno de mano en el túnel |
+| `images_(10)_review.jpg` (tablero completo) | Distribución de radio, clima, palanca y freno de mano | Radio cassette sobre el clima; guía de palanca en el túnel; freno de mano a la izquierda de la guía; volante de tres radios |
+| `images_(7)_review.jpg` (lado acompañante) | Panel de puerta y guantera | Panel con apoyabrazos y mando de cristaleras; guantera con puerta y cierre; consola central |
+| `ESTEEM_MECHANICAL_NOTES.md` (Apariencia y cabina) | Confirmar lo ya documentado | Ventanas eléctricas, volante de tres radios, radio doble DIN, palanca con Overdrive y guantera con cierre |
+
+### Decisiones de interacción (F2.3)
+
+- El modo de interacción es **retículo/tacto contextual** con mano IK; no se
+  usa una parrilla de botones ni se duplican controles de cabina en la UI.
+- El radio táctil se fija en **44 dp** y el foco por retículo usa un ángulo
+  máximo de 7°. El prompt es texto localizado, no solo color.
+- Las poses IK cubren **2/1/0 manos en el volante**: volante (2), palanca,
+  freno de mano, radio, luces y ventanas (1), puertas y guantera (0).
+- La palanca P-R-N-D-2-L y el botón de Overdrive se delegan en
+  `vehicle_powertrain.json`; el freno de mano se delega en `brakes.parking`. No
+  se duplican relaciones, curva de par, fuerzas de freno ni física de
+  conducción.
+- El seguro central, el mando de luces y el interruptor de antena **no se
+  distinguen con claridad** en las fotos revisadas. Se implementan como
+  proxies funcionales provisionales en posiciones derivadas de las anclas y de
+  la consola; no se presentan como hechos históricos.
+- El bloqueo de F2.2 tenía el volante, la palanca, la radio y la guantera dentro
+  de las cajas sólidas del tablero y la consola. F2.3 aplica un
+  **desplazamiento funcional** a la cara del conductor para que los mandos sean
+  visibles y alcanzables. Es provisional; la geometría definitiva es F3.2 y no
+  altera los assets ni las anclas del contrato de F2.2.
+- Los vidrios, la antena, los testigos, los botones y las manos son primitivas
+  de código para dar retorno visual; no son arte final ni se copian de la
+  biblioteca externa.
+
+### Descartado
+
+- Copiar imágenes, recortes o texturas de la biblioteca externa al repositorio.
+- Inventar la posición exacta de mandos que no se ven en las fotos y
+  presentarla como dato histórico.
+- Duplicar la caja automática, el Overdrive o los frenos fuera de sus contratos.
+- Implementar espejos, HUD, gamepad o guardado (F2.4).
+- Usar las fotos como capturas de tienda o assets del juego.
+
 ## Próxima revisión
 
 - Revisión rápida: inicio y cierre de cada subfase.

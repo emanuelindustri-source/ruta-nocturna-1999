@@ -2,11 +2,11 @@
   "project": "Ruta Nocturna: 1999",
   "repository": "emanuelindustri-source/ruta-nocturna-1999",
   "generated_from": "ROADMAP.md",
-  "source_sha256": "17873c2d515ad68f76374fa8ad2c14ed8e6f8a7ec37988febfb45b656c009346",
-  "current_version": "v0.2.1",
-  "version_file": "0.2.1",
-  "current_subphase": "2.3",
-  "global_status": "Fase 1 completada; 2.1 y 2.2 completadas; siguiente gate 2.3",
+  "source_sha256": "f81d6b739135aca85be4eb921e1bbe7474c8fca26802d0297103df0501620eef",
+  "current_version": "v0.2.2",
+  "version_file": "0.2.2",
+  "current_subphase": "2.4",
+  "global_status": "Fase 1 completada; 2.1, 2.2 y 2.3 completadas; siguiente gate 2.4",
   "models": {
     "DS-R": "DeepSeek V4.1 Flash 1017 · Razonamiento",
     "DS-S": "DeepSeek V4.1 Flash 1017 · Estándar",
@@ -14,11 +14,11 @@
     "MiMo Flash": "MiMo-V2.6-Flash"
   },
   "summary": {
-    "completed": 6,
+    "completed": 7,
     "in_progress": 0,
-    "pending": 39,
+    "pending": 38,
     "total": 45,
-    "percent": 13.3
+    "percent": 15.6
   },
   "phases": [
     {
@@ -101,9 +101,9 @@
           "version": "v0.2.2",
           "model": "DS-R",
           "model_label": "DeepSeek V4.1 Flash 1017 · Razonamiento",
-          "summary": "Interacción contextual “mirar/tocar”, IK 2/1/0 manos, puertas, seguros, vidrios, luces, antena y radio.",
-          "status": "pending",
-          "status_label": "Pendiente"
+          "summary": "Interacción contextual “mirar/tocar”, IK 2/1/0 manos, puertas, seguros, vidrios, luces, antena y radio. Validado y publicado.",
+          "status": "completed",
+          "status_label": "Completada"
         },
         {
           "id": "2.4",
@@ -119,9 +119,9 @@
       "status": "in_progress",
       "status_label": "En curso",
       "progress": {
-        "completed": 2,
+        "completed": 3,
         "in_progress": 0,
-        "pending": 2,
+        "pending": 1,
         "total": 4
       }
     },

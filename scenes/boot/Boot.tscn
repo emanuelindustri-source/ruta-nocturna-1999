@@ -107,4 +107,10 @@ layout_mode = 2
 size_flags_horizontal = 4
 text = "Ver rebanada vertical"
 
+[node name="ViewCabin" type="Button" parent="Center/VBox"]
+custom_minimum_size = Vector2(240, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Ver cabina"
+
 [node name="CreatorQAMenu" parent="." instance=ExtResource("2_qa")]

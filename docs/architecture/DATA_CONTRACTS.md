@@ -239,10 +239,61 @@ Reglas:
 - La palanca refleja `transmission.selector_modes` y `transmission.overdrive` de
   `vehicle_powertrain.json`; el freno de mano refleja `brakes.parking`. La
   manipulación real es F2.3; aquí solo existe la geometría y las poses IK.
-- No hay texto visible: la señalética P-R-N-D-2-L es posicional. La localización
-  de etiquetas llega en F2.4/F9.1.
+- No hay texto visible en la malla: la señalética P-R-N-D-2-L es posicional. Las
+  etiquetas y pistas de la interacción llegan con claves de localización en F2.3.
 - Todas las cotas de interior son `provisional_design_value` /
   `photo_observed_provisional`: el manual disponible no incluye cotas de cabina.
   No se publican como especificación oficial. Ver `ESTEEM_MECHANICAL_NOTES.md`.
 - Cambiar la estructura exige incrementar `schema_version`; cambiar un valor exige
   actualizar su `note` de fuente.
+
+## 15. Interacción contextual de la cabina (Fase 2.3)
+
+La interacción es un contrato de sistemas separado del asset de cabina:
+
+- `data/schemas/cabin_interaction.json` (`schema_version: 1`) describe el
+  retículo/tacto, las poses IK de 2/1/0 manos, los controles, las puertas y
+  seguros, los vidrios, las luces, la radio, la antena, la guantera, la palanca
+  P-R-N-D-2-L con Overdrive y el freno de mano.
+- Su JSON Schema vive en `data/schemas/json/cabin_interaction.schema.json` y se
+  valida en `tools/validate_schemas.py` (no en `validate_assets.py`).
+- `tests/vehicle/InteractionTest.tscn` y `tools/dev/interaction_test.cmd`
+  comprueban el contrato, la escena, las poses IK, el foco/tacto, los estados y
+  la delegación en el tren motriz.
+
+Secciones:
+
+| Sección | Contenido |
+|---|---|
+| `interaction` | Modos `look`/`touch`, distancia, ángulo de retículo, radio táctil de 44 dp, tiempos de transición y arrastre |
+| `hands` | Hombros, longitudes de brazo, ancla de reposo/volante, offsets de agarre y poses IK |
+| `controls` | IDs, tipo, etiqueta/pista localizada, posición de bind, posición de interacción, pose, gesto y enlace al tren motriz |
+| `doors`, `windows`, `lights`, `radio`, `antenna`, `glovebox` | Estados, animaciones, bandas/emisoras, señal y topes |
+| `gear_gate` | Detentes P-R-N-D-2-L, pivote, longitud y tiempos de la palanca |
+| `handbrake` | Ángulos liberado/aplicado y tiempo |
+| `visual_offsets` | Desplazamiento funcional de los controles del greybox a la cara del conductor |
+| `visual_proxies` | Primitivas de código para vidrios, antena, testigos, botones y manos; no son arte final |
+| `feedback` | Códigos de rechazo y sus claves de localización |
+| `accessibility`, `anti_softlock` | 44 dp, texto además de color, cero botones persistentes y acciones reversibles |
+
+Reglas:
+
+- `gear_lever.powertrain_link` es `transmission.selector`; `overdrive_button` es
+  `transmission.overdrive`; `handbrake` es `brakes.parking`. La interacción no
+  define relaciones, curva de par, fuerzas de freno ni física de conducción.
+- El volante **no** mueve la dirección ni el chasis en esta subfase: solo cambia
+  la pose IK. La conducción real es F2.4/F3.
+- El estado de los controles, las puertas, los vidrios, las luces, la radio, la
+  antena y la guantera vive en la cabina; no se escribe en `GameState` ni en
+  `SaveManager` (guardado F2.4/F9.4).
+- Las posiciones de bind siguen siendo las anclas provisionales de F2.2. Las
+  posiciones de interacción y los `visual_offsets` corrigen que el greybox de
+  F2.2 dejó algunos mandos dentro de las cajas sólidas. La geometría definitiva
+  es F3.2; no se alteran los assets ni las anclas de F2.2.
+- Los proxies de vidrio, antena, testigos, botones y manos son primitivas de
+  código reproducibles; no son modelos de la fábrica ni arte final.
+- No hay espejos, HUD de velocidad/combustible, gamepad ni guardado en F2.3. La
+  UI se limita al retículo y al prompt contextual.
+- Cambiar la estructura exige incrementar `schema_version` y documentar la
+  migración; cambiar una posición o un umbral exige actualizar su nota de fuente
+  o su sección de offsets.

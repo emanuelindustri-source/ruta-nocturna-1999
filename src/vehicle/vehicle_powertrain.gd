@@ -181,6 +181,11 @@ func set_brake_pedal(value: float) -> void:
 
 func set_parking_brake(value: bool) -> void:
 	parking_brake = value
+	# La cabina de F2.3 no ejecuta `simulate()`: se propaga el estado al modelo
+	# de frenos en el mismo comando para que `brakes.parking` sea la unica
+	# fuente de verdad y no se duplique la mecanica en CabinControls.
+	if _configured and brakes != null:
+		brakes.parking = value
 
 
 func set_selector(mode: String) -> bool:

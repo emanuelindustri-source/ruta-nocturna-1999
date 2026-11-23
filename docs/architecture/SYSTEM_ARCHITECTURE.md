@@ -269,3 +269,54 @@ Reglas:
 - El motor agarrotado (`seized`) tiene una API de reparación para QA y pruebas.
   La recuperación anti-atasco completa (grúa, deuda, punto seguro) es F5.1; esta
   subfase no la simula.
+
+## 11. Interacción de cabina (Fase 2.3)
+
+La interacción contextual es un **servicio de escena**, no un autoload. Vive en
+`scenes/vehicle/CabinInteraction.tscn`, que instancia la cabina de F2.2 y añade
+un `VehiclePowertrain` sin simulación automática.
+
+```mermaid
+flowchart LR
+    BOOT[Boot] -->|SceneRouter| CI[CabinInteraction.tscn]
+    CI --> CAB[Cabin · F2.2]
+    CI --> VP[VehiclePowertrain · auto_simulate=false]
+    CI --> CC[CabinControls]
+    CI --> IK[HandIKDriver]
+    CI --> PX[CabinVisualProxies]
+    CI --> CTRL[CabinInteractionController]
+    CTRL --> CC
+    CTRL --> IK
+    CTRL --> PX
+    CTRL --> VP
+    UI[CabinInteractionUI] -. escucha .-> CTRL
+    CC -->|selector / overdrive| VP
+    CC -->|parking brake| VP
+    VP --> BR[brakes.parking]
+```
+
+Responsabilidades:
+
+| Componente | Responsabilidad | No debe hacer |
+|---|---|---|
+| `CabinInteractionController` | Foco, tacto, gestos, delegación y ciclo de vida | Simular conducción ni guardar |
+| `CabinControls` | Puertas, seguros, vidrios, luces, radio, antena, guantera y palanca | Duplicar caja, motor o frenos |
+| `HandIKDriver` | Poses 2/1/0 manos, cadena de dos huesos y transiciones | Mover el chasis ni crear física |
+| `CabinVisualProxies` | Vidrio, antena, testigos, botones, manos y offsets funcionales | Ser arte final o copiar fotos |
+| `CabinInteractionUI` | Retículo y prompt localizado | Contener lógica de juego o botones persistentes |
+| `VehiclePowertrain` | Motor, caja, frenos y térmica (F2.1) | Conocer la cabina o la UI |
+
+Reglas:
+
+- La escena de interacción no crea `VehicleBody3D`, `RigidBody3D`,
+  `CharacterBody3D` ni `VehicleWheel3D`; la conducción real es F2.4/F3.
+- `CabinInteractionController` usa señales locales. F2.4 podrá reenviarlas al
+  `EventBus` para HUD, espejos, audio y guardado; F2.3 no lo hace.
+- `Boot` ofrece acceso directo a la cabina con `UI_VIEW_CABIN` y
+  `SceneRouter.change_scene()`.
+- La UI no captura eventos: el controlador recibe tacto/ratón y el prompt solo
+  dibuja. No hay gamepad en F2.3.
+- Las posiciones de bind siguen siendo las de F2.2. Los `visual_offsets` y los
+  proxies mueven los mandos a la cara del conductor para que sean visibles y
+  alcanzables; la geometría definitiva es F3.2.
+- Solo se anima LOD0. El cambio de LOD y los espejos son F2.4/F3.5/F10.

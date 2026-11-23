@@ -248,3 +248,131 @@ el régimen; no son valores fijos en la UI.
 - La recuperación anti-atasco completa no está en esta subfase: el motor
   agarrotado se puede reparar por API/QA, pero la grúa y el punto seguro llegan
   en F5.1.
+
+## 9. Interacción contextual de cabina (Fase 2.3)
+
+El contrato `data/schemas/cabin_interaction.json` define el foco, los gestos, las
+poses IK y los estados de los mandos. La UI solo muestra el retículo y el prompt;
+la lógica vive en `src/vehicle/cabin_interaction_controller.gd`,
+`cabin_controls.gd` y `hand_ik_driver.gd`.
+
+### Foco y gesto
+
+```mermaid
+stateDiagram-v2
+    [*] --> Idle
+    Idle --> FocusAvailable: retículo/tacto sobre control
+    Idle --> FocusBlocked: control requiere puerta/estacionario/radio/D
+    FocusAvailable --> Acting: pulsar
+    FocusBlocked --> Acting: pulsar (feedback)
+    Acting --> FocusAvailable: soltar / volver al foco
+    FocusAvailable --> Idle: mirar fuera o tocar vacío
+    FocusBlocked --> Idle: mirar fuera o tocar vacío
+```
+
+- El foco por retículo usa un ángulo máximo de 7° y una distancia máxima de
+  1,2 m. El tacto usa un radio mínimo de 44 dp y proyecta los controles a
+  pantalla.
+- Si el control no está disponible, se puede pulsar para recibir feedback
+  físico/textual, pero la acción se rechaza.
+
+### Manos IK
+
+```mermaid
+stateDiagram-v2
+    [*] --> TwoHands: volante
+    TwoHands --> OneHand: palanca, freno de mano, radio, luces, ventanas
+    OneHand --> ZeroHands: puertas, guantera
+    ZeroHands --> OneHand: control de conducción
+    OneHand --> TwoHands: volante
+    ZeroHands --> TwoHands: volante
+```
+
+- Cada pose declara los destinos de mano izquierda/derecha. El conductor IK
+  resuelve hombro-codo-muñeca-palma-agarre con dos huesos por brazo y un
+  desplazamiento de inclinación máximo de 0,22 m.
+- Las mallas de manos son proxies de código hasta F3.2; el esqueleto es el rig
+  `EsteemHandRig` de F2.2.
+- El volante no modifica la dirección ni el chasis: solo cambia la pose.
+
+### Puertas y seguros
+
+```mermaid
+stateDiagram-v2
+    [*] --> ClosedUnlocked
+    ClosedUnlocked --> Open: tirador (estacionario)
+    Open --> ClosedUnlocked: tirador
+    ClosedUnlocked --> ClosedLocked: seguro central
+    ClosedLocked --> ClosedUnlocked: seguro central
+    ClosedLocked --> ClosedLocked: tirador (feedback locked)
+    Open --> OpenLocked: seguro central (estado visual)
+```
+
+- El seguro central bloquea los tiradores; una puerta abierta no impide volver a
+  bloquear/desbloquear. Abrir una puerta exige vehículo detenido.
+- La apertura es reversible y no deja la partida bloqueada.
+
+### Vidrios
+
+```mermaid
+stateDiagram-v2
+    [*] --> Closed
+    Closed --> Opening: mantener bajar
+    Opening --> Open: tope inferior
+    Open --> Closing: mantener subir
+    Closing --> Closed: tope superior
+    Opening --> Closed: soltar y subir
+    Closing --> Open: soltar y bajar
+```
+
+- La posición es 0 (cerrado) a 1 (abierto), con recorrido de 2,4 s.
+- Los topes emiten `window_limit`; el vidrio se puede mover en ambos sentidos.
+
+### Luces, antena y radio
+
+```mermaid
+stateDiagram-v2
+    [*] --> Off
+    Off --> Parking: ciclo de luces
+    Parking --> Headlights: ciclo de luces
+    Headlights --> Off: ciclo de luces
+```
+
+- La antena se extiende/recoge en 0,8 s. Extendida mejora la señal de la radio;
+  recogida aumenta el estático.
+- La radio tiene encendido, bandas AM/FM, búsqueda con envolvente y volumen de 0
+  a 8 pasos. El audio es un tono/ruido procedural con `AudioStreamGenerator`; no
+  usa samples de terceros. La música definitiva es F8.
+- Con la radio apagada, los controles de banda/búsqueda/volumen responden con
+  `radio_off` y no cambian el estado.
+
+### Palanca y freno de mano
+
+```mermaid
+stateDiagram-v2
+    [*] --> P
+    P --> R: arrastre / nudge
+    R --> N: arrastre / nudge
+    N --> D: arrastre / nudge
+    D --> Two: arrastre / nudge
+    Two --> L: arrastre / nudge
+    L --> Two: arrastre / nudge
+    P --> D: salto aceptado
+    D --> P: aceptado si detenido
+    R --> D: rechazado en avance
+```
+
+- La palanca no cambia la velocidad ni la física: llama a
+  `VehiclePowertrain.set_selector()`. Un rechazo (`moving`, `forward_motion`,
+  `reverse_motion`) devuelve el pomo y emite feedback.
+- El Overdrive llama a `VehiclePowertrain.toggle_overdrive()`; solo se acepta en
+  `D`.
+- El freno de mano llama a `VehiclePowertrain.set_parking_brake()` y el
+  orquestador propaga el estado a `brakes.parking`.
+
+### Anti-atasco de la interacción
+
+Ningún control deja la partida irrecuperable: la palanca puede volver a `P` con
+el vehículo detenido, el freno de mano se libera, las puertas se desbloquean y
+los vidrios se mueven en ambos sentidos. No hay espejos, HUD, gamepad ni guardado
+en esta subfase.

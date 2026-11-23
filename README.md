@@ -4,13 +4,14 @@ Terror psicológico, conducción de supervivencia y exploración en una Venezuel
 nocturna de diciembre de 1999. El protagonista cruza el país en un sedán beige
 de 1999, con su mecánica, su radio y sus carreteras como sistema de supervivencia.
 
-> **Estado actual:** Fase 2.1 completada (tren motriz del Esteem).  
-> **Versión:** `0.2.0`  
+> **Estado actual:** Fase 2.3 completada (interacción contextual de cabina).  
+> **Versión:** `0.2.2`  
 > **Web:** https://emanuelindustri-source.github.io/ruta-nocturna-1999/  
 > **Repositorio:** https://github.com/emanuelindustri-source/ruta-nocturna-1999  
-> **No hay todavía una build jugable.** La Fase 2.1 implementa motor, caja automática,
-> frenos, combustible, térmica y electroventilador con pruebas headless; la cabina,
-> las manos IK y los espejos llegan en 2.2–2.4.
+> **No hay todavía una build jugable.** Las fases 2.1–2.3 implementan motor, caja
+> automática, frenos, combustible, térmica, cabina, manos IK, retículo/tacto,
+> puertas, vidrios, luces, antena, radio y guantera con pruebas headless. Los
+> espejos, el HUD, el gamepad/D-Pad y el guardado llegan en 2.4.
 
 ## Objetivo técnico
 

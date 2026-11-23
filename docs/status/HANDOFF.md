@@ -1,55 +1,67 @@
-# Handoff — Fase 2.3
+# Handoff — Fase 2.4
 
 ## Estado de partida
 
-La Fase 2.2 quedó completada, validada y publicada. La cabina funcional del
-Esteem existe como bloqueo (greybox) generado por `bpy`, con volante de tres
-radios, palanca P-R-N-D-2-L con botón de Overdrive, freno de mano, radio cassette
-doble DIN, guantera, paneles de puerta y consola, además del rig de manos con
-poses IK compatibles con las anclas `anchor_*` del bloqueo.
+La Fase 2.3 quedó completada, validada y publicada. La cabina del Esteem ya se
+puede manipular con retículo/tacto, mano IK y controles contextuales; la palanca
+P-R-N-D-2-L y el Overdrive se delegan en el tren motriz de F2.1 y el freno de mano
+termina en `brakes.parking`.
 
 - Web: https://emanuelindustri-source.github.io/ruta-nocturna-1999/
 - Repositorio: https://github.com/emanuelindustri-source/ruta-nocturna-1999
-- Versión: `v0.2.1`
-- Contrato de la cabina: `data/vehicle/cabin_spec.json`.
-- Generador: `tools/blender/esteem_cabin.py` (target `vehicle.esteem.cabin`).
-- Assets: `assets/generated/vehicle/esteem_cabin_lod0/1/2.glb` y
-  `esteem_hand_rig.glb`; manifiesto `assets/manifests/esteem_cabin.manifest.json`.
-- Escena: `scenes/vehicle/EsteemCabin.tscn`.
-- Pruebas: `tests/vehicle/CabinTest.tscn` (46 comprobaciones) y
-  `tools/dev/cabin_test.cmd`.
+- Versión: `v0.2.2`
+- Contrato de interacción: `data/schemas/cabin_interaction.json`.
+- Escena: `scenes/vehicle/CabinInteraction.tscn` (acceso `Ver cabina` en Boot).
+- Controlador: `src/vehicle/cabin_interaction_controller.gd`.
+- Estado de mandos: `src/vehicle/cabin_controls.gd`.
+- IK: `src/vehicle/hand_ik_driver.gd`.
+- Radio: `src/vehicle/radio_unit.gd`.
+- Proxies visuales: `src/vehicle/cabin_visual_proxies.gd`.
+- Pruebas: `tests/vehicle/InteractionTest.tscn` (180 comprobaciones) y
+  `tools/dev/interaction_test.cmd`.
 - Tren motriz de 2.1 intacto: `data/schemas/vehicle_powertrain.json`,
   `src/vehicle/`, `tests/vehicle/PowertrainTest.tscn` (125 comprobaciones).
-- Smoke test: 155/155; health check de cierre sin errores.
+- Cabina de 2.2 intacta: `data/vehicle/cabin_spec.json`, `EsteemCabin.tscn`,
+  `tests/vehicle/CabinTest.tscn` (46 comprobaciones).
+- Smoke test: 155/155; health check de cierre 18 OK, 3 advertencias, 0 errores.
 
-## Qué debe hacer F2.3
+## Qué debe hacer F2.4
 
-Alcance exclusivo de **DS-R** (interacción e IK):
+Alcance exclusivo de **MiMo Flash**:
 
-1. Interacción contextual "mirar/tocar" con retículo/tacto y mano IK sobre los
-   controles ya modelados (volante, palanca, freno de mano, radio, guantera).
-2. IK de 2/1/0 manos: poses y transiciones de las manos hacia los controles.
-3. Puertas y seguros, vidrios (subir/bajar), luces, antena y radio (funcionamiento,
-   no solo geometría).
-4. Conectar la manipulación de la palanca con los estados reales de
-   `vehicle_powertrain.json` (P-R-N-D-2-L y Overdrive) y el freno de mano con
-   `brakes.parking`, sin duplicar mecánicas fuera de contrato.
-5. Todo sigue saliendo de scripts `bpy`/código reproducible, respetando anclas y
-   presupuestos; sin romper los tests de 2.1/2.2.
-6. No se implementan espejos, HUD, gamepad ni guardado: son F2.4. No se avanza a
-   F2.4 ni a la Fase 3.
+1. Espejos retrovisores con `SubViewport` (interior y laterales según el alcance
+   que fije el roadmap), dentro del presupuesto de triángulos y con el conteo
+   móvil de F2.4/F3.5.
+2. HUD mínimo (velocidad, marcha, combustible/avisos) alimentado por
+   `VehiclePowertrain`; sin duplicar lógica ni crear una UI de 25 botones.
+3. Gamepad y D-Pad para navegar menús y, si corresponde, para la cámara de
+   cabina. No romper el retículo/tacto de F2.3.
+4. Guardado base `save_version` de `v0.2.0`: snapshot real, escritura atómica,
+   checksum y backup; sin migraciones encadenadas completas (F9.4).
+5. QA de reparaciones y prueba ADB en el Redmi; build de referencia si el
+   alcance lo exige.
 
-Antes de implementar interacción, revisar solo las referencias del catálogo
-relevantes y registrar su uso en `docs/reference/REFERENCE_USAGE_LOG.md`. No se
-cargan las 40 imágenes en contexto ni se copian archivos de
-`C:\Dev\fotos de ejemplo` al repositorio.
+Reglas:
+
+- No rehacer la interacción de F2.3 ni duplicar la palanca, el Overdrive o los
+  frenos fuera de `vehicle_powertrain.json`.
+- Los `visual_offsets` y los proxies de F2.3 son provisionales; si F2.4 cambia
+  la cámara o el HUD, mantener las claves de localización y las pruebas.
+- No introducir física de conducción nueva sin contrato; el chasis real sigue
+  siendo F3.
+- No avanzar a la Fase 3.
+
+Antes de implementar, revisar solo las referencias del catálogo relevantes para
+espejos, HUD, gamepad y guardado, y registrar su uso en
+`docs/reference/REFERENCE_USAGE_LOG.md`. No se cargan las 40 imágenes en
+contexto ni se copian archivos de `C:\Dev\fotos de ejemplo` al repositorio.
 
 ## Prompt para el siguiente chat
 
 ```text
-[RN1999 · Subfase 2.3]
+[RN1999 · Subfase 2.4]
 CWD: C:\Dev\RutaNocturna1999
-Modelo asignado: DS-R (opencode-go/deepseek-v4.1-flash#max)
+Modelo asignado: MiMo Flash (opencode-go/mimo-v2.6-flash)
 
 Lee completos:
 - AGENTS.md
@@ -60,19 +72,20 @@ Lee completos:
 - docs/architecture/DATA_CONTRACTS.md
 - docs/architecture/STATE_MACHINES.md
 - docs/architecture/ASSET_FACTORY.md
+- docs/architecture/QA_AND_RECOVERY.md
 - data/schemas/vehicle_powertrain.json
+- data/schemas/cabin_interaction.json
 - data/vehicle/cabin_spec.json
 - data/vehicle/blockout_spec.json
 
-Ejecuta únicamente la Subfase 2.3 (tag v0.2.2): interacción contextual
-"mirar/tocar" con retículo/tacto y mano IK, IK de 2/1/0 manos, puertas y
-seguros, vidrios, luces, antena y radio. Sin espejos, HUD, gamepad ni guardado
-(F2.4). No avances a la Fase 2.4 ni a la Fase 3.
+Ejecuta únicamente la Subfase 2.4 (tag v0.2.3): espejos SubViewport, HUD mínimo,
+gamepad/D-Pad, save v0.2.0, QA de reparaciones y ADB. No avances a la Fase 3.
 
-Conecta la manipulación de la palanca P-R-N-D-2-L y el Overdrive con los estados
-de vehicle_powertrain.json y el freno de mano con brakes.parking. No dupliques
-mecánicas fuera de contrato ni introduzcas física de conducción nueva: el tren
-motriz sigue siendo longitudinal y la cabina es un bloqueo funcional.
+La interacción de F2.3 ya existe en scenes/vehicle/CabinInteraction.tscn:
+retículo/tacto, IK 2/1/0 manos, puertas/seguros, vidrios, luces, antena, radio,
+guantera, palanca P-R-N-D-2-L con Overdrive y freno de mano. No la rehagas ni
+dupliques el tren motriz; la palanca usa VehiclePowertrain.set_selector(), el
+Overdrive usa toggle_overdrive() y el freno de mano termina en brakes.parking.
 
 Antes de implementar, revisa solo las referencias del catálogo relevantes para
 esta subfase y registra su uso en docs/reference/REFERENCE_USAGE_LOG.md. No
@@ -84,17 +97,17 @@ Al iniciar:
   python tools/scan_reference_library.py --quick
 
 Al cerrar:
-- valida esquemas, localización y roadmap
+- valida esquemas, localización, roadmap y presets de export
 - importa el proyecto en Godot headless
-- ejecuta tools/dev/smoke_test.cmd, tools/dev/powertrain_test.cmd y
-  tools/dev/cabin_test.cmd
+- ejecuta tools/dev/smoke_test.cmd, tools/dev/powertrain_test.cmd,
+  tools/dev/cabin_test.cmd y tools/dev/interaction_test.cmd
 - comprueba espacio en disco y dispositivo ADB autorizado
 - ejecuta health_check --end
 - actualiza ROADMAP.md, docs/roadmap-data.json, CHANGELOG.md, CURRENT.md y HANDOFF
-- haz commit, tag v0.2.2 y push solo si todo pasa
+- haz commit, tag v0.2.3 y push solo si todo pasa
 - entrega el prompt del siguiente /new
 
-No avances a la Fase 2.4.
+No avances a la Fase 3.
 ```
 
 ## Recordatorios
@@ -103,17 +116,16 @@ No avances a la Fase 2.4.
 - La ExecutionPolicy de PowerShell está restringida: usar wrappers `.cmd`.
 - El export se hace con `tools\dev\export.cmd`; los binarios van a `build/` y
   nunca a Git.
-- Ningún modelo entra sin LOD0/LOD1/LOD2; el rig de manos se rige por el contrato
-  `rig_anchor` (mismo patrón que el bloqueo).
-- El tren motriz de 2.1 y la cabina de 2.2 no crean `VehicleBody3D`; la interacción
-  de 2.3 tampoco debe introducir física de conducción por su cuenta.
-- El smoke test (155), el test del tren motriz (125) y el test de la cabina (46)
-  deben seguir pasando; no se relajan para acomodar la interacción.
-- Las cotas de interior, las del bloqueo y los valores de simulación siguen siendo
-  provisionales. Al cambiar `EXPECTED_VERSION` del smoke test, actualizar también
-  `VERSION`, `project.godot` y `export_presets.cfg` (`version/name` y
-  `version/code`).
+- Ningún modelo entra sin LOD0/LOD1/LOD2. Los espejos cuentan en el presupuesto
+  de triángulos móvil.
+- El smoke test (155), el test del tren motriz (125), el test de la cabina (46) y
+  el test de interacción (180) deben seguir pasando; no se relajan para acomodar
+  F2.4.
+- Al cambiar `EXPECTED_VERSION` del smoke test, actualizar también `VERSION`,
+  `project.godot` y `export_presets.cfg` (`version/name` y `version/code`).
 - No se sube ningún token, keystore, APK o AAB a Git.
+- Los proxies y offsets de F2.3 son funcionales y provisionales; el arte final de
+  cabina/manos es F3.2.
 
 ## Seguridad
 

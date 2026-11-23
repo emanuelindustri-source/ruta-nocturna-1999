@@ -19,6 +19,7 @@ LOCALIZATION_CSV = ROOT / "localization" / "strings.csv"
 PAIRS = {
     "vehicle_components": "vehicle_components",
     "vehicle_powertrain": "vehicle_powertrain",
+    "cabin_interaction": "cabin_interaction",
     "inventory_tools": "inventory_tools",
     "folklore_entities": "folklore_entities",
     "dialogue_and_endings": "dialogue_and_endings",
@@ -26,6 +27,7 @@ PAIRS = {
 }
 
 BLOCKOUT_SPEC = ROOT / "data" / "vehicle" / "blockout_spec.json"
+CABIN_SPEC = ROOT / "data" / "vehicle" / "cabin_spec.json"
 
 REQUIRED_AUTOLOADS = {
     "EventBus",
@@ -88,6 +90,8 @@ def collect_loc_keys(value: Any, path: str = "") -> list[tuple[str, str]]:
         "role_key",
         "arc_key",
         "scene_key",
+        "label_key",
+        "hint_key",
     }
     if isinstance(value, dict):
         for key, child in value.items():
@@ -335,6 +339,168 @@ def validate() -> tuple[list[str], list[str]]:
         for dependency in service["depends_on"]:
             if dependency not in known_services:
                 errors.append(f"autoload_dependencies: {service['name']} depende de servicio desconocido {dependency}")
+
+    # Contrato de interaccion contextual de la cabina: delega la palanca y el
+    # Overdrive en vehicle_powertrain.json y el freno de mano en brakes.parking.
+    # No define fisica de conduccion, espejos, HUD, gamepad ni guardado.
+    interaction = data["cabin_interaction"]
+    if interaction.get("vehicle_id") != vehicle.get("vehicle_id"):
+        errors.append("cabin_interaction: vehicle_id no coincide con vehicle_components")
+    interaction_loc = localization_keys()
+    controls = interaction.get("controls", [])
+    control_ids = [str(control.get("id", "")) for control in controls]
+    for duplicate in duplicate_values(control_ids):
+        errors.append(f"cabin_interaction: control repetido {duplicate}")
+    control_id_set = set(control_ids)
+    required_controls = {
+        "steering_wheel",
+        "gear_lever",
+        "overdrive_button",
+        "handbrake",
+        "door_driver",
+        "door_passenger",
+        "central_lock",
+        "window_driver_up",
+        "window_driver_down",
+        "window_passenger_up",
+        "window_passenger_down",
+        "lights",
+        "antenna",
+        "radio_power",
+        "radio_band",
+        "radio_seek",
+        "radio_volume_up",
+        "radio_volume_down",
+        "glovebox",
+    }
+    missing_controls = sorted(required_controls - control_id_set)
+    if missing_controls:
+        errors.append(f"cabin_interaction: faltan controles {missing_controls}")
+
+    poses = interaction.get("hands", {}).get("poses", [])
+    pose_ids = [str(pose.get("id", "")) for pose in poses]
+    for duplicate in duplicate_values(pose_ids):
+        errors.append(f"cabin_interaction: pose IK repetida {duplicate}")
+    pose_id_set = set(pose_ids)
+    if len(poses) < 3:
+        errors.append("cabin_interaction: se requieren al menos tres poses IK")
+
+    if CABIN_SPEC.exists():
+        cabin = load_json(CABIN_SPEC)
+        if cabin.get("vehicle_id") != vehicle.get("vehicle_id"):
+            errors.append("cabin_interaction: vehicle_id no coincide con cabin_spec.json")
+        anchors = {
+            str(anchor.get("id", "")): anchor
+            for anchor in cabin.get("rig_anchor", {}).get("anchors", [])
+        }
+        wheel_anchors = {
+            str(interaction.get("hands", {}).get("wheel", {}).get("left_anchor", "")),
+            str(interaction.get("hands", {}).get("wheel", {}).get("right_anchor", "")),
+        }
+        hand_counts: set[int] = set()
+        for pose in poses:
+            on_wheel = 0
+            for side in ("left", "right"):
+                target = pose.get(side, {})
+                kind = str(target.get("kind", ""))
+                target_id = str(target.get("id", ""))
+                if kind == "anchor":
+                    if target_id not in anchors:
+                        errors.append(
+                            f"cabin_interaction: pose {pose.get('id')} usa ancla inexistente {target_id}"
+                        )
+                    if target_id in wheel_anchors:
+                        on_wheel += 1
+                elif kind == "control":
+                    if target_id not in control_id_set:
+                        errors.append(
+                            f"cabin_interaction: pose {pose.get('id')} usa control inexistente {target_id}"
+                        )
+                elif kind != "rest":
+                    errors.append(
+                        f"cabin_interaction: pose {pose.get('id')} tiene destino IK invalido {kind}"
+                    )
+            hand_counts.add(on_wheel)
+        if hand_counts != {0, 1, 2}:
+            errors.append(
+                f"cabin_interaction: las poses no cubren 2/1/0 manos en el volante ({sorted(hand_counts)})"
+            )
+        for pose_id in ("pose_rest", "pose_steering", "pose_gear", "pose_handbrake"):
+            if pose_id not in pose_id_set:
+                errors.append(f"cabin_interaction: falta la pose obligatoria {pose_id}")
+        gate = cabin.get("components", {}).get("gear_gate_plate", {})
+        gate_min_z = float(gate.get("min_m", [0, 0, -999])[2])
+        gate_max_z = float(gate.get("max_m", [0, 0, 999])[2])
+        for detent in interaction.get("gear_gate", {}).get("detents", []):
+            detent_z = float(detent.get("position_m", [0, 0, 0])[2])
+            if not (gate_min_z <= detent_z <= gate_max_z):
+                errors.append(
+                    f"cabin_interaction: detente {detent.get('mode')} fuera de la guia de palanca"
+                )
+        min_touch = float(interaction.get("interaction", {}).get("touch_radius_dp", 0))
+        if min_touch < 44:
+            errors.append("cabin_interaction: touch_radius_dp debe ser al menos 44")
+        width = float(cabin.get("validation_rules", {}).get("controls_within_cabin_width_m", 0.75))
+        height = cabin.get("validation_rules", {}).get("controls_within_height_m", {})
+        y_min = float(height.get("min", 0.4))
+        y_max = float(height.get("max", 1.25))
+        for control in controls:
+            for field in ("position_m", "interaction_position_m"):
+                if field not in control:
+                    if field == "position_m":
+                        errors.append(f"cabin_interaction: {control.get('id')} sin posicion 3D")
+                    continue
+                position = control.get(field, [])
+                if len(position) != 3:
+                    errors.append(f"cabin_interaction: {control.get('id')} {field} invalida")
+                    continue
+                x, y, z = (float(value) for value in position)
+                if abs(x) > width or not (y_min <= y <= y_max) or not (-1.0 <= z <= 0.5):
+                    errors.append(
+                        f"cabin_interaction: {control.get('id')} {field} fuera de los limites de cabina"
+                    )
+            if control.get("pose") not in pose_id_set:
+                errors.append(
+                    f"cabin_interaction: {control.get('id')} usa pose inexistente {control.get('pose')}"
+                )
+            for key in ("label_key", "hint_key"):
+                loc_key = str(control.get(key, ""))
+                if loc_key not in interaction_loc:
+                    errors.append(f"cabin_interaction: {control.get('id')} usa clave ausente {loc_key}")
+        for code, loc_key in interaction.get("feedback", {}).items():
+            if loc_key not in interaction_loc:
+                errors.append(f"cabin_interaction: feedback {code} usa clave ausente {loc_key}")
+    else:
+        errors.append("cabin_interaction: falta data/vehicle/cabin_spec.json")
+
+    expected_links = {
+        "gear_lever": "transmission.selector",
+        "overdrive_button": "transmission.overdrive",
+        "handbrake": "brakes.parking",
+    }
+    for control in controls:
+        expected = expected_links.get(str(control.get("id", "")))
+        if expected is not None and control.get("powertrain_link") != expected:
+            errors.append(
+                f"cabin_interaction: {control.get('id')} debe delegar en {expected}"
+            )
+        if control.get("id") == "steering_wheel" and control.get("powertrain_link") != "none":
+            errors.append("cabin_interaction: steering_wheel no debe duplicar fisica de direccion")
+
+    gear_modes = interaction.get("gear_gate", {}).get("modes", [])
+    if gear_modes != powertrain_transmission.get("selector_modes"):
+        errors.append("cabin_interaction: gear_gate.modes no coincide con vehicle_powertrain")
+    detent_modes = [str(detent.get("mode", "")) for detent in interaction.get("gear_gate", {}).get("detents", [])]
+    if detent_modes != gear_modes:
+        errors.append("cabin_interaction: los detentes no siguen el orden P-R-N-D-2-L")
+    if interaction.get("doors", {}).get("ids") != ["driver", "passenger"]:
+        errors.append("cabin_interaction: doors.ids debe ser driver/passenger")
+    if interaction.get("windows", {}).get("ids") != ["driver", "passenger"]:
+        errors.append("cabin_interaction: windows.ids debe ser driver/passenger")
+    if interaction.get("lights", {}).get("states") != ["off", "parking", "headlights"]:
+        errors.append("cabin_interaction: estados de luces invalidos")
+    if interaction.get("radio", {}).get("bands") != ["AM", "FM"]:
+        errors.append("cabin_interaction: bandas de radio invalidas")
 
     known_loc = localization_keys()
     all_loc_uses: list[tuple[str, str]] = []

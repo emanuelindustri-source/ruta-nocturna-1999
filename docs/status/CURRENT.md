@@ -1,8 +1,8 @@
 # Estado actual
 
-**Subfase:** 2.2 — Cabina funcional y rig de manos  
-**Versión:** `v0.2.1`  
-**Modelo de la subfase:** MiMo Pro  
+**Subfase:** 2.3 — Interacción contextual “mirar/tocar”  
+**Versión:** `v0.2.2`  
+**Modelo de la subfase:** DS-R  
 **Fecha:** 2026-11-22  
 **Estado:** completada y publicada.
 
@@ -16,63 +16,74 @@
 
 | Prueba | Resultado |
 |---|---|
-| Contratos JSON + Schemas | 6 contratos válidos, 0 errores, 1 advertencia de claves de contenido |
-| Localización | 11 idiomas, 0 errores; fuentes CJK pendientes de F8.4 |
-| Roadmap | 6/45 subfases completadas (13,3%), JSON sincronizado |
+| Contratos JSON + Schemas | 7 contratos válidos, 0 errores, 1 advertencia de claves de contenido |
+| Localización | 11 idiomas, 0 errores; 30 claves nuevas; fuentes CJK pendientes de F8.4 |
+| Roadmap | 7/45 subfases completadas (15,6%), JSON sincronizado |
 | Assets generados | 2 manifiestos válidos (bloqueo + cabina), 0 errores |
-| Cabina LOD0/LOD1/LOD2 | 1584 / 704 / 480 triángulos, estrictamente decrecientes, dentro de presupuesto |
+| Cabina LOD0/LOD1/LOD2 | 1584 / 704 / 480 triángulos, sin cambios en F2.3 |
 | Pruebas de la cabina | 46/46 comprobaciones, exit 0 |
 | Pruebas del tren motriz | 125/125 comprobaciones, exit 0 |
+| Pruebas de interacción | 180/180 comprobaciones, exit 0 |
 | Smoke test | 155/155 comprobaciones, exit 0 |
 | Godot import headless | exit 0; sin marcadores críticos |
-| Health check de cierre | 17 OK, 3 advertencias esperadas, 0 errores |
+| Health check de cierre | 18 OK, 3 advertencias esperadas, 0 errores |
 | Dispositivo ADB | Redmi 22101316G autorizado (`obojropz89mbwgpn`) |
-| Espacio libre | 79,86 GB en `C:` |
-| Referencias | 95 archivos; revisión visual completa de interior registrada |
-| Git | Rama `main`, commit y tag `v0.2.1` publicados |
+| Espacio libre | 79,83 GB en `C:` |
+| Referencias | 95 archivos; escaneo rápido sin cambios y revisión de interior F2.3 registrada |
+| Git | Rama `main`, commit y tag `v0.2.2` publicados |
 
 Advertencias conocidas:
 
 - 202 claves de contenido aún no están en el CSV de localización. Se completarán
-  en F8.4; la UI base ya está cubierta.
+  en F8.4; la UI base y F2.3 ya están cubiertas.
 - Las fuentes CJK/cirílicas se empaquetan y validan visualmente en F8.4.
-- Todas las cotas de interior de la cabina son provisionales
-  (`provisional_design_value` / `photo_observed_provisional`): el manual disponible
-  no incluye cotas de cabina. Se derivan de las anclas `anchor_*` del bloqueo y de
-  proporciones observadas en fotos. Verificar contra manual o medición antes de
-  F3.2/F5.
+- Las traducciones nuevas de F2.3 son provisionales y no tienen revisión nativa.
+- Todas las cotas de interior de la cabina siguen siendo provisionales
+  (`provisional_design_value` / `photo_observed_provisional`): el manual
+  disponible no incluye cotas de cabina. Se derivan de las anclas `anchor_*` del
+  bloqueo y de proporciones observadas en fotos. Verificar antes de F3.2/F5.
 - El volante sigue la nota documentada de tres radios; algunas fotos podrían
   leerse como cuatro radios. Marcado para verificación en F3.2.
-- La cabina es un bloqueo funcional (greybox), no el interior final: telas,
-  materiales PBR y detalle son F3.2.
-- No hay interacción "mirar/tocar", espejos, HUD, gamepad ni guardado: son F2.3/F2.4.
-- La cabina no introduce física de conducción (sin `VehicleBody3D`); la integración
-  con el chasis es F2.4/F3.
-- No se generó una APK nueva en 2.2. La APK debug de la Fase 1.4 sigue siendo la
-  referencia de build; su prueba de rendimiento no cubre la cabina.
+- El bloqueo de F2.2 colocó el volante, la palanca, la radio y la guantera dentro
+  de las cajas sólidas del tablero/consola. F2.3 aplica `visual_offsets` y
+  `interaction_position_m` para llevar los mandos a la cara del conductor; es un
+  ajuste funcional provisional, no la geometría final.
+- Los vidrios, la antena, los testigos, los botones y las manos son primitivas de
+  código (`visual_proxies`), no arte final ni assets de la fábrica. El arte final
+  es F3.1/F3.2.
+- El seguro central, el mando de luces y el interruptor de antena no se
+  distinguen con claridad en las fotos revisadas: son proxies provisionales.
+- No hay espejos, HUD, gamepad ni guardado: son F2.4.
+- La cabina no introduce física de conducción (sin `VehicleBody3D`); el volante
+  solo cambia la pose IK. La integración con el chasis es F2.4/F3.
+- No se generó una APK nueva en 2.3. La APK debug de la Fase 1.4 sigue siendo la
+  referencia de build; su prueba de rendimiento no cubre la cabina ni la
+  interacción.
 
 ## Completado
 
-- Contrato `data/vehicle/cabin_spec.json` con cabina funcional y rig de manos
-  (poses IK), cotas provisionales y compatibilidad con las anclas `anchor_*`.
-- `tools/blender/esteem_cabin.py`: generación `bpy` reproducible de la cabina
-  (volante de tres radios, columna, tablero, instrumental, consola, radio cassette
-  doble DIN con ranura, clima, guantera con cierre, paneles de puerta con
-  apoyabrazos/tirador/cristaleras, consola y guía de palanca P-R-N-D-2-L) y del
-  armazón `EsteemHandRig` con botón de Overdrive, palanca tipo T y freno de mano.
-- Mallas LOD0/LOD1/LOD2 y rig de manos exportados a glTF con manifiesto
-  reproducible (comando, hashes, autor, licencia CC BY-NC-SA 4.0, fecha).
-- Rig de manos con 15 huesos: `anchor_root`, anclas de control iguales a las del
-  bloqueo (`anchor_driver_seat`, `anchor_steering_wheel`, `anchor_gear_lever`,
-  `anchor_handbrake`), huesos de mano y destinos IK.
-- Cuatro poses IK nombradas (reposo, volante, palanca, freno de mano) que alcanzan
-  los controles; verificadas contra las anclas del bloqueo.
-- Escena `EsteemCabin.tscn` y `tests/vehicle/CabinTest.tscn` (46 comprobaciones),
-  integradas en `health_check.py`.
-- Revisión visual completa de referencias de interior (hoja de contacto + 3 fotos
-  clave) registrada en `REFERENCE_USAGE_LOG.md`.
+- Contrato `data/schemas/cabin_interaction.json` y JSON Schema con retículo/tacto,
+  poses IK de 2/1/0 manos, puertas y seguros, vidrios, luces, antena, radio,
+  guantera, palanca P-R-N-D-2-L con Overdrive y freno de mano.
+- Controlador de interacción con foco por retículo (7°), tacto de 44 dp,
+  arrastre de la palanca, feedback contextual y delegación en el tren motriz.
+- Estado de cabina: puertas/seguros, vidrios en ambos sentidos, luces
+  off/posición/carretera, antena con efecto en la señal, radio procedural AM/FM,
+  guantera, palanca y freno de mano.
+- IK de 2/1/0 manos con cadena de dos huesos por brazo, transiciones y proxies de
+  mano visibles. El volante no mueve la dirección ni el chasis.
+- La palanca y el Overdrive usan `VehiclePowertrain` (`set_selector`,
+  `toggle_overdrive`); el freno de mano termina en `brakes.parking`.
+- Escena `scenes/vehicle/CabinInteraction.tscn`, acceso `Ver cabina` desde Boot y
+  prompt contextual localizado en once idiomas.
+- `tests/vehicle/InteractionTest.tscn` (180 comprobaciones) y
+  `tools/dev/interaction_test.cmd`, integrados en `health_check.py`.
+- Revisión de referencias de interior F2.3 registrada en
+  `REFERENCE_USAGE_LOG.md`; sin copiar archivos de la biblioteca externa.
+- Capturas de trabajo en `build/logs/interaction/` (no versionadas) para
+  verificar retículo, volante, palanca, radio y puerta.
 
 ## Siguiente
 
-Fase **2.3 con DS-R**: interacción contextual "mirar/tocar", IK 2/1/0 manos,
-puertas, seguros, vidrios, luces, antena y radio. No se inicia en este chat.
+Fase **2.4 con MiMo Flash**: espejos `SubViewport`, HUD mínimo, gamepad/D-Pad,
+save v0.2.0, QA de reparaciones y ADB. No se inicia en este chat.

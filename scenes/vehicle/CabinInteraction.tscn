@@ -1,0 +1,62 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/vehicle/EsteemCabin.tscn" id="1_cabin"]
+[ext_resource type="Script" path="res://src/vehicle/vehicle_powertrain.gd" id="2_powertrain"]
+[ext_resource type="Script" path="res://src/vehicle/cabin_controls.gd" id="3_controls"]
+[ext_resource type="Script" path="res://src/vehicle/hand_ik_driver.gd" id="4_hands"]
+[ext_resource type="Script" path="res://src/vehicle/cabin_visual_proxies.gd" id="5_proxies"]
+[ext_resource type="Script" path="res://src/vehicle/cabin_interaction_controller.gd" id="6_interaction"]
+[ext_resource type="Script" path="res://src/vehicle/cabin_interaction_ui.gd" id="7_ui"]
+
+[sub_resource type="Environment" id="Environment_cabin"]
+background_mode = 1
+background_color = Color(0.015, 0.024, 0.035, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.42, 0.48, 0.58, 1)
+ambient_light_energy = 0.35
+tonemap_mode = 2
+
+[node name="CabinInteraction" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_cabin")
+
+[node name="InteriorLight" type="OmniLight3D" parent="."]
+position = Vector3(-0.2, 1.36, -0.35)
+light_color = Color(1, 0.93, 0.82, 1)
+light_energy = 0.9
+omni_range = 2.5
+
+[node name="Cabin" parent="." instance=ExtResource("1_cabin")]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+position = Vector3(-0.35, 1.3, 0.1)
+rotation_degrees = Vector3(-20, 0, 0)
+current = true
+fov = 70.0
+near = 0.05
+
+[node name="Powertrain" type="Node" parent="."]
+script = ExtResource("2_powertrain")
+auto_simulate = false
+
+[node name="Controls" type="Node" parent="."]
+script = ExtResource("3_controls")
+
+[node name="Hands" type="Node" parent="."]
+script = ExtResource("4_hands")
+
+[node name="Proxies" type="Node3D" parent="."]
+script = ExtResource("5_proxies")
+
+[node name="Interaction" type="Node" parent="."]
+script = ExtResource("6_interaction")
+camera_path = NodePath("../Camera3D")
+cabin_path = NodePath("../Cabin")
+controls_path = NodePath("../Controls")
+hands_path = NodePath("../Hands")
+proxies_path = NodePath("../Proxies")
+powertrain_path = NodePath("../Powertrain")
+
+[node name="UI" type="CanvasLayer" parent="."]
+script = ExtResource("7_ui")

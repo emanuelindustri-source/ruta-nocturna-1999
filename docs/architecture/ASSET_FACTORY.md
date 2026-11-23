@@ -174,6 +174,30 @@ de manos, "mirar/tocar") es alcance de F2.3.
 - La disposición de cabina se revisó con la hoja de contacto de interior y las
   fotos `images (10).jpg`, `INTERIOR ESTEEM.jpg` (= `images (12).jpg`) e
   `images (7).jpg` (solo lectura); registro en `REFERENCE_USAGE_LOG.md`.
-- Sin marcas ni emblemas. Sin texto visible (la señalética P-R-N-D-2-L es solo
-  posicional; la localización llega en F2.4/F9.1).
+- Sin marcas ni emblemas. Sin texto visible en la malla (la señalética
+  P-R-N-D-2-L es solo posicional; las etiquetas de interacción usan claves de
+  localización desde F2.3).
 - Cotas de interior provisionales: no publicar como especificación oficial.
+
+## 10. Capa de interacción de cabina (Fase 2.3)
+
+F2.3 **no genera nuevos `.glb` ni modifica los manifiestos** de la cabina o del
+bloqueo. La capa de interacción vive en `scenes/vehicle/CabinInteraction.tscn` y
+en `src/vehicle/cabin_visual_proxies.gd`:
+
+- El bloqueo de F2.2 dejó el volante, la palanca, la radio y la guantera dentro
+  de las cajas sólidas del tablero y la consola. El contrato
+  `data/schemas/cabin_interaction.json` declara `visual_offsets` y
+  `interaction_position_m` para mover esos mandos a la cara del conductor. Es un
+  ajuste funcional provisional, no una nueva especificación del vehículo.
+- Los vidrios, la antena, los testigos, los botones que faltan y las manos son
+  **primitivas de código** (`BoxMesh`, `CylinderMesh`, `SphereMesh`) para dar
+  retorno visual a la interacción y a la IK. No son assets de la fábrica, no
+  tienen manifiesto y no se copian de la biblioteca externa.
+- Las manos definitivas, el vidrio y la antena finales son F3.1/F3.2. Los
+  proxies se sustituirán sin cambiar el contrato de interacción.
+- Solo se anima LOD0, el único visible. El cambio de LOD por distancia sigue
+  siendo F3.5/F10. La política LOD0/LOD1/LOD2 y los presupuestos de F2.2 no
+  cambian.
+- No se añaden texturas, materiales PBR ni emblemas; los colores de los proxies
+  son grises/beige neutros del proyecto.

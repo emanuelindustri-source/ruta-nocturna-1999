@@ -1,0 +1,554 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ruta-nocturna:schemas:cabin_interaction:1",
+  "title": "Contrato de interaccion contextual de la cabina del Chevrolet Esteem 1999",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "contract_id",
+    "vehicle_id",
+    "content_status",
+    "description",
+    "units",
+    "axes",
+    "source_policy",
+    "references",
+    "interaction",
+    "hands",
+    "controls",
+    "doors",
+    "windows",
+    "lights",
+    "radio",
+    "antenna",
+    "gear_gate",
+    "handbrake",
+    "glovebox",
+    "visual_offsets",
+    "visual_proxies",
+    "feedback",
+    "accessibility",
+    "anti_softlock",
+    "reference_notes"
+  ],
+  "properties": {
+    "schema_version": { "type": "integer", "minimum": 1 },
+    "contract_id": { "type": "string", "pattern": "^vehicle\\.[a-z0-9_.]+$" },
+    "vehicle_id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+    "content_status": { "type": "string", "minLength": 3 },
+    "description": { "type": "string", "minLength": 40 },
+    "units": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "axes": { "type": "string", "minLength": 3 },
+    "source_policy": { "type": "string", "minLength": 40 },
+    "references": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cabin_spec", "powertrain", "blockout_spec"],
+      "properties": {
+        "cabin_spec": { "type": "string" },
+        "powertrain": { "type": "string" },
+        "blockout_spec": { "type": "string" }
+      }
+    },
+    "interaction": { "$ref": "#/$defs/interaction" },
+    "hands": { "$ref": "#/$defs/hands" },
+    "controls": {
+      "type": "array",
+      "minItems": 15,
+      "items": { "$ref": "#/$defs/control" }
+    },
+    "doors": { "$ref": "#/$defs/doors" },
+    "windows": { "$ref": "#/$defs/windows" },
+    "lights": { "$ref": "#/$defs/lights" },
+    "radio": { "$ref": "#/$defs/radio" },
+    "antenna": { "$ref": "#/$defs/antenna" },
+    "gear_gate": { "$ref": "#/$defs/gear_gate" },
+    "handbrake": { "$ref": "#/$defs/handbrake" },
+    "glovebox": { "$ref": "#/$defs/glovebox" },
+    "visual_offsets": { "$ref": "#/$defs/visual_offsets" },
+    "visual_proxies": { "$ref": "#/$defs/visual_proxies" },
+    "feedback": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "type": "string", "pattern": "^CABIN_[A-Z0-9_]+$" }
+    },
+    "accessibility": { "$ref": "#/$defs/accessibility" },
+    "anti_softlock": { "$ref": "#/$defs/anti_softlock" },
+    "reference_notes": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 10 }
+    }
+  },
+  "$defs": {
+    "vector3": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": { "type": "number" }
+    },
+    "interaction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "modes",
+        "look_distance_m",
+        "reticle_max_angle_deg",
+        "touch_radius_dp",
+        "reference_dpi",
+        "min_touch_radius_px",
+        "focus_time_s",
+        "hand_transition_s",
+        "hand_return_delay_s",
+        "drag_threshold_px",
+        "volume_repeat_s",
+        "stationary_speed_mps",
+        "max_targets",
+        "reticle_radius_px",
+        "look_drag_yaw_deg",
+        "look_drag_pitch_deg"
+      ],
+      "properties": {
+        "modes": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": { "enum": ["look", "touch"] }
+        },
+        "look_distance_m": { "type": "number", "exclusiveMinimum": 0 },
+        "reticle_max_angle_deg": { "type": "number", "exclusiveMinimum": 0, "maximum": 30 },
+        "touch_radius_dp": { "type": "number", "minimum": 44 },
+        "reference_dpi": { "type": "number", "exclusiveMinimum": 0 },
+        "min_touch_radius_px": { "type": "number", "minimum": 44 },
+        "focus_time_s": { "type": "number", "minimum": 0 },
+        "hand_transition_s": { "type": "number", "exclusiveMinimum": 0 },
+        "hand_return_delay_s": { "type": "number", "minimum": 0 },
+        "drag_threshold_px": { "type": "number", "exclusiveMinimum": 0 },
+        "volume_repeat_s": { "type": "number", "exclusiveMinimum": 0 },
+        "stationary_speed_mps": { "type": "number", "minimum": 0 },
+        "max_targets": { "type": "integer", "minimum": 1 },
+        "reticle_radius_px": { "type": "number", "exclusiveMinimum": 0 },
+        "look_drag_yaw_deg": { "type": "number", "exclusiveMinimum": 0 },
+        "look_drag_pitch_deg": { "type": "number", "exclusiveMinimum": 0 }
+      }
+    },
+    "hands": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["shoulders", "arm", "rest", "wheel", "poses"],
+      "properties": {
+        "shoulders": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["left", "right"],
+          "properties": {
+            "left": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["offset_from_driver_seat_m"],
+              "properties": {
+                "offset_from_driver_seat_m": { "$ref": "#/$defs/vector3" }
+              }
+            },
+            "right": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["offset_from_driver_seat_m"],
+              "properties": {
+                "offset_from_driver_seat_m": { "$ref": "#/$defs/vector3" }
+              }
+            }
+          }
+        },
+        "arm": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["upper_length_m", "forearm_length_m", "hand_length_m", "lean_max_m", "elbow_pole"],
+          "properties": {
+            "upper_length_m": { "type": "number", "exclusiveMinimum": 0 },
+            "forearm_length_m": { "type": "number", "exclusiveMinimum": 0 },
+            "hand_length_m": { "type": "number", "exclusiveMinimum": 0 },
+            "lean_max_m": { "type": "number", "minimum": 0 },
+            "elbow_pole": { "$ref": "#/$defs/vector3" }
+          }
+        },
+        "rest": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["left_anchor", "right_anchor"],
+          "properties": {
+            "left_anchor": { "type": "string" },
+            "right_anchor": { "type": "string" }
+          }
+        },
+        "wheel": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["left_anchor", "right_anchor", "left_grip_offset_m", "right_grip_offset_m"],
+          "properties": {
+            "left_anchor": { "type": "string" },
+            "right_anchor": { "type": "string" },
+            "left_grip_offset_m": { "$ref": "#/$defs/vector3" },
+            "right_grip_offset_m": { "$ref": "#/$defs/vector3" }
+          }
+        },
+        "poses": {
+          "type": "array",
+          "minItems": 3,
+          "items": { "$ref": "#/$defs/pose" }
+        }
+      }
+    },
+    "pose": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "description", "left", "right"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^pose_[a-z0-9_]+$" },
+        "description": { "type": "string", "minLength": 5 },
+        "left": { "$ref": "#/$defs/pose_target" },
+        "right": { "$ref": "#/$defs/pose_target" }
+      }
+    },
+    "pose_target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": { "enum": ["anchor", "control", "rest"] },
+        "id": { "type": "string" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "kind": { "const": "rest" } } },
+          "then": { "not": { "required": ["id"] } }
+        },
+        {
+          "if": { "properties": { "kind": { "enum": ["anchor", "control"] } } },
+          "then": { "required": ["id"] }
+        }
+      ]
+    },
+    "control": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "label_key",
+        "hint_key",
+        "position_m",
+        "node_hint",
+        "pose",
+        "interaction",
+        "hand",
+        "powertrain_link"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+        "kind": {
+          "enum": ["wheel", "gear_lever", "button", "lever", "door_handle", "lock", "window_switch", "light_switch", "switch"]
+        },
+        "label_key": { "type": "string", "pattern": "^CABIN_CONTROL_[A-Z0-9_]+$" },
+        "hint_key": { "type": "string", "pattern": "^CABIN_HINT_[A-Z0-9_]+$" },
+        "position_m": { "$ref": "#/$defs/vector3" },
+        "interaction_position_m": { "$ref": "#/$defs/vector3" },
+        "node_hint": { "type": "string", "minLength": 3 },
+        "pose": { "type": "string", "pattern": "^pose_[a-z0-9_]+$" },
+        "interaction": { "enum": ["hold", "tap", "cycle", "gate_drag"] },
+        "hand": { "enum": ["left", "right", "both"] },
+        "direction": { "enum": ["up", "down"] },
+        "group": { "type": "string" },
+        "requires_selector": { "enum": ["P", "R", "N", "D", "2", "L"] },
+        "requires_stationary": { "type": "boolean" },
+        "requires_unlocked": { "type": "boolean" },
+        "requires_radio_on": { "type": "boolean" },
+        "powertrain_link": { "enum": ["none", "transmission.selector", "transmission.overdrive", "brakes.parking"] }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "interaction": { "const": "gate_drag" } } },
+          "then": { "properties": { "kind": { "const": "gear_lever" } } }
+        },
+        {
+          "if": { "properties": { "kind": { "enum": ["window_switch"] } } },
+          "then": { "required": ["direction", "group"] }
+        }
+      ]
+    },
+    "doors": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ids", "default_locked", "travel_s", "open_angle_deg", "hinge_m"],
+      "properties": {
+        "ids": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": { "enum": ["driver", "passenger"] }
+        },
+        "default_locked": { "type": "boolean" },
+        "travel_s": { "type": "number", "exclusiveMinimum": 0 },
+        "open_angle_deg": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["driver", "passenger"],
+          "properties": {
+            "driver": { "type": "number" },
+            "passenger": { "type": "number" }
+          }
+        },
+        "hinge_m": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["driver", "passenger"],
+          "properties": {
+            "driver": { "$ref": "#/$defs/vector3" },
+            "passenger": { "$ref": "#/$defs/vector3" }
+          }
+        }
+      }
+    },
+    "windows": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ids", "travel_s", "glass"],
+      "properties": {
+        "ids": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": { "enum": ["driver", "passenger"] }
+        },
+        "travel_s": { "type": "number", "exclusiveMinimum": 0 },
+        "glass": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["size_m", "closed_center_m", "open_offset_m"],
+          "properties": {
+            "size_m": { "$ref": "#/$defs/vector3" },
+            "closed_center_m": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["driver", "passenger"],
+              "properties": {
+                "driver": { "$ref": "#/$defs/vector3" },
+                "passenger": { "$ref": "#/$defs/vector3" }
+              }
+            },
+            "open_offset_m": { "$ref": "#/$defs/vector3" }
+          }
+        }
+      }
+    },
+    "lights": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["states", "initial_state"],
+      "properties": {
+        "states": {
+          "type": "array",
+          "minItems": 3,
+          "uniqueItems": true,
+          "items": { "enum": ["off", "parking", "headlights"] }
+        },
+        "initial_state": { "enum": ["off", "parking", "headlights"] }
+      }
+    },
+    "radio": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["bands", "stations", "volume_steps", "default_volume_step", "seek_wrap", "signal"],
+      "properties": {
+        "bands": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": { "enum": ["AM", "FM"] }
+        },
+        "stations": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["AM", "FM"],
+          "properties": {
+            "AM": { "type": "array", "minItems": 1, "items": { "type": "number", "exclusiveMinimum": 0 } },
+            "FM": { "type": "array", "minItems": 1, "items": { "type": "number", "exclusiveMinimum": 0 } }
+          }
+        },
+        "volume_steps": { "type": "integer", "minimum": 2 },
+        "default_volume_step": { "type": "integer", "minimum": 0 },
+        "seek_wrap": { "type": "boolean" },
+        "signal": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["antenna_extended", "antenna_retracted", "static_floor", "static_gain", "tone_hz", "mix_rate", "buffer_length_s"],
+          "properties": {
+            "antenna_extended": { "type": "number", "minimum": 0, "maximum": 1 },
+            "antenna_retracted": { "type": "number", "minimum": 0, "maximum": 1 },
+            "static_floor": { "type": "number", "minimum": 0, "maximum": 1 },
+            "static_gain": { "type": "number", "minimum": 0, "maximum": 1 },
+            "tone_hz": { "type": "number", "exclusiveMinimum": 0 },
+            "mix_rate": { "type": "integer", "minimum": 8000 },
+            "buffer_length_s": { "type": "number", "exclusiveMinimum": 0 }
+          }
+        }
+      }
+    },
+    "antenna": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["node_hint", "base_m", "extended_length_m", "retracted_length_m", "travel_s", "initial_extended"],
+      "properties": {
+        "node_hint": { "type": "string" },
+        "base_m": { "$ref": "#/$defs/vector3" },
+        "extended_length_m": { "type": "number", "exclusiveMinimum": 0 },
+        "retracted_length_m": { "type": "number", "minimum": 0 },
+        "travel_s": { "type": "number", "exclusiveMinimum": 0 },
+        "initial_extended": { "type": "boolean" }
+      }
+    },
+    "gear_gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["modes", "detents", "pivot_m", "lever_length_m", "travel_s", "settle_s", "reject_s"],
+      "properties": {
+        "modes": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "uniqueItems": true,
+          "items": { "enum": ["P", "R", "N", "D", "2", "L"] }
+        },
+        "detents": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["mode", "position_m"],
+            "properties": {
+              "mode": { "enum": ["P", "R", "N", "D", "2", "L"] },
+              "position_m": { "$ref": "#/$defs/vector3" }
+            }
+          }
+        },
+        "pivot_m": { "$ref": "#/$defs/vector3" },
+        "lever_length_m": { "type": "number", "exclusiveMinimum": 0 },
+        "travel_s": { "type": "number", "exclusiveMinimum": 0 },
+        "settle_s": { "type": "number", "minimum": 0 },
+        "reject_s": { "type": "number", "exclusiveMinimum": 0 }
+      }
+    },
+    "handbrake": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["released_angle_deg", "engaged_angle_deg", "travel_s", "initial_engaged"],
+      "properties": {
+        "released_angle_deg": { "type": "number" },
+        "engaged_angle_deg": { "type": "number" },
+        "travel_s": { "type": "number", "exclusiveMinimum": 0 },
+        "initial_engaged": { "type": "boolean" }
+      }
+    },
+    "glovebox": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["open_angle_deg", "travel_s", "initial_open"],
+      "properties": {
+        "open_angle_deg": { "type": "number" },
+        "travel_s": { "type": "number", "exclusiveMinimum": 0 },
+        "initial_open": { "type": "boolean" }
+      }
+    },
+    "visual_offsets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "note",
+        "steering_wheel_m",
+        "gear_gate_m",
+        "center_stack_controls_m",
+        "glovebox_m",
+        "door_handle_inboard_m",
+        "window_switch_inboard_m"
+      ],
+      "properties": {
+        "note": { "type": "string", "minLength": 40 },
+        "steering_wheel_m": { "$ref": "#/$defs/vector3" },
+        "gear_gate_m": { "$ref": "#/$defs/vector3" },
+        "center_stack_controls_m": { "$ref": "#/$defs/vector3" },
+        "glovebox_m": { "$ref": "#/$defs/vector3" },
+        "door_handle_inboard_m": { "type": "number", "minimum": 0 },
+        "window_switch_inboard_m": { "type": "number", "minimum": 0 }
+      }
+    },
+    "visual_proxies": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "placeholder",
+        "placeholder_note",
+        "lights_indicator_m",
+        "radio_indicator_m",
+        "lock_indicator_m",
+        "control_proxy_size_m",
+        "hand_proxy_size_m",
+        "window_glass_material"
+      ],
+      "properties": {
+        "placeholder": { "type": "boolean" },
+        "placeholder_note": { "type": "string", "minLength": 20 },
+        "lights_indicator_m": { "$ref": "#/$defs/vector3" },
+        "radio_indicator_m": { "$ref": "#/$defs/vector3" },
+        "lock_indicator_m": { "$ref": "#/$defs/vector3" },
+        "control_proxy_size_m": { "$ref": "#/$defs/vector3" },
+        "hand_proxy_size_m": { "$ref": "#/$defs/vector3" },
+        "window_glass_material": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["albedo", "roughness"],
+          "properties": {
+            "albedo": {
+              "type": "array",
+              "minItems": 4,
+              "maxItems": 4,
+              "items": { "type": "number", "minimum": 0, "maximum": 1 }
+            },
+            "roughness": { "type": "number", "minimum": 0, "maximum": 1 }
+          }
+        }
+      }
+    },
+    "accessibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["min_touch_dp", "touch_targets_independent", "color_independent_feedback", "reticle_has_text_hint", "no_persistent_buttons"],
+      "properties": {
+        "min_touch_dp": { "type": "number", "minimum": 44 },
+        "touch_targets_independent": { "type": "boolean" },
+        "color_independent_feedback": { "type": "boolean" },
+        "reticle_has_text_hint": { "type": "boolean" },
+        "no_persistent_buttons": { "type": "boolean" }
+      }
+    },
+    "anti_softlock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["irreversible_actions", "recovery_actions", "note"],
+      "properties": {
+        "irreversible_actions": { "const": false },
+        "recovery_actions": {
+          "type": "array",
+          "minItems": 3,
+          "items": { "type": "string" }
+        },
+        "note": { "type": "string", "minLength": 30 }
+      }
+    }
+  }
+}

@@ -4,6 +4,90 @@ Todas las fechas usan ISO 8601. Las versiones siguen SemVer.
 
 ## [Unreleased]
 
+## [0.2.2] — 2026-11-22
+
+### Añadido
+
+- Contrato declarativo `data/schemas/cabin_interaction.json` (`schema_version: 1`)
+  con retículo/tacto, poses IK de 2/1/0 manos, puertas y seguros, vidrios, luces,
+  antena, radio, guantera, palanca P-R-N-D-2-L con Overdrive y freno de mano. Su
+  JSON Schema vive en `data/schemas/json/cabin_interaction.schema.json` y se
+  valida en `tools/validate_schemas.py`.
+- `src/vehicle/cabin_interaction_controller.gd`: foco por retículo y tacto (44 dp),
+  gestos, arrastre de la palanca, feedback contextual y delegación en el tren
+  motriz.
+- `src/vehicle/cabin_controls.gd`: estado de puertas/seguros, vidrios, luces,
+  antena, radio, guantera, palanca y freno de mano. La palanca y el Overdrive
+  llaman a `VehiclePowertrain`; el freno de mano termina en `brakes.parking`.
+- `src/vehicle/hand_ik_driver.gd`: cadena IK de dos huesos por brazo, transiciones
+  y poses de 2/1/0 manos en el volante. El volante no mueve la dirección ni el
+  chasis.
+- `src/vehicle/radio_unit.gd`: radio procedural con bandas AM/FM, búsqueda,
+  volumen y señal dependiente de la antena, usando `AudioStreamGenerator` sin
+  samples de terceros.
+- `src/vehicle/cabin_visual_proxies.gd`: vidrios, antena, testigos, botones y
+  manos como primitivas de código; offsets funcionales para sacar los mandos de
+  las cajas sólidas del greybox de F2.2. No son arte final.
+- `scenes/vehicle/CabinInteraction.tscn`: escena de cabina interactiva con cámara,
+  luz de presentación, tren motriz sin simulación automática, proxies y prompt.
+- `src/vehicle/cabin_interaction_ui.gd` y `cabin_reticle.gd`: retículo y prompt
+  contextual localizado; sin HUD de velocidad/combustible y sin botones
+  persistentes.
+- `tests/vehicle/InteractionTest.tscn`, `interaction_test.gd` y
+  `tools/dev/interaction_test.cmd`: 180 comprobaciones headless de contrato,
+  escena, poses IK, foco/tacto, puertas, vidrios, luces, antena, radio, guantera,
+  palanca, Overdrive y freno de mano.
+- 30 claves de localización nuevas (`CABIN_CONTROL_*`, `CABIN_HINT_*`,
+  `UI_VIEW_CABIN`) en los once idiomas, con traducciones provisionales pendientes
+  de revisión nativa.
+- Acceso `Ver cabina` en `Boot` mediante `UI_VIEW_CABIN` y `SceneRouter`.
+
+### Cambiado
+
+- Versión del proyecto a `0.2.2` (`VERSION`, `project.godot`, `export_presets.cfg`,
+  `EXPECTED_VERSION` del smoke test). Android `version/name=0.2.2`,
+  `version/code=105`; Windows `0.2.2.0`.
+- `VehiclePowertrain.set_parking_brake()` propaga el estado a `brakes.parking` en
+  el mismo comando para que la cabina no duplique la mecánica ni dependa de un
+  paso de simulación.
+- `health_check.py` añade `interaction_tests` y exige los archivos del contrato,
+  la escena y las pruebas de F2.3.
+- `tools/validate_schemas.py` valida el contrato de interacción, sus referencias,
+  las poses 2/1/0 manos, los detentes P-R-N-D-2-L, las claves de localización y
+  los enlaces `transmission.selector`, `transmission.overdrive` y
+  `brakes.parking`.
+- `ROADMAP.md`, `docs/roadmap-data.json`, `CURRENT.md`, `HANDOFF.md` y la
+  documentación de arquitectura y referencias reflejan el cierre de 2.3.
+
+### Validación
+
+- 7 contratos JSON válidos; advertencia previa de 202 claves de contenido para
+  F8.4.
+- Localización de 11 idiomas sin errores; fuentes CJK/cirílicas pendientes de
+  F8.4; traducciones nuevas sin revisión nativa.
+- Roadmap 7/45 subfases completadas (15,6%), JSON sincronizado con la web.
+- Importación de Godot 4.7.2 headless con exit 0; sin marcadores críticos.
+- Smoke test: 155/155, exit 0 (sin regresiones).
+- Pruebas del tren motriz: 125/125, exit 0 (sin regresiones).
+- Pruebas de la cabina: 46/46, exit 0 (sin regresiones).
+- Pruebas de interacción: 180/180, exit 0 (nuevas).
+- `health_check.py --end`: 18 OK, 3 advertencias esperadas (claves de contenido,
+  fuentes y árbol previo al commit), 0 errores.
+- Dispositivo ADB autorizado (Redmi 22101316G) y 79,83 GB libres en `C:`.
+- Referencias: 95 archivos; escaneo rápido sin cambios y revisión de interior de
+  F2.3 registrada. No se copió ningún archivo de la biblioteca externa.
+- Capturas de trabajo de la cabina en `build/logs/interaction/` (no versionadas).
+
+### Limitaciones conocidas
+
+- Los vidrios, la antena, los testigos, los botones y las manos son primitivas de
+  código; el arte final es F3.1/F3.2.
+- Los `visual_offsets` corrigen la colocación del greybox de F2.2; la geometría
+  definitiva y las cotas verificadas son F3.2.
+- El seguro central, el mando de luces y el interruptor de antena no se
+  distinguen en las fotos revisadas: son proxies provisionales.
+- No hay espejos, HUD, gamepad ni guardado: son F2.4. No se creó una APK nueva.
+
 ## [0.2.1] — 2026-11-22
 
 ### Añadido

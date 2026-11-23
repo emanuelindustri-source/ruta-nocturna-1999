@@ -139,6 +139,32 @@ proporciones observadas en fotos; todas van marcadas como
 `provisional_design_value` / `photo_observed_provisional` en `cabin_spec.json`.
 No publicar como especificación oficial del vehículo.
 
+## Interacción de cabina (Fase 2.3, provisional)
+
+El contrato `data/schemas/cabin_interaction.json` define el retículo/tacto, las
+poses IK de 2/1/0 manos y los estados de puertas, seguros, vidrios, luces,
+antena, radio, guantera, palanca y freno de mano. Observado en las referencias
+de F2.2/F2.3:
+
+- La palanca automática es tipo T/pistón con **botón lateral "OVER DRIVE"** en la
+  cara izquierda del pomo; la guía sigue el orden P-R-N-D-2-L.
+- La consola central lleva radio cassette sobre el clima, encendedor 12V y la
+  guía de la palanca; el freno de mano va sobre el túnel, a la izquierda.
+- El panel de puerta tiene apoyabrazos y mando de cristaleras; la guantera del
+  acompañante tiene puerta y cierre.
+- El **seguro central**, el **mando de luces** y el **interruptor de antena** no
+  se distinguen con claridad en las fotos revisadas. Se implementan como proxies
+  funcionales provisionales en posiciones derivadas de las anclas y la consola;
+  no se presentan como hechos históricos ni como cotas del manual.
+- El bloqueo de F2.2 colocó algunos mandos dentro de las cajas sólidas del
+  tablero/consola. F2.3 aplica un desplazamiento funcional a la cara del
+  conductor (`visual_offsets`); la geometría definitiva es F3.2.
+- El volante solo cambia la pose IK: no mueve la dirección ni el chasis. La
+  palanca y el Overdrive se delegan en `vehicle_powertrain.json`; el freno de
+  mano termina en `brakes.parking`.
+- Los vidrios, la antena, los testigos, los botones y las manos son primitivas
+  de código hasta F3.1/F3.2. No se copian texturas ni mallas de las fotos.
+
 ## Datos pendientes antes de Fase 2/5
 
 - Altura física real de la toma de aire del modelo elegido y cota del filtro.

@@ -129,6 +129,21 @@ REQUIRED_FILES = [
     "tests/vehicle/cabin_test.gd",
     "tools/dev/cabin_test.cmd",
     "tools/dev/cabin_test.ps1",
+    "data/schemas/cabin_interaction.json",
+    "data/schemas/json/cabin_interaction.schema.json",
+    "src/vehicle/cabin_interaction_spec.gd",
+    "src/vehicle/cabin_controls.gd",
+    "src/vehicle/hand_ik_driver.gd",
+    "src/vehicle/cabin_visual_proxies.gd",
+    "src/vehicle/cabin_interaction_controller.gd",
+    "src/vehicle/cabin_interaction_ui.gd",
+    "src/vehicle/cabin_reticle.gd",
+    "src/vehicle/radio_unit.gd",
+    "scenes/vehicle/CabinInteraction.tscn",
+    "tests/vehicle/InteractionTest.tscn",
+    "tests/vehicle/interaction_test.gd",
+    "tools/dev/interaction_test.cmd",
+    "tools/dev/interaction_test.ps1",
 ]
 
 REQUIRED_REPO_BINARIES = {".apk", ".aab", ".keystore", ".jks", ".p12", ".pfx"}
@@ -537,6 +552,27 @@ def check_cabin_test(checks: list[Check], skip_smoke: bool) -> None:
     )
 
 
+def check_interaction_test(checks: list[Check], skip_smoke: bool) -> None:
+    if skip_smoke:
+        result(checks, "interaction_tests", True, "Omitido por --skip-godot/--skip-smoke", warn=True)
+        return
+    if not GODOT.exists():
+        result(checks, "interaction_tests", False, "Godot no está instalado en la ruta esperada")
+        return
+    code, output = run_command(
+        [str(GODOT), "--headless", "--path", str(ROOT), "res://tests/vehicle/InteractionTest.tscn"],
+        timeout=180,
+    )
+    ok = code == 0 and "[INTERACTION] OK" in output
+    result(
+        checks,
+        "interaction_tests",
+        ok,
+        f"Exit {code}; {'interaccion contextual superada' if ok else 'sin marca de éxito'}",
+        {"exit_code": code, "tail": "\n".join(output.splitlines()[-30:])},
+    )
+
+
 def check_godot_import(checks: list[Check], skip_import: bool) -> None:
     if skip_import:
         result(checks, "godot_import", True, "Omitido por --skip-godot", warn=True)
@@ -615,6 +651,7 @@ def main() -> int:
     check_smoke_test(checks, args.skip_godot or args.skip_smoke)
     check_powertrain_test(checks, args.skip_godot or args.skip_smoke)
     check_cabin_test(checks, args.skip_godot or args.skip_smoke)
+    check_interaction_test(checks, args.skip_godot or args.skip_smoke)
 
     report = build_report(checks, mode)
     REPORT_DIR.mkdir(parents=True, exist_ok=True)

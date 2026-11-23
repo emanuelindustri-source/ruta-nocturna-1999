@@ -1,0 +1,572 @@
+{
+  "schema_version": 1,
+  "contract_id": "vehicle.esteem.cabin_interaction",
+  "vehicle_id": "chevrolet_esteem_1999_auto_beige",
+  "content_status": "interaction_blockout_provisional",
+  "description": "Contrato declarativo de la interaccion contextual mirar/tocar de la cabina del Esteem 1999: reticulo, tacto, poses IK de 2/1/0 manos, puertas y seguros, vidrios, luces, antena, radio, guantera, palanca P-R-N-D-2-L con Overdrive y freno de mano. La palanca y el Overdrive se delegan en vehicle_powertrain.json; el freno de mano se delega en brakes.parking. No contiene fisica de conduccion, espejos, HUD, gamepad ni guardado.",
+  "units": {
+    "distance": "meters",
+    "angle": "degrees",
+    "time": "seconds",
+    "screen": "dp"
+  },
+  "axes": "godot_y_up_forward_minus_z_right_plus_x",
+  "source_policy": "Las posiciones de los controles derivan de las anclas anchor_* de data/vehicle/blockout_spec.json y de las cotas provisionales de data/vehicle/cabin_spec.json. Los mandos no visibles en las fotos revisadas (seguro central, mando de luces, interruptor de antena y botones de radio) se colocan como proxies funcionales provisionales, no como hechos historicos. Ninguna cota se publica como especificacion oficial del vehiculo.",
+  "references": {
+    "cabin_spec": "data/vehicle/cabin_spec.json",
+    "powertrain": "data/schemas/vehicle_powertrain.json",
+    "blockout_spec": "data/vehicle/blockout_spec.json"
+  },
+  "interaction": {
+    "modes": ["look", "touch"],
+    "look_distance_m": 1.2,
+    "reticle_max_angle_deg": 7.0,
+    "touch_radius_dp": 44,
+    "reference_dpi": 160,
+    "min_touch_radius_px": 44,
+    "focus_time_s": 0.08,
+    "hand_transition_s": 0.24,
+    "hand_return_delay_s": 0.35,
+    "drag_threshold_px": 24,
+    "volume_repeat_s": 0.18,
+    "stationary_speed_mps": 0.3,
+    "max_targets": 32,
+    "reticle_radius_px": 7.0,
+    "look_drag_yaw_deg": 70.0,
+    "look_drag_pitch_deg": 45.0
+  },
+  "hands": {
+    "shoulders": {
+      "left": { "offset_from_driver_seat_m": [-0.18, 0.3, -0.02] },
+      "right": { "offset_from_driver_seat_m": [0.18, 0.3, -0.02] }
+    },
+    "arm": {
+      "upper_length_m": 0.36,
+      "forearm_length_m": 0.36,
+      "hand_length_m": 0.1,
+      "lean_max_m": 0.22,
+      "elbow_pole": [0.35, -1.0, 0.15]
+    },
+    "rest": {
+      "left_anchor": "hand_l_grip",
+      "right_anchor": "hand_r_grip"
+    },
+    "wheel": {
+      "left_anchor": "ik_steering_l",
+      "right_anchor": "ik_steering_r",
+      "left_grip_offset_m": [-0.16, 0.0, 0.01],
+      "right_grip_offset_m": [0.16, 0.0, 0.01]
+    },
+    "poses": [
+      {
+        "id": "pose_rest",
+        "description": "Manos en reposo sobre el regazo; cero manos en el volante.",
+        "left": { "kind": "rest" },
+        "right": { "kind": "rest" }
+      },
+      {
+        "id": "pose_steering",
+        "description": "Dos manos en el volante; no se modifica la direccion ni la fisica.",
+        "left": { "kind": "anchor", "id": "ik_steering_l" },
+        "right": { "kind": "anchor", "id": "ik_steering_r" }
+      },
+      {
+        "id": "pose_gear",
+        "description": "Mano derecha en la palanca; izquierda en el volante.",
+        "left": { "kind": "anchor", "id": "ik_steering_l" },
+        "right": { "kind": "control", "id": "gear_lever" }
+      },
+      {
+        "id": "pose_handbrake",
+        "description": "Mano derecha en el freno de mano; izquierda en el volante.",
+        "left": { "kind": "anchor", "id": "ik_steering_l" },
+        "right": { "kind": "control", "id": "handbrake" }
+      },
+      {
+        "id": "pose_door_driver",
+        "description": "Mano izquierda en el tirador de la puerta del conductor; cero manos en el volante.",
+        "left": { "kind": "control", "id": "door_driver" },
+        "right": { "kind": "rest" }
+      },
+      {
+        "id": "pose_door_passenger",
+        "description": "Mano derecha en el tirador de la puerta del acompanante; cero manos en el volante.",
+        "left": { "kind": "rest" },
+        "right": { "kind": "control", "id": "door_passenger" }
+      },
+      {
+        "id": "pose_lock",
+        "description": "Mano izquierda en el seguro central; derecha en el volante.",
+        "left": { "kind": "control", "id": "central_lock" },
+        "right": { "kind": "anchor", "id": "ik_steering_r" }
+      },
+      {
+        "id": "pose_window_driver_up",
+        "description": "Mano izquierda en el mando de subir el vidrio del conductor; derecha en el volante.",
+        "left": { "kind": "control", "id": "window_driver_up" },
+        "right": { "kind": "anchor", "id": "ik_steering_r" }
+      },
+      {
+        "id": "pose_window_driver_down",
+        "description": "Mano izquierda en el mando de bajar el vidrio del conductor; derecha en el volante.",
+        "left": { "kind": "control", "id": "window_driver_down" },
+        "right": { "kind": "anchor", "id": "ik_steering_r" }
+      },
+      {
+        "id": "pose_window_passenger_up",
+        "description": "Mano derecha en el mando de subir el vidrio del acompanante; izquierda en el volante.",
+        "left": { "kind": "anchor", "id": "ik_steering_l" },
+        "right": { "kind": "control", "id": "window_passenger_up" }
+      },
+      {
+        "id": "pose_window_passenger_down",
+        "description": "Mano derecha en el mando de bajar el vidrio del acompanante; izquierda en el volante.",
+        "left": { "kind": "anchor", "id": "ik_steering_l" },
+        "right": { "kind": "control", "id": "window_passenger_down" }
+      },
+      {
+        "id": "pose_lights",
+        "description": "Mano izquierda en el mando de luces; derecha en el volante.",
+        "left": { "kind": "control", "id": "lights" },
+        "right": { "kind": "anchor", "id": "ik_steering_r" }
+      },
+      {
+        "id": "pose_antenna",
+        "description": "Mano derecha en el interruptor de antena; izquierda en el volante.",
+        "left": { "kind": "anchor", "id": "ik_steering_l" },
+        "right": { "kind": "control", "id": "antenna" }
+      },
+      {
+        "id": "pose_radio_power",
+        "description": "Mano derecha en el encendido de la radio; izquierda en el volante.",
+        "left": { "kind": "anchor", "id": "ik_steering_l" },
+        "right": { "kind": "control", "id": "radio_power" }
+      },
+      {
+        "id": "pose_radio_band",
+        "description": "Mano derecha en el selector de banda; izquierda en el volante.",
+        "left": { "kind": "anchor", "id": "ik_steering_l" },
+        "right": { "kind": "control", "id": "radio_band" }
+      },
+      {
+        "id": "pose_radio_seek",
+        "description": "Mano derecha en la busqueda de emisora; izquierda en el volante.",
+        "left": { "kind": "anchor", "id": "ik_steering_l" },
+        "right": { "kind": "control", "id": "radio_seek" }
+      },
+      {
+        "id": "pose_radio_volume_up",
+        "description": "Mano derecha en el volumen; izquierda en el volante.",
+        "left": { "kind": "anchor", "id": "ik_steering_l" },
+        "right": { "kind": "control", "id": "radio_volume_up" }
+      },
+      {
+        "id": "pose_radio_volume_down",
+        "description": "Mano derecha en el volumen; izquierda en el volante.",
+        "left": { "kind": "anchor", "id": "ik_steering_l" },
+        "right": { "kind": "control", "id": "radio_volume_down" }
+      },
+      {
+        "id": "pose_glovebox",
+        "description": "Mano derecha en la guantera; cero manos en el volante.",
+        "left": { "kind": "rest" },
+        "right": { "kind": "control", "id": "glovebox" }
+      }
+    ]
+  },
+  "controls": [
+    {
+      "id": "steering_wheel",
+      "kind": "wheel",
+      "label_key": "CABIN_CONTROL_STEERING_WHEEL",
+      "hint_key": "CABIN_HINT_HOLD",
+      "position_m": [-0.35, 1.1, -0.75],
+      "interaction_position_m": [-0.35, 1.1, -0.31],
+      "node_hint": "steering_hub",
+      "pose": "pose_steering",
+      "interaction": "hold",
+      "hand": "both",
+      "powertrain_link": "none"
+    },
+    {
+      "id": "gear_lever",
+      "kind": "gear_lever",
+      "label_key": "CABIN_CONTROL_GEAR_LEVER",
+      "hint_key": "CABIN_HINT_DRAG",
+      "position_m": [0.0, 0.969, -0.45],
+      "interaction_position_m": [0.0, 0.969, -0.17],
+      "node_hint": "gear_knob",
+      "pose": "pose_gear",
+      "interaction": "gate_drag",
+      "hand": "right",
+      "powertrain_link": "transmission.selector"
+    },
+    {
+      "id": "overdrive_button",
+      "kind": "button",
+      "label_key": "CABIN_CONTROL_OVERDRIVE",
+      "hint_key": "CABIN_HINT_TAP",
+      "position_m": [-0.044, 0.969, -0.45],
+      "interaction_position_m": [-0.044, 0.969, -0.17],
+      "node_hint": "gear_od_button",
+      "pose": "pose_gear",
+      "interaction": "tap",
+      "hand": "right",
+      "requires_selector": "D",
+      "powertrain_link": "transmission.overdrive"
+    },
+    {
+      "id": "handbrake",
+      "kind": "lever",
+      "label_key": "CABIN_CONTROL_HANDBRAKE",
+      "hint_key": "CABIN_HINT_TAP",
+      "position_m": [-0.15, 1.0, -0.28],
+      "node_hint": "handbrake_grip",
+      "pose": "pose_handbrake",
+      "interaction": "tap",
+      "hand": "right",
+      "powertrain_link": "brakes.parking"
+    },
+    {
+      "id": "door_driver",
+      "kind": "door_handle",
+      "label_key": "CABIN_CONTROL_DOOR_DRIVER",
+      "hint_key": "CABIN_HINT_TAP",
+      "position_m": [-0.725, 0.97, 0.12],
+      "interaction_position_m": [-0.65, 0.97, 0.12],
+      "node_hint": "proxy_door_driver_handle",
+      "pose": "pose_door_driver",
+      "interaction": "tap",
+      "hand": "left",
+      "requires_stationary": true,
+      "requires_unlocked": true,
+      "powertrain_link": "none"
+    },
+    {
+      "id": "door_passenger",
+      "kind": "door_handle",
+      "label_key": "CABIN_CONTROL_DOOR_PASSENGER",
+      "hint_key": "CABIN_HINT_TAP",
+      "position_m": [0.725, 0.97, 0.12],
+      "interaction_position_m": [0.65, 0.97, 0.12],
+      "node_hint": "proxy_door_passenger_handle",
+      "pose": "pose_door_passenger",
+      "interaction": "tap",
+      "hand": "right",
+      "requires_stationary": true,
+      "requires_unlocked": true,
+      "powertrain_link": "none"
+    },
+    {
+      "id": "central_lock",
+      "kind": "lock",
+      "label_key": "CABIN_CONTROL_CENTRAL_LOCK",
+      "hint_key": "CABIN_HINT_TAP",
+      "position_m": [-0.72, 1.03, 0.02],
+      "interaction_position_m": [-0.65, 1.03, 0.02],
+      "node_hint": "proxy_central_lock",
+      "pose": "pose_lock",
+      "interaction": "tap",
+      "hand": "left",
+      "powertrain_link": "none"
+    },
+    {
+      "id": "window_driver_up",
+      "kind": "window_switch",
+      "label_key": "CABIN_CONTROL_WINDOW_DRIVER_UP",
+      "hint_key": "CABIN_HINT_HOLD",
+      "position_m": [-0.735, 0.779, 0.195],
+      "interaction_position_m": [-0.65, 0.779, 0.195],
+      "node_hint": "proxy_window_driver_up",
+      "pose": "pose_window_driver_up",
+      "interaction": "hold",
+      "hand": "left",
+      "direction": "up",
+      "group": "window_driver",
+      "powertrain_link": "none"
+    },
+    {
+      "id": "window_driver_down",
+      "kind": "window_switch",
+      "label_key": "CABIN_CONTROL_WINDOW_DRIVER_DOWN",
+      "hint_key": "CABIN_HINT_HOLD",
+      "position_m": [-0.735, 0.755, 0.195],
+      "interaction_position_m": [-0.65, 0.755, 0.195],
+      "node_hint": "proxy_window_driver_down",
+      "pose": "pose_window_driver_down",
+      "interaction": "hold",
+      "hand": "left",
+      "direction": "down",
+      "group": "window_driver",
+      "powertrain_link": "none"
+    },
+    {
+      "id": "window_passenger_up",
+      "kind": "window_switch",
+      "label_key": "CABIN_CONTROL_WINDOW_PASSENGER_UP",
+      "hint_key": "CABIN_HINT_HOLD",
+      "position_m": [0.735, 0.779, 0.195],
+      "interaction_position_m": [0.65, 0.779, 0.195],
+      "node_hint": "proxy_window_passenger_up",
+      "pose": "pose_window_passenger_up",
+      "interaction": "hold",
+      "hand": "right",
+      "direction": "up",
+      "group": "window_passenger",
+      "powertrain_link": "none"
+    },
+    {
+      "id": "window_passenger_down",
+      "kind": "window_switch",
+      "label_key": "CABIN_CONTROL_WINDOW_PASSENGER_DOWN",
+      "hint_key": "CABIN_HINT_HOLD",
+      "position_m": [0.735, 0.755, 0.195],
+      "interaction_position_m": [0.65, 0.755, 0.195],
+      "node_hint": "proxy_window_passenger_down",
+      "pose": "pose_window_passenger_down",
+      "interaction": "hold",
+      "hand": "right",
+      "direction": "down",
+      "group": "window_passenger",
+      "powertrain_link": "none"
+    },
+    {
+      "id": "lights",
+      "kind": "light_switch",
+      "label_key": "CABIN_CONTROL_LIGHTS",
+      "hint_key": "CABIN_HINT_CYCLE",
+      "position_m": [-0.52, 1.04, -0.7],
+      "interaction_position_m": [-0.52, 1.04, -0.26],
+      "node_hint": "proxy_light_stalk",
+      "pose": "pose_lights",
+      "interaction": "cycle",
+      "hand": "left",
+      "powertrain_link": "none"
+    },
+    {
+      "id": "antenna",
+      "kind": "switch",
+      "label_key": "CABIN_CONTROL_ANTENNA",
+      "hint_key": "CABIN_HINT_TAP",
+      "position_m": [0.15, 0.97, -0.57],
+      "interaction_position_m": [0.15, 0.97, -0.36],
+      "node_hint": "proxy_antenna_switch",
+      "pose": "pose_antenna",
+      "interaction": "tap",
+      "hand": "right",
+      "powertrain_link": "none"
+    },
+    {
+      "id": "radio_power",
+      "kind": "button",
+      "label_key": "CABIN_CONTROL_RADIO_POWER",
+      "hint_key": "CABIN_HINT_TAP",
+      "position_m": [-0.075, 1.03, -0.545],
+      "interaction_position_m": [-0.075, 1.03, -0.30],
+      "node_hint": "proxy_radio_power",
+      "pose": "pose_radio_power",
+      "interaction": "tap",
+      "hand": "right",
+      "powertrain_link": "none"
+    },
+    {
+      "id": "radio_band",
+      "kind": "button",
+      "label_key": "CABIN_CONTROL_RADIO_BAND",
+      "hint_key": "CABIN_HINT_CYCLE",
+      "position_m": [0.0, 1.03, -0.545],
+      "interaction_position_m": [0.0, 1.03, -0.30],
+      "node_hint": "proxy_radio_band",
+      "pose": "pose_radio_band",
+      "interaction": "cycle",
+      "hand": "right",
+      "requires_radio_on": true,
+      "powertrain_link": "none"
+    },
+    {
+      "id": "radio_seek",
+      "kind": "button",
+      "label_key": "CABIN_CONTROL_RADIO_SEEK",
+      "hint_key": "CABIN_HINT_TAP",
+      "position_m": [0.075, 1.03, -0.545],
+      "interaction_position_m": [0.075, 1.03, -0.30],
+      "node_hint": "proxy_radio_seek",
+      "pose": "pose_radio_seek",
+      "interaction": "tap",
+      "hand": "right",
+      "requires_radio_on": true,
+      "powertrain_link": "none"
+    },
+    {
+      "id": "radio_volume_up",
+      "kind": "button",
+      "label_key": "CABIN_CONTROL_RADIO_VOLUME_UP",
+      "hint_key": "CABIN_HINT_HOLD_AXIS",
+      "position_m": [-0.075, 1.07, -0.545],
+      "interaction_position_m": [-0.075, 1.07, -0.30],
+      "node_hint": "proxy_radio_volume_up",
+      "pose": "pose_radio_volume_up",
+      "interaction": "hold",
+      "hand": "right",
+      "direction": "up",
+      "requires_radio_on": true,
+      "powertrain_link": "none"
+    },
+    {
+      "id": "radio_volume_down",
+      "kind": "button",
+      "label_key": "CABIN_CONTROL_RADIO_VOLUME_DOWN",
+      "hint_key": "CABIN_HINT_HOLD_AXIS",
+      "position_m": [0.075, 1.07, -0.545],
+      "interaction_position_m": [0.075, 1.07, -0.30],
+      "node_hint": "proxy_radio_volume_down",
+      "pose": "pose_radio_volume_down",
+      "interaction": "hold",
+      "hand": "right",
+      "direction": "down",
+      "requires_radio_on": true,
+      "powertrain_link": "none"
+    },
+    {
+      "id": "glovebox",
+      "kind": "switch",
+      "label_key": "CABIN_CONTROL_GLOVEBOX",
+      "hint_key": "CABIN_HINT_TAP",
+      "position_m": [0.3, 0.95, -0.52],
+      "interaction_position_m": [0.3, 0.95, -0.21],
+      "node_hint": "proxy_glovebox_latch",
+      "pose": "pose_glovebox",
+      "interaction": "tap",
+      "hand": "right",
+      "powertrain_link": "none"
+    }
+  ],
+  "doors": {
+    "ids": ["driver", "passenger"],
+    "default_locked": false,
+    "travel_s": 0.55,
+    "open_angle_deg": { "driver": -55.0, "passenger": 55.0 },
+    "hinge_m": {
+      "driver": [-0.705, 0.85, -0.58],
+      "passenger": [0.705, 0.85, -0.58]
+    }
+  },
+  "windows": {
+    "ids": ["driver", "passenger"],
+    "travel_s": 2.4,
+    "glass": {
+      "size_m": [0.006, 0.28, 0.72],
+      "closed_center_m": {
+        "driver": [-0.742, 1.27, -0.08],
+        "passenger": [0.742, 1.27, -0.08]
+      },
+      "open_offset_m": [0.0, -0.22, 0.0]
+    }
+  },
+  "lights": {
+    "states": ["off", "parking", "headlights"],
+    "initial_state": "off"
+  },
+  "radio": {
+    "bands": ["AM", "FM"],
+    "stations": {
+      "AM": [530, 620, 710, 820],
+      "FM": [88.9, 92.3, 96.5, 101.1]
+    },
+    "volume_steps": 8,
+    "default_volume_step": 4,
+    "seek_wrap": true,
+    "signal": {
+      "antenna_extended": 0.95,
+      "antenna_retracted": 0.35,
+      "static_floor": 0.03,
+      "static_gain": 0.28,
+      "tone_hz": 220.0,
+      "mix_rate": 22050,
+      "buffer_length_s": 0.12
+    }
+  },
+  "antenna": {
+    "node_hint": "antenna_mast",
+    "base_m": [0.78, 1.02, -0.86],
+    "extended_length_m": 0.55,
+    "retracted_length_m": 0.06,
+    "travel_s": 0.8,
+    "initial_extended": false
+  },
+  "gear_gate": {
+    "modes": ["P", "R", "N", "D", "2", "L"],
+    "detents": [
+      { "mode": "P", "position_m": [0.0, 0.95, -0.56] },
+      { "mode": "R", "position_m": [0.0, 0.95, -0.512] },
+      { "mode": "N", "position_m": [0.0, 0.95, -0.464] },
+      { "mode": "D", "position_m": [0.0, 0.95, -0.416] },
+      { "mode": "2", "position_m": [0.0, 0.95, -0.368] },
+      { "mode": "L", "position_m": [0.0, 0.95, -0.32] }
+    ],
+    "pivot_m": [0.0, 0.86, -0.45],
+    "lever_length_m": 0.16,
+    "travel_s": 0.18,
+    "settle_s": 0.1,
+    "reject_s": 0.25
+  },
+  "handbrake": {
+    "released_angle_deg": 0.0,
+    "engaged_angle_deg": 14.0,
+    "travel_s": 0.35,
+    "initial_engaged": false
+  },
+  "glovebox": {
+    "open_angle_deg": -38.0,
+    "travel_s": 0.45,
+    "initial_open": false
+  },
+  "visual_offsets": {
+    "note": "El bloqueo de F2.2 coloco el volante, la palanca, la radio y la guantera dentro de las cajas solidas del tablero y la consola. F2.3 los desplaza a la cara del conductor para que la interaccion sea visible y alcanzable. Es un ajuste funcional provisional; la geometria definitiva es F3.2 y no altera los assets ni las anclas del contrato de F2.2.",
+    "steering_wheel_m": [0.0, 0.0, 0.44],
+    "gear_gate_m": [0.0, 0.0, 0.28],
+    "center_stack_controls_m": [0.0, 0.0, 0.24],
+    "glovebox_m": [0.0, 0.0, 0.3],
+    "door_handle_inboard_m": 0.075,
+    "window_switch_inboard_m": 0.085
+  },
+  "visual_proxies": {
+    "placeholder": true,
+    "placeholder_note": "Los vidrios, la antena, los testigos, los botones y las manos que no existen como malla en el bloqueo de F2.2 se generan como primitivas de codigo para que la interaccion y la IK tengan retorno visual. No son arte final; el vidrio, la antena y las manos definitivos son F3.1/F3.2 y no se copian de la biblioteca externa.",
+    "lights_indicator_m": [-0.55, 1.13, -0.3],
+    "radio_indicator_m": [0.0, 1.065, -0.3],
+    "lock_indicator_m": [-0.65, 1.08, 0.08],
+    "control_proxy_size_m": [0.024, 0.012, 0.012],
+    "hand_proxy_size_m": [0.055, 0.03, 0.12],
+    "window_glass_material": {
+      "albedo": [0.35, 0.45, 0.5, 0.35],
+      "roughness": 0.12
+    }
+  },
+  "feedback": {
+    "locked": "CABIN_HINT_LOCKED",
+    "moving": "CABIN_HINT_MOVING",
+    "overdrive_needs_drive": "CABIN_HINT_OVERDRIVE_NEEDS_DRIVE",
+    "radio_off": "CABIN_HINT_RADIO_OFF",
+    "window_limit": "CABIN_HINT_WINDOW_LIMIT",
+    "gear_rejected": "CABIN_HINT_MOVING"
+  },
+  "accessibility": {
+    "min_touch_dp": 44,
+    "touch_targets_independent": true,
+    "color_independent_feedback": true,
+    "reticle_has_text_hint": true,
+    "no_persistent_buttons": true
+  },
+  "anti_softlock": {
+    "irreversible_actions": false,
+    "recovery_actions": ["gear_to_park", "handbrake_release", "door_unlock", "window_manual"],
+    "note": "Ningun control deja la partida bloqueada: la palanca vuelve a P, el freno de mano se libera, las puertas se desbloquean y los vidrios se pueden mover en ambos sentidos."
+  },
+  "reference_notes": [
+    "Palanca automatica tipo T/piston con boton lateral OVER DRIVE confirmada en INTERIOR ESTEEM.jpg (= images (12).jpg) y en images (10).jpg, revisadas a tamano real en F2.2/F2.3.",
+    "Consola central con radio cassette doble DIN, clima con deslizantes y guia P-R-N-D-2-L visible en images (10).jpg; el orden de la guia se implementa P-R-N-D-2-L.",
+    "Panel de puerta con apoyabrazos y mando de cristaleras visible en images (7).jpg; el seguro central, el mando de luces y el interruptor de antena no se distinguen con claridad y se marcan como proxies provisionales.",
+    "Sin marcas, emblemas, texto ni texturas derivadas de las fotografias. No se copio ningun archivo de la biblioteca externa."
+  ]
+}

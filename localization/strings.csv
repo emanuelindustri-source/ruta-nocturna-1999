@@ -1,35 +1,35 @@
 key,es_VE,es_ES,en,pt_PT,pt_BR,it,fr,de,ru,zh_CN,ja
-APP_TITLE,"Ruta Nocturna: 1999","Ruta Nocturna: 1999","Ruta Nocturna: 1999","Ruta Nocturna: 1999","Ruta Nocturna: 1999","Ruta Nocturna: 1999","Ruta Nocturna: 1999","Ruta Nocturna: 1999","Ruta Nocturna: 1999","Ruta Nocturna: 1999","Ruta Nocturna: 1999"
-APP_TAGLINE,"Terror en la Troncal 5","Terror en la Troncal 5","Terror on Trunk Road 5","Terror na Troncal 5","Terror na Troncal 5","Terrore sulla Troncal 5","Terreur sur la Troncal 5","Terror auf der Troncal 5","Ужас на трассе Тронкаль-5","5号干线的恐怖","トランカル5号線の恐怖"
-UI_CONTINUE,"Continuar","Continuar","Continue","Continuar","Continuar","Continua","Continuer","Fortsetzen","Продолжить","继续","続ける"
-UI_NEW_GAME,"Partida nueva","Nueva partida","New game","Novo jogo","Novo jogo","Nuova partita","Nouvelle partie","Neues Spiel","Новая игра","新游戏","ニューゲーム"
-UI_SETTINGS,"Ajustes","Ajustes","Settings","Definições","Configurações","Impostazioni","Paramètres","Einstellungen","Настройки","设置","設定"
-UI_ACCESSIBILITY,"Accesibilidad","Accesibilidad","Accessibility","Acessibilidade","Acessibilidade","Accessibilità","Accessibilité","Barrierefreiheit","Доступность","无障碍","アクセシビリティ"
-UI_QUIT,"Salir","Salir","Quit","Sair","Sair","Esci","Quitter","Beenden","Выход","退出","終了"
-UI_SAVE,"Guardar","Guardar","Save","Guardar","Salvar","Salva","Sauvegarder","Speichern","Сохранить","保存","セーブ"
-UI_LOAD,"Cargar","Cargar","Load","Carregar","Carregar","Carica","Charger","Laden","Загрузить","载入","ロード"
-UI_BACK,"Atrás","Atrás","Back","Voltar","Voltar","Indietro","Retour","Zurück","Назад","返回","戻る"
-UI_CONFIRM,"Confirmar","Confirmar","Confirm","Confirmar","Confirmar","Conferma","Confirmer","Bestätigen","Подтвердить","确认","確認"
-UI_CANCEL,"Cancelar","Cancelar","Cancel","Cancelar","Cancelar","Annulla","Annuler","Abbrechen","Отмена","取消","キャンセル"
-UI_YES,"Sí","Sí","Yes","Sim","Sim","Sì","Oui","Ja","Да","是","はい"
-UI_NO,"No","No","No","Não","Não","No","Non","Nein","Нет","否","いいえ"
-UI_RESUME,"Reanudar","Reanudar","Resume","Retomar","Retomar","Riprendi","Reprendre","Fortsetzen","Продолжить","继续游戏","再開"
-UI_PAUSE,"Pausa","Pausa","Pause","Pausa","Pausa","Pausa","Pause","Pause","Пауза","暂停","一時停止"
-UI_LOADING,"Cargando","Cargando","Loading","A carregar","Carregando","Caricamento","Chargement","Wird geladen","Загрузка","加载中","読み込み中"
-UI_ERROR,"Error","Error","Error","Erro","Erro","Errore","Erreur","Fehler","Ошибка","错误","エラー"
-UI_COPY_REPORT,"Copiar informe","Copiar informe","Copy report","Copiar relatório","Copiar relatório","Copia rapporto","Copier le rapport","Bericht kopieren","Копировать отчёт","复制报告","レポートをコピー"
-UI_PRIVACY,"Privacidad","Privacidad","Privacy","Privacidade","Privacidade","Privacy","Confidentialité","Datenschutz","Конфиденциальность","隐私","プライバシー"
-UI_CREDITS,"Créditos","Créditos","Credits","Créditos","Créditos","Crediti","Crédits","Abspänne","Титры","制作人员","クレジット"
-UI_LANGUAGE,"Idioma","Idioma","Language","Idioma","Idioma","Lingua","Langue","Sprache","Язык","语言","言語"
-UI_AUDIO,"Audio","Audio","Audio","Áudio","Áudio","Audio","Audio","Audio","Звук","音频","オーディオ"
-UI_GRAPHICS,"Gráficos","Gráficos","Graphics","Gráficos","Gráficos","Grafica","Graphismes","Grafik","Графика","图形","グラフィック"
-UI_SUBTITLES,"Subtítulos","Subtítulos","Subtitles","Legendas","Legendas","Sottotitoli","Sous-titres","Untertitel","Субтитры","字幕","字幕"
-UI_ROADMAP,"Hoja de ruta","Hoja de ruta","Roadmap","Roteiro","Roteiro","Piano di sviluppo","Feuille de route","Roadmap","Дорожная карта","路线图","ロードマップ"
-UI_TEST_MODE,"Modo de prueba","Modo de prueba","Test mode","Modo de teste","Modo de teste","Modalità test","Mode test","Testmodus","Тестовый режим","测试模式","テストモード"
-UI_QA_SAVE_WARNING,"Aviso: esta es una partida de pruebas","Aviso: esta es una partida de pruebas","Warning: this is a test save","Aviso: este é um jogo de teste","Aviso: este é um save de teste","Avviso: questo è un salvataggio di test","Avertissement : sauvegarde de test","Warnung: Testspielstand","Внимание: это тестовое сохранение","警告：这是测试存档","警告：これはテストセーブです"
-WARNING_VEHICLE_STUCK,"El vehículo está atascado","El vehículo está atascado","The vehicle is stuck","O veículo está atolado","O veículo está atolado","Il veicolo è bloccato","Le véhicule est bloqué","Das Fahrzeug steckt fest","Автомобиль застрял","车辆被困","車両がスタックしています"
-WARNING_REQUEST_TOW,"Solicitar grúa","Solicitar grúa","Request tow","Pedir reboque","Solicitar guincho","Richiedi carro attrezzi","Demander une dépanneuse","Abschleppdienst rufen","Вызвать эвакуатор","呼叫拖车","レッカーを呼ぶ"
-BOOT_KICKER,FUNDACIÓN TÉCNICA  /  FASE 1.2,FUNDACIÓN TÉCNICA  /  FASE 1.2,TECHNICAL FOUNDATION  /  PHASE 1.2,FUNDAÇÃO TÉCNICA  /  FASE 1.2,FUNDAÇÃO TÉCNICA  /  FASE 1.2,FONDAZIONE TECNICA  /  FASE 1.2,FONDATION TECHNIQUE  /  PHASE 1.2,TECHNISCHE GRUNDLAGE  /  PHASE 1.2,ТЕХНИЧЕСКИЙ ФУНДАМЕНТ  /  ЭТАП 1.2,技术基础  /  阶段 1.2,技術基盤  /  フェーズ1.2
+APP_TITLE,Ruta Nocturna: 1999,Ruta Nocturna: 1999,Ruta Nocturna: 1999,Ruta Nocturna: 1999,Ruta Nocturna: 1999,Ruta Nocturna: 1999,Ruta Nocturna: 1999,Ruta Nocturna: 1999,Ruta Nocturna: 1999,Ruta Nocturna: 1999,Ruta Nocturna: 1999
+APP_TAGLINE,Terror en la Troncal 5,Terror en la Troncal 5,Terror on Trunk Road 5,Terror na Troncal 5,Terror na Troncal 5,Terrore sulla Troncal 5,Terreur sur la Troncal 5,Terror auf der Troncal 5,Ужас на трассе Тронкаль-5,5号干线的恐怖,トランカル5号線の恐怖
+UI_CONTINUE,Continuar,Continuar,Continue,Continuar,Continuar,Continua,Continuer,Fortsetzen,Продолжить,继续,続ける
+UI_NEW_GAME,Partida nueva,Nueva partida,New game,Novo jogo,Novo jogo,Nuova partita,Nouvelle partie,Neues Spiel,Новая игра,新游戏,ニューゲーム
+UI_SETTINGS,Ajustes,Ajustes,Settings,Definições,Configurações,Impostazioni,Paramètres,Einstellungen,Настройки,设置,設定
+UI_ACCESSIBILITY,Accesibilidad,Accesibilidad,Accessibility,Acessibilidade,Acessibilidade,Accessibilità,Accessibilité,Barrierefreiheit,Доступность,无障碍,アクセシビリティ
+UI_QUIT,Salir,Salir,Quit,Sair,Sair,Esci,Quitter,Beenden,Выход,退出,終了
+UI_SAVE,Guardar,Guardar,Save,Guardar,Salvar,Salva,Sauvegarder,Speichern,Сохранить,保存,セーブ
+UI_LOAD,Cargar,Cargar,Load,Carregar,Carregar,Carica,Charger,Laden,Загрузить,载入,ロード
+UI_BACK,Atrás,Atrás,Back,Voltar,Voltar,Indietro,Retour,Zurück,Назад,返回,戻る
+UI_CONFIRM,Confirmar,Confirmar,Confirm,Confirmar,Confirmar,Conferma,Confirmer,Bestätigen,Подтвердить,确认,確認
+UI_CANCEL,Cancelar,Cancelar,Cancel,Cancelar,Cancelar,Annulla,Annuler,Abbrechen,Отмена,取消,キャンセル
+UI_YES,Sí,Sí,Yes,Sim,Sim,Sì,Oui,Ja,Да,是,はい
+UI_NO,No,No,No,Não,Não,No,Non,Nein,Нет,否,いいえ
+UI_RESUME,Reanudar,Reanudar,Resume,Retomar,Retomar,Riprendi,Reprendre,Fortsetzen,Продолжить,继续游戏,再開
+UI_PAUSE,Pausa,Pausa,Pause,Pausa,Pausa,Pausa,Pause,Pause,Пауза,暂停,一時停止
+UI_LOADING,Cargando,Cargando,Loading,A carregar,Carregando,Caricamento,Chargement,Wird geladen,Загрузка,加载中,読み込み中
+UI_ERROR,Error,Error,Error,Erro,Erro,Errore,Erreur,Fehler,Ошибка,错误,エラー
+UI_COPY_REPORT,Copiar informe,Copiar informe,Copy report,Copiar relatório,Copiar relatório,Copia rapporto,Copier le rapport,Bericht kopieren,Копировать отчёт,复制报告,レポートをコピー
+UI_PRIVACY,Privacidad,Privacidad,Privacy,Privacidade,Privacidade,Privacy,Confidentialité,Datenschutz,Конфиденциальность,隐私,プライバシー
+UI_CREDITS,Créditos,Créditos,Credits,Créditos,Créditos,Crediti,Crédits,Abspänne,Титры,制作人员,クレジット
+UI_LANGUAGE,Idioma,Idioma,Language,Idioma,Idioma,Lingua,Langue,Sprache,Язык,语言,言語
+UI_AUDIO,Audio,Audio,Audio,Áudio,Áudio,Audio,Audio,Audio,Звук,音频,オーディオ
+UI_GRAPHICS,Gráficos,Gráficos,Graphics,Gráficos,Gráficos,Grafica,Graphismes,Grafik,Графика,图形,グラフィック
+UI_SUBTITLES,Subtítulos,Subtítulos,Subtitles,Legendas,Legendas,Sottotitoli,Sous-titres,Untertitel,Субтитры,字幕,字幕
+UI_ROADMAP,Hoja de ruta,Hoja de ruta,Roadmap,Roteiro,Roteiro,Piano di sviluppo,Feuille de route,Roadmap,Дорожная карта,路线图,ロードマップ
+UI_TEST_MODE,Modo de prueba,Modo de prueba,Test mode,Modo de teste,Modo de teste,Modalità test,Mode test,Testmodus,Тестовый режим,测试模式,テストモード
+UI_QA_SAVE_WARNING,Aviso: esta es una partida de pruebas,Aviso: esta es una partida de pruebas,Warning: this is a test save,Aviso: este é um jogo de teste,Aviso: este é um save de teste,Avviso: questo è un salvataggio di test,Avertissement : sauvegarde de test,Warnung: Testspielstand,Внимание: это тестовое сохранение,警告：这是测试存档,警告：これはテストセーブです
+WARNING_VEHICLE_STUCK,El vehículo está atascado,El vehículo está atascado,The vehicle is stuck,O veículo está atolado,O veículo está atolado,Il veicolo è bloccato,Le véhicule est bloqué,Das Fahrzeug steckt fest,Автомобиль застрял,车辆被困,車両がスタックしています
+WARNING_REQUEST_TOW,Solicitar grúa,Solicitar grúa,Request tow,Pedir reboque,Solicitar guincho,Richiedi carro attrezzi,Demander une dépanneuse,Abschleppdienst rufen,Вызвать эвакуатор,呼叫拖车,レッカーを呼ぶ
+BOOT_KICKER,FUNDACIÓN TÉCNICA  /  FASE 2.3,FUNDACIÓN TÉCNICA  /  FASE 2.3,TECHNICAL FOUNDATION  /  PHASE 2.3,FUNDAÇÃO TÉCNICA  /  FASE 2.3,FUNDAÇÃO TÉCNICA  /  FASE 2.3,FONDAZIONE TECNICA  /  FASE 2.3,FONDATION TECHNIQUE  /  PHASE 2.3,TECHNISCHE GRUNDLAGE  /  PHASE 2.3,ТЕХНИЧЕСКИЙ ФУНДАМЕНТ  /  ЭТАП 2.3,技术基础  /  阶段 2.3,技術基盤  /  フェーズ2.3
 BOOT_STATUS_READY,Servicios base activos. La carretera todavía no es jugable.,Servicios base activos. La carretera todavía no es jugable.,Base services online. The road is not playable yet.,Serviços base ativos. A estrada ainda não é jogável.,Serviços base ativos. A estrada ainda não é jogável.,Servizi di base attivi. La strada non è ancora giocabile.,Services de base actifs. La route n'est pas encore jouable.,Basisdienste aktiv. Die Straße ist noch nicht spielbar.,Базовые службы активны. Дорога пока недоступна для игры.,基础服务已启用。道路尚不可游玩。,基本サービス稼働中。道路はまだプレイできません。
 BOOT_QA_HINT,F12 o cinco toques arriba a la izquierda: panel QA,F12 o cinco toques arriba a la izquierda: panel QA,F12 or five taps in the upper-left corner: QA panel,F12 ou cinco toques no canto superior esquerdo: painel QA,F12 ou cinco toques no canto superior esquerdo: painel QA,F12 o cinque tocchi in alto a sinistra: pannello QA,F12 ou cinq appuis en haut à gauche : panneau QA,F12 oder fünf Tipps oben links: QA-Panel,F12 или пять нажатий в левом верхнем углу: панель QA,按 F12 或点击左上角五次：QA 面板,F12 または左上を5回タップ：QAパネル
 BOOT_CRASH_WARNING,Se detectó un cierre anormal anterior. Hay un reporte local.,Se detectó un cierre anormal anterior. Hay un reporte local.,A previous abnormal shutdown was detected. A local report is available.,Foi detetado um encerramento anormal anterior. Existe um relatório local.,Foi detectado um encerramento anormal anterior. Há um relatório local.,Rilevata una chiusura anomala precedente. È disponibile un rapporto locale.,Une fermeture anormale précédente a été détectée. Un rapport local est disponible.,Ein vorheriger anormaler Abschluss wurde erkannt. Ein lokaler Bericht liegt vor.,Обнаружено предыдущее аварийное завершение. Доступен локальный отчёт.,检测到上次异常关闭。本地报告可用。,前回の異常終了を検出しました。ローカルレポートがあります。
@@ -61,3 +61,33 @@ BOOT_SERVICES_LINE,Servicios base: {active}/{total},Servicios base: {active}/{to
 UI_VIEW_SLICE,Ver rebanada vertical,Ver rebanada vertical,View vertical slice,Ver fatia vertical,Ver fatia vertical,Vedi sezione verticale,Voir la tranche verticale,Vertikalen Ausschnitt ansehen,Посмотреть вертикальный срез,查看垂直切片,垂直スライスを見る
 SLICE_TITLE,REBANADA VERTICAL · v0.1.3,REBANADA VERTICAL · v0.1.3,VERTICAL SLICE · v0.1.3,FATIA VERTICAL · v0.1.3,FATIA VERTICAL · v0.1.3,SEZIONE VERTICALE · v0.1.3,TRANCHE VERTICALE · v0.1.3,VERTIKALER AUSSCHNITT · v0.1.3,ВЕРТИКАЛЬНЫЙ СРЕЗ · v0.1.3,垂直切片 · v0.1.3,垂直スライス · v0.1.3
 SLICE_SUBTITLE,Coche gris y carretera gris. Todavía sin conducción.,Coche gris y carretera gris. Todavía sin conducción.,Grey car on a grey road. No driving yet.,Carro cinza e estrada cinza. Ainda sem condução.,Carro cinza e estrada cinza. Ainda sem condução.,Auto grigio e strada grigia. Ancora senza guida.,Voiture grise et route grise. Pas encore de conduite.,"Graues Auto, graue Straße. Noch kein Fahren.",Серая машина и серая дорога. Вождения пока нет.,灰色汽车，灰色公路。尚无驾驶。,グレーの車とグレーの道。運転はまだありません。
+CABIN_CONTROL_STEERING_WHEEL,Volante,Volante,Steering wheel,Volante,Volante,Volante,Volant,Lenkrad,Руль,方向盘,ステアリング
+CABIN_CONTROL_GEAR_LEVER,Palanca P-R-N-D-2-L,Palanca P-R-N-D-2-L,P-R-N-D-2-L lever,Alavanca P-R-N-D-2-L,Alavanca P-R-N-D-2-L,Leva P-R-N-D-2-L,Levier P-R-N-D-2-L,Wählhebel P-R-N-D-2-L,Селектор P-R-N-D-2-L,P-R-N-D-2-L 挡杆,P-R-N-D-2-L レバー
+CABIN_CONTROL_OVERDRIVE,Overdrive,Overdrive,Overdrive,Overdrive,Overdrive,Overdrive,Overdrive,Overdrive,Овердрайв,超速挡,オーバードライブ
+CABIN_CONTROL_HANDBRAKE,Freno de mano,Freno de mano,Handbrake,Travão de mão,Freio de mão,Freno a mano,Frein à main,Handbremse,Стояночный тормоз,手刹,ハンドブレーキ
+CABIN_CONTROL_DOOR_DRIVER,Puerta del conductor,Puerta del conductor,Driver door,Porta do condutor,Porta do motorista,Portiera del conducente,Portière conducteur,Fahrertür,Водительская дверь,驾驶侧车门,運転席ドア
+CABIN_CONTROL_DOOR_PASSENGER,Puerta del acompañante,Puerta del acompañante,Passenger door,Porta do passageiro,Porta do passageiro,Portiera del passeggero,Portière passager,Beifahrertür,Дверь пассажира,副驾驶车门,助手席ドア
+CABIN_CONTROL_CENTRAL_LOCK,Seguro central,Seguro central,Central lock,Fecho central,Trava central,Chiusura centralizzata,Verrouillage central,Zentralverriegelung,Центральный замок,中控锁,集中ロック
+CABIN_CONTROL_WINDOW_DRIVER_UP,Vidrio del conductor: subir,Vidrio del conductor: subir,Driver window: up,Vidro do condutor: subir,Vidro do motorista: subir,Finestrino conducente: su,Vitre conducteur : monter,Fahrerfenster: hoch,Стекло водителя: вверх,驾驶侧车窗：上升,運転席窓：上げ
+CABIN_CONTROL_WINDOW_DRIVER_DOWN,Vidrio del conductor: bajar,Vidrio del conductor: bajar,Driver window: down,Vidro do condutor: descer,Vidro do motorista: descer,Finestrino conducente: giù,Vitre conducteur : descendre,Fahrerfenster: runter,Стекло водителя: вниз,驾驶侧车窗：下降,運転席窓：下げ
+CABIN_CONTROL_WINDOW_PASSENGER_UP,Vidrio del acompañante: subir,Vidrio del acompañante: subir,Passenger window: up,Vidro do passageiro: subir,Vidro do passageiro: subir,Finestrino passeggero: su,Vitre passager : monter,Beifahrerfenster: hoch,Стекло пассажира: вверх,副驾驶车窗：上升,助手席窓：上げ
+CABIN_CONTROL_WINDOW_PASSENGER_DOWN,Vidrio del acompañante: bajar,Vidrio del acompañante: bajar,Passenger window: down,Vidro do passageiro: descer,Vidro do passageiro: descer,Finestrino passeggero: giù,Vitre passager : descendre,Beifahrerfenster: runter,Стекло пассажира: вниз,副驾驶车窗：下降,助手席窓：下げ
+CABIN_CONTROL_LIGHTS,Luces,Luces,Lights,Luzes,Luzes,Luci,Feux,Licht,Свет,车灯,ライト
+CABIN_CONTROL_ANTENNA,Antena,Antena,Antenna,Antena,Antena,Antenna,Antenne,Antenne,Антенна,天线,アンテナ
+CABIN_CONTROL_RADIO_POWER,Radio: encendido,Radio: encendido,Radio: power,Rádio: ligar,Rádio: ligar,Radio: accensione,Radio : marche,Radio: Ein/Aus,Радио: питание,收音机：电源,ラジオ：電源
+CABIN_CONTROL_RADIO_BAND,Radio: banda,Radio: banda,Radio: band,Rádio: banda,Rádio: banda,Radio: banda,Radio : bande,Radio: Band,Радио: диапазон,收音机：波段,ラジオ：バンド
+CABIN_CONTROL_RADIO_SEEK,Radio: buscar emisora,Radio: buscar emisora,Radio: seek,Rádio: procurar,Rádio: procurar,Radio: cerca stazione,Radio : chercher,Radio: Sender suchen,Радио: поиск станции,收音机：搜台,ラジオ：選局
+CABIN_CONTROL_RADIO_VOLUME_UP,Radio: volumen +,Radio: volumen +,Radio: volume up,Rádio: volume +,Rádio: volume +,Radio: volume +,Radio : volume +,Radio: lauter,Радио: громче,收音机：音量+,ラジオ：音量+
+CABIN_CONTROL_RADIO_VOLUME_DOWN,Radio: volumen -,Radio: volumen -,Radio: volume down,Rádio: volume -,Rádio: volume -,Radio: volume -,Radio : volume -,Radio: leiser,Радио: тише,收音机：音量-,ラジオ：音量-
+CABIN_CONTROL_GLOVEBOX,Guantera,Guantera,Glovebox,Porta-luvas,Porta-luvas,Vano portaoggetti,Boîte à gants,Handschuhfach,Бардачок,手套箱,グローブボックス
+CABIN_HINT_HOLD,Mantén pulsado,Mantén pulsado,Hold,Mantenha pressionado,Mantenha pressionado,Tieni premuto,Maintenir,Gedrückt halten,Удерживайте,按住,長押し
+CABIN_HINT_TAP,Toca para usar,Toca para usar,Tap to use,Toque para usar,Toque para usar,Tocca per usare,Toucher pour utiliser,Antippen,Коснитесь,轻触使用,タップして使用
+CABIN_HINT_CYCLE,Toca para cambiar,Toca para cambiar,Tap to cycle,Toque para alternar,Toque para alternar,Tocca per cambiare,Toucher pour changer,Antippen zum Wechseln,Коснитесь для переключения,轻触切换,タップで切替
+CABIN_HINT_DRAG,Arrastra para mover,Arrastra para mover,Drag to move,Arraste para mover,Arraste para mover,Trascina per spostare,Glisser pour déplacer,Ziehen zum Bewegen,Потяните,拖动,ドラッグして移動
+CABIN_HINT_HOLD_AXIS,Mantén para ajustar,Mantén para ajustar,Hold to adjust,Mantenha para ajustar,Mantenha para ajustar,Tieni premuto per regolare,Maintenir pour régler,Gedrückt halten zum Einstellen,Удерживайте для настройки,按住调节,長押しで調整
+CABIN_HINT_LOCKED,Puerta bloqueada,Puerta bloqueada,Door locked,Porta trancada,Porta trancada,Portiera bloccata,Portière verrouillée,Tür verriegelt,Дверь заперта,车门已锁,ドアロック中
+CABIN_HINT_MOVING,Detén el vehículo,Detén el vehículo,Stop the vehicle,Pare o veículo,Pare o veículo,Ferma il veicolo,Arrêtez le véhicule,Fahrzeug anhalten,Остановите автомобиль,请停车,車両を停止
+CABIN_HINT_OVERDRIVE_NEEDS_DRIVE,Solo en D,Solo en D,Only in D,Só em D,Só em D,Solo in D,En D uniquement,Nur in D,Только в D,仅限 D 挡,Dレンジのみ
+CABIN_HINT_RADIO_OFF,Enciende la radio,Enciende la radio,Turn on the radio,Ligue o rádio,Ligue o rádio,Accendi la radio,Allumez la radio,Radio einschalten,Включите радио,请打开收音机,ラジオをON
+CABIN_HINT_WINDOW_LIMIT,Vidrio en el tope,Vidrio en el tope,Window at limit,Vidro no limite,Vidro no limite,Finestrino al limite,Vitre en butée,Fenster am Anschlag,Стекло в крайнем положении,车窗已到极限,窓が限界
+UI_VIEW_CABIN,Ver cabina,Ver cabina,View cabin,Ver cabina,Ver cabine,Vedi abitacolo,Voir l'habitacle,Innenraum ansehen,Открыть салон,查看驾驶室,車内を見る
