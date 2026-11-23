@@ -389,8 +389,73 @@ imágenes en contexto** y **no se copió ningún archivo** de
 - Usar las fotos como capturas de tienda o assets del juego.
 - Implementar el interior definitivo (F3.2) o la física de conducción.
 
+## 2026-11-22 - Fase 3.2 - interior definitivo (revisión visual completa de interior)
+
+**Alcance:** revisión visual completa obligatoria antes de F3.2 (`AGENTS.md`,
+sección 10). Se usó el catálogo `docs/reference/reference_catalog.json` (95
+fichas) y **hojas de contacto generadas a `build/reference/contact_sheets/`**
+(`interior_f32_review.jpg`, 49 fotos de vehículo/técnicas; y
+`interior_f32_detail.jpg`, mosaico de detalle de interior). **No se cargaron
+las 40 imágenes en contexto** y **no se copió ningún archivo** de
+`C:\Dev\fotos de ejemplo` al repositorio. Solo se abrieron a tamaño real
+**seis** fotografías clave de interior, como copias de trabajo ampliadas ×2 en
+`build/reference/review_f32/` (ignoradas por Git; originales intactos).
+
+### Referencias utilizadas
+
+| Referencia | Uso | Resultado |
+|---|---|---|
+| Hoja de contacto de interior (49 fotos de vehículo/técnicas) | Inventario visual: tablero, consola, asientos, telas, maletero, piezas y despieces | Identificadas las fotos de cabina, banqueta, maletero e instrumental frente a exteriores, mecánica y piezas sueltas |
+| `adentro esteem.jpg` (tablero completo desde el lado del acompañante, ampliada ×2) | Distribución del tablero, consola y tapicería | Tablero bitono (gris oscuro arriba, beige abajo), bandeja superior del acompañante, guantera con tapa y cierre, consola central con dobles salidas de aire, reloj digital, botón de emergencias rojo, radio cassette, clima con deslizadores y franja azul/roja, encendedor/tapacenicero, palanca tipo T/pistón con guía P-R-N-D-2-L, freno de mano sobre el túnel; **telas con patrón geométrico tipo greca** en centros de asientos, respaldos y paneles de puerta |
+| `images (10).jpg` (cabina completa desde atrás, ampliada ×2) | Volumen global de cabina | Volante con tres radios y cubo amplio, instrumental con tres básculas, tablero de lado a lado, butacas delanteras con apoyos laterales lisos y centros patrónados, banqueta trasera visible |
+| `images (1).jpg` (asientos lado conductor, ampliada ×2) | Butacas, alfombrado y panel de puerta | Butacas altas con reposacabezas independiente sobre postes, palanca de reclinado, tapa de raíles, cinturón con hebilla; alfombra oscura; panel de puerta con inserto de tela, apoyabrazos y tirador |
+| `images (12).jpg` (= `INTERIOR ESTEEM.jpg`, consola ampliada ×2) | Palanca y clima a tamaño real | Confirma palanca tipo T/pistón con botón lateral de Overdrive, guía de posiciones con panel de indicación (sin texto legible) y clima con deslizadores |
+| `images (6).jpg` (banqueta trasera, ampliada ×2) | Banqueta y respaldos | Banqueta con centros patrónados y apoyos lisos, dos reposacabezas traseros, bolsillos en respaldos delanteros |
+| `esteem00int.png` (colage: maletero abierto + instrumental, ampliada ×2) | Maletero y básculas | Maletero amplio y llano con moqueta, aletas de rueda intrusivas y tapa con bisagras; instrumental de tres básculas redondas (tacómetro, velocímetro central 0-200 km/h, reloj de temperatura+combustible) con carátulas oscuras y agujas ámbar |
+| `images (8/9).jpg` (piezas de cristaleras), `D_Q_NP_*` (manijas, cerraduras y llaves) | Herrajes y mandos de puerta | Referencia de mandos de cristaleras, tiradores y cerraduras; las llaves/cilindros son herrajes, no se modelan con texto ni marca |
+| `ESTEEM_MECHANICAL_NOTES.md` | Confirmar lo ya documentado | Volante de tres radios confirmado; radio cassette doble DIN; cotas de interior siguen sin constar en el manual |
+
+### Decisiones de modelado (F3.2)
+
+- El interior final se genera como **piezas separadas** en un spec declarativo
+  nuevo (`data/vehicle/interior_spec.json`, `vehicle.esteem.interior`):
+  tablero bitono, instrumental de tres básculas, consola central, radio
+  cassette, clima con deslizadores, salidas de aire, guantera con cierre,
+  palanca P-R-N-D-2-L con botón de Overdrive, freno de mano, butacas
+  delanteras y banqueta trasera, paneles de puerta con inserto de tela,
+  alfombrado, techo, maletero y herramientas. Todo con scripts `bpy`
+  reproducibles; nada de `.blend` editados a mano.
+- Las **telas** se representan con materiales PBR propios de dos tonos (centro
+  patrónado simulado con tono de inserto y apoyos lisos): ninguna textura,
+  malla o color procede de las fotografías. El pulido fino del tejido y las
+  costuras queda para F3.5/F10.1 (mismo criterio que el exterior).
+- Las **básculas del instrumental** son geometría sin texto (carátula oscura,
+  bisel y aguja ámbar): la señalética visible usa claves de localización.
+- **Manos definitivas**: malla propia (palma, cuatro dedos y pulgar) en las
+  posiciones de bind de `esteem_hand_rig`, sustituyendo los proxies de caja de
+  F2.3 sin tocar `cabin_interaction.json` (v2) ni el rig ni las poses IK.
+- **Herramientas del maletero** como objetos reales nombrados con los IDs de
+  `inventory_tools.json` (`tool.jack`, `tool.wheel_wrench`, `tool.spare_tire`,
+  `tool.boards`, `tool.flashlight`, `tool.screwdriver_set`, `tool.pliers`,
+  `tool.adjustable_wrench`, `tool.socket_set`, `tool.jumper_cables`):
+  referencia para el inventario de F5.1, sin mecánicas nuevas.
+- Sin marcas ni emblemas (Chevrolet, PDV, Suzuki u otras) ni texto visible en
+  la malla (alfombrados, guía P-R-N-D-2-L y carátulas sin leyendas; los
+  logotipos observados en fotos se omiten).
+- Cotas de interior provisionales (`provisional_design_value` /
+  `photo_observed_provisional`): no publicar como especificación oficial.
+
+### Descartado
+
+- Copiar imágenes, recortes o texturas de la biblioteca externa al repositorio.
+- Reproducir patrones de tela, alfombrados con logotipo ("CHEVROLET" visible en
+  `images (1).jpg`), textos de guía de palanca, números de carátula ni
+  emblemas de volante.
+- Tomar cotas de las fotos como medidas del manual.
+- Implementar mecánicas de inventario, reparación o física (F5.1).
+
 ## Próxima revisión
 
 - Revisión rápida: inicio y cierre de cada subfase.
 - Revisión completa: **2026-12-06**, o antes de la subfase de modelado/UI que
-  corresponda (obligatoria antes de F3.2).
+  corresponda (obligatoria antes de F3.3/F3.4).

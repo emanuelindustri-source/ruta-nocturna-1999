@@ -275,3 +275,80 @@ bloqueo y no se publican como especificación oficial.
   decrecientes y cada nivel dentro de su presupuesto. El exterior LOD0 (6.024)
   queda muy por debajo del presupuesto móvil de 120.000; el conteo total con
   cabina, espejos y mundo se medirá en F3.5/F10.1.
+
+## 13. Interior definitivo (Fase 3.2)
+
+El interior es el cuarto asset de la fábrica y sigue el mismo contrato que el
+bloqueo, la cabina y el exterior: un spec declarativo, un script `bpy`
+reproducible, mallas LOD0/LOD1/LOD2 y una salida `rig_anchor`, todo con
+manifiesto, hashes, autor, licencia y fecha.
+
+- Spec: `data/vehicle/interior_spec.json` (`vehicle.esteem.interior`,
+  `schema_version: 1`). Describe el interior definitivo en **piezas
+  separadas**: tablero bitono, instrumental de tres básculas con agujas ámbar
+  y carátulas sin texto, consola central, radio cassette doble DIN con ranura,
+  clima con deslizadores, guantera con cierre, palanca P-R-N-D-2-L con botón de
+  Overdrive, freno de mano, butacas delanteras y banqueta trasera con
+  insertos de tela, cuatro tarjetas de puerta, alfombrado, techo con
+  pilares/visores, maletero con revestimientos y las **herramientas del
+  maletero** enlazadas con `inventory_tools.json`.
+- Script: `tools/blender/esteem_interior.py` (target `vehicle.esteem.interior`).
+- Salidas: `esteem_interior_lod0.glb` (7.408 triángulos, máx. 18.000),
+  `esteem_interior_lod1.glb` (1.564, máx. 8.000), `esteem_interior_lod2.glb`
+  (712, máx. 3.000) y `esteem_interior_rig_anchor.glb` (9 anclas, idénticas a
+  `blockout_spec.json`).
+- Manifiesto: `assets/manifests/esteem_interior.manifest.json`.
+- Escena: `scenes/vehicle/EsteemInterior.tscn` (solo LOD0 visible, con el
+  `HandRig` de F2.2 y el `RigAnchor` del interior). La escena de interacción
+  (`CabinInteraction.tscn`) instancia esta escena desde F3.2 en lugar del
+  greybox de F2.2.
+
+Materiales PBR (glTF metallic-roughness): vinilos de tablero bitono, plásticos,
+telas de dos tonos (inserto y apoyos), alfombrado, moqueta de maletero,
+techo, cinturones, metal, carátulas oscuras, agujas ámbar con emisión, cristal
+de instrumental, acero de herramientas, madera de tablas, goma y piel de mano.
+Todo es procedural y propio: ninguna textura, color o malla procede de la
+biblioteca externa, y no hay marcas, emblemas ni texto visible (carátulas,
+guía P-R-N-D-2-L y alfombrados sin leyendas; el patrón tejido fino se simula
+con dos tonos y su pulido es F3.5/F10.1).
+
+### Manos definitivas y compatibilidad de interacción
+
+- Las manos (`hand_left`/`hand_right`) son mallas propias (palma, cuatro dedos
+  de tres falanges y pulgar, unidas por mano) modeladas en las posiciones de
+  bind de `esteem_hand_rig` (`hand_l_palm`/`hand_r_palm` de `cabin_spec.json`;
+  lo comprueba `tools/validate_assets.py`). `cabin_visual_proxies.gd` las
+  reubica en runtime siguiendo la IK de F2.2, sustituyendo los proxies de caja
+  de F2.3 con la misma API (`get_hand_proxy_position/visible`); si la malla no
+  existe se conserva el proxy de caja. El contrato `cabin_interaction.json` v2
+  no cambia.
+- Las piezas de mando conservan los **nombres de nodo** del greybox
+  (`steering_hub`, `gear_knob`, `gear_od_button`, `handbrake_grip`,
+  `radio_double_din`, `climate_controls`, `glovebox`, `door_panel_*`, …) para
+  que la capa de interacción de F2.3/F2.4 siga funcionando sin tocar el
+  contrato; `tools/validate_assets.py` comprueba que todos los nodos exigidos
+  existen en el spec.
+- Las piezas de mando se modelan en las **posiciones de bind** de
+  `cabin_spec.json` y la capa de interacción aplica los `visual_offsets` de
+  `cabin_interaction.json` v2 a la cara del tablero, igual que con el greybox.
+  El resto del interior se diseñó en el espacio final para que el conjunto
+  monte correctamente en la escena de interacción (ver `assembly_note` del
+  spec).
+
+### Herramientas del maletero
+
+Los objetos del maletero usan IDs compatibles con `inventory_tools.json`
+(`tool.jack`, `tool.wheel_wrench`, `tool.spare_tire`, `tool.boards`,
+`tool.flashlight`, `tool.screwdriver_set`, `tool.pliers`,
+`tool.adjustable_wrench`, `tool.socket_set`, `tool.jumper_cables`). Son piezas
+reales del arte, referencia para el inventario de F5.1; el validador exige que
+las herramientas del anti-atasco (gato, llave de cruz, tablas y repuesto)
+existan. Sin mecánicas nuevas.
+
+### Presupuestos
+
+Política LOD idéntica: LOD0/LOD1/LOD2 obligatorios, triángulos estrictamente
+decrecientes y cada nivel dentro de su presupuesto. El interior LOD0 (7.408)
+queda muy por debajo del presupuesto móvil de 120.000; el conteo total visible
+(interior + exterior + espejos + mundo) se medirá en F3.5/F10.1. Los espejos
+funcionales siguen siendo los de F2.4 (`mirrors.budget` sin cambios).

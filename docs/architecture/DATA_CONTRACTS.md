@@ -380,3 +380,50 @@ Reglas:
   un material exige actualizar su nota de fuente (`source_status` /
   `source_note`). Las cotas de carrocería siguen siendo provisionales hasta la
   verificación contra manual o medición.
+
+## 17. Interior definitivo (Fase 3.2)
+
+El interior es un contrato de **assets 3D**, no de sistemas:
+`data/vehicle/interior_spec.json` (`schema_version: 1`) describe de forma
+declarativa el interior definitivo del Esteem. Su validación vive en
+`tools/validate_assets.py` (mismo patrón que bloqueo, cabina y exterior) y no
+en `validate_schemas.py`.
+
+Secciones:
+
+| Sección | Contenido |
+|---|---|
+| `base_dimensions` | Cotas globales idénticas a `blockout_spec.json` (provisionales); el validador exige coincidencia |
+| `controls_geometry` | Volante de tres radios, columna, palanca P-R-N-D-2-L con botón de Overdrive, freno de mano y guía de marchas: geometría idéntica a `cabin_spec.json` para conservar las poses IK de F2.2 |
+| `pieces` | Piezas separadas: tablero bitono, instrumental de tres básculas, consola, radio cassette, clima con deslizadores, guantera, tarjetas de puerta con tela, alfombrado, techo/pilares/visores, maletero y herramientas |
+| `hands` | Manos definitivas (`hand_left`/`hand_right`) con palma, dedos y pulgar en las posiciones de bind del rig de manos de F2.2 |
+| `materials` | Vinilos, plásticos, telas de dos tonos, alfombrado, moqueta, cinturones, metal, carátulas, agujas con emisión, cristal, acero, madera, goma y piel |
+| `lods` | LOD0/LOD1/LOD2 con `features` y `max_triangles` estrictamente decrecientes |
+| `rig_anchor` | Armazón `EsteemInteriorRigAnchor` con 9 anclas idénticas a `blockout_spec.json` |
+
+Reglas:
+
+- **No se toca `cabin_interaction.json` (v2)**: el interior conserva los
+  nombres de nodo que `cabin_visual_proxies.gd` reubica (`steering_hub`,
+  `gear_knob`, `gear_od_button`, `handbrake_grip`, `radio_double_din`,
+  `radio_double_din_slot`, `climate_controls`, `glovebox`, `glovebox_latch`,
+  `door_panel_*`, …) y las piezas de mando se modelan en las posiciones de bind
+  de `cabin_spec.json`; los `visual_offsets` de F2.3 siguen aplicándose igual.
+  `tools/validate_assets.py` exige que todos los nodos interactivos existan.
+- Las **manos definitivas** sustituyen los proxies de caja de F2.3 en tiempo de
+  ejecución (`cabin_visual_proxies.gd` las reubica con la misma API), mantienen
+  el rig `esteem_hand_rig` y las poses IK de F2.2 y se colocan en
+  `hand_l_palm`/`hand_r_palm` de `cabin_spec.json` (lo comprueba el validador).
+- Las **herramientas del maletero** declaran `inventory_id` con IDs de
+  `inventory_tools.json`; el validador exige que existan gato, llave de cruz,
+  tablas y repuesto (anti-atasco de F5.1). Son arte, no mecánicas.
+- No hay texto visible en la malla: la guía P-R-N-D-2-L es posicional, las
+  carátulas del instrumental no llevan números y los alfombrados no llevan
+  logotipos. Las etiquetas siguen siendo claves de localización.
+- Todas las cotas de interior son `provisional_design_value` /
+  `photo_observed_provisional`: el manual disponible no incluye cotas de
+  cabina. No se publican como especificación oficial. Ver
+  `ESTEEM_MECHANICAL_NOTES.md`.
+- Cambiar la estructura exige incrementar `schema_version`; cambiar una cota o
+  un material exige actualizar su nota de fuente (`source_status` /
+  `source_note`).

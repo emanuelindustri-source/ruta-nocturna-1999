@@ -1,6 +1,6 @@
 [gd_scene load_steps=13 format=3]
 
-[ext_resource type="PackedScene" path="res://scenes/vehicle/EsteemCabin.tscn" id="1_cabin"]
+[ext_resource type="PackedScene" path="res://scenes/vehicle/EsteemInterior.tscn" id="1_cabin"]
 [ext_resource type="Script" path="res://src/vehicle/vehicle_powertrain.gd" id="2_powertrain"]
 [ext_resource type="Script" path="res://src/vehicle/cabin_controls.gd" id="3_controls"]
 [ext_resource type="Script" path="res://src/vehicle/hand_ik_driver.gd" id="4_hands"]

@@ -4,6 +4,60 @@ Todas las fechas usan ISO 8601. Las versiones siguen SemVer.
 
 ## [Unreleased]
 
+## [0.3.1] — 2026-11-22
+
+### Añadido
+
+- `data/vehicle/interior_spec.json` (`schema_version: 1`, asset
+  `vehicle.esteem.interior`): contrato declarativo del **interior definitivo**
+  del Esteem con piezas separadas (tablero bitono, instrumental de tres
+  básculas sin texto, consola central, radio cassette doble DIN, clima con
+  deslizadores, guantera con cierre, palanca P-R-N-D-2-L con botón de
+  Overdrive, freno de mano, butacas delanteras y banqueta trasera con telas de
+  dos tonos, cuatro tarjetas de puerta con inserto de tela, alfombrado, techo,
+  maletero y herramientas del inventario), materiales PBR propios y
+  LOD0/LOD1/LOD2 con presupuestos decrecientes.
+- **Manos definitivas** (`hand_left`/`hand_right`) con malla propia (palma,
+  cuatro dedos y pulgar) en las posiciones de bind de `esteem_hand_rig`;
+  sustituyen los proxies de caja de F2.3 en `cabin_visual_proxies.gd` sin tocar
+  `cabin_interaction.json` v2 ni el rig ni las poses IK de F2.2.
+- **Herramientas del maletero** como objetos reales enlazados con
+  `inventory_tools.json` (`tool.jack`, `tool.wheel_wrench`, `tool.spare_tire`,
+  `tool.boards`, `tool.flashlight`, `tool.screwdriver_set`, `tool.pliers`,
+  `tool.adjustable_wrench`, `tool.socket_set`, `tool.jumper_cables`):
+  referencia para el inventario de F5.1, sin mecánicas nuevas.
+- `tools/blender/esteem_interior.py`: generador `bpy` reproducible del interior
+  (piezas por features de LOD, básculas con agujas ámbar, manos unidas por
+  mano, herramientas del maletero y anclas). Nuevo target
+  `vehicle.esteem.interior` en `tools/blender/build_assets.py`.
+- Salidas generadas: `esteem_interior_lod0.glb` (7.408 triángulos, máx.
+  18.000), `esteem_interior_lod1.glb` (1.564, máx. 8.000),
+  `esteem_interior_lod2.glb` (712, máx. 3.000) y
+  `esteem_interior_rig_anchor.glb` (9 anclas idénticas al bloqueo), con
+  manifiesto reproducible `assets/manifests/esteem_interior.manifest.json`.
+- `tools/validate_assets.py`: validación del spec de interior (coherencia de
+  cotas y anclas con `blockout_spec.json`, manos alineadas con el rig de
+  `cabin_spec.json`, herramientas enlazadas con `inventory_tools.json`,
+  nodos interactivos exigidos por `cabin_visual_proxies.gd`, IDs únicos,
+  materiales declarados y presupuestos decrecientes).
+- `scenes/vehicle/EsteemInterior.tscn`: LOD0 visible, LOD1/LOD2 ocultos,
+  `HandRig` (rig de manos de F2.2 sin cambios) y `RigAnchor`. La escena de
+  interacción (`CabinInteraction.tscn`) instancia ahora el interior definitivo
+  en lugar del greybox de F2.2 (el greybox y sus tests de F2.2 se conservan).
+- `tests/smoke/SmokeTest.tscn`: **270 comprobaciones** (eran 232) con la
+  verificación del interior (manifiesto, hashes, LODs decrecientes, presupuesto
+  móvil, manos definitivas, herramientas del maletero y anclas). Tren motriz
+  (125), cabina (46) e interacción (257) sin cambios.
+
+### Cambiado
+
+- Versión `0.3.1` en `VERSION`, `project.godot`, `export_presets.cfg`
+  (`version/code=108`), `EXPECTED_VERSION` del smoke test, `PHASE` de Boot y
+  `BOOT_KICKER` en once idiomas.
+- Revisión visual completa del hito F3.2 registrada en
+  `docs/reference/REFERENCE_USAGE_LOG.md` (hojas de contacto de interior y seis
+  copias de trabajo; biblioteca externa intacta).
+
 ## [0.3.0] — 2026-11-22
 
 ### Añadido

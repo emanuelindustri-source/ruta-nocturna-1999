@@ -261,6 +261,123 @@ def validate_exterior_spec(spec_path: Path, blockout_path: Path, errors: list[st
         errors.append(f"exterior_spec: presupuestos de LOD no decrecientes: {budgets}")
 
 
+def validate_interior_spec(spec_path: Path, blockout_path: Path, cabin_path: Path, inventory_path: Path, errors: list[str]) -> None:
+    """Invariantes del interior: coherencia con el bloqueo, el rig de manos y el inventario."""
+    if not spec_path.exists():
+        errors.append(f"Falta {spec_path.relative_to(ROOT)}")
+        return
+    if not blockout_path.exists():
+        errors.append(f"Falta {blockout_path.relative_to(ROOT)}")
+        return
+    spec = load_json(spec_path)
+    blockout = load_json(blockout_path)
+
+    base = spec["base_dimensions"]
+    for key in ("length_m", "width_m", "height_m", "wheelbase_m", "track_m", "wheel_radius_m"):
+        if abs(float(base[key]) - float(blockout["dimensions"][key])) > 0.001:
+            errors.append(f"interior_spec: {key} no coincide con blockout_spec")
+
+    # Anclas identicas a las del bloqueo (compatibilidad con rig, IK y espejos).
+    if spec.get("validation_rules", {}).get("anchors_match_blockout", False):
+        blockout_anchors = {anchor["id"]: anchor["position_m"] for anchor in blockout["rig_anchor"]["anchors"]}
+        for anchor in spec.get("rig_anchor", {}).get("anchors", []):
+            expected = blockout_anchors.get(anchor["id"])
+            if expected is None:
+                errors.append(f"interior_spec: el ancla {anchor['id']} no existe en blockout_spec")
+                continue
+            for axis in range(3):
+                if abs(float(anchor["position_m"][axis]) - float(expected[axis])) > 0.001:
+                    errors.append(f"interior_spec: la posicion de {anchor['id']} no coincide con blockout_spec")
+                    break
+
+    bounds = spec.get("validation_rules", {}).get("pieces_bounds_m", {})
+    tolerance = float(spec.get("validation_rules", {}).get("tolerance_m", 0.02))
+    for piece in spec.get("pieces", []):
+        if piece.get("kind", "box") != "box":
+            continue
+        min_m, max_m = piece["min_m"], piece["max_m"]
+        if min_m[0] < -float(bounds.get("x", 1.5)) - tolerance or max_m[0] > float(bounds.get("x", 1.5)) + tolerance:
+            errors.append(f"interior_spec: la pieza {piece['id']} excede el ancho")
+        if min_m[1] < float(bounds.get("y_min", -0.5)) - tolerance or max_m[1] > float(bounds.get("y_max", 3.0)) + tolerance:
+            errors.append(f"interior_spec: la pieza {piece['id']} excede la altura")
+        if min_m[2] < float(bounds.get("z_min", -6.0)) - tolerance or max_m[2] > float(bounds.get("z_max", 6.0)) + tolerance:
+            errors.append(f"interior_spec: la pieza {piece['id']} excede el largo")
+        if min_m[0] >= max_m[0] or min_m[1] >= max_m[1] or min_m[2] >= max_m[2]:
+            errors.append(f"interior_spec: la pieza {piece['id']} tiene bounds invertidos")
+        if piece["material"] not in spec["materials"]:
+            errors.append(f"interior_spec: material desconocido en {piece['id']}: {piece['material']}")
+
+    ids = [piece["id"] for piece in spec.get("pieces", [])]
+    if len(ids) != len(set(ids)):
+        errors.append("interior_spec: IDs de pieza duplicados")
+
+    # Herramientas del maletero enlazadas con inventory_tools.json (referencia
+    # para el inventario de F5.1 y para el anti-atasco de F5.1).
+    if inventory_path.exists():
+        inventory = load_json(inventory_path)
+        tool_ids = {entry.get("id") for entry in inventory.get("items", inventory.get("tools", []))}
+        declared: set[str] = set()
+        for piece in spec.get("pieces", []):
+            inventory_id = piece.get("inventory_id")
+            if not inventory_id:
+                continue
+            declared.add(inventory_id)
+            if inventory_id not in tool_ids:
+                errors.append(f"interior_spec: inventory_id desconocido en {piece['id']}: {inventory_id}")
+        for required in spec.get("validation_rules", {}).get("tools_required", []):
+            if required not in declared:
+                errors.append(f"interior_spec: falta la herramienta obligatoria {required}")
+    else:
+        errors.append(f"Falta {inventory_path.relative_to(ROOT)}")
+
+    # Las manos se colocan en las posiciones de bind del rig de manos de F2.2.
+    if spec.get("validation_rules", {}).get("hands_match_cabin_rig", False) and cabin_path.exists():
+        cabin = load_json(cabin_path)
+        cabin_anchors = {anchor["id"]: anchor["position_m"] for anchor in cabin.get("rig_anchor", {}).get("anchors", [])}
+        hand_map = {"hand_left": "hand_l_palm", "hand_right": "hand_r_palm"}
+        for hand_id, bind in spec.get("hands", {}).get("bind", {}).items():
+            expected = cabin_anchors.get(hand_map.get(hand_id, ""))
+            if expected is None:
+                errors.append(f"interior_spec: no hay ancla de rig para la mano {hand_id}")
+                continue
+            for axis in range(3):
+                if abs(float(bind["palm_center_m"][axis]) - float(expected[axis])) > 0.001:
+                    errors.append(f"interior_spec: la palma de {hand_id} no coincide con {hand_map[hand_id]} de cabin_spec")
+                    break
+
+    # Nodos interactivos exigidos por cabin_visual_proxies.gd (F2.3/F2.4).
+    generated = set(ids)
+    for anchor in spec.get("rig_anchor", {}).get("anchors", []):
+        generated.add(anchor["id"])
+    for hand_id in spec.get("hands", {}).get("ids", []):
+        generated.add(hand_id)
+    controls = spec.get("controls_geometry", {})
+    spokes = int(controls.get("steering_wheel", {}).get("spokes", 0))
+    for index in range(spokes):
+        generated.add(f"steering_spoke_{index}")
+    generated.update({"steering_rim", "steering_hub", "steering_column"})
+    gear = controls.get("gear_lever", {})
+    generated.update({"gear_knob", "gear_shaft"})
+    if gear.get("od_button"):
+        generated.add("gear_od_button")
+    generated.update({"handbrake_lever", "handbrake_grip"})
+    for piece in spec.get("pieces", []):
+        if piece.get("notches"):
+            for index in range(int(piece["notches"])):
+                generated.add(f"{piece['id']}_notch_{index}")
+    for required in spec.get("interaction_compatibility", {}).get("required_node_ids", []):
+        if required not in generated:
+            errors.append(f"interior_spec: falta el nodo interactivo {required}")
+
+    lods = spec.get("lods", [])
+    lod_numbers = [int(lod["id"].replace("lod", "")) for lod in lods]
+    if sorted(lod_numbers) != [0, 1, 2]:
+        errors.append(f"interior_spec: el spec debe declarar LOD0/LOD1/LOD2; hay {lod_numbers}")
+    budgets = [lod["max_triangles"] for lod in sorted(lods, key=lambda item: item["id"])]
+    if not all(budgets[i] > budgets[i + 1] for i in range(len(budgets) - 1)):
+        errors.append(f"interior_spec: presupuestos de LOD no decrecientes: {budgets}")
+
+
 def validate() -> tuple[list[str], list[str]]:
     errors: list[str] = []
     warnings: list[str] = []
@@ -268,6 +385,13 @@ def validate() -> tuple[list[str], list[str]]:
     validate_exterior_spec(
         ROOT / "data" / "vehicle" / "exterior_spec.json",
         ROOT / "data" / "vehicle" / "blockout_spec.json",
+        errors,
+    )
+    validate_interior_spec(
+        ROOT / "data" / "vehicle" / "interior_spec.json",
+        ROOT / "data" / "vehicle" / "blockout_spec.json",
+        ROOT / "data" / "vehicle" / "cabin_spec.json",
+        ROOT / "data" / "schemas" / "inventory_tools.json",
         errors,
     )
     if not MANIFEST_DIR.exists():

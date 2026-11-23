@@ -1,0 +1,2911 @@
+{
+  "schema_version": 1,
+  "asset_id": "vehicle.esteem.interior",
+  "vehicle_id": "chevrolet_esteem_1999_auto_beige",
+  "content_status": "interior_definitive_pbr",
+  "description": "Especificacion declarativa del interior definitivo del Esteem 1999: tablero bitono, instrumental de tres basculas, consola central, radio cassette doble DIN, clima con deslizadores, guantera, palanca P-R-N-D-2-L con boton de Overdrive, freno de mano, butacas delanteras, banqueta trasera, paneles de puerta con inserto de tela, alfombrado, techo, maletero con herramientas del inventario y manos definitivas con malla propia. Sustituye al greybox de F2.2 (cabin_spec.json) como arte visual; el rig de manos, las poses IK y el contrato de interaccion cabin_interaction.json v2 no cambian. La fabrica de assets en tools/blender genera las mallas LOD0/LOD1/LOD2 y el armazon de anclas a partir de este archivo. Sin mecanicas de conduccion, de inventario ni de reparacion.",
+  "units": "meters",
+  "axes": "godot_y_up_forward_minus_z_right_plus_x",
+  "axes_note": "Coordenadas de runtime: X+ derecha, Y+ arriba, Z+ detras (el frente del vehiculo apunta a -Z). El conductor va a la izquierda (LHD). La fabrica convierte a coordenadas Blender (Z+ arriba, Y+ frente) al exportar, igual que blockout_spec.json, cabin_spec.json y exterior_spec.json.",
+  "source_policy": "Ninguna cota de interior procede del manual de servicio disponible (no incluye cotas de cabina). Las posiciones derivan de las anclas anchor_* de data/vehicle/blockout_spec.json (provisionales) y de las proporciones observadas en la hoja de contacto de interior de F3.2 (build/reference/contact_sheets/interior_f32_review.jpg e interior_f32_detail.jpg). Todos los valores son provisional_design_value / photo_observed_provisional y no se publican como especificacion oficial del vehiculo.",
+  "anchor_frame": {
+    "blockout_spec": "data/vehicle/blockout_spec.json",
+    "note": "Las posiciones de los controles se toman de las anclas anchor_* del bloqueo para garantizar compatibilidad con el rig del vehiculo, la cabina de F2.2, las poses IK y los espejos de F2.4.",
+    "used_anchors": [
+      "anchor_driver_seat",
+      "anchor_passenger_seat",
+      "anchor_steering_wheel",
+      "anchor_gear_lever",
+      "anchor_handbrake",
+      "anchor_camera_driver",
+      "anchor_trunk_center",
+      "anchor_roof_center"
+    ]
+  },
+  "base_dimensions": {
+    "length_m": 4.37,
+    "width_m": 1.69,
+    "height_m": 1.4,
+    "wheelbase_m": 2.48,
+    "front_overhang_m": 0.945,
+    "rear_overhang_m": 0.945,
+    "track_m": 1.44,
+    "wheel_radius_m": 0.3,
+    "source_status": "provisional_design_value",
+    "source_note": "Identicas a data/vehicle/blockout_spec.json. El validador comprueba la coincidencia entre ambos specs. Se verifican contra manual o medicion antes de Fase 5."
+  },
+  "assembly_note": "Piezas de mando (volante, palanca, radio, clima y guantera) modeladas en las MISMAS posiciones de bind de cabin_spec.json: la capa de interaccion de F2.3 (cabin_visual_proxies.gd) las desplaza con los visual_offsets de cabin_interaction.json v2 a la cara del tablero. El resto del interior (tablero, instrumental, consola, asientos, puertas, techo, maletero) se disenio en el espacio final para que el conjunto monte correctamente en la escena de interaccion; en la escena aislada del asset los mandos quedan en su posicion de bind, igual que el greybox de F2.2.",
+  "interaction_compatibility": {
+    "note": "Nombres de nodo que la capa de interaccion de F2.3/F2.4 busca y reubica por nombre (cabin_visual_proxies.gd). El interior definitivo los conserva para no tocar cabin_interaction.json v2 ni sus tests. hand_left/hand_right sustituyen a los proxies de caja de manos de F2.3 con malla propia.",
+    "required_node_ids": [
+      "steering_rim",
+      "steering_hub",
+      "steering_spoke_0",
+      "steering_spoke_1",
+      "steering_spoke_2",
+      "steering_column",
+      "gear_gate_plate",
+      "gear_gate_plate_notch_0",
+      "gear_gate_plate_notch_1",
+      "gear_gate_plate_notch_2",
+      "gear_gate_plate_notch_3",
+      "gear_gate_plate_notch_4",
+      "gear_gate_plate_notch_5",
+      "gear_knob",
+      "gear_shaft",
+      "gear_od_button",
+      "handbrake_lever",
+      "handbrake_grip",
+      "radio_double_din",
+      "radio_double_din_slot",
+      "climate_controls",
+      "glovebox",
+      "glovebox_latch",
+      "door_panel_driver",
+      "door_panel_driver_armrest",
+      "door_panel_driver_handle",
+      "door_panel_driver_win_switch",
+      "door_panel_passenger",
+      "door_panel_passenger_armrest",
+      "door_panel_passenger_handle",
+      "door_panel_passenger_win_switch",
+      "hand_left",
+      "hand_right"
+    ]
+  },
+  "controls_geometry": {
+    "note": "Geometria de mandos identica a data/vehicle/cabin_spec.json (F2.2) para que las poses IK de F2.2, los objetivos de mano de F2.3 y los visual_offsets de F2.4 sigan siendo validos sin cambios de contrato.",
+    "steering_wheel": {
+      "anchor": "anchor_steering_wheel",
+      "type": "wheel",
+      "rim_outer_radius_m": 0.185,
+      "rim_thickness_m": 0.032,
+      "hub_radius_m": 0.052,
+      "spokes": 3,
+      "rotation_blender_deg": [
+        66.0,
+        0.0,
+        0.0
+      ],
+      "material": "plastic_dark",
+      "visual_offset_group": "steering_wheel_m",
+      "note": "Volante de tres radios segun ESTEEM_MECHANICAL_NOTES.md y la revision visual de F3.2 (images (10).jpg e images (11).jpg). Sin emblema central: el cubo queda liso."
+    },
+    "steering_column": {
+      "anchor": "anchor_steering_wheel",
+      "type": "cylinder",
+      "length_m": 0.26,
+      "radius_m": 0.046,
+      "direction_blender_deg": [
+        66.0,
+        0.0,
+        0.0
+      ],
+      "offset_m": [
+        0.0,
+        -0.02,
+        -0.11
+      ],
+      "material": "plastic_dark",
+      "visual_offset_group": "steering_wheel_m"
+    },
+    "gear_lever": {
+      "anchor": "anchor_gear_lever",
+      "type": "gear_lever",
+      "shaft_radius_m": 0.018,
+      "shaft_length_m": 0.14,
+      "knob_size_m": [
+        0.075,
+        0.075,
+        0.11
+      ],
+      "od_button": true,
+      "od_button_size_m": [
+        0.022,
+        0.03,
+        0.045
+      ],
+      "material": "plastic_dark",
+      "visual_offset_group": "gear_gate_m",
+      "note": "Palanca automatica tipo T/piston con boton lateral de Overdrive en el mango (INTERIOR ESTEEM.jpg)."
+    },
+    "handbrake": {
+      "anchor": "anchor_handbrake",
+      "type": "handbrake",
+      "lever_length_m": 0.3,
+      "lever_radius_m": 0.017,
+      "grip_size_m": [
+        0.045,
+        0.05,
+        0.12
+      ],
+      "tilt_blender_deg": [
+        58.0,
+        0.0,
+        0.0
+      ],
+      "material": "plastic_dark",
+      "visual_offset_group": "none"
+    },
+    "gear_gate": {
+      "plate_min_m": [
+        -0.075,
+        0.86,
+        -0.58
+      ],
+      "plate_max_m": [
+        0.075,
+        0.9,
+        -0.3
+      ],
+      "notch_count": 6,
+      "notch_size_m": [
+        0.03,
+        0.006,
+        0.018
+      ],
+      "material": "metal_plate",
+      "visual_offset_group": "gear_gate_m",
+      "note": "Guia de la palanca P-R-N-D-2-L solo posicional: sin texto ni leyendas en la malla (la localizacion es F2.4/F9.1)."
+    }
+  },
+  "pieces": [
+    {
+      "id": "dashboard_lower",
+      "kind": "box",
+      "material": "dash_vinyl_beige",
+      "min_m": [
+        -0.73,
+        0.86,
+        -0.82
+      ],
+      "max_m": [
+        0.73,
+        1.05,
+        -0.3
+      ],
+      "features": [
+        "dash"
+      ],
+      "note": "Mitad inferior del tablero en vinilo beige (adentro esteem.jpg)."
+    },
+    {
+      "id": "dashboard_upper",
+      "kind": "box",
+      "material": "dash_vinyl_dark",
+      "min_m": [
+        -0.73,
+        1.05,
+        -0.82
+      ],
+      "max_m": [
+        0.73,
+        1.17,
+        -0.3
+      ],
+      "features": [
+        "dash"
+      ],
+      "note": "Mitad superior del tablero en vinilo oscuro antirreflejo."
+    },
+    {
+      "id": "dashboard_passenger_tray",
+      "kind": "box",
+      "material": "dash_vinyl_beige",
+      "min_m": [
+        0.18,
+        1.16,
+        -0.72
+      ],
+      "max_m": [
+        0.66,
+        1.21,
+        -0.4
+      ],
+      "features": [
+        "dash",
+        "dash_tray"
+      ],
+      "note": "Bandeja superior rebatida del lado del acompanante (observada en adentro esteem.jpg)."
+    },
+    {
+      "id": "instrument_cluster",
+      "kind": "box",
+      "material": "plastic_dark",
+      "min_m": [
+        -0.62,
+        1.0,
+        -0.8
+      ],
+      "max_m": [
+        -0.1,
+        1.21,
+        -0.46
+      ],
+      "features": [
+        "dash",
+        "cluster"
+      ],
+      "note": "Caja/bafle del instrumental con capota antirreflejo, detras del volante."
+    },
+    {
+      "id": "gauge_dial_left",
+      "kind": "cylinder",
+      "material": "gauge_dial",
+      "center_m": [
+        -0.5,
+        1.12,
+        -0.458
+      ],
+      "radius_m": 0.052,
+      "length_m": 0.012,
+      "axis": "z",
+      "features": [
+        "gauges"
+      ],
+      "note": "Bascula izquierda (tacometro en las fotos) sin numeros ni texto."
+    },
+    {
+      "id": "gauge_dial_center",
+      "kind": "cylinder",
+      "material": "gauge_dial",
+      "center_m": [
+        -0.35,
+        1.12,
+        -0.458
+      ],
+      "radius_m": 0.072,
+      "length_m": 0.012,
+      "axis": "z",
+      "features": [
+        "gauges"
+      ],
+      "note": "Bascula central del velocimetro (esteem00int.png), caratula lisa sin numeros."
+    },
+    {
+      "id": "gauge_dial_right",
+      "kind": "cylinder",
+      "material": "gauge_dial",
+      "center_m": [
+        -0.2,
+        1.12,
+        -0.458
+      ],
+      "radius_m": 0.052,
+      "length_m": 0.012,
+      "axis": "z",
+      "features": [
+        "gauges"
+      ],
+      "note": "Bascula derecha (temperatura y combustible), caratula lisa."
+    },
+    {
+      "id": "gauge_needle_left",
+      "kind": "box",
+      "material": "needle_amber",
+      "min_m": [
+        -0.505,
+        1.118,
+        -0.45
+      ],
+      "max_m": [
+        -0.495,
+        1.168,
+        -0.442
+      ],
+      "rotation_deg": [
+        0.0,
+        0.0,
+        22.0
+      ],
+      "features": [
+        "gauges"
+      ],
+      "note": "Aguja ambar de la bascula izquierda."
+    },
+    {
+      "id": "gauge_needle_center",
+      "kind": "box",
+      "material": "needle_amber",
+      "min_m": [
+        -0.355,
+        1.118,
+        -0.45
+      ],
+      "max_m": [
+        -0.345,
+        1.183,
+        -0.442
+      ],
+      "rotation_deg": [
+        0.0,
+        0.0,
+        -18.0
+      ],
+      "features": [
+        "gauges"
+      ],
+      "note": "Aguja ambar del velocimetro central."
+    },
+    {
+      "id": "gauge_needle_right",
+      "kind": "box",
+      "material": "needle_amber",
+      "min_m": [
+        -0.205,
+        1.118,
+        -0.45
+      ],
+      "max_m": [
+        -0.195,
+        1.168,
+        -0.442
+      ],
+      "rotation_deg": [
+        0.0,
+        0.0,
+        8.0
+      ],
+      "features": [
+        "gauges"
+      ],
+      "note": "Aguja ambar de la bascula derecha."
+    },
+    {
+      "id": "gauge_glass",
+      "kind": "box",
+      "material": "glass_gauge",
+      "min_m": [
+        -0.585,
+        1.045,
+        -0.452
+      ],
+      "max_m": [
+        -0.115,
+        1.195,
+        -0.446
+      ],
+      "features": [
+        "gauges"
+      ],
+      "note": "Cristal unico del instrumental; sin textos ni marcas de fondo."
+    },
+    {
+      "id": "center_stack",
+      "kind": "box",
+      "material": "plastic_dark",
+      "min_m": [
+        -0.13,
+        0.86,
+        -0.82
+      ],
+      "max_m": [
+        0.13,
+        1.12,
+        -0.4
+      ],
+      "features": [
+        "dash"
+      ],
+      "note": "Consola central vertical con moldura oscura (radio y clima)."
+    },
+    {
+      "id": "air_vent_left",
+      "kind": "box",
+      "material": "plastic_dark",
+      "min_m": [
+        -0.125,
+        1.04,
+        -0.82
+      ],
+      "max_m": [
+        -0.015,
+        1.12,
+        -0.38
+      ],
+      "slats": 3,
+      "features": [
+        "vents"
+      ],
+      "note": "Salida de aire central izquierda con listones horizontales."
+    },
+    {
+      "id": "air_vent_right",
+      "kind": "box",
+      "material": "plastic_dark",
+      "min_m": [
+        0.015,
+        1.04,
+        -0.82
+      ],
+      "max_m": [
+        0.125,
+        1.12,
+        -0.38
+      ],
+      "slats": 3,
+      "features": [
+        "vents"
+      ],
+      "note": "Salida de aire central derecha."
+    },
+    {
+      "id": "clock_display",
+      "kind": "box",
+      "material": "gauge_dial",
+      "min_m": [
+        -0.06,
+        1.13,
+        -0.44
+      ],
+      "max_m": [
+        0.06,
+        1.18,
+        -0.4
+      ],
+      "features": [
+        "buttons"
+      ],
+      "note": "Reloj digital superior: pantalla oscura sin digitos ni texto."
+    },
+    {
+      "id": "hazard_button",
+      "kind": "box",
+      "material": "button_red",
+      "min_m": [
+        -0.105,
+        1.13,
+        -0.44
+      ],
+      "max_m": [
+        -0.075,
+        1.178,
+        -0.405
+      ],
+      "features": [
+        "buttons"
+      ],
+      "note": "Boton de emergencias rojo (adentro esteem.jpg). Sin iconografia grabada."
+    },
+    {
+      "id": "defrost_button",
+      "kind": "box",
+      "material": "plastic_light",
+      "min_m": [
+        0.075,
+        1.13,
+        -0.44
+      ],
+      "max_m": [
+        0.105,
+        1.178,
+        -0.405
+      ],
+      "features": [
+        "buttons"
+      ],
+      "note": "Boton de desempañado trasero; superficie lisa sin icono."
+    },
+    {
+      "id": "console",
+      "kind": "box",
+      "material": "dash_vinyl_beige",
+      "min_m": [
+        -0.21,
+        0.55,
+        -0.42
+      ],
+      "max_m": [
+        0.21,
+        0.88,
+        0.32
+      ],
+      "features": [
+        "console"
+      ],
+      "note": "Tunel central entre los asientos; aloja guia de palanca, freno de mano y tapa trasera."
+    },
+    {
+      "id": "console_storage_bin",
+      "kind": "box",
+      "material": "plastic_dark",
+      "min_m": [
+        -0.09,
+        0.865,
+        -0.02
+      ],
+      "max_m": [
+        0.09,
+        0.885,
+        0.2
+      ],
+      "features": [
+        "console"
+      ],
+      "note": "Recipiente de almacenamiento detras de la palanca (adentro esteem.jpg)."
+    },
+    {
+      "id": "console_ashtray",
+      "kind": "box",
+      "material": "plastic_dark",
+      "min_m": [
+        -0.055,
+        0.875,
+        -0.42
+      ],
+      "max_m": [
+        0.055,
+        0.915,
+        -0.36
+      ],
+      "features": [
+        "buttons"
+      ],
+      "note": "Tapacenicero/encendedor bajo la clima; sin texto."
+    },
+    {
+      "id": "gear_gate_plate",
+      "kind": "box",
+      "material": "metal_plate",
+      "min_m": [
+        -0.075,
+        0.86,
+        -0.58
+      ],
+      "max_m": [
+        0.075,
+        0.9,
+        -0.3
+      ],
+      "notches": 6,
+      "notch_size_m": [
+        0.03,
+        0.006,
+        0.018
+      ],
+      "visual_offset_group": "gear_gate_m",
+      "features": [
+        "gate"
+      ],
+      "note": "Guia de la palanca P-R-N-D-2-L posicional, sin texto."
+    },
+    {
+      "id": "radio_double_din",
+      "kind": "box",
+      "material": "plastic_dark",
+      "min_m": [
+        -0.11,
+        1.0,
+        -0.63
+      ],
+      "max_m": [
+        0.11,
+        1.1,
+        -0.55
+      ],
+      "visual_offset_group": "center_stack_controls_m",
+      "features": [
+        "radio"
+      ],
+      "note": "Radio cassette doble DIN; frontal liso con display oscuro (sin frecuencias ni marcas)."
+    },
+    {
+      "id": "radio_double_din_slot",
+      "kind": "box",
+      "material": "gauge_dial",
+      "min_m": [
+        -0.085,
+        1.018,
+        -0.638
+      ],
+      "max_m": [
+        0.085,
+        1.038,
+        -0.542
+      ],
+      "visual_offset_group": "center_stack_controls_m",
+      "features": [
+        "radio_slot"
+      ],
+      "note": "Ranura de cassette."
+    },
+    {
+      "id": "climate_controls",
+      "kind": "box",
+      "material": "plastic_light",
+      "min_m": [
+        -0.11,
+        0.89,
+        -0.62
+      ],
+      "max_m": [
+        0.11,
+        0.99,
+        -0.55
+      ],
+      "slider_count": 2,
+      "visual_offset_group": "center_stack_controls_m",
+      "features": [
+        "climate"
+      ],
+      "note": "Panel de clima con dos deslizadores (temperatura y modo). Sin franjas de color ni texto."
+    },
+    {
+      "id": "glovebox",
+      "kind": "box",
+      "material": "plastic_light",
+      "min_m": [
+        0.2,
+        0.83,
+        -0.68
+      ],
+      "max_m": [
+        0.62,
+        1.02,
+        -0.52
+      ],
+      "visual_offset_group": "glovebox_m",
+      "features": [
+        "glovebox"
+      ],
+      "note": "Guantera del acompanante con puerta; cierre aparte."
+    },
+    {
+      "id": "glovebox_latch",
+      "kind": "box",
+      "material": "plastic_dark",
+      "min_m": [
+        0.395,
+        1.0,
+        -0.685
+      ],
+      "max_m": [
+        0.445,
+        1.03,
+        -0.665
+      ],
+      "visual_offset_group": "glovebox_m",
+      "features": [
+        "latch"
+      ],
+      "note": "Cierre de la guantera."
+    },
+    {
+      "id": "door_panel_driver",
+      "kind": "box",
+      "material": "plastic_light",
+      "min_m": [
+        -0.8,
+        0.62,
+        -0.58
+      ],
+      "max_m": [
+        -0.71,
+        1.16,
+        0.42
+      ],
+      "features": [
+        "door_cards"
+      ],
+      "note": "Tarjeta de puerta delantera izquierda (LHD). Se reubica con la puerta (F2.3)."
+    },
+    {
+      "id": "door_panel_driver_insert",
+      "kind": "box",
+      "material": "fabric_door_insert",
+      "min_m": [
+        -0.727,
+        0.86,
+        -0.42
+      ],
+      "max_m": [
+        -0.705,
+        1.1,
+        0.22
+      ],
+      "features": [
+        "door_details"
+      ],
+      "note": "Inserto de tela con patron geométrico simulado por tono (adentro esteem.jpg)."
+    },
+    {
+      "id": "door_panel_driver_armrest",
+      "kind": "box",
+      "material": "plastic_light",
+      "min_m": [
+        -0.75,
+        0.86,
+        -0.12
+      ],
+      "max_m": [
+        -0.66,
+        0.93,
+        0.18
+      ],
+      "features": [
+        "door_details"
+      ],
+      "note": "Apoyabrazos con tirador de la puerta del conductor."
+    },
+    {
+      "id": "door_panel_driver_handle",
+      "kind": "box",
+      "material": "plastic_dark",
+      "min_m": [
+        -0.78,
+        1.02,
+        -0.28
+      ],
+      "max_m": [
+        -0.66,
+        1.09,
+        -0.16
+      ],
+      "features": [
+        "door_cards",
+        "door_details"
+      ],
+      "note": "Tirador interior de la puerta del conductor."
+    },
+    {
+      "id": "door_panel_driver_win_switch",
+      "kind": "box",
+      "material": "plastic_dark",
+      "min_m": [
+        -0.72,
+        0.93,
+        -0.02
+      ],
+      "max_m": [
+        -0.66,
+        0.965,
+        0.1
+      ],
+      "features": [
+        "buttons"
+      ],
+      "note": "Mando de cristaleras (images (8/9).jpg como referencia de herrajes); sin texto."
+    },
+    {
+      "id": "door_panel_passenger",
+      "kind": "box",
+      "material": "plastic_light",
+      "min_m": [
+        0.71,
+        0.62,
+        -0.58
+      ],
+      "max_m": [
+        0.8,
+        1.16,
+        0.42
+      ],
+      "features": [
+        "door_cards"
+      ],
+      "note": "Tarjeta de puerta delantera derecha."
+    },
+    {
+      "id": "door_panel_passenger_insert",
+      "kind": "box",
+      "material": "fabric_door_insert",
+      "min_m": [
+        0.705,
+        0.86,
+        -0.42
+      ],
+      "max_m": [
+        0.727,
+        1.1,
+        0.22
+      ],
+      "features": [
+        "door_details"
+      ],
+      "note": "Inserto de tela de la puerta derecha."
+    },
+    {
+      "id": "door_panel_passenger_armrest",
+      "kind": "box",
+      "material": "plastic_light",
+      "min_m": [
+        0.66,
+        0.86,
+        -0.12
+      ],
+      "max_m": [
+        0.75,
+        0.93,
+        0.18
+      ],
+      "features": [
+        "door_details"
+      ],
+      "note": "Apoyabrazos de la puerta derecha."
+    },
+    {
+      "id": "door_panel_passenger_handle",
+      "kind": "box",
+      "material": "plastic_dark",
+      "min_m": [
+        0.66,
+        1.02,
+        -0.28
+      ],
+      "max_m": [
+        0.78,
+        1.09,
+        -0.16
+      ],
+      "features": [
+        "door_cards",
+        "door_details"
+      ],
+      "note": "Tirador interior de la puerta derecha."
+    },
+    {
+      "id": "door_panel_passenger_win_switch",
+      "kind": "box",
+      "material": "plastic_dark",
+      "min_m": [
+        0.66,
+        0.93,
+        -0.02
+      ],
+      "max_m": [
+        0.72,
+        0.965,
+        0.1
+      ],
+      "features": [
+        "buttons"
+      ],
+      "note": "Mando de cristaleras del acompanante."
+    },
+    {
+      "id": "door_panel_rear_left",
+      "kind": "box",
+      "material": "plastic_light",
+      "min_m": [
+        -0.8,
+        0.62,
+        0.44
+      ],
+      "max_m": [
+        -0.71,
+        1.14,
+        1.16
+      ],
+      "features": [
+        "door_cards"
+      ],
+      "note": "Tarjeta de puerta trasera izquierda (images (6).jpg)."
+    },
+    {
+      "id": "door_panel_rear_left_insert",
+      "kind": "box",
+      "material": "fabric_door_insert",
+      "min_m": [
+        -0.727,
+        0.86,
+        0.56
+      ],
+      "max_m": [
+        -0.705,
+        1.08,
+        1.04
+      ],
+      "features": [
+        "door_details"
+      ],
+      "note": "Inserto de tela de la puerta trasera izquierda."
+    },
+    {
+      "id": "door_panel_rear_left_armrest",
+      "kind": "box",
+      "material": "plastic_light",
+      "min_m": [
+        -0.75,
+        0.86,
+        0.6
+      ],
+      "max_m": [
+        -0.66,
+        0.92,
+        0.84
+      ],
+      "features": [
+        "door_details"
+      ],
+      "note": "Apoyabrazos trasero izquierdo."
+    },
+    {
+      "id": "door_panel_rear_right",
+      "kind": "box",
+      "material": "plastic_light",
+      "min_m": [
+        0.71,
+        0.62,
+        0.44
+      ],
+      "max_m": [
+        0.8,
+        1.14,
+        1.16
+      ],
+      "features": [
+        "door_cards"
+      ],
+      "note": "Tarjeta de puerta trasera derecha."
+    },
+    {
+      "id": "door_panel_rear_right_insert",
+      "kind": "box",
+      "material": "fabric_door_insert",
+      "min_m": [
+        0.705,
+        0.86,
+        0.56
+      ],
+      "max_m": [
+        0.727,
+        1.08,
+        1.04
+      ],
+      "features": [
+        "door_details"
+      ],
+      "note": "Inserto de tela de la puerta trasera derecha."
+    },
+    {
+      "id": "door_panel_rear_right_armrest",
+      "kind": "box",
+      "material": "plastic_light",
+      "min_m": [
+        0.66,
+        0.86,
+        0.6
+      ],
+      "max_m": [
+        0.75,
+        0.92,
+        0.84
+      ],
+      "features": [
+        "door_details"
+      ],
+      "note": "Apoyabrazos trasero derecho."
+    },
+    {
+      "id": "floor_front",
+      "kind": "box",
+      "material": "carpet",
+      "min_m": [
+        -0.71,
+        0.58,
+        -0.62
+      ],
+      "max_m": [
+        0.71,
+        0.63,
+        0.42
+      ],
+      "features": [
+        "carpet"
+      ],
+      "note": "Alfombrado delantero; sin logotipos ni bordados (los observados en fotos se omiten)."
+    },
+    {
+      "id": "floor_rear",
+      "kind": "box",
+      "material": "carpet",
+      "min_m": [
+        -0.71,
+        0.58,
+        0.42
+      ],
+      "max_m": [
+        0.71,
+        0.63,
+        1.18
+      ],
+      "features": [
+        "carpet"
+      ],
+      "note": "Alfombrado trasero."
+    },
+    {
+      "id": "headliner",
+      "kind": "box",
+      "material": "headliner",
+      "min_m": [
+        -0.66,
+        1.33,
+        -0.32
+      ],
+      "max_m": [
+        0.66,
+        1.365,
+        1.02
+      ],
+      "features": [
+        "headliner"
+      ],
+      "note": "Techo interior bajo la capota (canopy de exterior_spec.json)."
+    },
+    {
+      "id": "pillar_trim_a_left",
+      "kind": "box",
+      "material": "headliner",
+      "min_m": [
+        -0.73,
+        1.04,
+        -0.72
+      ],
+      "max_m": [
+        -0.66,
+        1.33,
+        -0.6
+      ],
+      "features": [
+        "trim"
+      ],
+      "note": "Forro del pilar A izquierdo."
+    },
+    {
+      "id": "pillar_trim_a_right",
+      "kind": "box",
+      "material": "headliner",
+      "min_m": [
+        0.66,
+        1.04,
+        -0.72
+      ],
+      "max_m": [
+        0.73,
+        1.33,
+        -0.6
+      ],
+      "features": [
+        "trim"
+      ],
+      "note": "Forro del pilar A derecho."
+    },
+    {
+      "id": "pillar_trim_b_left",
+      "kind": "box",
+      "material": "headliner",
+      "min_m": [
+        -0.745,
+        1.02,
+        0.28
+      ],
+      "max_m": [
+        -0.69,
+        1.33,
+        0.42
+      ],
+      "features": [
+        "trim"
+      ],
+      "note": "Forro del pilar B izquierdo."
+    },
+    {
+      "id": "pillar_trim_b_right",
+      "kind": "box",
+      "material": "headliner",
+      "min_m": [
+        0.69,
+        1.02,
+        0.28
+      ],
+      "max_m": [
+        0.745,
+        1.33,
+        0.42
+      ],
+      "features": [
+        "trim"
+      ],
+      "note": "Forro del pilar B derecho."
+    },
+    {
+      "id": "pillar_trim_c_left",
+      "kind": "box",
+      "material": "headliner",
+      "min_m": [
+        -0.73,
+        1.02,
+        1.02
+      ],
+      "max_m": [
+        -0.66,
+        1.32,
+        1.18
+      ],
+      "features": [
+        "trim"
+      ],
+      "note": "Forro del pilar C izquierdo."
+    },
+    {
+      "id": "pillar_trim_c_right",
+      "kind": "box",
+      "material": "headliner",
+      "min_m": [
+        0.66,
+        1.02,
+        1.02
+      ],
+      "max_m": [
+        0.73,
+        1.32,
+        1.18
+      ],
+      "features": [
+        "trim"
+      ],
+      "note": "Forro del pilar C derecho."
+    },
+    {
+      "id": "visor_left",
+      "kind": "box",
+      "material": "dash_vinyl_beige",
+      "min_m": [
+        -0.56,
+        1.24,
+        -0.38
+      ],
+      "max_m": [
+        -0.06,
+        1.29,
+        -0.31
+      ],
+      "features": [
+        "trim"
+      ],
+      "note": "Quitasol izquierdo."
+    },
+    {
+      "id": "visor_right",
+      "kind": "box",
+      "material": "dash_vinyl_beige",
+      "min_m": [
+        0.06,
+        1.24,
+        -0.38
+      ],
+      "max_m": [
+        0.56,
+        1.29,
+        -0.31
+      ],
+      "features": [
+        "trim"
+      ],
+      "note": "Quitasol derecho."
+    },
+    {
+      "id": "rearview_mirror_housing",
+      "kind": "box",
+      "material": "plastic_dark",
+      "min_m": [
+        -0.13,
+        1.3,
+        -0.7
+      ],
+      "max_m": [
+        0.09,
+        1.37,
+        -0.62
+      ],
+      "features": [
+        "trim"
+      ],
+      "note": "Carcasa del retrovisor interior sobre la cabecera del parabrisas. SIN superficie reflectante: la superficie funcional es la de F2.4 (cabin_mirrors.gd, mirrors.budget)."
+    },
+    {
+      "id": "rearview_mirror_stem",
+      "kind": "box",
+      "material": "plastic_dark",
+      "min_m": [
+        -0.03,
+        1.32,
+        -0.72
+      ],
+      "max_m": [
+        0.01,
+        1.35,
+        -0.68
+      ],
+      "features": [
+        "trim"
+      ],
+      "note": "Tallo del retrovisor interior."
+    },
+    {
+      "id": "dome_light",
+      "kind": "box",
+      "material": "glass_gauge",
+      "min_m": [
+        -0.05,
+        1.3,
+        0.28
+      ],
+      "max_m": [
+        0.05,
+        1.33,
+        0.36
+      ],
+      "features": [
+        "buttons"
+      ],
+      "note": "Luz de techo central (anchor_roof_center)."
+    },
+    {
+      "id": "seatbelt_left",
+      "kind": "box",
+      "material": "belt_webbing",
+      "min_m": [
+        -0.735,
+        1.02,
+        0.3
+      ],
+      "max_m": [
+        -0.715,
+        1.3,
+        0.335
+      ],
+      "features": [
+        "belts"
+      ],
+      "note": "Cinturon delantero izquierdo recogido en el pilar B."
+    },
+    {
+      "id": "seatbelt_right",
+      "kind": "box",
+      "material": "belt_webbing",
+      "min_m": [
+        0.715,
+        1.02,
+        0.3
+      ],
+      "max_m": [
+        0.735,
+        1.3,
+        0.335
+      ],
+      "features": [
+        "belts"
+      ],
+      "note": "Cinturon delantero derecho."
+    },
+    {
+      "id": "seatbelt_buckle_driver",
+      "kind": "box",
+      "material": "button_red",
+      "min_m": [
+        -0.14,
+        0.87,
+        0.12
+      ],
+      "max_m": [
+        -0.08,
+        0.92,
+        0.18
+      ],
+      "features": [
+        "belts"
+      ],
+      "note": "Hebilla junto al asiento del conductor."
+    },
+    {
+      "id": "seat_driver_base",
+      "kind": "box",
+      "material": "fabric_seat_bolster",
+      "min_m": [
+        -0.63,
+        0.63,
+        -0.32
+      ],
+      "max_m": [
+        -0.09,
+        0.88,
+        0.22
+      ],
+      "features": [
+        "seats"
+      ],
+      "note": "Base de la butaca del conductor (images (1).jpg)."
+    },
+    {
+      "id": "seat_driver_insert",
+      "kind": "box",
+      "material": "fabric_seat_insert",
+      "min_m": [
+        -0.57,
+        0.865,
+        -0.26
+      ],
+      "max_m": [
+        -0.15,
+        0.895,
+        0.16
+      ],
+      "features": [
+        "seat_details"
+      ],
+      "note": "Panel central de tela de la base; patron simulado por tono, sin texturas de fotos."
+    },
+    {
+      "id": "seat_driver_back",
+      "kind": "box",
+      "material": "fabric_seat_bolster",
+      "min_m": [
+        -0.62,
+        0.88,
+        0.16
+      ],
+      "max_m": [
+        -0.1,
+        1.22,
+        0.34
+      ],
+      "rotation_deg": [
+        8.0,
+        0.0,
+        0.0
+      ],
+      "features": [
+        "seats"
+      ],
+      "note": "Respaldo de la butaca del conductor, inclinado."
+    },
+    {
+      "id": "seat_driver_back_insert",
+      "kind": "box",
+      "material": "fabric_seat_insert",
+      "min_m": [
+        -0.56,
+        0.92,
+        0.125
+      ],
+      "max_m": [
+        -0.16,
+        1.18,
+        0.165
+      ],
+      "rotation_deg": [
+        8.0,
+        0.0,
+        0.0
+      ],
+      "features": [
+        "seat_details"
+      ],
+      "note": "Panel central de tela del respaldo."
+    },
+    {
+      "id": "seat_driver_headrest",
+      "kind": "box",
+      "material": "fabric_seat_bolster",
+      "min_m": [
+        -0.54,
+        1.18,
+        0.19
+      ],
+      "max_m": [
+        -0.18,
+        1.325,
+        0.33
+      ],
+      "features": [
+        "seats",
+        "seat_details"
+      ],
+      "note": "Reposacabezas independiente sobre postes (images (1).jpg)."
+    },
+    {
+      "id": "seat_driver_headrest_post_0",
+      "kind": "cylinder",
+      "material": "metal_plate",
+      "center_m": [
+        -0.46,
+        1.19,
+        0.24
+      ],
+      "radius_m": 0.008,
+      "length_m": 0.11,
+      "axis": "y",
+      "features": [
+        "seat_details"
+      ]
+    },
+    {
+      "id": "seat_driver_headrest_post_1",
+      "kind": "cylinder",
+      "material": "metal_plate",
+      "center_m": [
+        -0.26,
+        1.19,
+        0.24
+      ],
+      "radius_m": 0.008,
+      "length_m": 0.11,
+      "axis": "y",
+      "features": [
+        "seat_details"
+      ]
+    },
+    {
+      "id": "seat_driver_recline_lever",
+      "kind": "box",
+      "material": "plastic_dark",
+      "min_m": [
+        -0.67,
+        0.78,
+        0.1
+      ],
+      "max_m": [
+        -0.625,
+        0.85,
+        0.22
+      ],
+      "features": [
+        "seat_details"
+      ],
+      "note": "Palanca de reclinado en el flanco exterior (images (1).jpg)."
+    },
+    {
+      "id": "seat_passenger_base",
+      "kind": "box",
+      "material": "fabric_seat_bolster",
+      "min_m": [
+        0.09,
+        0.63,
+        -0.32
+      ],
+      "max_m": [
+        0.63,
+        0.88,
+        0.22
+      ],
+      "features": [
+        "seats"
+      ],
+      "note": "Base de la butaca del acompanante."
+    },
+    {
+      "id": "seat_passenger_insert",
+      "kind": "box",
+      "material": "fabric_seat_insert",
+      "min_m": [
+        0.15,
+        0.865,
+        -0.26
+      ],
+      "max_m": [
+        0.57,
+        0.895,
+        0.16
+      ],
+      "features": [
+        "seat_details"
+      ],
+      "note": "Panel central de tela del acompanante."
+    },
+    {
+      "id": "seat_passenger_back",
+      "kind": "box",
+      "material": "fabric_seat_bolster",
+      "min_m": [
+        0.1,
+        0.88,
+        0.16
+      ],
+      "max_m": [
+        0.62,
+        1.22,
+        0.34
+      ],
+      "rotation_deg": [
+        8.0,
+        0.0,
+        0.0
+      ],
+      "features": [
+        "seats"
+      ],
+      "note": "Respaldo del acompanante."
+    },
+    {
+      "id": "seat_passenger_back_insert",
+      "kind": "box",
+      "material": "fabric_seat_insert",
+      "min_m": [
+        0.16,
+        0.92,
+        0.125
+      ],
+      "max_m": [
+        0.56,
+        1.18,
+        0.165
+      ],
+      "rotation_deg": [
+        8.0,
+        0.0,
+        0.0
+      ],
+      "features": [
+        "seat_details"
+      ],
+      "note": "Panel central de tela del respaldo del acompanante."
+    },
+    {
+      "id": "seat_passenger_headrest",
+      "kind": "box",
+      "material": "fabric_seat_bolster",
+      "min_m": [
+        0.18,
+        1.18,
+        0.19
+      ],
+      "max_m": [
+        0.54,
+        1.325,
+        0.33
+      ],
+      "features": [
+        "seats",
+        "seat_details"
+      ],
+      "note": "Reposacabezas del acompanante."
+    },
+    {
+      "id": "seat_passenger_headrest_post_0",
+      "kind": "cylinder",
+      "material": "metal_plate",
+      "center_m": [
+        0.26,
+        1.19,
+        0.24
+      ],
+      "radius_m": 0.008,
+      "length_m": 0.11,
+      "axis": "y",
+      "features": [
+        "seat_details"
+      ]
+    },
+    {
+      "id": "seat_passenger_headrest_post_1",
+      "kind": "cylinder",
+      "material": "metal_plate",
+      "center_m": [
+        0.46,
+        1.19,
+        0.24
+      ],
+      "radius_m": 0.008,
+      "length_m": 0.11,
+      "axis": "y",
+      "features": [
+        "seat_details"
+      ]
+    },
+    {
+      "id": "seat_passenger_recline_lever",
+      "kind": "box",
+      "material": "plastic_dark",
+      "min_m": [
+        0.625,
+        0.78,
+        0.1
+      ],
+      "max_m": [
+        0.67,
+        0.85,
+        0.22
+      ],
+      "features": [
+        "seat_details"
+      ],
+      "note": "Palanca de reclinado del acompanante."
+    },
+    {
+      "id": "bench_rear_base",
+      "kind": "box",
+      "material": "fabric_seat_bolster",
+      "min_m": [
+        -0.63,
+        0.63,
+        0.42
+      ],
+      "max_m": [
+        0.63,
+        0.86,
+        1.02
+      ],
+      "features": [
+        "bench"
+      ],
+      "note": "Base de la banqueta trasera (images (6).jpg)."
+    },
+    {
+      "id": "bench_rear_insert",
+      "kind": "box",
+      "material": "fabric_seat_insert",
+      "min_m": [
+        -0.57,
+        0.845,
+        0.48
+      ],
+      "max_m": [
+        0.57,
+        0.875,
+        0.96
+      ],
+      "features": [
+        "seat_details"
+      ],
+      "note": "Panel central de tela de la banqueta."
+    },
+    {
+      "id": "bench_rear_back",
+      "kind": "box",
+      "material": "fabric_seat_bolster",
+      "min_m": [
+        -0.63,
+        0.86,
+        1.02
+      ],
+      "max_m": [
+        0.63,
+        1.22,
+        1.2
+      ],
+      "rotation_deg": [
+        -6.0,
+        0.0,
+        0.0
+      ],
+      "features": [
+        "bench"
+      ],
+      "note": "Respaldo de la banqueta trasera."
+    },
+    {
+      "id": "bench_rear_back_insert",
+      "kind": "box",
+      "material": "fabric_seat_insert",
+      "min_m": [
+        -0.57,
+        0.9,
+        0.985
+      ],
+      "max_m": [
+        0.57,
+        1.16,
+        1.025
+      ],
+      "rotation_deg": [
+        -6.0,
+        0.0,
+        0.0
+      ],
+      "features": [
+        "seat_details"
+      ],
+      "note": "Panel central de tela del respaldo trasero."
+    },
+    {
+      "id": "bench_headrest_left",
+      "kind": "box",
+      "material": "fabric_seat_bolster",
+      "min_m": [
+        -0.42,
+        1.2,
+        1.04
+      ],
+      "max_m": [
+        -0.16,
+        1.325,
+        1.16
+      ],
+      "features": [
+        "bench",
+        "seat_details"
+      ],
+      "note": "Reposacabezas trasero izquierdo (images (6).jpg)."
+    },
+    {
+      "id": "bench_headrest_right",
+      "kind": "box",
+      "material": "fabric_seat_bolster",
+      "min_m": [
+        0.16,
+        1.2,
+        1.04
+      ],
+      "max_m": [
+        0.42,
+        1.325,
+        1.16
+      ],
+      "features": [
+        "bench",
+        "seat_details"
+      ],
+      "note": "Reposacabezas trasero derecho."
+    },
+    {
+      "id": "trunk_floor",
+      "kind": "box",
+      "material": "trunk_liner",
+      "min_m": [
+        -0.62,
+        0.7,
+        1.22
+      ],
+      "max_m": [
+        0.62,
+        0.735,
+        2.12
+      ],
+      "features": [
+        "trunk"
+      ],
+      "note": "Suelo del maletero con moqueta (esteem00int.png)."
+    },
+    {
+      "id": "trunk_wall_left",
+      "kind": "box",
+      "material": "trunk_liner",
+      "min_m": [
+        -0.72,
+        0.735,
+        1.22
+      ],
+      "max_m": [
+        -0.62,
+        1.02,
+        2.12
+      ],
+      "features": [
+        "trunk"
+      ],
+      "note": "Revestimiento lateral izquierdo del maletero."
+    },
+    {
+      "id": "trunk_wall_right",
+      "kind": "box",
+      "material": "trunk_liner",
+      "min_m": [
+        0.62,
+        0.735,
+        1.22
+      ],
+      "max_m": [
+        0.72,
+        1.02,
+        2.12
+      ],
+      "features": [
+        "trunk"
+      ],
+      "note": "Revestimiento lateral derecho del maletero."
+    },
+    {
+      "id": "trunk_bulkhead",
+      "kind": "box",
+      "material": "trunk_liner",
+      "min_m": [
+        -0.62,
+        0.735,
+        1.18
+      ],
+      "max_m": [
+        0.62,
+        1.16,
+        1.24
+      ],
+      "features": [
+        "trunk"
+      ],
+      "note": "Mampara trasera del maletero, detras del respaldo de la banqueta."
+    },
+    {
+      "id": "trunk_arch_left",
+      "kind": "box",
+      "material": "trunk_liner",
+      "min_m": [
+        -0.62,
+        0.735,
+        1.06
+      ],
+      "max_m": [
+        -0.42,
+        0.95,
+        1.42
+      ],
+      "features": [
+        "trunk",
+        "trunk_details"
+      ],
+      "note": "Aleta de rueda trasera izquierda dentro del maletero."
+    },
+    {
+      "id": "trunk_arch_right",
+      "kind": "box",
+      "material": "trunk_liner",
+      "min_m": [
+        0.42,
+        0.735,
+        1.06
+      ],
+      "max_m": [
+        0.62,
+        0.95,
+        1.42
+      ],
+      "features": [
+        "trunk",
+        "trunk_details"
+      ],
+      "note": "Aleta de rueda trasera derecha dentro del maletero."
+    },
+    {
+      "id": "tool_spare_tire_tire",
+      "kind": "torus",
+      "material": "rubber_dark",
+      "center_m": [
+        0.12,
+        0.8,
+        1.72
+      ],
+      "major_radius_m": 0.235,
+      "minor_radius_m": 0.065,
+      "rotation_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "inventory_id": "tool.spare_tire",
+      "features": [
+        "tools"
+      ],
+      "note": "Neumático de repuesto apoyado en el maletero (tool.spare_tire de inventory_tools.json)."
+    },
+    {
+      "id": "tool_spare_tire_rim",
+      "kind": "cylinder",
+      "material": "metal_plate",
+      "center_m": [
+        0.12,
+        0.8,
+        1.72
+      ],
+      "radius_m": 0.17,
+      "length_m": 0.09,
+      "axis": "y",
+      "inventory_id": "tool.spare_tire",
+      "features": [
+        "tools"
+      ],
+      "note": "Llanta del repuesto."
+    },
+    {
+      "id": "tool_jack_base",
+      "kind": "box",
+      "material": "tool_steel",
+      "min_m": [
+        -0.52,
+        0.735,
+        1.4
+      ],
+      "max_m": [
+        -0.34,
+        0.765,
+        1.52
+      ],
+      "inventory_id": "tool.jack",
+      "features": [
+        "tools"
+      ],
+      "note": "Base del gato de tijera (tool.jack)."
+    },
+    {
+      "id": "tool_jack_arm_0",
+      "kind": "box",
+      "material": "tool_steel",
+      "min_m": [
+        -0.5,
+        0.765,
+        1.425
+      ],
+      "max_m": [
+        -0.36,
+        0.795,
+        1.465
+      ],
+      "rotation_deg": [
+        0.0,
+        0.0,
+        38.0
+      ],
+      "inventory_id": "tool.jack",
+      "features": [
+        "tool_details"
+      ]
+    },
+    {
+      "id": "tool_jack_arm_1",
+      "kind": "box",
+      "material": "tool_steel",
+      "min_m": [
+        -0.5,
+        0.765,
+        1.425
+      ],
+      "max_m": [
+        -0.36,
+        0.795,
+        1.465
+      ],
+      "rotation_deg": [
+        0.0,
+        0.0,
+        -38.0
+      ],
+      "inventory_id": "tool.jack",
+      "features": [
+        "tool_details"
+      ]
+    },
+    {
+      "id": "tool_jack_screw",
+      "kind": "cylinder",
+      "material": "tool_steel",
+      "center_m": [
+        -0.43,
+        0.83,
+        1.445
+      ],
+      "radius_m": 0.012,
+      "length_m": 0.16,
+      "axis": "y",
+      "inventory_id": "tool.jack",
+      "features": [
+        "tool_details"
+      ]
+    },
+    {
+      "id": "tool_jack_saddle",
+      "kind": "box",
+      "material": "tool_steel",
+      "min_m": [
+        -0.48,
+        0.9,
+        1.41
+      ],
+      "max_m": [
+        -0.38,
+        0.93,
+        1.48
+      ],
+      "inventory_id": "tool.jack",
+      "features": [
+        "tool_details"
+      ]
+    },
+    {
+      "id": "tool_wheel_wrench_hub",
+      "kind": "cylinder",
+      "material": "tool_steel",
+      "center_m": [
+        0.1,
+        0.78,
+        1.3
+      ],
+      "radius_m": 0.028,
+      "length_m": 0.05,
+      "axis": "y",
+      "inventory_id": "tool.wheel_wrench",
+      "features": [
+        "tools"
+      ],
+      "note": "Llave de cruz de ruedas (tool.wheel_wrench)."
+    },
+    {
+      "id": "tool_wheel_wrench_arm_0",
+      "kind": "box",
+      "material": "tool_steel",
+      "min_m": [
+        0.1,
+        0.765,
+        1.285
+      ],
+      "max_m": [
+        0.34,
+        0.795,
+        1.315
+      ],
+      "inventory_id": "tool.wheel_wrench",
+      "features": [
+        "tool_details"
+      ]
+    },
+    {
+      "id": "tool_wheel_wrench_arm_1",
+      "kind": "box",
+      "material": "tool_steel",
+      "min_m": [
+        -0.14,
+        0.765,
+        1.285
+      ],
+      "max_m": [
+        0.1,
+        0.795,
+        1.315
+      ],
+      "inventory_id": "tool.wheel_wrench",
+      "features": [
+        "tool_details"
+      ]
+    },
+    {
+      "id": "tool_wheel_wrench_arm_2",
+      "kind": "box",
+      "material": "tool_steel",
+      "min_m": [
+        0.085,
+        0.765,
+        1.3
+      ],
+      "max_m": [
+        0.115,
+        0.795,
+        1.54
+      ],
+      "inventory_id": "tool.wheel_wrench",
+      "features": [
+        "tool_details"
+      ]
+    },
+    {
+      "id": "tool_wheel_wrench_arm_3",
+      "kind": "box",
+      "material": "tool_steel",
+      "min_m": [
+        0.085,
+        0.765,
+        1.06
+      ],
+      "max_m": [
+        0.115,
+        0.795,
+        1.3
+      ],
+      "inventory_id": "tool.wheel_wrench",
+      "features": [
+        "tool_details"
+      ]
+    },
+    {
+      "id": "tool_boards_0",
+      "kind": "box",
+      "material": "board_wood",
+      "min_m": [
+        0.22,
+        0.735,
+        1.44
+      ],
+      "max_m": [
+        0.58,
+        0.775,
+        1.6
+      ],
+      "inventory_id": "tool.boards",
+      "features": [
+        "tools"
+      ],
+      "note": "Tabla de desatasco (tool.boards)."
+    },
+    {
+      "id": "tool_boards_1",
+      "kind": "box",
+      "material": "board_wood",
+      "min_m": [
+        0.22,
+        0.775,
+        1.44
+      ],
+      "max_m": [
+        0.58,
+        0.815,
+        1.6
+      ],
+      "inventory_id": "tool.boards",
+      "features": [
+        "tools"
+      ]
+    },
+    {
+      "id": "tool_flashlight_body",
+      "kind": "cylinder",
+      "material": "tool_steel",
+      "center_m": [
+        -0.3,
+        0.755,
+        1.34
+      ],
+      "radius_m": 0.022,
+      "length_m": 0.16,
+      "axis": "z",
+      "inventory_id": "tool.flashlight",
+      "features": [
+        "tools"
+      ],
+      "note": "Linterna (tool.flashlight)."
+    },
+    {
+      "id": "tool_flashlight_head",
+      "kind": "cylinder",
+      "material": "plastic_dark",
+      "center_m": [
+        -0.3,
+        0.755,
+        1.245
+      ],
+      "radius_m": 0.032,
+      "length_m": 0.05,
+      "axis": "z",
+      "inventory_id": "tool.flashlight",
+      "features": [
+        "tool_details"
+      ]
+    },
+    {
+      "id": "tool_screwdriver_case",
+      "kind": "box",
+      "material": "plastic_dark",
+      "min_m": [
+        -0.2,
+        0.735,
+        1.86
+      ],
+      "max_m": [
+        0.1,
+        0.795,
+        2.02
+      ],
+      "inventory_id": "tool.screwdriver_set",
+      "features": [
+        "tools"
+      ],
+      "note": "Estuche de destornilladores (tool.screwdriver_set)."
+    },
+    {
+      "id": "tool_screwdriver_0",
+      "kind": "cylinder",
+      "material": "tool_steel",
+      "center_m": [
+        -0.12,
+        0.805,
+        1.9
+      ],
+      "radius_m": 0.009,
+      "length_m": 0.12,
+      "axis": "z",
+      "inventory_id": "tool.screwdriver_set",
+      "features": [
+        "tool_details"
+      ]
+    },
+    {
+      "id": "tool_screwdriver_1",
+      "kind": "cylinder",
+      "material": "tool_steel",
+      "center_m": [
+        -0.04,
+        0.805,
+        1.9
+      ],
+      "radius_m": 0.009,
+      "length_m": 0.12,
+      "axis": "z",
+      "inventory_id": "tool.screwdriver_set",
+      "features": [
+        "tool_details"
+      ]
+    },
+    {
+      "id": "tool_pliers_arm_0",
+      "kind": "box",
+      "material": "tool_steel",
+      "min_m": [
+        -0.3,
+        0.74,
+        1.935
+      ],
+      "max_m": [
+        -0.02,
+        0.765,
+        1.965
+      ],
+      "rotation_deg": [
+        0.0,
+        0.0,
+        6.0
+      ],
+      "inventory_id": "tool.pliers",
+      "features": [
+        "tool_details"
+      ],
+      "note": "Alicates (tool.pliers)."
+    },
+    {
+      "id": "tool_pliers_arm_1",
+      "kind": "box",
+      "material": "tool_steel",
+      "min_m": [
+        -0.3,
+        0.74,
+        1.935
+      ],
+      "max_m": [
+        -0.02,
+        0.765,
+        1.965
+      ],
+      "rotation_deg": [
+        0.0,
+        0.0,
+        -6.0
+      ],
+      "inventory_id": "tool.pliers",
+      "features": [
+        "tool_details"
+      ]
+    },
+    {
+      "id": "tool_adjustable_wrench_handle",
+      "kind": "box",
+      "material": "tool_steel",
+      "min_m": [
+        0.16,
+        0.74,
+        1.96
+      ],
+      "max_m": [
+        0.42,
+        0.775,
+        1.995
+      ],
+      "inventory_id": "tool.adjustable_wrench",
+      "features": [
+        "tools"
+      ],
+      "note": "Llave ajustable (tool.adjustable_wrench)."
+    },
+    {
+      "id": "tool_adjustable_wrench_jaw",
+      "kind": "box",
+      "material": "tool_steel",
+      "min_m": [
+        0.42,
+        0.735,
+        1.94
+      ],
+      "max_m": [
+        0.5,
+        0.8,
+        2.02
+      ],
+      "inventory_id": "tool.adjustable_wrench",
+      "features": [
+        "tool_details"
+      ]
+    },
+    {
+      "id": "tool_socket_set_case",
+      "kind": "box",
+      "material": "plastic_dark",
+      "min_m": [
+        0.16,
+        0.735,
+        1.72
+      ],
+      "max_m": [
+        0.42,
+        0.805,
+        1.86
+      ],
+      "inventory_id": "tool.socket_set",
+      "features": [
+        "tools"
+      ],
+      "note": "Estuche de carracas y vasos (tool.socket_set)."
+    },
+    {
+      "id": "tool_jumper_cables_coil",
+      "kind": "torus",
+      "material": "rubber_dark",
+      "center_m": [
+        -0.34,
+        0.8,
+        1.72
+      ],
+      "major_radius_m": 0.115,
+      "minor_radius_m": 0.035,
+      "rotation_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "inventory_id": "tool.jumper_cables",
+      "features": [
+        "tools"
+      ],
+      "note": "Cables de puesta en marcha enrollados (tool.jumper_cables)."
+    },
+    {
+      "id": "tool_jumper_cables_clamp_0",
+      "kind": "box",
+      "material": "tool_steel",
+      "min_m": [
+        -0.24,
+        0.79,
+        1.6
+      ],
+      "max_m": [
+        -0.18,
+        0.85,
+        1.66
+      ],
+      "inventory_id": "tool.jumper_cables",
+      "features": [
+        "tool_details"
+      ]
+    },
+    {
+      "id": "tool_jumper_cables_clamp_1",
+      "kind": "box",
+      "material": "tool_steel",
+      "min_m": [
+        -0.46,
+        0.79,
+        1.78
+      ],
+      "max_m": [
+        -0.4,
+        0.85,
+        1.84
+      ],
+      "inventory_id": "tool.jumper_cables",
+      "features": [
+        "tool_details"
+      ]
+    }
+  ],
+  "hands": {
+    "ids": [
+      "hand_left",
+      "hand_right"
+    ],
+    "material": "hand_skin",
+    "note": "Manos definitivas con malla propia (palma + cuatro dedos de tres falanges + pulgar), unidas en un unico objeto por mano. Sustituyen los proxies de caja de F2.3 (visual_proxies.hand_proxy_size_m) sin tocar cabin_interaction.json v2: cabin_visual_proxies.gd las reubica en runtime siguiendo la IK de F2.2 (rig esteem_hand_rig y poses IK sin cambios). Se modelan en las posiciones de bind de reposo del rig (hand_l_palm / hand_r_palm de cabin_spec.json) y con los dedos hacia -Z.",
+    "bind": {
+      "hand_left": {
+        "palm_center_m": [
+          -0.44,
+          0.95,
+          -0.28
+        ],
+        "side": "left"
+      },
+      "hand_right": {
+        "palm_center_m": [
+          -0.26,
+          0.95,
+          -0.28
+        ],
+        "side": "right"
+      }
+    },
+    "palm_size_m": [
+      0.085,
+      0.03,
+      0.098
+    ],
+    "fingers": {
+      "count": 4,
+      "segment_lengths_m": [
+        0.042,
+        0.03,
+        0.024
+      ],
+      "thickness_m": 0.015,
+      "width_m": 0.017,
+      "spread_m": 0.022
+    },
+    "thumb": {
+      "segment_lengths_m": [
+        0.038,
+        0.03
+      ],
+      "thickness_m": 0.017,
+      "width_m": 0.019,
+      "offset_m": [
+        0.045,
+        -0.004,
+        0.028
+      ],
+      "yaw_deg": -38.0
+    }
+  },
+  "materials": {
+    "dash_vinyl_dark": {
+      "base_color": [
+        0.16,
+        0.16,
+        0.17,
+        1.0
+      ],
+      "roughness": 0.68,
+      "metallic": 0.0
+    },
+    "dash_vinyl_beige": {
+      "base_color": [
+        0.55,
+        0.52,
+        0.47,
+        1.0
+      ],
+      "roughness": 0.72,
+      "metallic": 0.0
+    },
+    "plastic_dark": {
+      "base_color": [
+        0.1,
+        0.1,
+        0.11,
+        1.0
+      ],
+      "roughness": 0.6,
+      "metallic": 0.0
+    },
+    "plastic_light": {
+      "base_color": [
+        0.52,
+        0.5,
+        0.46,
+        1.0
+      ],
+      "roughness": 0.7,
+      "metallic": 0.0
+    },
+    "fabric_seat_insert": {
+      "base_color": [
+        0.52,
+        0.51,
+        0.47,
+        1.0
+      ],
+      "roughness": 0.95,
+      "metallic": 0.0
+    },
+    "fabric_seat_bolster": {
+      "base_color": [
+        0.42,
+        0.42,
+        0.43,
+        1.0
+      ],
+      "roughness": 0.92,
+      "metallic": 0.0
+    },
+    "fabric_door_insert": {
+      "base_color": [
+        0.47,
+        0.46,
+        0.44,
+        1.0
+      ],
+      "roughness": 0.95,
+      "metallic": 0.0
+    },
+    "carpet": {
+      "base_color": [
+        0.14,
+        0.14,
+        0.15,
+        1.0
+      ],
+      "roughness": 0.98,
+      "metallic": 0.0
+    },
+    "headliner": {
+      "base_color": [
+        0.62,
+        0.6,
+        0.56,
+        1.0
+      ],
+      "roughness": 0.9,
+      "metallic": 0.0
+    },
+    "trunk_liner": {
+      "base_color": [
+        0.22,
+        0.22,
+        0.23,
+        1.0
+      ],
+      "roughness": 0.95,
+      "metallic": 0.0
+    },
+    "belt_webbing": {
+      "base_color": [
+        0.12,
+        0.12,
+        0.13,
+        1.0
+      ],
+      "roughness": 0.85,
+      "metallic": 0.0
+    },
+    "metal_plate": {
+      "base_color": [
+        0.36,
+        0.37,
+        0.39,
+        1.0
+      ],
+      "roughness": 0.45,
+      "metallic": 0.85
+    },
+    "gauge_dial": {
+      "base_color": [
+        0.05,
+        0.05,
+        0.06,
+        1.0
+      ],
+      "roughness": 0.35,
+      "metallic": 0.0
+    },
+    "needle_amber": {
+      "base_color": [
+        0.95,
+        0.62,
+        0.1,
+        1.0
+      ],
+      "roughness": 0.4,
+      "metallic": 0.0,
+      "emission_color": [
+        1.0,
+        0.62,
+        0.1,
+        1.0
+      ],
+      "emission_strength": 0.3
+    },
+    "glass_gauge": {
+      "base_color": [
+        0.85,
+        0.88,
+        0.9,
+        1.0
+      ],
+      "roughness": 0.06,
+      "metallic": 0.0,
+      "transmission": 0.85,
+      "ior": 1.45
+    },
+    "button_red": {
+      "base_color": [
+        0.6,
+        0.1,
+        0.08,
+        1.0
+      ],
+      "roughness": 0.5,
+      "metallic": 0.0
+    },
+    "tool_steel": {
+      "base_color": [
+        0.55,
+        0.56,
+        0.58,
+        1.0
+      ],
+      "roughness": 0.45,
+      "metallic": 0.9
+    },
+    "board_wood": {
+      "base_color": [
+        0.35,
+        0.25,
+        0.16,
+        1.0
+      ],
+      "roughness": 0.85,
+      "metallic": 0.0
+    },
+    "rubber_dark": {
+      "base_color": [
+        0.05,
+        0.05,
+        0.05,
+        1.0
+      ],
+      "roughness": 0.92,
+      "metallic": 0.0
+    },
+    "hand_skin": {
+      "base_color": [
+        0.62,
+        0.48,
+        0.4,
+        1.0
+      ],
+      "roughness": 0.75,
+      "metallic": 0.0
+    }
+  },
+  "materials_note": "Materiales PBR (metallic-roughness) originales del proyecto exportados por glTF. Las telas se representan con dos tonos (inserto y apoyos); el patron tejido fino y las costuras son pulido de F3.5/F10.1. Ninguna textura, color o malla procede de la biblioteca externa de referencias. Sin marcas, emblemas ni texto visible en la malla.",
+  "lods": [
+    {
+      "id": "lod0",
+      "output": "assets/generated/vehicle/esteem_interior_lod0.glb",
+      "detail": "full",
+      "bevel_width_m": 0.006,
+      "bevel_segments": 1,
+      "wheel_segments": 20,
+      "features": [
+        "dash",
+        "dash_tray",
+        "cluster",
+        "gauges",
+        "vents",
+        "buttons",
+        "console",
+        "gate",
+        "gate_notches",
+        "lever",
+        "handbrake",
+        "glovebox",
+        "latch",
+        "steering",
+        "spokes",
+        "radio",
+        "radio_slot",
+        "climate",
+        "door_cards",
+        "door_details",
+        "carpet",
+        "headliner",
+        "trim",
+        "belts",
+        "seats",
+        "seat_details",
+        "bench",
+        "trunk",
+        "trunk_details",
+        "tools",
+        "tool_details",
+        "hand_fingers"
+      ],
+      "max_triangles": 18000
+    },
+    {
+      "id": "lod1",
+      "output": "assets/generated/vehicle/esteem_interior_lod1.glb",
+      "detail": "medium",
+      "bevel_width_m": 0.0,
+      "bevel_segments": 0,
+      "wheel_segments": 12,
+      "features": [
+        "dash",
+        "cluster",
+        "gauges",
+        "vents",
+        "console",
+        "gate",
+        "lever",
+        "handbrake",
+        "glovebox",
+        "steering",
+        "spokes",
+        "radio",
+        "climate",
+        "door_cards",
+        "carpet",
+        "headliner",
+        "seats",
+        "bench",
+        "trunk",
+        "tools"
+      ],
+      "max_triangles": 8000
+    },
+    {
+      "id": "lod2",
+      "output": "assets/generated/vehicle/esteem_interior_lod2.glb",
+      "detail": "coarse",
+      "bevel_width_m": 0.0,
+      "bevel_segments": 0,
+      "wheel_segments": 8,
+      "features": [
+        "dash",
+        "console",
+        "steering",
+        "lever",
+        "handbrake",
+        "glovebox",
+        "seats",
+        "bench",
+        "door_cards",
+        "trunk"
+      ],
+      "max_triangles": 3000
+    }
+  ],
+  "lod_policy": {
+    "required_levels": [
+      0,
+      1,
+      2
+    ],
+    "strictly_decreasing": true,
+    "budget_note": "Ninguna malla entra al juego sin LOD0/LOD1/LOD2 (AGENTS.md seccion 9). El presupuesto visible movil es 120.000 triangulos e incluye los tres pasos de render de los espejos de F2.4 (mirrors.budget de cabin_interaction.json). El conteo total visible (interior + exterior + espejos + mundo) se medira en F3.5/F10.1."
+  },
+  "rig_anchor": {
+    "output": "assets/generated/vehicle/esteem_interior_rig_anchor.glb",
+    "armature_name": "EsteemInteriorRigAnchor",
+    "root_bone": "anchor_root",
+    "bind_to_meshes": false,
+    "note": "Anclas de compatibilidad con las mismas posiciones que data/vehicle/blockout_spec.json (el validador lo comprueba). El rig de manos de F2.2 (esteem_hand_rig.glb) no cambia: las manos definitivas se colocan en sus posiciones de bind y la IK las mueve en runtime.",
+    "anchors": [
+      {
+        "id": "anchor_root",
+        "position_m": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "purpose": "origen del vehiculo sobre el suelo, centro de la batalla"
+      },
+      {
+        "id": "anchor_driver_seat",
+        "position_m": [
+          -0.35,
+          1.0,
+          -0.1
+        ],
+        "purpose": "asiento del conductor (LHD); base de manos IK y camara interior"
+      },
+      {
+        "id": "anchor_passenger_seat",
+        "position_m": [
+          0.35,
+          1.0,
+          -0.1
+        ],
+        "purpose": "asiento del acompanante; pasajeros de Fase 7"
+      },
+      {
+        "id": "anchor_steering_wheel",
+        "position_m": [
+          -0.35,
+          1.1,
+          -0.75
+        ],
+        "purpose": "centro del volante; objetivo de manos IK"
+      },
+      {
+        "id": "anchor_gear_lever",
+        "position_m": [
+          0.0,
+          0.95,
+          -0.45
+        ],
+        "purpose": "palanca automatica P-R-N-D-2-L con boton de Overdrive"
+      },
+      {
+        "id": "anchor_handbrake",
+        "position_m": [
+          -0.15,
+          0.92,
+          -0.15
+        ],
+        "purpose": "freno de mano"
+      },
+      {
+        "id": "anchor_camera_driver",
+        "position_m": [
+          -0.35,
+          1.22,
+          -0.62
+        ],
+        "purpose": "camara de cabina (ojos del conductor)"
+      },
+      {
+        "id": "anchor_trunk_center",
+        "position_m": [
+          0.0,
+          1.1,
+          1.7
+        ],
+        "purpose": "apertura del maletero / herramientas del inventario de F5.1"
+      },
+      {
+        "id": "anchor_roof_center",
+        "position_m": [
+          0.0,
+          1.42,
+          0.28
+        ],
+        "purpose": "centro del techo (luz interior)"
+      }
+    ]
+  },
+  "validation_rules": {
+    "dimensions_match_blockout": true,
+    "tolerance_m": 0.02,
+    "anchors_match_blockout": true,
+    "anchor_bounds_m": {
+      "x": 1.5,
+      "y_min": -0.5,
+      "y_max": 3.0,
+      "z": 6.0
+    },
+    "pieces_bounds_m": {
+      "x": 0.86,
+      "y_min": 0.55,
+      "y_max": 1.42,
+      "z_min": -0.85,
+      "z_max": 2.15
+    },
+    "tools_required": [
+      "tool.jack",
+      "tool.wheel_wrench",
+      "tool.boards",
+      "tool.spare_tire"
+    ],
+    "hands_match_cabin_rig": true
+  },
+  "reference_notes": [
+    "Interior revisado con la hoja de contacto de F3.2 (build/reference/contact_sheets/interior_f32_review.jpg e interior_f32_detail.jpg) y las copias de trabajo de build/reference/review_f32/; registro en docs/reference/REFERENCE_USAGE_LOG.md.",
+    "Tablero bitono con bandeja del acompanante, guantera con cierre, radio cassette doble DIN, clima con deslizadores y palanca tipo T/piston con boton de Overdrive segun adentro esteem.jpg, images (10).jpg e INTERIOR ESTEEM.jpg.",
+    "Butacas de tela con paneles centrales y apoyos lisos, reposacabezas sobre postes y banqueta trasera segun images (1).jpg, images (6).jpg e images (7).jpg. El patron tejido se simula con dos tonos; sin texturas de fotos.",
+    "Maletero amplio con moqueta y herramientas del inventario (gato, llave de cruz, repuesto, tablas, linterna, destornilladores, alicates, llave ajustable, carracas y cables) segun esteem00int.png; los IDs corresponden a data/schemas/inventory_tools.json para el inventario de F5.1.",
+    "Instrumental de tres basculas con agujas ambar y caratulas sin numeros (esteem00int.png): sin texto visible en la malla; la senaletica usa claves de localizacion.",
+    "Sin marcas, emblemas ni texturas derivadas de las fotografias (Chevrolet, PDV, Suzuki y otras omitidas; alfombrados con logotipo y guia P-R-N-D-2-L con texto, observadas en fotos, no se reproducen).",
+    "Cotas de interior provisionales: no publicar como especificacion oficial del vehiculo. Verificar contra manual o medicion antes de Fase 5 (ESTEEM_MECHANICAL_NOTES.md)."
+  ]
+}

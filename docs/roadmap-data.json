@@ -2,11 +2,11 @@
   "project": "Ruta Nocturna: 1999",
   "repository": "emanuelindustri-source/ruta-nocturna-1999",
   "generated_from": "ROADMAP.md",
-  "source_sha256": "e1af2a565cf2989bb800ffe221f06bb882b1bf9b10cb07dd9b81e7307931f9f5",
-  "current_version": "v0.3.0",
-  "version_file": "0.3.0",
+  "source_sha256": "eafff56cd525cb2a2b078ae501909fc36ad7c0b11524cc81c77980025f1cbbdc",
+  "current_version": "v0.3.1",
+  "version_file": "0.3.1",
   "current_subphase": "3.2",
-  "global_status": "Fase 1 y Fase 2 completadas; Fase 3 en marcha (3.1); siguiente gate 3.2",
+  "global_status": "Fase 1 y Fase 2 completadas; Fase 3 en marcha (3.2); siguiente gate 3.3",
   "models": {
     "DS-R": "DeepSeek V4.1 Flash 1017 · Razonamiento",
     "DS-S": "DeepSeek V4.1 Flash 1017 · Estándar",
@@ -14,11 +14,11 @@
     "MiMo Flash": "MiMo-V2.6-Flash"
   },
   "summary": {
-    "completed": 9,
+    "completed": 10,
     "in_progress": 0,
-    "pending": 36,
+    "pending": 35,
     "total": 45,
-    "percent": 20.0
+    "percent": 22.2
   },
   "phases": [
     {
@@ -144,9 +144,9 @@
           "version": "v0.3.1",
           "model": "MiMo Pro",
           "model_label": "MiMo-V2.6-Pro",
-          "summary": "Interior final, tablero, telas, asientos, herramientas, maletero y manos.",
-          "status": "pending",
-          "status_label": "Pendiente"
+          "summary": "Interior final, tablero, telas, asientos, herramientas, maletero y manos. Validado y publicado.",
+          "status": "completed",
+          "status_label": "Completada"
         },
         {
           "id": "3.3",
@@ -180,9 +180,9 @@
       "status": "in_progress",
       "status_label": "En curso",
       "progress": {
-        "completed": 1,
+        "completed": 2,
         "in_progress": 0,
-        "pending": 4,
+        "pending": 3,
         "total": 5
       }
     },

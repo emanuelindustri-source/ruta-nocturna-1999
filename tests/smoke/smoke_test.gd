@@ -1,14 +1,14 @@
 extends Node
-## Smoke test de servicios base, del bloqueo y del exterior del Esteem (F3.1).
+## Smoke test de servicios base, del bloqueo, del exterior y del interior del Esteem (F3.2).
 ## Sin mecánicas de conducción.
 ##
 ## Ejecutar:
 ##   .\tools\dev\smoke_test.cmd
 ## El proceso devuelve 0 solo si todos los servicios base responden y el
-## bloqueo (F1.3) y el exterior definitivo (F3.1) conservan LOD0/LOD1/LOD2,
-## manifiesto y ancla de rig.
+## bloqueo (F1.3), el exterior definitivo (F3.1) y el interior definitivo (F3.2)
+## conservan LOD0/LOD1/LOD2, manifiesto y ancla de rig.
 
-const EXPECTED_VERSION := "0.3.0"
+const EXPECTED_VERSION := "0.3.1"
 const AUTOLOADS := [
 	"EventBus",
 	"HardwareProfiler",
@@ -49,6 +49,7 @@ func _ready() -> void:
 	_test_scene_router()
 	await _test_vehicle_blockout()
 	await _test_vehicle_exterior()
+	await _test_vehicle_interior()
 	await _test_vertical_slice()
 	await _test_powertrain()
 	_test_gamepad_menu_input()
@@ -549,6 +550,82 @@ func _test_vehicle_exterior() -> void:
 			"mirrors.budget respetado por el exterior (3 pasos, dentro del presupuesto móvil)"
 		)
 	exterior.queue_free()
+	await get_tree().process_frame
+
+
+func _test_vehicle_interior() -> void:
+	var manifest_text := FileAccess.get_file_as_string("res://assets/manifests/esteem_interior.manifest.json")
+	_check(not manifest_text.is_empty(), "manifiesto del interior presente")
+	var manifest: Variant = JSON.parse_string(manifest_text)
+	_check(manifest is Dictionary, "manifiesto del interior es JSON")
+	var lod_triangles := {}
+	if manifest is Dictionary:
+		var outputs: Array = manifest.get("outputs", [])
+		_check(outputs.size() == 4, "manifiesto del interior con cuatro salidas generadas")
+		for output in outputs:
+			if not (output is Dictionary):
+				continue
+			var relative := str(output.get("file", ""))
+			var path := "res://" + relative
+			_check(FileAccess.file_exists(path), "salida generada %s" % relative)
+			var expected_hash := str(output.get("sha256", ""))
+			if not expected_hash.is_empty() and FileAccess.file_exists(path):
+				_check(FileAccess.get_sha256(path) == expected_hash, "hash SHA-256 verificado en %s" % relative)
+			if str(output.get("kind", "")) == "mesh_lod":
+				lod_triangles[int(output.get("lod", -1))] = int(output.get("triangles", 0))
+		_check(lod_triangles.has(0) and lod_triangles.has(1) and lod_triangles.has(2), "interior con LOD0/LOD1/LOD2 declarados")
+		_check(
+			int(lod_triangles.get(0, 0)) > int(lod_triangles.get(1, 0))
+				and int(lod_triangles.get(1, 0)) > int(lod_triangles.get(2, 0)),
+			"triangulos decrecientes entre LODs del interior"
+		)
+	var spec_text := FileAccess.get_file_as_string("res://data/vehicle/interior_spec.json")
+	var spec: Variant = JSON.parse_string(spec_text)
+	_check(spec is Dictionary, "spec del interior accesible")
+	var packed := load("res://scenes/vehicle/EsteemInterior.tscn") as PackedScene
+	_check(packed != null, "escena EsteemInterior carga")
+	if packed == null:
+		return
+	var interior := packed.instantiate()
+	add_child(interior)
+	var previous_triangles := 1 << 30
+	for lod_index in range(3):
+		var lod_node := interior.get_node_or_null("LOD%d" % lod_index)
+		_check(lod_node != null, "nodo LOD%d en la escena del interior" % lod_index)
+		if lod_node == null:
+			continue
+		var triangles := _count_triangles(lod_node)
+		_check(triangles > 0, "mallas del LOD%d del interior con triangulos" % lod_index)
+		_check(triangles == int(lod_triangles.get(lod_index, -1)), "triangulos del LOD%d del interior coinciden con el manifiesto" % lod_index)
+		_check(triangles < previous_triangles, "LOD%d del interior menor que el nivel anterior" % lod_index)
+		previous_triangles = triangles
+		if lod_index == 0:
+			_check(triangles <= 120000, "interior LOD0 dentro del presupuesto movil (%d)" % triangles)
+	var lod0 := interior.get_node_or_null("LOD0")
+	_check(lod0 != null and lod0.get_node_or_null("hand_left") != null, "mano izquierda definitiva en el LOD0")
+	_check(lod0 != null and lod0.get_node_or_null("hand_right") != null, "mano derecha definitiva en el LOD0")
+	_check(lod0 != null and lod0.get_node_or_null("tool_jack_base") != null, "herramienta gato en el maletero")
+	_check(lod0 != null and lod0.get_node_or_null("tool_wheel_wrench_hub") != null, "herramienta llave de cruz en el maletero")
+	_check(lod0 != null and lod0.get_node_or_null("tool_boards_0") != null, "herramienta tablas en el maletero")
+	_check(lod0 != null and lod0.get_node_or_null("tool_spare_tire_tire") != null, "herramienta repuesto en el maletero")
+	var anchor := interior.get_node_or_null("RigAnchor")
+	_check(anchor != null, "ancla de rig presente en la escena del interior")
+	if anchor != null and spec is Dictionary:
+		var skeleton := _find_skeleton(anchor)
+		_check(skeleton != null, "Skeleton3D del ancla de rig del interior")
+		if skeleton != null:
+			var anchors: Array = spec.get("rig_anchor", {}).get("anchors", [])
+			var all_found := true
+			for entry in anchors:
+				if not (entry is Dictionary):
+					continue
+				var bone_name := str(entry.get("id", ""))
+				if skeleton.find_bone(bone_name) == -1:
+					all_found = false
+					print("[SMOKE]     hueso ausente: %s" % bone_name)
+			_check(all_found, "los %d huesos del ancla del interior existen" % anchors.size())
+			_check(skeleton.find_bone("anchor_root") != -1, "raiz anchor_root en el interior")
+	interior.queue_free()
 	await get_tree().process_frame
 
 

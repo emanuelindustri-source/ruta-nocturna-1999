@@ -156,8 +156,17 @@ func _build_hand_proxies() -> void:
 	material.albedo_color = Color(0.62, 0.58, 0.52)
 	material.roughness = 0.86
 	for side in ["left", "right"]:
-		var mesh := _make_box("HandProxy%s" % side.capitalize(), Vector3.ZERO, size, material, self)
-		_hand_proxies[side] = mesh
+		# F3.2: manos definitivas con malla propia (interior_spec.json, objetos
+		# hand_left/hand_right del LOD0). Se reubican con la IK de F2.2 igual que
+		# los proxies; si la malla no existe (greybox de F2.2) se conserva el
+		# proxy de caja. El contrato de interaccion no cambia.
+		var hand := lod0.find_child("hand_%s" % side, true, false) as MeshInstance3D
+		if hand != null:
+			hand.reparent(self, true)
+			_hand_proxies[side] = hand
+		else:
+			var mesh := _make_box("HandProxy%s" % side.capitalize(), Vector3.ZERO, size, material, self)
+			_hand_proxies[side] = mesh
 
 
 func _update_hand_proxies() -> void:
