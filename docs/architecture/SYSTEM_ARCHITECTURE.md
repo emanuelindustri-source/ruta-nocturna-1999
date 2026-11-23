@@ -319,4 +319,46 @@ Reglas:
 - Las posiciones de bind siguen siendo las de F2.2. Los `visual_offsets` y los
   proxies mueven los mandos a la cara del conductor para que sean visibles y
   alcanzables; la geometría definitiva es F3.2.
-- Solo se anima LOD0. El cambio de LOD y los espejos son F2.4/F3.5/F10.
+- Solo se anima LOD0. El cambio de LOD es F3.5/F10; los espejos retrovisores
+  llegaron en F2.4 (sección 12).
+
+## 12. Espejos, HUD, gamepad y guardado (Fase 2.4)
+
+F2.4 añade sobre la cabina de F2.2/F2.3 cuatro piezas, todas sin física de
+conducción y sin duplicar el tren motriz:
+
+```mermaid
+flowchart LR
+    CI[CabinInteraction.tscn] --> MI[CabinMirrors · 3 SubViewport]
+    CI --> HUD[CabinHUD]
+    CI --> GP[CabinGamepadAdapter]
+    HUD -->|get_telemetry| VP[VehiclePowertrain]
+    GP -->|foco / pulsar / girar| CTRL[CabinInteractionController]
+    QA[CreatorQAMenu] -->|reparar / repostar| VP
+    QA -->|guardar / cargar ranura QA| SV[SaveManager]
+```
+
+| Componente | Responsabilidad | No debe hacer |
+|---|---|---|
+| `CabinMirrors` | Espejo interior y dos laterales con `SubViewport`, cámara propia y cadencia `update_hz` del contrato | Ser arte final ni exceder su presupuesto de triángulos |
+| `CabinHUD` | Overlay mínimo: velocidad, marcha, combustible y avisos leídos de `get_telemetry()` | Escribir en el tren motriz, replicar el instrumental o crear botones |
+| `CabinGamepadAdapter` | D-Pad enfoca los controles contextuales, A pulsa, B suelta, stick derecho rota la cámara | Manejar tacto/ratón (siguen en F2.3) o navegar menús |
+| `CreatorQAMenu` (F2.4) | Reparaciones y repostaje por `VehiclePowertrain`; guardado/carga QA por `SaveManager` | Editar archivos o mutar nodos del mundo |
+| `SaveManager` (F2.4) | Línea base `save_version: 1` / `game_version: 0.2.0`, checksum, backup y rechazo de versiones futuras | Migraciones encadenadas (F9.4) |
+
+Reglas:
+
+- Los tres viewports comparten el `World3D` de la escena; sus pasos de render
+  cuentan en el presupuesto móvil de triángulos (`mirrors.budget` de
+  `cabin_interaction.json` v2). `set_viewports_enabled(false)` los apaga para el
+  perfil de bajo consumo.
+- El HUD refresca a `hud.refresh_hz` y traduce los ocho códigos de aviso del
+  contrato de simulación (`fuel_low` … `engine_seized`) con claves `HUD_WARN_*`.
+- El gamepad reutiliza el foco, el gesto y los límites de cámara de F2.3
+  (`focus_next_control`, `rotate_camera_look`). Los menús navegan con las
+  acciones estándar `ui_*`, que en `project.godot` incluyen D-Pad, stick y A/B.
+- El guardado F2.4 es la línea base de migraciones desde `v0.2.0`, verificada
+  con `tests/fixtures/save_v0_2_0.json` y `tools/make_save_fixture.py`. Las
+  migraciones encadenadas completas son F9.4.
+- `GameState` sigue sin llamar a `SaveManager`; el panel QA usa las APIs
+  directas de `SaveManager` permitidas al UI en el grafo de dependencias.

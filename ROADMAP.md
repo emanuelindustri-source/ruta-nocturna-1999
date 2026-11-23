@@ -1,9 +1,9 @@
 # ROADMAP — Ruta Nocturna: 1999
 
-**Versión actual:** `v0.2.2`  
-**Subfase actual:** **2.4 — Espejos, HUD mínimo, gamepad/D-Pad y guardado**  
-**Estado global:** Fase 1 completada; 2.1, 2.2 y 2.3 completadas; siguiente gate 2.4  
-**Última fuente:** cierre de Fase 2.3 en GitHub
+**Versión actual:** `v0.2.3`  
+**Subfase actual:** **3.1 — Arte definitivo del Esteem; pendiente de apertura en un chat nuevo**  
+**Estado global:** Fase 1 completada; Fase 2 completada (2.1–2.4); siguiente gate 3.1  
+**Última fuente:** cierre de Fase 2.4 en GitHub
 
 Esta es la fuente de verdad del desarrollo. Cada fila es un gate cerrado: no se
 avanza sin validación, actualización de estado, commit, tag y cambio de chat.
@@ -64,7 +64,7 @@ invertir en arte o mecánicas complejas.
 | **2.1** | `v0.2.0` | **DS-R** | Motor, caja automática P-R-N-D-2-L, O/D, frenos, combustible, térmica, electroventilador y tests. Validado y publicado. | Completada |
 | **2.2** | `v0.2.1` | **MiMo Pro** | Cabina funcional, volante, palanca, freno de mano, radio, guantera, paneles, rig de manos y poses IK. Validado y publicado. | Completada |
 | **2.3** | `v0.2.2` | **DS-R** | Interacción contextual “mirar/tocar”, IK 2/1/0 manos, puertas, seguros, vidrios, luces, antena y radio. Validado y publicado. | Completada |
-| **2.4** | `v0.2.3` | **MiMo Flash** | Espejos `SubViewport`, HUD mínimo, gamepad/D-Pad, save v0.2.0, QA de reparaciones y ADB. | Pendiente |
+| **2.4** | `v0.2.3` | **MiMo Flash** | Espejos `SubViewport`, HUD mínimo, gamepad/D-Pad, save v0.2.0, QA de reparaciones y ADB. Validado y publicado. | Completada |
 
 **Cierre:** revisar fotos reales de interior y mecánica antes de 2.2; `/new` tras cada fila.
 

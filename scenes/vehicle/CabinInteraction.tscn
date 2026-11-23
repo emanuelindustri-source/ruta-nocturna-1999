@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/vehicle/EsteemCabin.tscn" id="1_cabin"]
 [ext_resource type="Script" path="res://src/vehicle/vehicle_powertrain.gd" id="2_powertrain"]
@@ -7,6 +7,10 @@
 [ext_resource type="Script" path="res://src/vehicle/cabin_visual_proxies.gd" id="5_proxies"]
 [ext_resource type="Script" path="res://src/vehicle/cabin_interaction_controller.gd" id="6_interaction"]
 [ext_resource type="Script" path="res://src/vehicle/cabin_interaction_ui.gd" id="7_ui"]
+[ext_resource type="Script" path="res://src/vehicle/cabin_mirrors.gd" id="8_mirrors"]
+[ext_resource type="Script" path="res://src/vehicle/cabin_hud.gd" id="9_hud"]
+[ext_resource type="Script" path="res://src/vehicle/cabin_gamepad_adapter.gd" id="10_gamepad"]
+[ext_resource type="PackedScene" path="res://scenes/ui/CreatorQAMenu.tscn" id="11_qa"]
 
 [sub_resource type="Environment" id="Environment_cabin"]
 background_mode = 1
@@ -36,7 +40,7 @@ current = true
 fov = 70.0
 near = 0.05
 
-[node name="Powertrain" type="Node" parent="."]
+[node name="Powertrain" type="Node" parent="." groups=["vehicle_powertrain"]]
 script = ExtResource("2_powertrain")
 auto_simulate = false
 
@@ -60,3 +64,17 @@ powertrain_path = NodePath("../Powertrain")
 
 [node name="UI" type="CanvasLayer" parent="."]
 script = ExtResource("7_ui")
+
+[node name="Mirrors" type="Node3D" parent="."]
+script = ExtResource("8_mirrors")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+script = ExtResource("9_hud")
+powertrain_path = NodePath("../Powertrain")
+
+[node name="Gamepad" type="Node" parent="."]
+script = ExtResource("10_gamepad")
+controller_path = NodePath("../Interaction")
+hud_path = NodePath("../HUD")
+
+[node name="CreatorQAMenu" parent="." instance=ExtResource("11_qa")]

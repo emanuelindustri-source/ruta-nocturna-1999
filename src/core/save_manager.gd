@@ -246,7 +246,9 @@ func _write_atomic(path: String, text: String) -> bool:
 	if rename_error != OK:
 		push_error("SaveManager: no se pudo activar %s (%s)" % [filename, rename_error])
 		if directory.file_exists(filename + ".bak"):
-			directory.copy(filename + ".bak", filename)
+			# DirAccess.copy resuelve las rutas contra el proceso, no contra el
+			# directorio: se pasan rutas absolutas (F2.4, prueba de respaldo).
+			directory.copy(path + ".bak", path)
 		return false
 	return true
 
@@ -260,7 +262,7 @@ func _backup_file(path: String) -> bool:
 		return false
 	if directory.file_exists(filename + ".bak"):
 		directory.remove(filename + ".bak")
-	return directory.copy(filename, filename + ".bak") == OK
+	return directory.copy(path, path + ".bak") == OK
 
 
 func _migrate(data: Variant, from_version: int) -> Dictionary:

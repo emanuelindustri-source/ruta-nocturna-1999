@@ -7,7 +7,7 @@ extends Node
 ## El proceso devuelve 0 solo si todos los servicios base responden y el
 ## bloqueo del Esteem conserva LOD0/LOD1/LOD2, manifiesto y ancla de rig.
 
-const EXPECTED_VERSION := "0.2.2"
+const EXPECTED_VERSION := "0.2.3"
 const AUTOLOADS := [
 	"EventBus",
 	"HardwareProfiler",
@@ -49,6 +49,7 @@ func _ready() -> void:
 	await _test_vehicle_blockout()
 	await _test_vertical_slice()
 	await _test_powertrain()
+	_test_gamepad_menu_input()
 	_test_export_presets()
 	_finish()
 
@@ -174,6 +175,63 @@ func _test_save_manager() -> void:
 	_check(GameState.has_flag("smoke_saved_flag"), "bandera restaurada")
 	_check(absf(GameState.humanity - 61.0) < 0.01, "humanidad restaurada")
 	_check(SaveManager.delete_slot(TEST_SLOT), "borrado de guardado de prueba")
+
+	# F2.4: fixture de la linea base v0.2.0 (mismas reglas de checksum que
+	# SaveManager) cargado en una ranura real.
+	var fixture_text := FileAccess.get_file_as_string("res://tests/fixtures/save_v0_2_0.json")
+	_check(not fixture_text.is_empty(), "fixture v0.2.0 presente")
+	var fixture: Variant = JSON.parse_string(fixture_text)
+	_check(fixture is Dictionary, "fixture v0.2.0 es JSON")
+	if fixture is Dictionary:
+		_check(int(fixture.get("save_version", 0)) == 1, "fixture con save_version 1")
+		_check(str(fixture.get("game_version", "")) == "0.2.0", "fixture con game_version 0.2.0")
+		var fixture_slot := 97
+		var fixture_path := SaveManager.get_slot_path(fixture_slot, false)
+		var fixture_file := FileAccess.open(fixture_path, FileAccess.WRITE)
+		_check(fixture_file != null, "ranura del fixture escribible")
+		if fixture_file != null:
+			fixture_file.store_string(fixture_text)
+			fixture_file.close()
+		GameState.start_new_game(false)
+		_check(SaveManager.load_slot(fixture_slot), "carga del fixture v0.2.0 con checksum verificado")
+		_check(GameState.chapter == 1 and GameState.region == "carabobo", "estado del fixture aplicado")
+		_check(GameState.has_flag("tutorial_done"), "bandera del fixture restaurada")
+		_check(absf(GameState.humanity - 61.0) < 0.01, "humanidad del fixture restaurada")
+		SaveManager.delete_slot(fixture_slot)
+
+	# F2.4: backup antes de sobrescribir y escritura atomica sin temporales.
+	GameState.start_new_game(false)
+	GameState.set_flag("smoke_backup_flag", true)
+	_check(SaveManager.save_slot(TEST_SLOT, "smoke_backup"), "primer guardado de la linea base")
+	_check(SaveManager.save_slot(TEST_SLOT, "smoke_backup_2"), "segundo guardado sobrescribe")
+	var backup_path := SaveManager.get_slot_path(TEST_SLOT, false) + ".bak"
+	_check(FileAccess.file_exists(backup_path), "backup .bak creado antes de sobrescribir")
+	_check(
+		not FileAccess.file_exists(SaveManager.get_slot_path(TEST_SLOT, false) + ".tmp"),
+		"sin temporal .tmp tras guardar"
+	)
+	SaveManager.delete_slot(TEST_SLOT)
+
+	# F2.4: una version futura se rechaza sin sobrescribir el archivo.
+	var future_slot := 96
+	_check(SaveManager.save_slot(future_slot, "smoke_future"), "guardado previo para la prueba")
+	var future_path := SaveManager.get_slot_path(future_slot, false)
+	var future_envelope: Variant = JSON.parse_string(FileAccess.get_file_as_string(future_path))
+	_check(future_envelope is Dictionary, "guardado previo legible")
+	if future_envelope is Dictionary:
+		future_envelope["save_version"] = 99
+		var future_file := FileAccess.open(future_path, FileAccess.WRITE)
+		if future_file != null:
+			future_file.store_string(JSON.stringify(future_envelope, "\t", true, true) + "\n")
+			future_file.close()
+		_check(not SaveManager.load_slot(future_slot), "guardado de version futura rechazado")
+		_check(not SaveManager.save_slot(future_slot, "smoke_future_overwrite"), "no se sobrescribe version futura")
+		var after_attempt: Variant = JSON.parse_string(FileAccess.get_file_as_string(future_path))
+		_check(
+			after_attempt is Dictionary and int(after_attempt.get("save_version", 0)) == 99,
+			"el archivo futuro queda intacto"
+		)
+	SaveManager.delete_slot(future_slot)
 	GameState.start_new_game(false)
 
 
@@ -258,7 +316,45 @@ func _test_creator_qa_menu() -> void:
 		qa_menu._register_tap()
 	_check(qa_menu.is_open(), "panel QA se abre con cinco toques")
 	qa_menu.close_menu()
+
+	# F2.4: QA de reparaciones sobre un tren motriz registrado en su grupo.
+	qa_menu.open_menu()
+	_check(qa_menu._vehicle_buttons.size() == 6, "seccion de vehiculo con seis acciones")
+	_check(qa_menu._vehicle_buttons[0].disabled, "acciones de vehiculo sin tren motriz")
+	_check(qa_menu._vehicle_value.text == tr("QA_STATUS_NO_VEHICLE"), "estado sin vehiculo localizado")
+	var powertrain := VehiclePowertrain.new()
+	powertrain.auto_simulate = false
+	add_child(powertrain)
+	powertrain.add_to_group("vehicle_powertrain")
+	qa_menu._refresh_values()
+	_check(not qa_menu._vehicle_buttons[0].disabled, "acciones habilitadas con tren motriz")
+	powertrain.set_fan_fault("cooling.fan_fuse", true)
+	powertrain.simulate(0.016)
+	_check(powertrain.get_warning("fan_fault"), "fallo de ventilador aplicado")
+	qa_menu._on_vehicle_action("repair_cooling")
+	_check(not powertrain.get_warning("fan_fault"), "reparacion de refrigeracion retira el aviso")
+	powertrain.set_fuel_level(4.0)
+	qa_menu._on_vehicle_action("low_fuel")
+	_check(absf(powertrain.fuel.level_l - 4.0) < 0.01, "combustible bajo fijado por QA")
+	qa_menu._on_vehicle_action("refuel")
+	_check(powertrain.fuel.level_l > 49.0, "repostaje completo por QA")
+	qa_menu._on_vehicle_action("fan_fuse_fault")
+	powertrain.simulate(0.016)
+	_check(powertrain.get_warning("fan_fault"), "fallo recreado por QA")
+	_check(qa_menu._status.text == tr("QA_STATUS_REPAIRED") or qa_menu._status.text.contains("fan_fault"), "estado de QA informado")
+
+	# F2.4: guardado y carga desde el panel QA en la ranura QA (nunca una
+	# partida real).
+	qa_menu._on_save_slot_pressed()
+	_check(FileAccess.file_exists(SaveManager.get_slot_path(0, true)), "guardado QA en la ranura qa/00")
+	_check(qa_menu._status.text == tr("QA_STATUS_SAVED"), "estado de guardado localizado")
+	qa_menu._on_load_slot_pressed()
+	_check(qa_menu._status.text == tr("QA_STATUS_LOADED"), "carga QA exitosa")
+	SaveManager.delete_slot(0, true)
+
+	qa_menu.close_menu()
 	qa_menu.queue_free()
+	powertrain.queue_free()
 	await get_tree().process_frame
 
 
@@ -450,6 +546,17 @@ func _test_powertrain() -> void:
 	_check(not vp.get_warning("fan_fault"), "aviso de fallo se apaga")
 	vp.queue_free()
 	await get_tree().process_frame
+
+
+func _test_gamepad_menu_input() -> void:
+	# F2.4: los menus (Boot, rebanada, panel QA) navegan con D-Pad/gamepad.
+	for action in ["ui_accept", "ui_cancel", "ui_up", "ui_down", "ui_left", "ui_right"]:
+		_check(InputMap.has_action(action), "accion de menu %s declarada" % action)
+		var gamepad_bound := false
+		for event in InputMap.action_get_events(action):
+			if event is InputEventJoypadButton or event is InputEventJoypadMotion:
+				gamepad_bound = true
+		_check(gamepad_bound, "%s responde a gamepad/D-Pad" % action)
 
 
 func _test_export_presets() -> void:

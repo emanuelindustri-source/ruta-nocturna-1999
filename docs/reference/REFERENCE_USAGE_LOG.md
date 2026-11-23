@@ -282,6 +282,46 @@ cargaron las 40 imágenes en contexto** y **no se copió ningún archivo** de
 - Implementar espejos, HUD, gamepad o guardado (F2.4).
 - Usar las fotos como capturas de tienda o assets del juego.
 
+## 2026-11-22 - Fase 2.4 - espejos, HUD, gamepad y guardado
+
+**Alcance:** revisión de metadatos del catálogo (95 entradas) para espejos,
+instrumental/HUD, gamepad y guardado, más una sola copia de trabajo ya derivada
+en F2.2 (`build/reference/review_f22/images_(10)_review.jpg`). **No se cargaron
+las 40 imágenes en contexto** y **no se copió ningún archivo** de
+`C:\Dev\fotos de ejemplo` al repositorio. La biblioteca externa quedó intacta
+(escaneo rápido: sin cambios).
+
+### Referencias utilizadas
+
+| Referencia | Uso | Resultado |
+|---|---|---|
+| Metadatos de `reference_catalog.json` (95 fichas) | Buscar fotos de espejos, instrumental, gamepad y guardado | No hay entradas dedicadas a gamepad, HUD digital ni guardado; las fotos de cabina están marcadas `F2.2/F3.2` |
+| `images_(10)_review.jpg` (copia de trabajo de F2.2, tablero completo) | Confirmar instrumental y zona superior del parabrisas | Instrumental con velocímetro central y testigos laterales detrás del volante; cabecera de parabrisas superior visible (zona del espejo retrovisor); consola con palanca, freno de mano y mando de cristaleras |
+| Fichas de conceptos Gemini (`ui`, `art_direction`) | Dirección de HUD y navegación | Solo inspiración de paleta; los mockups de 25 botones siguen anulados por la interacción contextual |
+| `ESTEEM_MECHANICAL_NOTES.md` | Lo ya documentado | Confirma instrumental convencional y ausencia de datos de espejos en el manual disponible |
+
+### Decisiones (F2.4)
+
+- El HUD es un **overlay mínimo** (velocidad, marcha, combustible y avisos)
+  alimentado por `VehiclePowertrain.get_telemetry()`. No replica el instrumental
+  del modelo ni añade botones táctiles; el arte final del instrumental es F3.2.
+- Los espejos se implementan como **primitivas de código** con `SubViewport`
+  (interior + dos laterales) sobre las anclas `anchor_mirror_left` /
+  `anchor_mirror_right` de `blockout_spec.json`. Las cotas y el ángulo son
+  provisionales; el espejo definitivo es F3.1 y cuentan en el presupuesto móvil
+  de triángulos.
+- La biblioteca **no contiene referencias de gamepad ni de guardado**: se usa la
+  API estándar de Godot (`InputMap`, acciones `ui_*`) sin inventar referencias.
+- El HUD y los avisos usan claves de localización en once idiomas; las
+  traducciones son provisionales hasta la revisión nativa de F8.4.
+
+### Descartado
+
+- Copiar imágenes, recortes o texturas de la biblioteca externa.
+- Presentar los conceptos de IA como canon o como capturas de tienda.
+- Replicar el mockup de HUD con parrilla de botones.
+- Tomar fotos como fuente de cotas de espejos o de ángulos de visión.
+
 ## Próxima revisión
 
 - Revisión rápida: inicio y cierre de cada subfase.

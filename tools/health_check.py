@@ -139,11 +139,16 @@ REQUIRED_FILES = [
     "src/vehicle/cabin_interaction_ui.gd",
     "src/vehicle/cabin_reticle.gd",
     "src/vehicle/radio_unit.gd",
+    "src/vehicle/cabin_mirrors.gd",
+    "src/vehicle/cabin_hud.gd",
+    "src/vehicle/cabin_gamepad_adapter.gd",
     "scenes/vehicle/CabinInteraction.tscn",
     "tests/vehicle/InteractionTest.tscn",
     "tests/vehicle/interaction_test.gd",
     "tools/dev/interaction_test.cmd",
     "tools/dev/interaction_test.ps1",
+    "tests/fixtures/save_v0_2_0.json",
+    "tools/make_save_fixture.py",
 ]
 
 REQUIRED_REPO_BINARIES = {".apk", ".aab", ".keystore", ".jks", ".p12", ".pfx"}
@@ -594,6 +599,21 @@ def check_godot_import(checks: list[Check], skip_import: bool) -> None:
     )
 
 
+def check_save_fixture(checks: list[Check]) -> None:
+    try:
+        module = load_module(TOOLS / "make_save_fixture.py", "rn1999_make_save_fixture")
+        code = module.check_fixture()
+        result(
+            checks,
+            "save_fixture",
+            code == 0,
+            "Fixture v0.2.0 verificado" if code == 0 else "Fixture v0.2.0 inválido",
+            {"exit_code": code},
+        )
+    except Exception as exc:  # noqa: BLE001
+        result(checks, "save_fixture", False, f"No se pudo verificar el fixture: {exc}")
+
+
 def build_report(checks: list[Check], mode: str) -> dict[str, Any]:
     counts = {"ok": 0, "warning": 0, "error": 0}
     for check in checks:
@@ -643,6 +663,7 @@ def main() -> int:
     check_forbidden_binaries(checks)
     check_autoloads(checks)
     check_generated_assets(checks)
+    check_save_fixture(checks)
     check_export_presets(checks)
     check_build_toolchain(checks)
     check_android_device(checks)

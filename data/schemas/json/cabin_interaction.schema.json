@@ -10,6 +10,7 @@
     "vehicle_id",
     "content_status",
     "description",
+    "schema_history",
     "units",
     "axes",
     "source_policy",
@@ -25,6 +26,9 @@
     "gear_gate",
     "handbrake",
     "glovebox",
+    "mirrors",
+    "hud",
+    "gamepad",
     "visual_offsets",
     "visual_proxies",
     "feedback",
@@ -33,11 +37,24 @@
     "reference_notes"
   ],
   "properties": {
-    "schema_version": { "type": "integer", "minimum": 1 },
+    "schema_version": { "type": "integer", "minimum": 2 },
     "contract_id": { "type": "string", "pattern": "^vehicle\\.[a-z0-9_.]+$" },
     "vehicle_id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
     "content_status": { "type": "string", "minLength": 3 },
     "description": { "type": "string", "minLength": 40 },
+    "schema_history": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["version", "note"],
+        "properties": {
+          "version": { "type": "integer", "minimum": 1 },
+          "note": { "type": "string", "minLength": 20 }
+        }
+      }
+    },
     "units": {
       "type": "object",
       "additionalProperties": { "type": "string" }
@@ -69,6 +86,9 @@
     "gear_gate": { "$ref": "#/$defs/gear_gate" },
     "handbrake": { "$ref": "#/$defs/handbrake" },
     "glovebox": { "$ref": "#/$defs/glovebox" },
+    "mirrors": { "$ref": "#/$defs/mirrors" },
+    "hud": { "$ref": "#/$defs/hud" },
+    "gamepad": { "$ref": "#/$defs/gamepad" },
     "visual_offsets": { "$ref": "#/$defs/visual_offsets" },
     "visual_proxies": { "$ref": "#/$defs/visual_proxies" },
     "feedback": {
@@ -463,6 +483,207 @@
         "open_angle_deg": { "type": "number" },
         "travel_s": { "type": "number", "exclusiveMinimum": 0 },
         "initial_open": { "type": "boolean" }
+      }
+    },
+    "mirrors": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["note", "ids", "entries", "budget"],
+      "properties": {
+        "note": { "type": "string", "minLength": 40 },
+        "ids": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": { "enum": ["rearview", "left", "right"] }
+        },
+        "entries": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": { "$ref": "#/$defs/mirror" }
+        },
+        "budget": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["surface_max_triangles_total", "scene_passes", "counted_in_mobile_budget", "note"],
+          "properties": {
+            "surface_max_triangles_total": { "type": "integer", "minimum": 6, "maximum": 48 },
+            "scene_passes": { "type": "integer", "minimum": 1, "maximum": 4 },
+            "counted_in_mobile_budget": { "type": "boolean" },
+            "note": { "type": "string", "minLength": 40 }
+          }
+        }
+      }
+    },
+    "mirror": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "anchor",
+        "position_m",
+        "surface_rotation_deg",
+        "camera_offset_m",
+        "camera_rotation_deg",
+        "surface_size_m",
+        "viewport_size_px",
+        "fov_deg",
+        "update_hz"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z_]+$" },
+        "kind": { "enum": ["interior_rearview", "side"] },
+        "anchor": { "type": "string" },
+        "position_m": { "$ref": "#/$defs/vector3" },
+        "surface_rotation_deg": { "$ref": "#/$defs/vector3" },
+        "camera_offset_m": { "$ref": "#/$defs/vector3" },
+        "camera_rotation_deg": { "$ref": "#/$defs/vector3" },
+        "surface_size_m": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": { "type": "number", "exclusiveMinimum": 0 }
+        },
+        "viewport_size_px": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": { "type": "integer", "minimum": 32, "maximum": 512 }
+        },
+        "fov_deg": { "type": "number", "minimum": 30, "maximum": 110 },
+        "update_hz": { "type": "number", "minimum": 1, "maximum": 60 }
+      }
+    },
+    "hud": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "note",
+        "source",
+        "refresh_hz",
+        "corner",
+        "fields",
+        "units",
+        "label_keys",
+        "warning_keys",
+        "max_persistent_buttons",
+        "text_not_only_color"
+      ],
+      "properties": {
+        "note": { "type": "string", "minLength": 40 },
+        "source": { "const": "VehiclePowertrain.get_telemetry" },
+        "refresh_hz": { "type": "number", "minimum": 1, "maximum": 30 },
+        "corner": { "enum": ["bottom_right", "bottom_left", "top_right", "top_left"] },
+        "fields": {
+          "type": "array",
+          "minItems": 4,
+          "uniqueItems": true,
+          "items": { "enum": ["speed_kph", "selector", "gear", "fuel_l", "warnings"] }
+        },
+        "units": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["speed", "fuel"],
+          "properties": {
+            "speed": { "type": "string", "minLength": 1 },
+            "fuel": { "type": "string", "minLength": 1 }
+          }
+        },
+        "label_keys": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["speed", "gear", "fuel", "gamepad_hint"],
+          "properties": {
+            "speed": { "type": "string", "pattern": "^HUD_[A-Z0-9_]+$" },
+            "gear": { "type": "string", "pattern": "^HUD_[A-Z0-9_]+$" },
+            "fuel": { "type": "string", "pattern": "^HUD_[A-Z0-9_]+$" },
+            "gamepad_hint": { "type": "string", "pattern": "^HUD_[A-Z0-9_]+$" }
+          }
+        },
+        "warning_keys": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "fuel_low",
+            "overheat",
+            "fan_fault",
+            "brake_fade",
+            "parking_brake",
+            "safe_mode",
+            "brake_fluid_low",
+            "engine_seized"
+          ],
+          "properties": {
+            "fuel_low": { "type": "string", "pattern": "^HUD_WARN_[A-Z0-9_]+$" },
+            "overheat": { "type": "string", "pattern": "^HUD_WARN_[A-Z0-9_]+$" },
+            "fan_fault": { "type": "string", "pattern": "^HUD_WARN_[A-Z0-9_]+$" },
+            "brake_fade": { "type": "string", "pattern": "^HUD_WARN_[A-Z0-9_]+$" },
+            "parking_brake": { "type": "string", "pattern": "^HUD_WARN_[A-Z0-9_]+$" },
+            "safe_mode": { "type": "string", "pattern": "^HUD_WARN_[A-Z0-9_]+$" },
+            "brake_fluid_low": { "type": "string", "pattern": "^HUD_WARN_[A-Z0-9_]+$" },
+            "engine_seized": { "type": "string", "pattern": "^HUD_WARN_[A-Z0-9_]+$" }
+          }
+        },
+        "max_persistent_buttons": { "type": "integer", "minimum": 0, "maximum": 7 },
+        "text_not_only_color": { "type": "boolean" }
+      }
+    },
+    "gamepad": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["note", "menu_actions", "cabin", "min_target_dp", "tv_navigation_required"],
+      "properties": {
+        "note": { "type": "string", "minLength": 40 },
+        "menu_actions": {
+          "type": "array",
+          "minItems": 6,
+          "uniqueItems": true,
+          "items": { "enum": ["ui_accept", "ui_cancel", "ui_up", "ui_down", "ui_left", "ui_right"] }
+        },
+        "cabin": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "focus_next_buttons",
+            "focus_previous_buttons",
+            "accept_button",
+            "release_button",
+            "look_axis",
+            "look_sensitivity",
+            "deadzone",
+            "focus_wrap"
+          ],
+          "properties": {
+            "focus_next_buttons": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": { "type": "integer", "minimum": 0, "maximum": 31 }
+            },
+            "focus_previous_buttons": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": { "type": "integer", "minimum": 0, "maximum": 31 }
+            },
+            "accept_button": { "type": "integer", "minimum": 0, "maximum": 31 },
+            "release_button": { "type": "integer", "minimum": 0, "maximum": 31 },
+            "look_axis": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": { "type": "integer", "minimum": 0, "maximum": 9 }
+            },
+            "look_sensitivity": { "type": "number", "exclusiveMinimum": 0, "maximum": 10 },
+            "deadzone": { "type": "number", "minimum": 0, "exclusiveMaximum": 1 },
+            "focus_wrap": { "type": "boolean" }
+          }
+        },
+        "min_target_dp": { "type": "number", "minimum": 44 },
+        "tv_navigation_required": { "type": "boolean" }
       }
     },
     "visual_offsets": {

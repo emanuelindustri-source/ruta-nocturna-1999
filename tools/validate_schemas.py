@@ -342,7 +342,8 @@ def validate() -> tuple[list[str], list[str]]:
 
     # Contrato de interaccion contextual de la cabina: delega la palanca y el
     # Overdrive en vehicle_powertrain.json y el freno de mano en brakes.parking.
-    # No define fisica de conduccion, espejos, HUD, gamepad ni guardado.
+    # No define fisica de conduccion ni guardado. Desde la version 2 (F2.4)
+    # declara espejos SubViewport, HUD minimo y gamepad/D-Pad.
     interaction = data["cabin_interaction"]
     if interaction.get("vehicle_id") != vehicle.get("vehicle_id"):
         errors.append("cabin_interaction: vehicle_id no coincide con vehicle_components")
@@ -501,6 +502,100 @@ def validate() -> tuple[list[str], list[str]]:
         errors.append("cabin_interaction: estados de luces invalidos")
     if interaction.get("radio", {}).get("bands") != ["AM", "FM"]:
         errors.append("cabin_interaction: bandas de radio invalidas")
+
+    # --- F2.4: espejos, HUD y gamepad (cabin_interaction v2) -------------------
+    if int(interaction.get("schema_version", 0)) != 2:
+        errors.append("cabin_interaction: schema_version debe ser 2 desde F2.4")
+    history_versions = [
+        int(entry.get("version", 0)) for entry in interaction.get("schema_history", []) if isinstance(entry, dict)
+    ]
+    if history_versions != [1, 2]:
+        errors.append("cabin_interaction: schema_history debe documentar v1 -> v2")
+
+    mirrors = interaction.get("mirrors", {})
+    mirror_ids = [str(entry.get("id", "")) for entry in mirrors.get("entries", []) if isinstance(entry, dict)]
+    if mirror_ids != list(mirrors.get("ids", [])):
+        errors.append("cabin_interaction: mirrors.entries no coincide con mirrors.ids")
+    if sorted(mirror_ids) != ["left", "rearview", "right"]:
+        errors.append("cabin_interaction: se esperan los espejos rearview/left/right")
+    mirror_budget = mirrors.get("budget", {})
+    if int(mirror_budget.get("scene_passes", -1)) != len(mirror_ids):
+        errors.append("cabin_interaction: mirrors.budget.scene_passes debe ser igual al numero de espejos")
+    surface_triangles = 2 * len(mirror_ids)
+    if surface_triangles > int(mirror_budget.get("surface_max_triangles_total", 0)):
+        errors.append("cabin_interaction: superficies de espejo superan su presupuesto de triangulos")
+    if mirror_budget.get("counted_in_mobile_budget") is not True:
+        errors.append("cabin_interaction: los espejos deben contar en el presupuesto movil")
+    if BLOCKOUT_SPEC.exists():
+        blockout_doc = load_json(BLOCKOUT_SPEC)
+        blockout_anchors = {
+            str(anchor.get("id", "")): anchor.get("position_m", [])
+            for anchor in blockout_doc.get("rig_anchor", {}).get("anchors", [])
+        }
+        for entry in mirrors.get("entries", []):
+            if not isinstance(entry, dict):
+                continue
+            mirror_id = str(entry.get("id", ""))
+            anchor = str(entry.get("anchor", ""))
+            position = entry.get("position_m", [])
+            if len(position) != 3:
+                errors.append(f"cabin_interaction: espejo {mirror_id} sin posicion 3D")
+                continue
+            x, y, z = (float(value) for value in position)
+            if abs(x) > 1.0 or not (0.5 <= y <= 1.45) or not (-1.1 <= z <= 0.5):
+                errors.append(f"cabin_interaction: espejo {mirror_id} fuera de los limites de cabina")
+            if str(entry.get("kind", "")) == "side":
+                if not anchor:
+                    errors.append(f"cabin_interaction: espejo lateral {mirror_id} sin ancla")
+                elif anchor not in blockout_anchors:
+                    errors.append(f"cabin_interaction: espejo {mirror_id} usa ancla inexistente {anchor}")
+                else:
+                    anchor_position = blockout_anchors[anchor]
+                    if len(anchor_position) == 3 and any(
+                        abs(float(anchor_position[index]) - position[index]) > 0.01 for index in range(3)
+                    ):
+                        errors.append(f"cabin_interaction: espejo {mirror_id} no coincide con {anchor}")
+            elif anchor:
+                errors.append(f"cabin_interaction: espejo interior {mirror_id} no debe declarar ancla")
+
+    hud = interaction.get("hud", {})
+    if str(hud.get("source", "")) != "VehiclePowertrain.get_telemetry":
+        errors.append("cabin_interaction: hud.source debe ser VehiclePowertrain.get_telemetry")
+    if int(hud.get("max_persistent_buttons", -1)) != 0:
+        errors.append("cabin_interaction: el HUD no declara botones tactiles persistentes")
+    if hud.get("text_not_only_color") is not True:
+        errors.append("cabin_interaction: el HUD debe informar con texto, no solo con color")
+    expected_warning_codes = {
+        "fuel_low",
+        "overheat",
+        "fan_fault",
+        "brake_fade",
+        "parking_brake",
+        "safe_mode",
+        "brake_fluid_low",
+        "engine_seized",
+    }
+    hud_warning_keys = hud.get("warning_keys", {})
+    if set(hud_warning_keys) != expected_warning_codes:
+        errors.append("cabin_interaction: hud.warning_keys debe cubrir los avisos del tren motriz")
+    hud_loc_keys: list[str] = [str(value) for value in hud.get("label_keys", {}).values() if isinstance(value, str)]
+    hud_loc_keys.extend(str(value) for value in hud_warning_keys.values() if isinstance(value, str))
+    for loc_key in hud_loc_keys:
+        if loc_key not in interaction_loc:
+            errors.append(f"cabin_interaction: clave de HUD ausente en el CSV {loc_key}")
+
+    gamepad = interaction.get("gamepad", {})
+    if float(gamepad.get("min_target_dp", 0)) < 44:
+        errors.append("cabin_interaction: gamepad.min_target_dp debe ser al menos 44")
+    if gamepad.get("tv_navigation_required") is not True:
+        errors.append("cabin_interaction: la navegacion D-Pad/TV es obligatoria")
+    cabin_input = gamepad.get("cabin", {})
+    next_buttons = set(cabin_input.get("focus_next_buttons", []))
+    previous_buttons = set(cabin_input.get("focus_previous_buttons", []))
+    if not next_buttons or not previous_buttons:
+        errors.append("cabin_interaction: gamepad.cabin requiere botones de foco")
+    if next_buttons & previous_buttons:
+        errors.append("cabin_interaction: botones de foco solapados en gamepad.cabin")
 
     known_loc = localization_keys()
     all_loc_uses: list[tuple[str, str]] = []

@@ -201,3 +201,24 @@ en `src/vehicle/cabin_visual_proxies.gd`:
   cambian.
 - No se añaden texturas, materiales PBR ni emblemas; los colores de los proxies
   son grises/beige neutros del proyecto.
+
+## 11. Espejos, HUD y gamepad (Fase 2.4)
+
+F2.4 **no genera nuevos `.glb` ni modifica manifiestos**. Igual que en F2.3, los
+entregables visuales nuevos son primitivas de código:
+
+- **Espejos** (`src/vehicle/cabin_mirrors.gd`): tres superficies `QuadMesh`
+  (2 triángulos cada una) con `SubViewport` de resolución limitada y `Camera3D`
+  propia, declarados en `cabin_interaction.json` (`mirrors`). Las posiciones
+  laterales coinciden con `anchor_mirror_left` / `anchor_mirror_right` de
+  `blockout_spec.json` y la del interior con la cabecera de parabrisas
+  observada en fotos; todas son valores de diseño provisionales. No llevan LOD
+  porque no son mallas de la fábrica: el arte definitivo del espejo es F3.1.
+- **HUD** (`src/vehicle/cabin_hud.gd`): etiquetas de código, sin mallas. El
+  arte del instrumental final es F3.2.
+- **Gamepad**: sin assets; solo `InputMap` en `project.godot` y el adaptador.
+
+Presupuestos: las superficies de espejo suman 6 triángulos (presupuesto
+declarado: 12) y los tres pasos de render cuentan en el presupuesto móvil de
+120.000 (`mirrors.budget.counted_in_mobile_budget`). La medición de los pasos
+reales con la escena cargada es F3.5/F10.1.

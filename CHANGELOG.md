@@ -4,6 +4,71 @@ Todas las fechas usan ISO 8601. Las versiones siguen SemVer.
 
 ## [Unreleased]
 
+## [0.2.3] — 2026-11-22
+
+### Añadido
+
+- `data/schemas/cabin_interaction.json` **`schema_version: 2`** (cambio
+  aditivo): secciones `mirrors` (tres espejos con `SubViewport`, presupuesto de
+  triángulos y pasos de render), `hud` (overlay mínimo con los ocho avisos del
+  tren motriz) y `gamepad` (acciones `ui_*`, D-Pad, A/B y stick), con
+  `schema_history` documentando la migración v1 → v2.
+- `src/vehicle/cabin_mirrors.gd`: espejo interior y dos laterales anclados a
+  `anchor_mirror_left` / `anchor_mirror_right`, cámaras que comparten el
+  `World3D` de la escena, cadencia `update_hz` rearmada con `UPDATE_ONCE` y
+  `set_viewports_enabled()` para el perfil de bajo consumo.
+- `src/vehicle/cabin_hud.gd`: HUD de velocidad, marcha, combustible y avisos
+  alimentado por `VehiclePowertrain.get_telemetry()` a `hud.refresh_hz`; claves
+  `HUD_*` y `HUD_WARN_*` en once idiomas; cero botones táctiles y avisos con
+  texto además de color.
+- `src/vehicle/cabin_gamepad_adapter.gd`: D-Pad enfoca los controles
+  contextuales con ciclo cerrado, A pulsa, B suelta y el stick derecho rota la
+  cámara con los límites de F2.3. Los menús navegan con las acciones `ui_*`
+  (D-Pad, stick y A/B declarados en `project.godot`).
+- Guardado línea base `v0.2.0`: fixture `tests/fixtures/save_v0_2_0.json`
+  generado y verificado con `tools/make_save_fixture.py` (replica exacta del
+  JSON canónico de `SaveManager`), carga real en prueba, backup `.bak`,
+  escritura sin temporales y rechazo verificado de versiones futuras.
+- Panel QA: sección de vehículo (reparar motor, refrigeración y frenos,
+  repostar, fijar combustible bajo y dañar el fusible del ventilador) sobre el
+  `VehiclePowertrain` del grupo `vehicle_powertrain`, más guardar/cargar la
+  ranura QA (`user://saves/qa/`, sin pisar partidas reales). El panel QA
+  también está disponible en la escena de cabina con F12.
+- Foco inicial con gamepad en Boot y en la rebanada (el D-Pad toma el foco en
+  el primer evento). En el menú raíz, B del gamepad no cierra la aplicación;
+  Esc sí.
+- 29 claves de localización nuevas (`HUD_*`, `HUD_WARN_*`, `QA_*` de vehículo
+  y guardado) en los once idiomas, provisionales hasta la revisión nativa de
+  F8.4; `BOOT_KICKER` actualizado a Fase 2.4.
+- `health_check.py`: nuevo chequeo `save_fixture` y archivos de F2.4 en
+  `REQUIRED_FILES`.
+
+### Cambiado
+
+- Versión del proyecto a `0.2.3` (`VERSION`, `project.godot`,
+  `export_presets.cfg`, `EXPECTED_VERSION` del smoke test y `PHASE` de Boot).
+  Android `version/name=0.2.3`, `version/code=106`; Windows `0.2.3.0`.
+- `CabinInteractionSpec` acepta `schema_version` 1 y 2 y exige las secciones
+  `mirrors`, `hud` y `gamepad` en la versión 2.
+- `CabinInteractionController` expone `focus_next_control()`,
+  `focus_previous_control()` y `rotate_camera_look()`, reutilizables por el
+  gamepad sin introducir eventos de gamepad en el núcleo de F2.3.
+- `tests/vehicle/InteractionTest.tscn`: **257 comprobaciones** (eran 180) con
+  espejos, HUD, gamepad y límites de fuentes.
+- `tests/smoke/SmokeTest.tscn`: **198 comprobaciones** (eran 155) con fixture
+  de guardado, backup, versión futura, QA de reparaciones y menús con gamepad.
+  Tren motriz (125) y cabina (46) sin cambios.
+- Documentación actualizada: `SYSTEM_ARCHITECTURE` §12, `DATA_CONTRACTS` §9.1 y
+  §15.1, `STATE_MACHINES` §10, `ASSET_FACTORY` §11 y `QA_AND_RECOVERY` §14.
+
+### Corregido
+
+- `SaveManager._backup_file()` y la recuperación tras un rename fallido usaban
+  rutas relativas en `DirAccess.copy()`, que se resuelven contra el proceso y
+  fallaban al abrir el archivo: ahora usan rutas absolutas
+  (`user://saves/slot_XX.json.bak`). Lo destapó la nueva prueba de backup de
+  esta subfase.
+
 ## [0.2.2] — 2026-11-22
 
 ### Añadido

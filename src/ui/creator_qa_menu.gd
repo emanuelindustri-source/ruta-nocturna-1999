@@ -4,9 +4,12 @@ extends CanvasLayer
 ## Se abre con F12 o cinco toques en la esquina superior izquierda. Todas sus
 ## acciones usan APIs del juego: nunca editan archivos ni mutan nodos del mundo
 ## directamente. En build de tienda queda desactivado salvo bandera explícita.
+## La sección de vehículo de F2.4 repara, daña y repostaba mediante
+## `VehiclePowertrain`; el guardado escribe por `SaveManager` en la ranura QA.
 
 const REQUIRED_TAPS := 5
 const TAP_WINDOW_MS := 2000
+const QA_SAVE_SLOT := 0
 const SERVICE_NAMES := [
 	"EventBus",
 	"HardwareProfiler",
@@ -26,6 +29,18 @@ const WEATHER_BUTTONS := [
 	{"preset": "storm", "key": "QA_WEATHER_STORM"},
 	{"preset": "fog", "key": "QA_WEATHER_FOG"},
 ]
+const VEHICLE_BUTTONS := [
+	{"action": "repair_engine", "key": "QA_ACTION_REPAIR_ENGINE"},
+	{"action": "repair_cooling", "key": "QA_ACTION_REPAIR_COOLING"},
+	{"action": "repair_brakes", "key": "QA_ACTION_REPAIR_BRAKES"},
+	{"action": "refuel", "key": "QA_ACTION_REFUEL"},
+	{"action": "low_fuel", "key": "QA_ACTION_LOW_FUEL"},
+	{"action": "fan_fuse_fault", "key": "QA_ACTION_FAN_FUSE_FAULT"},
+]
+const VEHICLE_COMPONENT_REPAIRS := {
+	"repair_cooling": ["cooling.fan_fuse", "cooling.fan_relay", "cooling.fan_motor", "cooling.thermostat"],
+	"repair_brakes": ["brakes.front_pads", "brakes.master_cylinder"],
+}
 
 @onready var _hotspot: Control = $Hotspot
 @onready var _dimmer: ColorRect = $Dimmer
@@ -45,9 +60,12 @@ var _trust_value: Label = null
 var _mission_value: Label = null
 var _weather_value: Label = null
 var _services_value: Label = null
+var _vehicle_value: Label = null
+var _vehicle_buttons: Array[Button] = []
 
 
 func _ready() -> void:
+	add_to_group("creator_qa_menu")
 	if not is_available():
 		queue_free()
 		return
@@ -172,6 +190,26 @@ func _build_body() -> void:
 	_add_button(diagnostics_row, "UI_COPY_REPORT", _on_copy_report_pressed)
 	_add_button(diagnostics_row, "UI_TEST_MODE", _on_toggle_test_mode_pressed)
 	_add_button(diagnostics_row, "QA_ACTION_CLEAR_FLAGS", _on_clear_flags_pressed)
+	var save_row := HFlowContainer.new()
+	save_row.add_theme_constant_override("h_separation", 8)
+	save_row.add_theme_constant_override("v_separation", 8)
+	_body.add_child(save_row)
+	_add_button(save_row, "QA_ACTION_SAVE_SLOT", _on_save_slot_pressed)
+	_add_button(save_row, "QA_ACTION_LOAD_SLOT", _on_load_slot_pressed)
+
+	_add_section("QA_SECTION_VEHICLE")
+	var vehicle_grid := GridContainer.new()
+	vehicle_grid.columns = 2
+	vehicle_grid.add_theme_constant_override("h_separation", 28)
+	vehicle_grid.add_theme_constant_override("v_separation", 5)
+	_body.add_child(vehicle_grid)
+	_vehicle_value = _add_grid_row(vehicle_grid, "QA_LABEL_VEHICLE_STATUS")
+	var vehicle_row := HFlowContainer.new()
+	vehicle_row.add_theme_constant_override("h_separation", 8)
+	vehicle_row.add_theme_constant_override("v_separation", 8)
+	_body.add_child(vehicle_row)
+	for entry in VEHICLE_BUTTONS:
+		_vehicle_buttons.append(_add_button(vehicle_row, entry["key"], _on_vehicle_action.bind(str(entry["action"]))))
 
 
 func _add_section(key: String) -> Label:
@@ -251,7 +289,80 @@ func _refresh_values() -> void:
 		float(weather.get("rain", 0.0)) * 100.0,
 	]
 	_services_value.text = "%d/%d" % [get_service_count(), SERVICE_NAMES.size()]
+	var powertrain := _find_powertrain()
+	for button in _vehicle_buttons:
+		button.disabled = powertrain == null
+	if _vehicle_value != null:
+		_vehicle_value.text = tr("QA_STATUS_NO_VEHICLE") if powertrain == null else _vehicle_status_text(powertrain)
 	_warning.visible = GameState.is_test_save
+
+
+func _find_powertrain() -> VehiclePowertrain:
+	return get_tree().get_first_node_in_group("vehicle_powertrain") as VehiclePowertrain
+
+
+func _vehicle_status_text(powertrain: VehiclePowertrain) -> String:
+	var telemetry := powertrain.get_telemetry()
+	if telemetry.is_empty():
+		return tr("QA_STATUS_NO_VEHICLE")
+	var active_warnings: Array[String] = []
+	var warnings: Dictionary = telemetry.get("warnings", {})
+	for code in warnings.keys():
+		if bool(warnings[code]):
+			active_warnings.append(str(code))
+	return "%s · %.0f °C · %.1f L · %s" % [
+		str(telemetry.get("engine_state", "?")),
+		float(telemetry.get("coolant_c", 0.0)),
+		float(telemetry.get("fuel_l", 0.0)),
+		",".join(active_warnings) if not active_warnings.is_empty() else tr("QA_NONE"),
+	]
+
+
+func _on_vehicle_action(action: String) -> void:
+	var powertrain := _find_powertrain()
+	if powertrain == null:
+		_set_status(tr("QA_STATUS_NO_VEHICLE"))
+		EventBus.qa_action_completed.emit(action, {"applied": false, "vehicle": false})
+		return
+	var applied := false
+	match action:
+		"repair_engine":
+			applied = powertrain.repair_component("engine.seized")
+		"refuel":
+			powertrain.refuel(float(powertrain.spec.number("fuel.tank_capacity_l", 50.0)))
+			applied = true
+		"low_fuel":
+			powertrain.set_fuel_level(4.0)
+			applied = true
+		"fan_fuse_fault":
+			applied = powertrain.set_fan_fault("cooling.fan_fuse", true)
+		_:
+			for component_id in VEHICLE_COMPONENT_REPAIRS.get(action, []):
+				applied = powertrain.repair_component(str(component_id)) or applied
+	# El tren motriz de cabina no simula en automatico: un paso corto refresca
+	# los avisos para que el estado del panel sea observable en QA.
+	powertrain.simulate(0.016)
+	if action.begins_with("repair") and applied:
+		_set_status(tr("QA_STATUS_REPAIRED"))
+	elif action == "refuel" and applied:
+		_set_status(tr("QA_STATUS_REFUELED"))
+	else:
+		_set_status(_vehicle_status_text(powertrain))
+	_refresh_values()
+	EventBus.qa_action_completed.emit(action, {"applied": applied, "vehicle": true})
+
+
+func _on_save_slot_pressed() -> void:
+	# La ranura QA escribe siempre en user://saves/qa/: nunca pisa una partida.
+	var saved := SaveManager.save_slot(QA_SAVE_SLOT, "qa_menu", 1)
+	_set_status(tr("QA_STATUS_SAVED") if saved else tr("QA_STATUS_SAVE_FAILED"))
+	EventBus.qa_action_completed.emit("save_slot", {"slot": QA_SAVE_SLOT, "ok": saved})
+
+
+func _on_load_slot_pressed() -> void:
+	var loaded := SaveManager.load_slot(QA_SAVE_SLOT, 1)
+	_set_status(tr("QA_STATUS_LOADED") if loaded else tr("QA_STATUS_LOAD_FAILED"))
+	EventBus.qa_action_completed.emit("load_slot", {"slot": QA_SAVE_SLOT, "ok": loaded})
 
 
 func _weather_label(preset: String) -> String:

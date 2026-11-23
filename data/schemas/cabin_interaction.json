@@ -1,14 +1,25 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "contract_id": "vehicle.esteem.cabin_interaction",
   "vehicle_id": "chevrolet_esteem_1999_auto_beige",
   "content_status": "interaction_blockout_provisional",
-  "description": "Contrato declarativo de la interaccion contextual mirar/tocar de la cabina del Esteem 1999: reticulo, tacto, poses IK de 2/1/0 manos, puertas y seguros, vidrios, luces, antena, radio, guantera, palanca P-R-N-D-2-L con Overdrive y freno de mano. La palanca y el Overdrive se delegan en vehicle_powertrain.json; el freno de mano se delega en brakes.parking. No contiene fisica de conduccion, espejos, HUD, gamepad ni guardado.",
+  "description": "Contrato declarativo de la interaccion contextual mirar/tocar de la cabina del Esteem 1999: reticulo, tacto, poses IK de 2/1/0 manos, puertas y seguros, vidrios, luces, antena, radio, guantera, palanca P-R-N-D-2-L con Overdrive y freno de mano. La version 2 anade espejos con SubViewport, HUD minimo y navegacion gamepad/D-Pad. La palanca y el Overdrive se delegan en vehicle_powertrain.json; el freno de mano se delega en brakes.parking. No contiene fisica de conduccion ni guardado.",
+  "schema_history": [
+    {
+      "version": 1,
+      "note": "F2.3: interaccion contextual mirar/tocar, poses IK de 2/1/0 manos, puertas, seguros, vidrios, luces, antena, radio, guantera, palanca P-R-N-D-2-L con Overdrive y freno de mano."
+    },
+    {
+      "version": 2,
+      "note": "F2.4 (cambio aditivo): anade mirrors (SubViewport), hud (overlay minimo alimentado por VehiclePowertrain) y gamepad (D-Pad/estick). No modifica controles, poses IK, gear_gate, puertas, vidrios, luces, radio, antena, guantera, freno de mano ni los enlaces al tren motriz. Sin cambios de estructura previa: ninguna migracion de datos es necesaria para leer v1."
+    }
+  ],
   "units": {
     "distance": "meters",
     "angle": "degrees",
     "time": "seconds",
-    "screen": "dp"
+    "screen": "dp",
+    "viewport": "pixels"
   },
   "axes": "godot_y_up_forward_minus_z_right_plus_x",
   "source_policy": "Las posiciones de los controles derivan de las anclas anchor_* de data/vehicle/blockout_spec.json y de las cotas provisionales de data/vehicle/cabin_spec.json. Los mandos no visibles en las fotos revisadas (seguro central, mando de luces, interruptor de antena y botones de radio) se colocan como proxies funcionales provisionales, no como hechos historicos. Ninguna cota se publica como especificacion oficial del vehiculo.",
@@ -520,6 +531,102 @@
     "open_angle_deg": -38.0,
     "travel_s": 0.45,
     "initial_open": false
+  },
+  "mirrors": {
+    "note": "Espejos retrovisores con SubViewport en F2.4: interior y dos laterales. Las posiciones y angulos son valores de diseno provisionales derivados de las anclas anchor_mirror_* de blockout_spec.json y de la cabecera de parabrisas observada en las fotos; el arte definitivo del espejo es F3.1. position_m, camera_offset_m y camera_rotation_deg estan en coordenadas de mundo; surface_rotation_deg rota unicamente la superficie del espejo. Los tres viewports cuentan dentro del presupuesto de triangulos movil.",
+    "ids": ["rearview", "left", "right"],
+    "entries": [
+      {
+        "id": "rearview",
+        "kind": "interior_rearview",
+        "anchor": "",
+        "position_m": [-0.02, 1.33, -0.66],
+        "surface_rotation_deg": [0.0, 0.0, 0.0],
+        "camera_offset_m": [0.0, 0.0, 0.02],
+        "camera_rotation_deg": [0.0, 180.0, 0.0],
+        "surface_size_m": [0.3, 0.075],
+        "viewport_size_px": [320, 96],
+        "fov_deg": 55.0,
+        "update_hz": 30.0
+      },
+      {
+        "id": "left",
+        "kind": "side",
+        "anchor": "anchor_mirror_left",
+        "position_m": [-0.82, 1.1, -0.7],
+        "surface_rotation_deg": [0.0, 90.0, 0.0],
+        "camera_offset_m": [0.01, 0.0, 0.0],
+        "camera_rotation_deg": [0.0, 165.0, 0.0],
+        "surface_size_m": [0.16, 0.11],
+        "viewport_size_px": [128, 96],
+        "fov_deg": 60.0,
+        "update_hz": 30.0
+      },
+      {
+        "id": "right",
+        "kind": "side",
+        "anchor": "anchor_mirror_right",
+        "position_m": [0.82, 1.1, -0.7],
+        "surface_rotation_deg": [0.0, -90.0, 0.0],
+        "camera_offset_m": [-0.01, 0.0, 0.0],
+        "camera_rotation_deg": [0.0, 195.0, 0.0],
+        "surface_size_m": [0.16, 0.11],
+        "viewport_size_px": [128, 96],
+        "fov_deg": 60.0,
+        "update_hz": 30.0
+      }
+    ],
+    "budget": {
+      "surface_max_triangles_total": 12,
+      "scene_passes": 3,
+      "counted_in_mobile_budget": true,
+      "note": "Cada espejo vuelve a renderizar la escena desde su SubViewport: los triangulos visibles se suman al presupuesto movil de 120.000 (AGENTS.md seccion 9). Las superficies son quads de codigo (2 triangulos c/u); sin LOD porque no son mallas de la fabrica. La medicion completa con conteo de pasos es F3.5."
+    }
+  },
+  "hud": {
+    "note": "HUD minimo de cabina en F2.4: velocidad, marcha, combustible y avisos leidos de VehiclePowertrain.get_telemetry(). No replica el instrumental del modelo, no duplica logica del tren motriz y no declara botones tactiles; el arte del instrumental final es F3.2.",
+    "source": "VehiclePowertrain.get_telemetry",
+    "refresh_hz": 10.0,
+    "corner": "bottom_right",
+    "fields": ["speed_kph", "selector", "gear", "fuel_l", "warnings"],
+    "units": {
+      "speed": "km/h",
+      "fuel": "L"
+    },
+    "label_keys": {
+      "speed": "HUD_SPEED",
+      "gear": "HUD_GEAR",
+      "fuel": "HUD_FUEL",
+      "gamepad_hint": "HUD_GAMEPAD_HINT"
+    },
+    "warning_keys": {
+      "fuel_low": "HUD_WARN_FUEL_LOW",
+      "overheat": "HUD_WARN_OVERHEAT",
+      "fan_fault": "HUD_WARN_FAN_FAULT",
+      "brake_fade": "HUD_WARN_BRAKE_FADE",
+      "parking_brake": "HUD_WARN_PARKING_BRAKE",
+      "safe_mode": "HUD_WARN_SAFE_MODE",
+      "brake_fluid_low": "HUD_WARN_BRAKE_FLUID_LOW",
+      "engine_seized": "HUD_WARN_ENGINE_SEIZED"
+    },
+    "max_persistent_buttons": 0,
+    "text_not_only_color": true
+  },
+  "gamepad": {
+    "note": "Navegacion gamepad y D-Pad de Android TV/PC en F2.4. No sustituye ni duplica el reticulo/tacto de F2.3: el gamepad enfoca y activa los mismos controles contextuales. Los menus usan las acciones estandar ui_* de Godot. Sin boton de activacion del panel QA en gamepad (F9.2).",
+    "menu_actions": ["ui_accept", "ui_cancel", "ui_up", "ui_down", "ui_left", "ui_right"],
+    "cabin": {
+      "focus_next_buttons": [12, 14],
+      "focus_previous_buttons": [11, 13],
+      "accept_button": 0,
+      "release_button": 1,
+      "look_axis": [2, 3],
+      "look_sensitivity": 2.6,
+      "deadzone": 0.25,
+      "focus_wrap": true
+    },
+    "min_target_dp": 44,
+    "tv_navigation_required": true
   },
   "visual_offsets": {
     "note": "El bloqueo de F2.2 coloco el volante, la palanca, la radio y la guantera dentro de las cajas solidas del tablero y la consola. F2.3 los desplaza a la cara del conductor para que la interaccion sea visible y alcanzable. Es un ajuste funcional provisional; la geometria definitiva es F3.2 y no altera los assets ni las anclas del contrato de F2.2.",

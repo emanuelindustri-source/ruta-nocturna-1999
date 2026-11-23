@@ -55,5 +55,12 @@ func _return_to_boot() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if (event is InputEventJoypadButton or event is InputEventJoypadMotion) and get_viewport().gui_get_focus_owner() == null:
+		var meaningful := (event is InputEventJoypadButton and (event as InputEventJoypadButton).pressed) or (
+			event is InputEventJoypadMotion and absf((event as InputEventJoypadMotion).axis_value) >= 0.5
+		)
+		if meaningful:
+			# D-Pad de Android TV/PC: el boton de retorno toma el foco inicial.
+			back_button.grab_focus()
 	if event.is_action_pressed("ui_cancel"):
 		_return_to_boot()

@@ -6,7 +6,9 @@ extends Node
 ## controles a pantalla con un radio minimo de 44 dp. Al pulsar, la mano IK
 ## alcanza el control y se delega la accion en CabinControls. La palanca y el
 ## Overdrive terminan en VehiclePowertrain; el freno de mano en brakes.parking.
-## No hay espejos, HUD, gamepad, guardado ni fisica de conduccion.
+## No hay fisica de conduccion ni guardado: el gamepad/D-Pad de F2.4 lo adapta
+## CabinGamepadAdapter reutilizando estas mismas señales (foco, pulsar, soltar,
+## girar cámara), sin duplicar el tacto ni el raton.
 
 signal focus_changed(control_id: String, available: bool, label_key: String, hint_key: String)
 signal interaction_feedback(control_id: String, code: String)
@@ -155,6 +157,21 @@ func clear_focus() -> void:
 	focused_label_key = ""
 	focused_hint_key = ""
 	focus_changed.emit("", false, "", "")
+
+
+func focus_next_control() -> String:
+	return _cycle_focus(1)
+
+
+func focus_previous_control() -> String:
+	return _cycle_focus(-1)
+
+
+func rotate_camera_look(relative: Vector2) -> void:
+	# Entrada del gamepad (F2.4): mismos limites de yaw/pitch y mismo foco de
+	# reticulo que el arrastre de raton de F2.3.
+	_rotate_camera(relative)
+	_update_look_focus()
 
 
 func touch_at(screen_position: Vector2) -> String:
@@ -316,6 +333,26 @@ func _availability(control: Dictionary) -> Dictionary:
 		if controls.radio == null or not controls.radio.power_on:
 			return {"available": false, "hint_key": spec.feedback_key("radio_off")}
 	return {"available": true, "hint_key": hint}
+
+
+func _cycle_focus(step: int) -> String:
+	if spec == null:
+		return ""
+	var ids := spec.control_ids()
+	if ids.is_empty():
+		return ""
+	var index := ids.find(focused_control_id)
+	if index < 0:
+		focus_control(str(ids[0] if step > 0 else ids[ids.size() - 1]))
+		return focused_control_id
+	var wrap := spec.boolean("gamepad.cabin.focus_wrap", true)
+	var next_index := index + step
+	if wrap:
+		next_index = ((next_index % ids.size()) + ids.size()) % ids.size()
+	else:
+		next_index = clampi(next_index, 0, ids.size() - 1)
+	focus_control(str(ids[next_index]))
+	return focused_control_id
 
 
 func _update_look_focus() -> void:

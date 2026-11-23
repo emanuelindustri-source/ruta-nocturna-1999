@@ -231,6 +231,64 @@ documentado.
   dispositivo ADB y secretos/binarios en el índice de Git.
 - Detalle operativo en `docs/architecture/BUILD_AND_RELEASE.md`.
 
+## 14. Espejos, HUD, gamepad, guardado y ADB (Fase 2.4)
+
+### QA de reparaciones
+
+- `CreatorQAMenu` añade la sección **Vehículo** con seis acciones que usan
+  `VehiclePowertrain` localizado por el grupo de escena `vehicle_powertrain`:
+  reparar motor (`engine.seized`), reparar refrigeración (fusible, relé,
+  motor y termostato), reparar frenos (pastillas y cilindro maestro), llenar
+  el tanque, fijar combustible bajo y dañar el fusible del ventilador.
+- Sin tren motriz en la escena, los botones quedan deshabilitados y el estado
+  muestra `QA_STATUS_NO_VEHICLE`. Tras cada acción se da un paso corto de
+  `simulate()` para refrescar los avisos (el cabina no simula en automático).
+- El panel QA también se instancia en `scenes/vehicle/CabinInteraction.tscn`
+  (F12 en cabina). Las acciones de F1.2 siguen intactas.
+
+### Guardado QA
+
+- Guardar/cargar desde el panel usa `SaveManager.save_slot/load_slot(0, …, 1)`:
+  siempre en `user://saves/qa/`, nunca sobre una partida real.
+- Pruebas del smoke test: fixture `tests/fixtures/save_v0_2_0.json` cargado con
+  verificación de checksum y aplicación del estado; backup `.bak` antes de
+  sobrescribir; sin `.tmp` residuales; `save_version: 99` rechazado en carga y
+  guardado sin alterar el archivo.
+- Corrección derivada: `DirAccess.copy()` con rutas relativas fallaba al abrir
+  el origen (se resuelve contra el proceso, no contra el `DirAccess`); ahora
+  el backup usa rutas absolutas.
+
+### Gamepad y D-Pad
+
+- `project.godot` declara `[input]` para `ui_accept` (Enter, KP Enter, Space,
+  A) y `ui_cancel` (Esc, B); `ui_up/down/left/right` conservan los defaults con
+  D-Pad (11–14) y stick izquierdo. Lo comprueba el smoke test por evento.
+- En cabina, `CabinGamepadAdapter` maneja solo `InputEventJoypad*`: D-Pad
+  cicla el foco contextual, A pulsa, B suelta y limpia, stick derecho rota la
+  cámara dentro de los límites de F2.3. Tacto y ratón no cambian.
+- Con el panel QA abierto el adaptador se suspende (grupo `creator_qa_menu`).
+
+### Prueba ADB en el Redmi (2026-11-22)
+
+```powershell
+.\tools\test_android_adb.ps1
+```
+
+| Paso | Resultado |
+|---|---|
+| Dispositivo | `obojropz89mbwgpn` (Redmi 22101316G) autorizado |
+| APK debug | 28.827.443 bytes, SHA-256 `E587066C…C4489`, export OK |
+| Instalación | `adb install -r` incremental: Success |
+| Arranque | `monkey` + marcador de sesión; primer frame dentro del timeout |
+| logcat 15 s | Sin `FATAL EXCEPTION`, sin errores Godot ni Vulkan |
+| Captura | `build/logs/android-smoke/` (no versionada) |
+| PSS | **379,8 MB** (presupuesto 1.228,8 MB) |
+
+La APK de F2.4 es debug y no se versiona; vive en `build/exports/` y va a
+Releases si se publica. El presupuesto de PSS se cumple, pero esta prueba es de
+arranque y memoria base: el rendimiento en ruta real con espejos activos se
+mide en F3.5/F10.1.
+
 ## 13. Tren motriz (Fase 2.1)
 
 ### Pruebas

@@ -23,8 +23,15 @@ func load_spec(path: String = SPEC_PATH) -> bool:
 		errors.append("JSON invalido en %s" % path)
 		return false
 	data = parsed
-	if int(data.get("schema_version", 0)) != 1:
+	var schema_version := int(data.get("schema_version", 0))
+	if schema_version not in [1, 2]:
 		errors.append("schema_version no soportada")
+	elif schema_version == 1 and data.has("mirrors"):
+		errors.append("schema_version 1 no puede declarar mirrors/hud/gamepad")
+	if int(data.get("schema_version", 0)) == 2:
+		for section_name in ["mirrors", "hud", "gamepad"]:
+			if not (data.get(section_name) is Dictionary):
+				errors.append("falta la seccion %s de F2.4" % section_name)
 	if not (data.get("controls") is Array) or not (data.get("hands") is Dictionary):
 		errors.append("faltan las secciones controls/hands")
 	return errors.is_empty()

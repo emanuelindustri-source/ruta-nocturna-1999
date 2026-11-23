@@ -1,0 +1,26 @@
+{
+  "save_version": 1,
+  "game_version": "0.2.0",
+  "checksum": "49b091e721d40c013bf50d7fb81a58bf716839c85d630685c23ada316c7dfdb7",
+  "timestamp_utc": "2026-11-22T12:00:00Z",
+  "rng_seed": 1999,
+  "data": {
+    "snapshot_version": 1,
+    "mode": "playing",
+    "chapter": 1,
+    "region": "carabobo",
+    "mission_id": "act1_intro",
+    "mission_stage": "stage_a",
+    "flags": {
+      "tutorial_done": true,
+      "first_night": true
+    },
+    "trust": {
+      "pasajero_base": 55
+    },
+    "humanity": 61,
+    "play_time_seconds": 1450,
+    "is_test_save": false,
+    "rng_seed": 1999
+  }
+}

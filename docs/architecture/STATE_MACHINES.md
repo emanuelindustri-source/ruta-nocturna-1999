@@ -374,5 +374,62 @@ stateDiagram-v2
 
 Ningún control deja la partida irrecuperable: la palanca puede volver a `P` con
 el vehículo detenido, el freno de mano se libera, las puertas se desbloquean y
-los vidrios se mueven en ambos sentidos. No hay espejos, HUD, gamepad ni guardado
-en esta subfase.
+los vidrios se mueven en ambos sentidos. En F2.3 no había espejos, HUD, gamepad
+ni guardado; esos sistemas llegan en Fase 2.4 (sección 10).
+
+## 10. Espejos, HUD, gamepad y guardado (Fase 2.4)
+
+### Refresco del HUD
+
+```text
+[ hud.refresh_hz ] → VehiclePowertrain.get_telemetry()
+                   → velocidad / selector / marcha / combustible / avisos
+                   → etiquetas localizadas (HUD_*, HUD_WARN_*)
+```
+
+- Estados del bloque de avisos: `oculto` → `visible` (código interno activo) →
+  `oculto` (código inactivo). El aviso siempre lleva texto, nunca solo color.
+- El HUD es de solo lectura: no emite comandos al tren motriz.
+
+### Actualización de espejos
+
+```text
+UPDATE_ONCE → renderiza un frame → DISABLED → (1/update_hz) → UPDATE_ONCE → …
+```
+
+- `set_viewports_enabled(false)` mantiene los tres viewports en `DISABLED`
+  para el perfil de bajo consumo (F9.3/F10.1 podrán medirlo en ruta).
+
+### Foco de gamepad en la cabina
+
+```mermaid
+stateDiagram-v2
+    [*] --> SinFoco
+    SinFoco --> Enfocado: D-Pad abajo/derecha o arriba/izquierda
+    Enfocado --> Enfocado: D-Pad siguiente/anterior (con wrap)
+    Enfocado --> Pulsado: A · press_focused
+    Pulsado --> Enfocado: soltar A · release_control
+    Enfocado --> SinFoco: B · release + clear_focus
+    Enfocado --> SinFoco: reticulo/tacto sin objetivo (F2.3)
+```
+
+- El D-Pad recorre `controls` en orden de contrato; `focus_wrap` permite el
+  ciclo cerrado. A/B coinciden con `ui_accept`/`ui_cancel` de los menús.
+- El stick derecho rota la cámara con los mismos límites de yaw (70°) y pitch
+  (45°) que el arrastre de ratón, y actualiza el foco del retículo.
+- Con el panel QA abierto (grupo `creator_qa_menu`) el adaptador se suspende y
+  el D-Pad navega los botones del panel.
+
+### Guardado (estados, Fase 2.4)
+
+La máquina de la sección 7 se mantiene; F2.4 fija la línea base:
+
+```text
+Snapshot (v0.2.0) → Validate → Migrate(=v1, sin-op) → Backup → Temp Write
+                  → Verify → Rename → Notify
+```
+
+- Una versión futura se rechaza en `Validate` sin tocar el archivo.
+- El backup previo a sobrescribir usa rutas absolutas (`…/slot_XX.json.bak`).
+- El fixture `tests/fixtures/save_v0_2_0.json` cubre la carga de la línea base;
+  las migraciones encadenadas se añaden en F9.4.

@@ -137,6 +137,23 @@ La implementación real empieza en Fase 2.4/Fase 5.1 y se completa en Fase 9.4.
 La Fase 1.2 dejó un `SaveManager` base con escritura atómica, checksum canónico,
 rechazo de versiones futuras y backups; no incluye migraciones encadenadas.
 
+### 9.1 Línea base v0.2.0 (Fase 2.4)
+
+- La línea base de migraciones es `save_version: 1` con
+  `game_version: "0.2.0"`: todo guardado escrito en F2.4 o antes tiene esa
+  forma y es el origen de la cadena futura de F9.4.
+- El fixture versionado `tests/fixtures/save_v0_2_0.json` reproduce esa forma
+  con un snapshot completo; se genera y verifica con
+  `tools/make_save_fixture.py` (replica exacta de `_canonical_json`) y lo carga
+  una prueba real del smoke test (checksum, aplicación de estado y borrado).
+- La F2.4 verificó y corrigió el respaldo previo a sobrescribir: `DirAccess.copy`
+  exige rutas absolutas (`user://saves/slot_XX.json.bak`).
+- El panel QA guarda y carga en la ranura QA (`user://saves/qa/`) mediante
+  `SaveManager.save_slot(slot, reason, qa_mode=1)`: una acción de QA nunca
+  pisa una partida real.
+- Las migraciones encadenadas, los fixtures adicionales y las pruebas de
+  actualización son Fase 9.4.
+
 ## 10. Comandos
 
 ```powershell
@@ -297,3 +314,31 @@ Reglas:
 - Cambiar la estructura exige incrementar `schema_version` y documentar la
   migración; cambiar una posición o un umbral exige actualizar su nota de fuente
   o su sección de offsets.
+
+### 15.1 Espejos, HUD y gamepad (Fase 2.4, `schema_version: 2`)
+
+La versión 2 del contrato es **aditiva**: añade tres secciones y no modifica
+controles, poses IK, gear_gate, puertas, vidrios, luces, radio, antena,
+guantera, freno de mano ni los enlaces al tren motriz. La migración v1 → v2 no
+requiere transformar datos; `schema_history` documenta ambos pasos en el propio
+JSON y `CabinInteractionSpec` acepta 1 y 2.
+
+| Sección | Contenido |
+|---|---|
+| `mirrors` | Tres espejos (`rearview`, `left`, `right`) con `position_m`, rotación de superficie, cámara, `surface_size_m`, `viewport_size_px`, `fov_deg`, `update_hz` y `budget` (`scene_passes`, `surface_max_triangles_total`, `counted_in_mobile_budget`) |
+| `hud` | Fuente `VehiclePowertrain.get_telemetry`, `refresh_hz`, esquina, campos, claves `label_keys` y `warning_keys` (los ocho códigos internos), `max_persistent_buttons: 0` y `text_not_only_color` |
+| `gamepad` | Acciones `ui_*` de menú, botones de foco D-Pad, A/B, ejes del stick, sensibilidad, zona muerta, `focus_wrap`, `min_target_dp` y `tv_navigation_required` |
+
+Reglas:
+
+- `tools/validate_schemas.py` comprueba que los espejos laterales coinciden con
+  `anchor_mirror_left` / `anchor_mirror_right` de `blockout_spec.json`, que las
+  superficies caben en su presupuesto, que `hud.warning_keys` cubre exactamente
+  los avisos del tren motriz y que todas sus claves existen en el CSV de once
+  idiomas.
+- El HUD es solo lectura: no puede llamar a `set_selector`, `toggle_overdrive`
+  ni a ningún comando del tren motriz (lo comprueba la prueba de interacción).
+- El gamepad vive únicamente en `src/vehicle/cabin_gamepad_adapter.gd`: ningún
+  otro script de `src/vehicle/` contiene `InputEventJoypad`, y el núcleo de
+  F2.3 (controlador, controles, IK, UI) sigue sin eventos de gamepad.
+- El guardado no entra en este contrato: su contrato es la sección 9.

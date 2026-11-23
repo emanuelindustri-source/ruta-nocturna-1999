@@ -2,7 +2,7 @@ extends Control
 ## Pantalla de arranque desde la Fase 1.2 y acceso a la rebanada vertical de 1.4.
 ## Verifica los servicios base y abre el panel QA, sin mecánicas de conducción.
 
-const PHASE := "2.3"
+const PHASE := "2.4"
 const VERTICAL_SLICE_SCENE := "res://scenes/vertical_slice/VerticalSlice.tscn"
 const CABIN_SCENE := "res://scenes/vehicle/CabinInteraction.tscn"
 const REPOSITORY := "emanuelindustri-source/ruta-nocturna-1999"
@@ -73,8 +73,23 @@ func _count_services() -> int:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	var from_gamepad := event is InputEventJoypadButton or event is InputEventJoypadMotion
+	if from_gamepad and get_viewport().gui_get_focus_owner() == null and _gamepad_wakes_focus(event):
+		# El D-Pad de Android TV/PC necesita un foco inicial para navegar.
+		view_slice_button.grab_focus()
 	if event.is_action_pressed("ui_cancel"):
+		if from_gamepad:
+			# B del gamepad no cierra la aplicacion en el menu raiz; Esc si.
+			return
 		var qa_menu := get_node_or_null("CreatorQAMenu")
 		if qa_menu != null and qa_menu.is_open():
 			return
 		get_tree().quit()
+
+
+func _gamepad_wakes_focus(event: InputEvent) -> bool:
+	if event is InputEventJoypadButton:
+		return (event as InputEventJoypadButton).pressed
+	if event is InputEventJoypadMotion:
+		return absf((event as InputEventJoypadMotion).axis_value) >= 0.5
+	return false

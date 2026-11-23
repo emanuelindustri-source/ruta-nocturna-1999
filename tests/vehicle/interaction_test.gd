@@ -1,18 +1,21 @@
 extends Node
-## Pruebas headless de la interaccion contextual de la cabina (Fase 2.3).
+## Pruebas headless de la interaccion contextual de la cabina (Fase 2.3/2.4).
 ##
 ## Ejecutar:
 ##   .\tools\dev\interaction_test.cmd
-## Verifica contrato, escena, poses IK de 2/1/0 manos, reticulo/tacto, puertas y
-## seguros, vidrios, luces, antena, radio, guantera, palanca P-R-N-D-2-L,
-## Overdrive y freno de mano. La palanca y el Overdrive se comparan contra
-## VehiclePowertrain; el freno de mano contra brakes.parking. No relaja los
-## tests de 2.1/2.2 ni introduce fisica de conduccion.
+## Verifica contrato (v2), escena, poses IK de 2/1/0 manos, reticulo/tacto,
+## puertas y seguros, vidrios, luces, antena, radio, guantera, palanca P-R-N-D-2-L,
+## Overdrive y freno de mano; ademas los entregables de F2.4: espejos
+## SubViewport, HUD minimo, gamepad/D-Pad y limites de fuentes. La palanca y el
+## Overdrive se comparan contra VehiclePowertrain; el freno de mano contra
+## brakes.parking. No relaja los tests de 2.1/2.2 ni introduce fisica de
+## conduccion ni guardado (el guardado se prueba en el smoke test).
 
 const SCENE_PATH := "res://scenes/vehicle/CabinInteraction.tscn"
 const CONTRACT_PATH := "res://data/schemas/cabin_interaction.json"
 const CABIN_SPEC_PATH := "res://data/vehicle/cabin_spec.json"
 const POWERTRAIN_SPEC_PATH := "res://data/schemas/vehicle_powertrain.json"
+const BLOCKOUT_SPEC_PATH := "res://data/vehicle/blockout_spec.json"
 const CSV_PATH := "res://localization/strings.csv"
 const LOCALES := ["es_VE", "es_ES", "en", "pt_PT", "pt_BR", "it", "fr", "de", "ru", "zh_CN", "ja"]
 
@@ -52,6 +55,10 @@ func _ready() -> void:
 	_test_windows()
 	_test_lights_antenna_radio_glovebox()
 	_test_controller_flow()
+	_test_mirrors()
+	_test_hud()
+	_test_gamepad()
+	_test_source_boundaries()
 	_test_no_duplicate_mechanics()
 	_finish()
 
@@ -104,7 +111,16 @@ func _load_scene() -> void:
 
 func _test_contract() -> void:
 	_check(not _contract.is_empty(), "contrato cabin_interaction carga")
-	_check(int(_contract.get("schema_version", 0)) == 1, "schema_version 1")
+	_check(int(_contract.get("schema_version", 0)) == 2, "schema_version 2 (F2.4)")
+	var history: Array = _contract.get("schema_history", [])
+	_check(
+		history.size() == 2
+			and history[0] is Dictionary
+			and history[1] is Dictionary
+			and int(history[0].get("version", 0)) == 1
+			and int(history[1].get("version", 0)) == 2,
+		"historial v1 -> v2 documentado"
+	)
 	_check(str(_contract.get("contract_id", "")) == "vehicle.esteem.cabin_interaction", "contract_id estable")
 	var powertrain_spec := _load_json(POWERTRAIN_SPEC_PATH)
 	_check(str(_contract.get("vehicle_id", "")) == str(powertrain_spec.get("vehicle_id", "")), "vehicle_id coincide con el tren motriz")
@@ -190,6 +206,51 @@ func _test_contract() -> void:
 			inside = false
 	_check(inside, "detentes dentro de la guia fisica")
 
+	# --- F2.4: espejos, HUD y gamepad --------------------------------
+	var mirror_contract: Dictionary = _contract.get("mirrors", {})
+	_check(mirror_contract.get("ids", []) == ["rearview", "left", "right"], "espejos rearview/left/right")
+	var mirror_entries: Array = mirror_contract.get("entries", [])
+	_check(mirror_entries.size() == 3, "tres espejos declarados")
+	var mirror_budget: Dictionary = mirror_contract.get("budget", {})
+	_check(int(mirror_budget.get("scene_passes", 0)) == 3, "tres pasos de render declarados")
+	_check(mirror_budget.get("counted_in_mobile_budget", false) == true, "espejos dentro del presupuesto movil")
+	var blockout: Dictionary = _load_json(BLOCKOUT_SPEC_PATH)
+	var blockout_anchors := {}
+	for blockout_entry in blockout.get("rig_anchor", {}).get("anchors", []):
+		if blockout_entry is Dictionary:
+			blockout_anchors[str(blockout_entry.get("id", ""))] = blockout_entry.get("position_m", [])
+	var surface_triangles := 0
+	var mirrors_anchored := true
+	for mirror_entry in mirror_entries:
+		if not (mirror_entry is Dictionary):
+			mirrors_anchored = false
+			continue
+		if str(mirror_entry.get("kind", "")) == "side":
+			var anchor := str(mirror_entry.get("anchor", ""))
+			if not blockout_anchors.has(anchor):
+				mirrors_anchored = false
+			else:
+				var anchor_position: Array = blockout_anchors[anchor]
+				var mirror_position: Array = mirror_entry.get("position_m", [])
+				for axis in range(3):
+					if absf(float(anchor_position[axis]) - float(mirror_position[axis])) > 0.01:
+						mirrors_anchored = false
+		surface_triangles += 2
+	_check(mirrors_anchored, "espejos laterales anclados a anchor_mirror_*")
+	_check(
+		surface_triangles <= int(mirror_budget.get("surface_max_triangles_total", 0)),
+		"superficies de espejo dentro de su presupuesto (%d <= %d)" % [surface_triangles, int(mirror_budget.get("surface_max_triangles_total", 0))]
+	)
+	var hud_contract: Dictionary = _contract.get("hud", {})
+	_check(str(hud_contract.get("source", "")) == "VehiclePowertrain.get_telemetry", "HUD alimentado por VehiclePowertrain")
+	_check(int(hud_contract.get("max_persistent_buttons", -1)) == 0, "HUD sin botones persistentes")
+	_check(hud_contract.get("text_not_only_color", false) == true, "HUD informa con texto, no solo color")
+	_check(hud_contract.get("warning_keys", {}).size() == 8, "ocho avisos del tren motriz con clave de localizacion")
+	var gamepad_contract: Dictionary = _contract.get("gamepad", {})
+	_check(gamepad_contract.get("menu_actions", []).size() == 6, "seis acciones de menu D-Pad declaradas")
+	_check(float(gamepad_contract.get("min_target_dp", 0)) >= 44.0, "zonas de gamepad >= 44 dp")
+	_check(gamepad_contract.get("tv_navigation_required", false) == true, "navegacion D-Pad/TV obligatoria")
+
 
 func _test_scene_shape() -> void:
 	_check(_powertrain.auto_simulate == false, "tren motriz no simula en la cabina")
@@ -197,10 +258,17 @@ func _test_scene_shape() -> void:
 	_check(_scene.get_node_or_null("UI") is CanvasLayer, "UI contextual en CanvasLayer")
 	var physics := _find_first_by_class(_scene, ["VehicleBody3D", "RigidBody3D", "CharacterBody3D", "VehicleWheel3D"])
 	_check(physics == null, "sin cuerpos de fisica ni conduccion")
-	var mirror := _find_name_containing(_scene, "mirror")
-	_check(mirror == null, "sin espejos (F2.4)")
-	var subviewport := _find_first_by_class(_scene, ["SubViewport"])
-	_check(subviewport == null, "sin SubViewport de espejos")
+	var mirror := _find_name_containing(_scene, "Mirror")
+	_check(mirror != null, "espejos presentes (F2.4)")
+	var subviewports := _find_all_by_class(_scene, ["SubViewport"])
+	_check(subviewports.size() == 3, "tres SubViewport de espejo (%d)" % subviewports.size())
+	var hud := _scene.get_node_or_null("HUD") as CabinHUD
+	_check(hud != null and hud.speed_label != null, "HUD minimo presente")
+	_check(_count_class(_scene.get_node_or_null("HUD"), "Button") == 0, "HUD sin botones tactiles")
+	var gamepad := _scene.get_node_or_null("Gamepad") as CabinGamepadAdapter
+	_check(gamepad != null, "adaptador de gamepad/D-Pad presente")
+	_check(gamepad != null and gamepad.controller == _controller, "adaptador enlazado al controlador")
+	_check(_scene.get_node_or_null("CreatorQAMenu") is CanvasLayer, "panel QA disponible en cabina (F12)")
 	var buttons := _count_class(_scene.get_node_or_null("UI"), "Button")
 	_check(buttons == 0, "sin botones tactiles persistentes")
 	_check(_count_class(_scene.get_node_or_null("UI"), "Label") >= 1, "prompt contextual localizable")
@@ -245,6 +313,31 @@ func _test_localization() -> void:
 			keys.append(str(control.get("hint_key", "")))
 	for key in _contract.get("feedback", {}).values():
 		keys.append(str(key))
+	var hud_contract: Dictionary = _contract.get("hud", {})
+	for key in hud_contract.get("label_keys", {}).values():
+		keys.append(str(key))
+	for key in hud_contract.get("warning_keys", {}).values():
+		keys.append(str(key))
+	for extra_key in [
+		"HUD_GAMEPAD_HINT",
+		"QA_SECTION_VEHICLE",
+		"QA_ACTION_REPAIR_ENGINE",
+		"QA_ACTION_REPAIR_COOLING",
+		"QA_ACTION_REPAIR_BRAKES",
+		"QA_ACTION_REFUEL",
+		"QA_ACTION_LOW_FUEL",
+		"QA_ACTION_FAN_FUSE_FAULT",
+		"QA_STATUS_NO_VEHICLE",
+		"QA_STATUS_REPAIRED",
+		"QA_STATUS_REFUELED",
+		"QA_ACTION_SAVE_SLOT",
+		"QA_ACTION_LOAD_SLOT",
+		"QA_STATUS_SAVED",
+		"QA_STATUS_LOADED",
+		"QA_STATUS_SAVE_FAILED",
+		"QA_STATUS_LOAD_FAILED",
+	]:
+		keys.append(str(extra_key))
 	var missing: Array[String] = []
 	var empty: Array[String] = []
 	for key in keys:
@@ -546,6 +639,199 @@ func _test_controller_flow() -> void:
 	_controls.set_handbrake(false)
 
 
+func _test_mirrors() -> void:
+	var mirrors := _scene.get_node_or_null("Mirrors") as CabinMirrors
+	_check(mirrors != null, "nodo de espejos presente")
+	if mirrors == null:
+		return
+	_check(mirrors.configured, "espejos configurados desde el contrato")
+	_check(mirrors.get_viewport_count() == 3, "tres viewports de espejo")
+	var entries := {}
+	for entry in _contract.get("mirrors", {}).get("entries", []):
+		if entry is Dictionary:
+			entries[str(entry.get("id", ""))] = entry
+	for mirror_id in ["rearview", "left", "right"]:
+		var camera := mirrors.get_camera(mirror_id)
+		_check(camera != null, "camara del espejo %s" % mirror_id)
+		if camera == null:
+			continue
+		var entry: Dictionary = entries.get(mirror_id, {})
+		_check(
+			is_equal_approx(camera.fov, float(entry.get("fov_deg", 0.0))),
+			"fov del espejo %s segun contrato" % mirror_id
+		)
+		var viewport := mirrors.get_mirror(mirror_id).get("viewport") as SubViewport
+		var expected_size: Array = entry.get("viewport_size_px", [0, 0])
+		_check(
+			viewport != null and viewport.size == Vector2i(int(expected_size[0]), int(expected_size[1])),
+			"resolucion del espejo %s segun contrato" % mirror_id
+		)
+		_check(
+			camera.get_world_3d() == _scene.get_world_3d(),
+			"espejo %s comparte el mundo 3D de la escena" % mirror_id
+		)
+	var rear_camera := mirrors.get_camera("rearview")
+	if rear_camera != null:
+		# La camara del espejo interior mira hacia atras (+Z): su eje local
+		# +Z apunta hacia delante (-Z del mundo).
+		_check(rear_camera.global_transform.basis.z.z < -0.9, "espejo interior mira hacia atras")
+	var left_camera := mirrors.get_camera("left")
+	if left_camera != null:
+		_check(left_camera.global_transform.basis.z.z < -0.1, "espejo lateral izquierdo mira hacia detras")
+	var surface_triangles := mirrors.get_surface_triangles()
+	var budget := int(_contract.get("mirrors", {}).get("budget", {}).get("surface_max_triangles_total", 0))
+	_check(surface_triangles > 0 and surface_triangles <= budget, "triangulos de espejo dentro del presupuesto (%d/%d)" % [surface_triangles, budget])
+	_check(int(_contract.get("mirrors", {}).get("budget", {}).get("scene_passes", 0)) == mirrors.get_viewport_count(), "pasos de render declarados igual a viewports")
+	mirrors.set_viewports_enabled(false)
+	var disabled := true
+	for mirror_id in mirrors.get_mirror_ids():
+		var viewport := mirrors.get_mirror(mirror_id).get("viewport") as SubViewport
+		if viewport == null or viewport.render_target_update_mode != SubViewport.UPDATE_DISABLED:
+			disabled = false
+	_check(disabled, "viewports de espejo desactivables para bajo perfil")
+	mirrors.set_viewports_enabled(true)
+
+
+func _test_hud() -> void:
+	var hud := _scene.get_node_or_null("HUD") as CabinHUD
+	_check(hud != null, "HUD presente")
+	if hud == null:
+		return
+	_check(hud.powertrain == _powertrain, "HUD enlazado al tren motriz")
+	_controls.select_gear("D")
+	_powertrain.set_speed_kph(57.0)
+	_powertrain.set_fuel_level(42.5)
+	hud.refresh()
+	var readout := hud.get_readout()
+	_check(str(readout.get("speed_kph", "")) == "57", "velocidad reflejada en el HUD (57)")
+	_check(str(readout.get("selector", "")).begins_with("D"), "marcha reflejada en el HUD")
+	_check(str(readout.get("fuel_l", "")) == "42.5", "combustible reflejado en el HUD")
+	_check(hud.speed_label.text.contains("57"), "etiqueta de velocidad localizada")
+	_check(hud.fuel_label.text.contains("42.5"), "etiqueta de combustible localizada")
+	_check(hud.warnings_label.text.is_empty() and not hud.warnings_label.visible, "sin avisos con el tanque lleno")
+	var speed_before := _powertrain.speed_mps
+	hud.refresh()
+	_check(is_equal_approx(speed_before, _powertrain.speed_mps), "el HUD no muta el tren motriz")
+	_check(hud.get_readout().get("warnings", []) is Array, "campo de avisos tipado")
+	# Aviso de combustible bajo: codigo interno del contrato -> clave HUD_*.
+	_powertrain.set_fuel_level(4.0)
+	_powertrain.simulate(0.016)
+	hud.refresh()
+	var warnings: Array = hud.get_readout().get("warnings", [])
+	_check(warnings.size() >= 1, "aviso de combustible bajo en el HUD")
+	_check(hud.warnings_label.visible and not hud.warnings_label.text.is_empty(), "aviso informado con texto")
+	var warning_keys: Dictionary = _contract.get("hud", {}).get("warning_keys", {})
+	_check(warnings[0] == tr(str(warning_keys.get("fuel_low", ""))), "aviso traducido con la clave del contrato")
+	hud.set_gamepad_hint_visible(true)
+	_check(hud.hint_label.visible and hud.hint_label.text == tr("HUD_GAMEPAD_HINT"), "pista de gamepad localizada")
+	hud.set_gamepad_hint_visible(false)
+	# Restaurar estado para el resto de la suite.
+	_powertrain.set_fuel_level(45.0)
+	_powertrain.set_speed_kph(0.0)
+	_controls.select_gear("P")
+
+
+func _test_gamepad() -> void:
+	var gamepad := _scene.get_node_or_null("Gamepad") as CabinGamepadAdapter
+	_check(gamepad != null, "adaptador de gamepad presente")
+	if gamepad == null:
+		return
+	var hud := _scene.get_node_or_null("HUD") as CabinHUD
+	_check(hud != null, "HUD accesible desde el adaptador")
+	# Las acciones de menu declaradas responden a D-Pad/gamepad.
+	for action in _contract.get("gamepad", {}).get("menu_actions", []):
+		var bound := false
+		for event in InputMap.action_get_events(str(action)):
+			if event is InputEventJoypadButton or event is InputEventJoypadMotion:
+				bound = true
+		_check(bound, "accion %s con evento de gamepad" % str(action))
+	# Solo eventos de gamepad; el controlador conserva tacto/raton de F2.3.
+	_controller.input_enabled = true
+	_controller.clear_focus()
+	var yaw_before := _controller.camera.rotation.y
+	var pitch_before := _controller.camera.rotation.x
+	var dpad_down := InputEventJoypadButton.new()
+	dpad_down.button_index = JOY_BUTTON_DPAD_DOWN
+	dpad_down.pressed = true
+	gamepad._input(dpad_down)
+	var focused := _controller.get_focused_control()
+	_check(not focused.is_empty(), "D-Pad enfoca un control")
+	gamepad._input(dpad_down)
+	_check(_controller.get_focused_control() != focused, "D-Pad avanza el foco")
+	var dpad_up := InputEventJoypadButton.new()
+	dpad_up.button_index = JOY_BUTTON_DPAD_UP
+	dpad_up.pressed = true
+	gamepad._input(dpad_up)
+	_check(_controller.get_focused_control() == focused, "D-Pad retrocede el foco")
+	var accept := InputEventJoypadButton.new()
+	accept.button_index = JOY_BUTTON_A
+	accept.pressed = true
+	gamepad._input(accept)
+	_check(_controller.get_focused_control() == focused, "A mantiene el foco al pulsar")
+	_check(str(_controller._held_control_id) == focused, "A mantiene el control enfocado pulsado")
+	var release := InputEventJoypadButton.new()
+	release.button_index = JOY_BUTTON_B
+	release.pressed = true
+	gamepad._input(release)
+	_check(_controller.get_focused_control().is_empty(), "B limpia el foco")
+	_check(_controller._held_control_id.is_empty(), "B suelta el control")
+	# Stick derecho: rota la camara con los limites del reticulo de F2.3.
+	var look := InputEventJoypadMotion.new()
+	look.axis = JOY_AXIS_RIGHT_X
+	look.axis_value = 1.0
+	gamepad._input(look)
+	gamepad._process(0.1)
+	_check(not is_equal_approx(yaw_before, _controller.camera.rotation.y), "stick rota la camara")
+	_check(absf(rad_to_deg(_controller.camera.rotation.y)) <= 70.0, "giro de camara limitado a 70 grados")
+	var yaw_after_look := _controller.camera.rotation.y
+	var deadzone := InputEventJoypadMotion.new()
+	deadzone.axis = JOY_AXIS_RIGHT_X
+	deadzone.axis_value = 0.1
+	gamepad._input(deadzone)
+	gamepad._process(0.1)
+	_check(is_equal_approx(yaw_after_look, _controller.camera.rotation.y), "zona muerta detiene el giro")
+	gamepad.look_vector = Vector2.ZERO
+	# Restaurar camara y desactivar input como en F2.3.
+	_controller.camera.rotation.y = yaw_before
+	_controller.camera.rotation.x = pitch_before
+	gamepad.look_vector = Vector2.ZERO
+	_controller.input_enabled = false
+
+
+func _test_source_boundaries() -> void:
+	var directory := DirAccess.open("res://src/vehicle")
+	_check(directory != null, "directorio src/vehicle legible")
+	if directory == null:
+		return
+	var joypad_files: Array[String] = []
+	var save_files: Array[String] = []
+	var physics_files: Array[String] = []
+	for filename in directory.get_files():
+		if not filename.ends_with(".gd"):
+			continue
+		var source := FileAccess.get_file_as_string("res://src/vehicle/" + filename)
+		if source.find("InputEventJoypad") != -1 or source.find("JOY_BUTTON") != -1 or source.find("JOY_AXIS") != -1:
+			joypad_files.append(filename)
+		if source.find("SaveManager") != -1:
+			save_files.append(filename)
+		# Los scripts de cabina (F2.2-F2.4) no crean fisica de conduccion; el
+		# tren motriz solo menciona VehicleBody3D en sus notas de integracion.
+		var is_cabin_script := filename.begins_with("cabin_") or filename in ["hand_ik_driver.gd", "radio_unit.gd"]
+		if is_cabin_script and source.find("VehicleBody3D") != -1:
+			physics_files.append(filename)
+	_check(
+		joypad_files.size() == 1 and joypad_files[0] == "cabin_gamepad_adapter.gd",
+		"el gamepad vive solo en el adaptador (%s)"
+			% (", ".join(PackedStringArray(joypad_files)) if not joypad_files.is_empty() else "ninguno")
+	)
+	_check(save_files.is_empty(), "ningun script de cabina toca SaveManager")
+	_check(physics_files.is_empty(), "ningun script de cabina crea VehicleBody3D")
+	var mirror_source := FileAccess.get_file_as_string("res://src/vehicle/cabin_mirrors.gd")
+	var hud_source := FileAccess.get_file_as_string("res://src/vehicle/cabin_hud.gd")
+	_check(mirror_source.find("SaveManager") == -1 and hud_source.find("SaveManager") == -1, "espejos y HUD sin guardado")
+	_check(mirror_source.find("set_selector") == -1 and hud_source.find("set_selector") == -1, "espejos y HUD sin comandos del tren motriz")
+
+
 func _test_no_duplicate_mechanics() -> void:
 	var selector_before := _powertrain.selector
 	var speed_before := _powertrain.speed_mps
@@ -617,6 +903,19 @@ func _find_first_by_class(node: Node, class_names: Array) -> Node:
 		if found != null:
 			return found
 	return null
+
+
+func _find_all_by_class(node: Node, class_names: Array) -> Array:
+	var found: Array = []
+	if node == null:
+		return found
+	for class_name_value in class_names:
+		if node.is_class(str(class_name_value)):
+			found.append(node)
+			break
+	for child in node.get_children():
+		found.append_array(_find_all_by_class(child, class_names))
+	return found
 
 
 func _find_name_containing(node: Node, fragment: String) -> Node:

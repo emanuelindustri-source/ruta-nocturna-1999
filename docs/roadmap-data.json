@@ -2,11 +2,11 @@
   "project": "Ruta Nocturna: 1999",
   "repository": "emanuelindustri-source/ruta-nocturna-1999",
   "generated_from": "ROADMAP.md",
-  "source_sha256": "f81d6b739135aca85be4eb921e1bbe7474c8fca26802d0297103df0501620eef",
-  "current_version": "v0.2.2",
-  "version_file": "0.2.2",
-  "current_subphase": "2.4",
-  "global_status": "Fase 1 completada; 2.1, 2.2 y 2.3 completadas; siguiente gate 2.4",
+  "source_sha256": "0b761bf2864ea8700b7e061fd943647d038bb60fab382594de8599fa0b941509",
+  "current_version": "v0.2.3",
+  "version_file": "0.2.3",
+  "current_subphase": "3.1",
+  "global_status": "Fase 1 completada; Fase 2 completada (2.1–2.4); siguiente gate 3.1",
   "models": {
     "DS-R": "DeepSeek V4.1 Flash 1017 · Razonamiento",
     "DS-S": "DeepSeek V4.1 Flash 1017 · Estándar",
@@ -14,11 +14,11 @@
     "MiMo Flash": "MiMo-V2.6-Flash"
   },
   "summary": {
-    "completed": 7,
+    "completed": 8,
     "in_progress": 0,
-    "pending": 38,
+    "pending": 37,
     "total": 45,
-    "percent": 15.6
+    "percent": 17.8
   },
   "phases": [
     {
@@ -110,18 +110,18 @@
           "version": "v0.2.3",
           "model": "MiMo Flash",
           "model_label": "MiMo-V2.6-Flash",
-          "summary": "Espejos `SubViewport`, HUD mínimo, gamepad/D-Pad, save v0.2.0, QA de reparaciones y ADB.",
-          "status": "pending",
-          "status_label": "Pendiente"
+          "summary": "Espejos `SubViewport`, HUD mínimo, gamepad/D-Pad, save v0.2.0, QA de reparaciones y ADB. Validado y publicado.",
+          "status": "completed",
+          "status_label": "Completada"
         }
       ],
       "version_range": "v0.2.0 → v0.2.3",
-      "status": "in_progress",
-      "status_label": "En curso",
+      "status": "completed",
+      "status_label": "Completada",
       "progress": {
-        "completed": 3,
+        "completed": 4,
         "in_progress": 0,
-        "pending": 1,
+        "pending": 0,
         "total": 4
       }
     },
