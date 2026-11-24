@@ -2,7 +2,7 @@ extends Control
 ## Pantalla de arranque desde la Fase 1.2 y acceso a la rebanada vertical de 1.4.
 ## Verifica los servicios base y abre el panel QA, sin mecánicas de conducción.
 
-const PHASE := "3.5"
+const PHASE := "4.1"
 const VERTICAL_SLICE_SCENE := "res://scenes/vertical_slice/VerticalSlice.tscn"
 const CABIN_SCENE := "res://scenes/vehicle/CabinInteraction.tscn"
 const REPOSITORY := "emanuelindustri-source/ruta-nocturna-1999"
@@ -24,6 +24,7 @@ const SERVICE_NAMES := [
 @onready var status_label: Label = $Center/VBox/StatusLabel
 @onready var version_label: Label = $Center/VBox/VersionLabel
 @onready var qa_hint_label: Label = $Center/VBox/QaHint
+@onready var credits_label: Label = $Center/VBox/CreditsLabel
 @onready var crash_warning_label: Label = $Center/VBox/CrashWarning
 @onready var view_slice_button: Button = $Center/VBox/ViewSlice
 @onready var view_cabin_button: Button = $Center/VBox/ViewCabin
@@ -43,6 +44,7 @@ func _ready() -> void:
 		{"version": version, "phase": PHASE, "platform": OS.get_name()}
 	)
 	qa_hint_label.text = tr("BOOT_QA_HINT")
+	credits_label.text = tr("CREDITS_OSM")
 	view_slice_button.text = tr("UI_VIEW_SLICE")
 	view_slice_button.pressed.connect(_open_vertical_slice)
 	view_cabin_button.text = tr("UI_VIEW_CABIN")

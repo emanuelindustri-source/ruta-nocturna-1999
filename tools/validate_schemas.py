@@ -25,6 +25,7 @@ PAIRS = {
     "folklore_entities": "folklore_entities",
     "dialogue_and_endings": "dialogue_and_endings",
     "autoload_dependencies": "autoload_dependencies",
+    "world_routes": "world_routes",
 }
 
 BLOCKOUT_SPEC = ROOT / "data" / "vehicle" / "blockout_spec.json"
@@ -895,6 +896,20 @@ def validate() -> tuple[list[str], list[str]]:
             f"Localización: {len(missing_loc)} claves de datos todavía no están en el CSV base. "
             "Se completarán en F8.4; la UI base usa las claves existentes."
         )
+
+    # Red de rutas del mundo (F4.1): contrato, artefacto generado, manifiesto,
+    # conectividad, alternativas, elevación y atribución ODbL.
+    world_tools = ROOT / "tools" / "osm"
+    if str(world_tools) not in sys.path:
+        sys.path.insert(0, str(world_tools))
+    try:
+        from route_graph_validation import load_and_validate as validate_world_routes
+
+        world_errors, world_warnings = validate_world_routes(ROOT)
+        errors.extend(world_errors)
+        warnings.extend(world_warnings)
+    except Exception as exc:  # noqa: BLE001
+        errors.append(f"world_routes: no se pudo ejecutar la validación de la red: {exc}")
 
     return errors, warnings
 

@@ -469,3 +469,47 @@ Reglas:
   o sin `run-as` (APK debug) la ruta no existe.
 - La sonda GPU de PC restaura materiales, visibilidad, UI y vsync; si algo
   falla, la prueba termina con `RENDER_FAIL`, no deja la escena modificada.
+
+## 14. Rutas del mundo y DEM (Fase 4.1)
+
+F4.1 añade la **base de datos vial** del mundo y su cargador runtime. No añade
+terreno, streaming, biomas ni clima.
+
+```mermaid
+flowchart LR
+    OSM[Overpass OSM] --> PIPE[tools/osm/build_world_routes.py]
+    DEM[Terrarium DEM] --> PIPE
+    PIPE --> CONTRACT[world_routes.json]
+    PIPE --> NET[route_network.json]
+    PIPE --> MAN[route_network.manifest.json]
+    NET --> RN[RouteNetwork · RefCounted]
+    CONTRACT -. carga .-> RN
+    MAN -. verifica hash .-> RN
+    RN --> WD[WorldDirector · F4.2]
+```
+
+| Componente | Responsabilidad | No debe hacer |
+|---|---|---|
+| `tools/osm/build_world_routes.py` | Extraer OSM/DEM, construir grafo, calcular rutas y alternativas, validar y escribir artefactos | Ejecutarse en runtime o versionar respuestas crudas/teselas |
+| `data/schemas/world_routes.json` | Contrato v1 de regiones, extracción, DEM, grafo, rutas, caché, ODbL y anti-softlock | Contener coordenadas de nodos o datos generados |
+| `route_network.json` + manifiesto | Red comprimida y procedencia verificable | Ser editados a mano sin pipeline |
+| `src/world/route_network.gd` | Cargar/validar, A*, alternativas, proyección, elevación y polilíneas 3D | Ser autoload, generar terreno o consultar red |
+| `tests/world/WorldRoutesTest.tscn` | Verificar contrato, hash, grafo, rutas, proyección y atribución | Sustituir las pruebas Python de contratos |
+
+Reglas:
+
+- `RouteNetwork` es un servicio de datos de escena (F4.2), no un autoload. No
+  conoce UI, clima ni tráfico.
+- El juego funciona offline: la red y la elevación ya están en el artefacto; no
+  hay consultas a Overpass, OSM ni DEM en runtime.
+- La red se publica bajo ODbL 1.0; la atribución `CREDITS_OSM` es obligatoria y
+  visible. El texto de licencia vive en `licenses/ODbL-1.0.txt`.
+- La proyección 1:20 y `game_m` son la interfaz con F4.2. La escala vertical es
+  geométricamente similar; las pendientes del artefacto son reales.
+- El grafo es conexo desde `hub_carabobo`; cada región tiene hub y cada par del
+  anillo tiene principal y al menos una alternativa. El anti-softlock de F5.1
+  usará `fallback_hub` y el recálculo de ruta.
+- Las aristas miden ≤ 40 km y guardan su polilínea para que F4.2 las subdivida
+  en sectores de 800 m con carga asíncrona.
+- La medición de carga del grafo (`budgets.runtime_load_budget_ms`) queda
+  pendiente de F4.2; no se declara cumplida sin medición.

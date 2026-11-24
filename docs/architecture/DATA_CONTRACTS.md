@@ -484,3 +484,44 @@ F3.4 consume este contrato **sin modificarlo** (`schema_version` sigue en 1):
 - Los ángulos de barrido renderizados usan la convención del contrato
   (rest 180°/0°, sweep ∓100°) sobre los pivotes `pivot_m` derivados de
   `exterior_spec.json`.
+
+## 19. Rutas del mundo, OSM y DEM (Fase 4.1)
+
+La red de rutas es un contrato de **sistemas y datos**, no un asset de vehículo:
+`data/schemas/world_routes.json` (`schema_version: 1`,
+`contract_id: world.routes`, `world_id: venezuela.1999`). Su JSON Schema vive en
+`data/schemas/json/world_routes.schema.json`; la red generada se valida con
+`data/schemas/json/world_route_network.schema.json`.
+
+| Archivo | Contenido |
+|---|---|
+| `data/schemas/world_routes.json` | Regiones, proyección, extracción OSM, DEM, reglas de grafo, clases de vía, seis rutas, alternativas, caché, presupuestos, atribución, anti-softlock, estados y QA |
+| `data/content/world/route_network.json` | Nodos, aristas, rutas, alternativas, estadísticas, fuente y atribución |
+| `data/content/world/route_network.manifest.json` | Hashes, tamaños, consultas OSM, teselas DEM, comando, autor y licencia |
+| `licenses/ODbL-1.0.txt` | Texto de la Open Database License 1.0 |
+
+Reglas:
+
+- Los contratos de F1–F3.5 no se tocan. `world_routes` es nuevo; cambiar su
+  estructura exige subir `schema_version` y documentar la migración.
+- La red es una base de datos derivada de OpenStreetMap y se publica bajo
+  **ODbL 1.0**. La atribución se muestra en el juego (`CREDITS_OSM`), en
+  `CREDITS.md` y en la web; el share-alike se mantiene.
+- La extracción usa Overpass en build, nunca en runtime. Las respuestas crudas y
+  las teselas DEM viven en `build/` y no se versionan.
+- La elevación se muestrea de Terrarium (Mapzen/Tilezen; SRTM/GMTED2010/ETOPO1)
+  y se suaviza. No es un DEM de precisión ni sirve para navegación.
+- Las rutas alternativas se calculan con camino más corto penalizado sobre la
+  misma base OSM; no se dibujan a mano.
+- El grafo comprimido tiene 329 nodos y 413 aristas; cada arista mide ≤ 40 km y
+  conserva forma `[lat, lon, elevación]`, clase, distancia, tiempo y pendiente.
+- `tools/validate_schemas.py` y `tools/osm/route_graph_validation.py` comprueban
+  IDs, extremos, conectividad, rutas, alternativas, elevación, presupuestos,
+  hash del manifiesto y atribución ODbL.
+- `src/world/route_network.gd` (`RouteNetwork`) es un `RefCounted` de datos, no
+  un autoload. F4.2 lo usará desde el `WorldDirector` para terreno y sectores.
+- La proyección es equirectangular local 1:20 y guarda `game_m` por nodo; la
+  carga runtime se medirá en F4.2 contra `budgets.runtime_load_budget_ms`.
+
+Detalle completo del pipeline, la tabla de rutas y las limitaciones en
+`docs/architecture/WORLD_ROUTES.md`.

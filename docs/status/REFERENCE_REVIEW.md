@@ -27,6 +27,10 @@
   en `REFERENCE_USAGE_LOG.md`. Sin copiar archivos al repositorio.
 - Alta nueva `VID_20261122_115121.mp4` catalogada como video conceptual (95
   archivos). No se usa en mecánica.
+- Fase 4.1: escaneo rápido al inicio y al cierre. Detectó tres vídeos nuevos del
+  Esteem (2009, 2021 y 2023); son referencias del vehículo, no de rutas, y no se
+  usan en esta subfase. El catálogo mantiene 95 entradas hasta la próxima
+  revisión completa; no se copió ningún archivo.
 
 ## Pendiente
 

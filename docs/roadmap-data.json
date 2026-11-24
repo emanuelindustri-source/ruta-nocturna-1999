@@ -2,11 +2,11 @@
   "project": "Ruta Nocturna: 1999",
   "repository": "emanuelindustri-source/ruta-nocturna-1999",
   "generated_from": "ROADMAP.md",
-  "source_sha256": "61d4c4845fd90f6964e566be6f5c32df339be4ecebfe1b2ba1f4aa0e7380e194",
-  "current_version": "v0.3.4",
-  "version_file": "0.3.4",
-  "current_subphase": "3.5",
-  "global_status": "Fase 1, Fase 2 y Fase 3 completadas; siguiente gate F4.1",
+  "source_sha256": "f73aeccdcd299c86ba9dda0656ed867527564690753ced2bea7b4afca4e40c38",
+  "current_version": "v0.4.0",
+  "version_file": "0.4.0",
+  "current_subphase": "4.1",
+  "global_status": "Fase 1, Fase 2, Fase 3 y F4.1 completadas; siguiente gate F4.2",
   "models": {
     "DS-R": "DeepSeek V4.1 Flash 1017 · Razonamiento",
     "DS-S": "DeepSeek V4.1 Flash 1017 · Estándar",
@@ -14,11 +14,11 @@
     "MiMo Flash": "MiMo-V2.6-Flash"
   },
   "summary": {
-    "completed": 13,
+    "completed": 14,
     "in_progress": 0,
-    "pending": 32,
+    "pending": 31,
     "total": 45,
-    "percent": 28.9
+    "percent": 31.1
   },
   "phases": [
     {
@@ -196,9 +196,9 @@
           "version": "v0.4.0",
           "model": "DS-R",
           "model_label": "DeepSeek V4.1 Flash 1017 · Razonamiento",
-          "summary": "Pipeline OSM/Overpass, DEM, grafo, rutas alternativas, caché y atribución ODbL.",
-          "status": "pending",
-          "status_label": "Pendiente"
+          "summary": "Pipeline OSM/Overpass, DEM, grafo, rutas alternativas, caché y atribución ODbL. Validado y publicado.",
+          "status": "completed",
+          "status_label": "Completada"
         },
         {
           "id": "4.2",
@@ -229,12 +229,12 @@
         }
       ],
       "version_range": "v0.4.0 → v0.4.3",
-      "status": "pending",
-      "status_label": "Pendiente",
+      "status": "in_progress",
+      "status_label": "En curso",
       "progress": {
-        "completed": 0,
+        "completed": 1,
         "in_progress": 0,
-        "pending": 4,
+        "pending": 3,
         "total": 4
       }
     },

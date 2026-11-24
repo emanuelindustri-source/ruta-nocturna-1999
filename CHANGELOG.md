@@ -4,6 +4,80 @@ Todas las fechas usan ISO 8601. Las versiones siguen SemVer.
 
 ## [Unreleased]
 
+## [0.4.0] — 2026-11-24
+
+### Añadido
+
+- Contrato **`data/schemas/world_routes.json`** (`world.routes` v1) con las seis
+  regiones, proyección 1:20, extracción OSM, DEM, reglas de grafo, clases de vía,
+  rutas del anillo, alternativas, caché, presupuestos, atribución ODbL,
+  anti-softlock y estados. JSON Schemas en
+  `data/schemas/json/world_routes.schema.json` y
+  `data/schemas/json/world_route_network.schema.json`.
+- Pipeline **`tools/osm/build_world_routes.py`**: descarga/caché Overpass,
+  grafo nacional, snap de hubs, Dijkstra, alternativas penalizadas, grafo
+  comprimido, muestreo DEM por distancia, validación y escritura atómica de la
+  red y su manifiesto. Modos `--refresh`, `--offline` y `--check`.
+- **`data/content/world/route_network.json`** y
+  **`route_network.manifest.json`**: 329 nodos, 413 aristas, 6 caminos
+  principales y 12 alternativas; **4.751,7 km** principales y **16.265,7 km**
+  con alternativas; elevación 2,9–3.459,6 m; artefacto de 1.108.711 bytes.
+- **`src/world/route_network.gd`** (`RouteNetwork`, `RefCounted`, no autoload):
+  carga y valida contrato/red/manifiesto, verifica SHA-256, A*, alternativas,
+  proyección, elevación y polilíneas 3D.
+- **`tests/world/WorldRoutesTest.tscn`** y `tools/dev/world_routes_test.cmd`:
+  **143 comprobaciones** de contrato, hash, grafo, rutas, DEM, proyección y
+  atribución.
+- **Atribución ODbL**: `licenses/ODbL-1.0.txt`, aviso en `CREDITS.md`, pie de la
+  web y clave localizada `CREDITS_OSM` visible en la pantalla de arranque.
+- `docs/architecture/WORLD_ROUTES.md` con pipeline, tabla de rutas, caché,
+  proyección, licencia, validación y handoff a F4.2.
+- Validación compartida `tools/osm/route_graph_validation.py` integrada en
+  `tools/validate_schemas.py` (9 contratos) y `health_check.py`; la CI ejecuta la
+  prueba de rutas.
+
+### Cambiado
+
+- Versión `0.4.0` en `VERSION`, `project.godot`, `export_presets.cfg`
+  (`version/name`, `version/code=112`), `EXPECTED_VERSION` del smoke y de la
+  lluvia, `PHASE` de Boot y `BOOT_KICKER` en once idiomas.
+- `Boot.tscn`/`Boot.gd` muestran la atribución ODbL de las rutas.
+- `README.md`, `AGENTS.md` (contrato nuevo), `DATA_CONTRACTS.md` y
+  `SYSTEM_ARCHITECTURE.md` documentan F4.1.
+
+### Datos y rendimiento (F4.1)
+
+- OSM: extracto `2026-11-24T04:23:03Z`, 17.756 ways troncales/primarias y 9.638
+  secundarias; 41,7 MB de respuestas crudas en `build/cache/osm/` (no
+  versionadas).
+- DEM: 155 teselas Terrarium z10 (~7,5 MB), muestreo cada 500 m de recorrido.
+- Grafo: 329 nodos, 413 aristas, aristas ≤ 40 km, pendiente máxima medida
+  **18,9 %** (< 30 % del contrato), red conexa desde `hub_carabobo`.
+- Artefacto: 1.108.711 bytes (< 1.800.000), carga runtime pendiente de medir en
+  F4.2 (`budgets.runtime_load_budget_ms` = 250 ms).
+- Prueba de rutas **143/143**; las suites existentes conservan sus conteos
+  (smoke 270, tren motriz 125, cabina 46, interacción 257, lluvia 206, render
+  `RENDER_OK`).
+
+### Hallazgos y límites
+
+- La geometría se comprime a 1:20 y se muestrea cada 500 m; las horquillas y el
+  viario urbano quedan para F4.2/F4.3.
+- La DEM z10 no resuelve puentes/túneles; se aplica limpieza de picos y
+  suavizado, y no sirve para navegación.
+- H1, H2 y H3 siguen con su fase asignada (F4.4, F5.1/F9.1 y F9.1) y **no se
+  tocan** en F4.1. H2 se confirmó como hueco de **PC**: el arrastre táctil de la
+  palanca **sí funciona en Android** (P → L1); ratón, teclado y gamepad de PC no
+  la mueven (F5.1/F9.1).
+
+### Licencias
+
+- Red derivada de OpenStreetMap bajo **ODbL 1.0** (© OpenStreetMap
+  contributors), con share-alike, texto de licencia y atribución visible.
+- Elevación: Mapzen/Tilezen, SRTM/GMTED2010 (USGS) y ETOPO1 (NOAA), atribuidos
+  en `CREDITS.md` y en el manifiesto.
+
+
 ## [0.3.4] — 2026-11-23
 
 ### Añadido

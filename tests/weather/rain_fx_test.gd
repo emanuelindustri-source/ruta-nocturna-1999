@@ -4,7 +4,7 @@ extends Node
 ## Valida contrato, humedad, gotas, limpiaparabrisas, charcos y presupuestos
 ## CPU. No mide GPU ni shaders: eso es F3.4/F3.5.
 
-const EXPECTED_VERSION := "0.3.4"
+const EXPECTED_VERSION := "0.4.0"
 const DELTA := 1.0 / 60.0
 const DELTA_MOBILE := 1.0 / 30.0
 

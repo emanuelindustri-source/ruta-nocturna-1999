@@ -44,3 +44,32 @@ Cualquier build que use datos derivados de OpenStreetMap deberá mostrar:
 
 > © OpenStreetMap contributors — ODbL 1.0  
 > https://www.openstreetmap.org/copyright
+
+### Red de rutas (Fase 4.1)
+
+La red de rutas de `data/content/world/route_network.json` es una **base de
+datos derivada** de OpenStreetMap, calculada con `tools/osm/build_world_routes.py`.
+Se distribuye bajo **Open Database License (ODbL) 1.0**; el texto completo está
+en `licenses/ODbL-1.0.txt`.
+
+- Copyright de los datos: **© OpenStreetMap contributors**.
+- Licencia: **ODbL 1.0** — https://opendatacommons.org/licenses/odbl/1-0/
+- Copyright y atribución: https://www.openstreetmap.org/copyright
+- Atribución en el juego: clave `CREDITS_OSM` en los once idiomas.
+- Fecha de la base OSM y hashes de las consultas: manifiesto
+  `data/content/world/route_network.manifest.json`.
+- La red comprimida se ofrece bajo la misma licencia; los cambios y la
+  simplificación están documentados en `docs/architecture/WORLD_ROUTES.md`.
+
+### Elevación (DEM)
+
+- Teselas Terrarium de **Mapzen/Tilezen** (`elevation-tiles-prod`).
+- **SRTM** y **GMTED2010** cortesía del **U.S. Geological Survey**.
+- **ETOPO1** cortesía de **NOAA** (National Centers for Environmental Information).
+- Atribución completa: https://github.com/tilezen/joerd/blob/master/docs/attribution.md
+- La elevación se muestrea solo en el pipeline de build; el juego no consulta
+  teselas ni servicios en runtime. Los datos no son aptos para navegación.
+
+La atribución se muestra en la pantalla de arranque, en este archivo y en la web
+del proyecto. No se usa ninguna imagen de la biblioteca externa como asset ni
+como captura de tienda.

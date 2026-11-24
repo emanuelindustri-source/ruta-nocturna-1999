@@ -1,9 +1,9 @@
 # ROADMAP — Ruta Nocturna: 1999
 
-**Versión actual:** `v0.3.4`  
-**Subfase actual:** **3.5 — integración, compresión, warm-up, rendimiento y capturas; cerrada y publicada; Fase 3 completa, siguiente gate F4.1 en un chat nuevo**  
-**Estado global:** Fase 1, Fase 2 y Fase 3 completadas; siguiente gate F4.1  
-**Última fuente:** cierre de Fase 3.5 en GitHub
+**Versión actual:** `v0.4.0`  
+**Subfase actual:** **4.1 — pipeline OSM/Overpass, DEM, grafo, rutas alternativas, caché y atribución ODbL; cerrada y publicada; siguiente gate F4.2 en un chat nuevo**  
+**Estado global:** Fase 1, Fase 2, Fase 3 y F4.1 completadas; siguiente gate F4.2  
+**Última fuente:** cierre de Fase 4.1 en GitHub
 
 Esta es la fuente de verdad del desarrollo. Cada fila es un gate cerrado: no se
 avanza sin validación, actualización de estado, commit, tag y cambio de chat.
@@ -94,7 +94,7 @@ invertir en arte o mecánicas complejas.
 
 | Subfase | Versión | Modelo | Entregable | Estado |
 |---|---|---|---|---|
-| **4.1** | `v0.4.0` | **DS-R** | Pipeline OSM/Overpass, DEM, grafo, rutas alternativas, caché y atribución ODbL. | Pendiente |
+| **4.1** | `v0.4.0` | **DS-R** | Pipeline OSM/Overpass, DEM, grafo, rutas alternativas, caché y atribución ODbL. Validado y publicado. | Completada |
 | **4.2** | `v0.4.1` | **DS-R** | Terrain3D, streaming de sectores de 800 m, colisión, carga asíncrona y PSS ≤ 1.2 GB. | Pendiente |
 | **4.3** | `v0.4.2` | **MiMo Pro** | Kits de biomas, gasolineras, moteles, peajes, señalización, agua, polvo y nieve. | Pendiente |
 | **4.4** | `v0.4.3` | **DS-S** | WeatherManager, transiciones, rayos/truenos, humedad, QA de regiones/clima y mapa de papel. | Pendiente |

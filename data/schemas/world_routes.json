@@ -1,0 +1,434 @@
+{
+  "schema_version": 1,
+  "contract_id": "world.routes",
+  "world_id": "venezuela.1999",
+  "status": "active",
+  "data_files": {
+    "network": "data/content/world/route_network.json",
+    "manifest": "data/content/world/route_network.manifest.json",
+    "network_schema": "data/schemas/json/world_route_network.schema.json"
+  },
+  "world_bounds": {
+    "min_lat": 0.6,
+    "min_lon": -73.5,
+    "max_lat": 12.5,
+    "max_lon": -59.8
+  },
+  "projection": {
+    "mode": "equirectangular_local",
+    "origin": [
+      8.5,
+      -66.5
+    ],
+    "meters_per_degree_lat": 110574.0,
+    "meters_per_degree_lon": 110097.0,
+    "world_scale": 0.05,
+    "vertical_scale": 0.05,
+    "note": "La red se guarda en WGS84 y elevación real. F4.2 proyecta a espacio de juego con escala 1:20; la escala vertical se mantiene geométricamente similar para que las pendientes de la ruta sean reales."
+  },
+  "regions": [
+    {
+      "id": "carabobo",
+      "center": [
+        10.162,
+        -68.0077
+      ],
+      "hub_node": "hub_carabobo",
+      "radius_km": 180.0,
+      "elevation_expected_m": [
+        380.0,
+        560.0
+      ],
+      "terrain_character": "coast",
+      "note": "Valencia y el eje industrial centro-norte."
+    },
+    {
+      "id": "falcon",
+      "center": [
+        11.4045,
+        -69.6734
+      ],
+      "hub_node": "hub_falcon",
+      "radius_km": 200.0,
+      "elevation_expected_m": [
+        0.0,
+        120.0
+      ],
+      "terrain_character": "coast",
+      "note": "Coro y la costa seca del noroeste."
+    },
+    {
+      "id": "merida",
+      "center": [
+        8.5915,
+        -71.156
+      ],
+      "hub_node": "hub_merida",
+      "radius_km": 160.0,
+      "elevation_expected_m": [
+        1300.0,
+        1800.0
+      ],
+      "terrain_character": "mountains",
+      "note": "Mérida y el páramo andino."
+    },
+    {
+      "id": "llanos",
+      "center": [
+        8.6226,
+        -70.2074
+      ],
+      "hub_node": "hub_llanos",
+      "radius_km": 220.0,
+      "elevation_expected_m": [
+        120.0,
+        260.0
+      ],
+      "terrain_character": "plains",
+      "note": "Barinas y la entrada a Los Llanos."
+    },
+    {
+      "id": "amazonas",
+      "center": [
+        5.6639,
+        -67.6236
+      ],
+      "hub_node": "hub_amazonas",
+      "radius_km": 300.0,
+      "elevation_expected_m": [
+        40.0,
+        120.0
+      ],
+      "terrain_character": "rainforest",
+      "note": "Puerto Ayacucho y el sur del Orinoco."
+    },
+    {
+      "id": "delta",
+      "center": [
+        9.0587,
+        -62.05
+      ],
+      "hub_node": "hub_delta",
+      "radius_km": 200.0,
+      "elevation_expected_m": [
+        0.0,
+        60.0
+      ],
+      "terrain_character": "delta",
+      "note": "Tucupita y el delta del Orinoco."
+    }
+  ],
+  "extract": {
+    "source": "OpenStreetMap",
+    "method": "Overpass API",
+    "endpoint_priority": [
+      "https://z.overpass-api.de/api/interpreter",
+      "https://lz4.overpass-api.de/api/interpreter",
+      "https://overpass-api.de/api/interpreter"
+    ],
+    "queries": [
+      {
+        "id": "ve_trunk_primary",
+        "description": "Red troncal, primaria y de autopistas de Venezuela.",
+        "highway_regex": "^(motorway|trunk|primary)$",
+        "bbox": [
+          0.6,
+          -73.5,
+          12.5,
+          -59.8
+        ]
+      },
+      {
+        "id": "ve_secondary",
+        "description": "Carreteras secundarias que cierran los corredores y las alternativas.",
+        "highway_regex": "^secondary$",
+        "bbox": [
+          0.6,
+          -73.5,
+          12.5,
+          -59.8
+        ]
+      }
+    ],
+    "license": "ODbL 1.0",
+    "license_url": "https://opendatacommons.org/licenses/odbl/1-0/",
+    "copyright": "© OpenStreetMap contributors",
+    "copyright_url": "https://www.openstreetmap.org/copyright",
+    "extract_note": "Consulta de solo lectura sobre la base mundial de OSM. La respuesta cruda, las teselas DEM y los artefactos de caché viven en build/ y no se versionan; el manifiesto registra hashes y consulta.",
+    "raw_cache_dir": "build/cache/osm"
+  },
+  "dem": {
+    "source": "Mapzen Terrain Tiles (Terrarium)",
+    "method": "Muestreo bilineal de teselas Terrarium en tiempo de build",
+    "tile_url": "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png",
+    "zoom": 10,
+    "sample_interval_m": 1000,
+    "smoothing": "media móvil de 3 puntos antes de calcular ascenso, descenso y pendiente",
+    "vertical_datum": "metros sobre el nivel del mar según Terrarium (SRTM/GMTED2010/ETOPO1)",
+    "attribution": "Teselas de elevación de Mapzen/Tilezen; SRTM y GMTED2010 cortesía del U.S. Geological Survey; ETOPO1 cortesía de NOAA.",
+    "attribution_url": "https://github.com/tilezen/joerd/blob/master/docs/attribution.md",
+    "cache_dir": "build/cache/dem",
+    "note": "Solo se usa en el pipeline de build; el juego no consulta DEM ni teselas en runtime. F4.2 consume la elevación por nodo y arista para el terreno."
+  },
+  "graph_rules": {
+    "node_id_scheme": "hub_<region> | node_<sha1-8>",
+    "edge_id_scheme": "edge_<sha1-8>",
+    "snap_max_offset_m": 5000,
+    "max_sample_spacing_m": 500,
+    "max_edge_length_m": 40000,
+    "min_used_degree": 1,
+    "max_grade_pct": 30.0,
+    "grade_window_m": 1000,
+    "coordinate_precision_decimals": 6,
+    "elevation_required": true
+  },
+  "highway_classes": {
+    "motorway": {
+      "design_speed_kph": 100,
+      "priority": 1
+    },
+    "trunk": {
+      "design_speed_kph": 90,
+      "priority": 2
+    },
+    "primary": {
+      "design_speed_kph": 80,
+      "priority": 3
+    },
+    "secondary": {
+      "design_speed_kph": 60,
+      "priority": 4
+    }
+  },
+  "routes": [
+    {
+      "id": "route.carabobo_falcon",
+      "from_region": "carabobo",
+      "to_region": "falcon",
+      "from": "hub_carabobo",
+      "to": "hub_falcon",
+      "alternatives_required": true,
+      "min_alternatives": 1,
+      "max_alternatives": 2,
+      "max_detour_ratio": 1.6,
+      "max_overlap_ratio": 0.85,
+      "max_distance_km": 750.0,
+      "display_order": 1
+    },
+    {
+      "id": "route.carabobo_merida",
+      "from_region": "carabobo",
+      "to_region": "merida",
+      "from": "hub_carabobo",
+      "to": "hub_merida",
+      "alternatives_required": true,
+      "min_alternatives": 1,
+      "max_alternatives": 2,
+      "max_detour_ratio": 1.7,
+      "max_overlap_ratio": 0.85,
+      "max_distance_km": 850.0,
+      "display_order": 2
+    },
+    {
+      "id": "route.merida_llanos",
+      "from_region": "merida",
+      "to_region": "llanos",
+      "from": "hub_merida",
+      "to": "hub_llanos",
+      "alternatives_required": true,
+      "min_alternatives": 1,
+      "max_alternatives": 2,
+      "max_detour_ratio": 1.5,
+      "max_overlap_ratio": 0.85,
+      "max_distance_km": 260.0,
+      "display_order": 3
+    },
+    {
+      "id": "route.llanos_amazonas",
+      "from_region": "llanos",
+      "to_region": "amazonas",
+      "from": "hub_llanos",
+      "to": "hub_amazonas",
+      "alternatives_required": true,
+      "min_alternatives": 1,
+      "max_alternatives": 2,
+      "max_detour_ratio": 1.35,
+      "max_overlap_ratio": 0.85,
+      "max_distance_km": 2000.0,
+      "display_order": 4
+    },
+    {
+      "id": "route.amazonas_delta",
+      "from_region": "amazonas",
+      "to_region": "delta",
+      "from": "hub_amazonas",
+      "to": "hub_delta",
+      "alternatives_required": true,
+      "min_alternatives": 1,
+      "max_alternatives": 2,
+      "max_detour_ratio": 1.35,
+      "max_overlap_ratio": 0.85,
+      "max_distance_km": 1400.0,
+      "display_order": 5
+    },
+    {
+      "id": "route.delta_carabobo",
+      "from_region": "delta",
+      "to_region": "carabobo",
+      "from": "hub_delta",
+      "to": "hub_carabobo",
+      "alternatives_required": true,
+      "min_alternatives": 1,
+      "max_alternatives": 2,
+      "max_detour_ratio": 1.4,
+      "max_overlap_ratio": 0.85,
+      "max_distance_km": 1300.0,
+      "display_order": 6
+    }
+  ],
+  "alternatives": {
+    "method": "penalized_shortest_path",
+    "penalty_factor": 3.0,
+    "max_candidates": 4,
+    "selection": "menor desvío, luego menor solapamiento",
+    "note": "Se recalcula el camino con las aristas del camino principal penalizadas; se aceptan solo alternativas dentro del desvío y solapamiento del contrato. Es una ruta real sobre la misma base OSM, no una copia ni un trazado inventado."
+  },
+  "cache": {
+    "raw_dir": "build/cache/osm",
+    "dem_dir": "build/cache/dem",
+    "committed_artifacts": [
+      "data/content/world/route_network.json",
+      "data/content/world/route_network.manifest.json"
+    ],
+    "regenerable": true,
+    "regen_command": ".venv\\Scripts\\python.exe tools\\osm\\build_world_routes.py --refresh",
+    "offline_command": ".venv\\Scripts\\python.exe tools\\osm\\build_world_routes.py --offline",
+    "policy": "Las respuestas crudas de Overpass y las teselas DEM no se versionan. Solo se versionan la red comprimida y su manifiesto, que se pueden regenerar con el comando documentado."
+  },
+  "budgets": {
+    "max_nodes": 500,
+    "max_edges": 700,
+    "max_file_bytes": 1800000,
+    "max_route_edge_refs": 700,
+    "max_alternatives_per_route": 2,
+    "runtime_load_budget_ms": 250,
+    "runtime_load_status": "pending_f42"
+  },
+  "attribution": {
+    "dataset": "OpenStreetMap",
+    "copyright": "© OpenStreetMap contributors",
+    "license": "ODbL 1.0",
+    "license_url": "https://opendatacommons.org/licenses/odbl/1-0/",
+    "copyright_url": "https://www.openstreetmap.org/copyright",
+    "notice_es": "Datos de rutas © OpenStreetMap contributors, disponibles bajo ODbL 1.0.",
+    "notice_en": "Route data © OpenStreetMap contributors, available under ODbL 1.0.",
+    "in_game_key": "CREDITS_OSM",
+    "credits_file": "CREDITS.md",
+    "data_license_file": "licenses/ODbL-1.0.txt",
+    "share_alike": true,
+    "note": "La red comprimida es una base de datos derivada de OSM y se distribuye bajo ODbL 1.0. La atribución debe verse en el juego (clave CREDITS_OSM), en CREDITS.md y en la web."
+  },
+  "anti_softlock": {
+    "all_regions_reachable": true,
+    "fallback_hub": "hub_carabobo",
+    "route_recompute_on_block": true,
+    "no_permanent_route_block": true,
+    "note": "Si una ruta principal queda bloqueada, el runtime recalcula con las alternativas del artefacto y, si no hay paso, devuelve al hub seguro de Carabobo. El rescate y la deuda narrativa se implementan en F5.1; F4.1 solo garantiza conectividad y alternativas."
+  },
+  "states": {
+    "network": [
+      {
+        "id": "unloaded",
+        "next": [
+          "loading",
+          "failed"
+        ]
+      },
+      {
+        "id": "loading",
+        "next": [
+          "loaded",
+          "degraded",
+          "failed"
+        ]
+      },
+      {
+        "id": "loaded",
+        "next": [
+          "unloaded",
+          "degraded"
+        ]
+      },
+      {
+        "id": "degraded",
+        "next": [
+          "loaded",
+          "unloaded"
+        ]
+      },
+      {
+        "id": "failed",
+        "next": [
+          "unloaded"
+        ]
+      }
+    ],
+    "route": [
+      {
+        "id": "planned",
+        "next": [
+          "active",
+          "abandoned"
+        ]
+      },
+      {
+        "id": "active",
+        "next": [
+          "completed",
+          "abandoned",
+          "replanned"
+        ]
+      },
+      {
+        "id": "replanned",
+        "next": [
+          "active",
+          "abandoned"
+        ]
+      },
+      {
+        "id": "completed",
+        "next": []
+      },
+      {
+        "id": "abandoned",
+        "next": []
+      }
+    ]
+  },
+  "qa": {
+    "checks": [
+      "unique_ids",
+      "edge_endpoints",
+      "graph_connectivity",
+      "route_continuity",
+      "alternative_routes",
+      "elevation_coverage",
+      "grade_limits",
+      "attribution_odbl",
+      "manifest_hash",
+      "budgets",
+      "localization_key"
+    ],
+    "test_scene": "tests/world/WorldRoutesTest.tscn",
+    "test_command": "tools/dev/world_routes_test.cmd"
+  },
+  "notes": [
+    "F4.1 construye y valida la red de rutas; no genera terreno, sectores de 800 m, biomas, clima ni tráfico. Eso corresponde a F4.2, F4.3 y F4.4.",
+    "La red es una base de datos derivada de OpenStreetMap; la atribución ODbL es obligatoria y se muestra en el juego, en CREDITS.md y en la web.",
+    "Las rutas alternativas se calculan sobre la misma base OSM con penalización del camino principal; no son trazados dibujados a mano.",
+    "La elevación se muestrea de teselas Terrarium en build; no se versionan teselas ni respuestas crudas.",
+    "La compresión a espacio de juego (1:20) y la escala vertical son datos de proyección para F4.2; las pendientes del artefacto son reales.",
+    "Los valores de pendiente máxima, velocidades de diseño y presupuestos son valores de diseño de F4.1 y se revisan con medición en F4.2/F10.1."
+  ]
+}

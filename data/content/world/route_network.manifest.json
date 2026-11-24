@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "contract_id": "world.routes",
+  "world_id": "venezuela.1999",
+  "generated_utc": "2026-11-24T04:35:48Z",
+  "tool": {
+    "name": "tools/osm/build_world_routes.py",
+    "version": "1.0.0"
+  },
+  "command": "python tools/osm/build_world_routes.py --refresh",
+  "author": "OpenCode",
+  "license": "ODbL-1.0",
+  "artifacts": [
+    {
+      "path": "data/content/world/route_network.json",
+      "sha256": "79af4533513bb2b65cd6fcbb5239d6c1b01baf315230fdd18a54122efdcd2fda",
+      "bytes": 1108711
+    }
+  ],
+  "contract": {
+    "path": "data/schemas/world_routes.json",
+    "sha256": "51d136eef8ed22ac44a86ee51370bc6172031a100a2ad9d9bfb48dec4c6f16ec",
+    "bytes": 13326
+  },
+  "sources": [
+    {
+      "id": "ve_trunk_primary",
+      "path": "build/cache/osm/ve_trunk_primary_6575d075b1a4.json",
+      "sha256": "94a68fbcb3c9707ae1b4ff1f8de8cec8babf0dfa4e00277c42645651eeb18413",
+      "bytes": 27291764,
+      "osm_base_timestamp": "2026-11-24T04:21:01Z",
+      "endpoint": "cache",
+      "query": "[out:json][timeout:900];way(0.6,-73.5,12.5,-59.8)[highway~\"^(motorway|trunk|primary)$\"];out tags geom;"
+    },
+    {
+      "id": "ve_secondary",
+      "path": "build/cache/osm/ve_secondary_e1b042f6501b.json",
+      "sha256": "50c2b34b69d42be7a0f791502554e6bc0153560a10d967a5c324d2a5dda992f8",
+      "bytes": 14473238,
+      "osm_base_timestamp": "2026-11-24T04:23:03Z",
+      "endpoint": "cache",
+      "query": "[out:json][timeout:900];way(0.6,-73.5,12.5,-59.8)[highway~\"^secondary$\"];out tags geom;"
+    }
+  ],
+  "dem": {
+    "source": "Mapzen Terrain Tiles (Terrarium)",
+    "zoom": 10,
+    "tile_count": 156,
+    "bytes": 7511070,
+    "keys_sha256": "d3558e6aa55e2331c934dacb03f632fe615e81680d862884542d6d045fd99bd1",
+    "attribution_url": "https://github.com/tilezen/joerd/blob/master/docs/attribution.md"
+  },
+  "notes": [
+    "Red derivada de OpenStreetMap bajo ODbL 1.0; no para navegación.",
+    "Las respuestas crudas de Overpass y las teselas DEM no se versionan.",
+    "Los caminos alternativos son rutas reales calculadas con penalización del camino principal."
+  ]
+}

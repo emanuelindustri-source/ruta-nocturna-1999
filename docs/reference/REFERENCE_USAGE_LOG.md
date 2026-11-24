@@ -606,3 +606,42 @@ referencia visual. Subfase de medicion: no se consulta la biblioteca externa.
 - Revision rapida: inicio y cierre de cada subfase.
 - Revision completa: **2026-12-07**, o antes de la subfase de modelado/UI
   que corresponda (obligatoria antes de F4.3/F5.1).
+
+## 2026-11-24 — Fase 4.1 — red de rutas OSM/DEM
+
+**Alcance:** pipeline de datos OSM/Overpass, DEM, grafo, rutas alternativas,
+caché y atribución ODbL. No es una subfase de modelado ni de UI: no se consultó
+ninguna imagen de la biblioteca externa.
+
+### Referencias utilizadas
+
+| Familia | Uso | Resultado |
+|---|---|---|
+| Catálogo externo (`reference_catalog.json`) | Revisión rápida de relevancia para F4.1 | 95 entradas; las imágenes de paisajes/conceptos están marcadas para F4.3, no para esta fase. Se revisaron solo metadatos. |
+| OpenStreetMap / Overpass | Base vial real de Venezuela | Extracción `2026-11-24T04:23:03Z`: 17.756 ways troncales/primarias + 9.638 secundarias; red comprimida de 329 nodos/413 aristas; atribución ODbL. |
+| Mapzen Terrain Tiles / SRTM / GMTED2010 / ETOPO1 | Elevación de la red | 155 teselas Terrarium z10; elevación por nodo/arista; atribución en `CREDITS.md` y en el artefacto. |
+| Conceptos de paisajes (Gemini) | Dirección visual de biomas | **No usados en F4.1**; quedan para F4.3. |
+
+### Decisiones
+
+- No se copió ninguna imagen ni PDF de `C:\Dev\fotos de ejemplo`. Las respuestas
+  OSM y las teselas DEM viven en `build/` y no se versionan.
+- La red es una base de datos derivada de OSM bajo ODbL 1.0; se añadió el texto
+  de licencia y la atribución visible en Boot, `CREDITS.md` y la web.
+- La elevación se usa como referencia de pendientes y de F4.2, no como DEM de
+  precisión ni para navegación.
+- Las rutas alternativas son caminos reales de la misma base OSM; no se
+  dibujaron a mano ni se inspiraron en los conceptos de IA.
+- El escaneo rápido detectó tres vídeos nuevos del Esteem (2009/2021/2023);
+  son referencias del vehículo y no se usan en esta subfase.
+
+### Descartado
+
+- Usar las fotos de paisajes o los conceptos Gemini como datos de ruta.
+- Introducir nombres visibles de vías o marcas en el artefacto (solo `ref`).
+- Versionar teselas DEM, respuestas Overpass o la vista previa de build.
+
+### Próxima revisión
+
+- Revisión completa obligatoria antes de **F4.3** (kits de biomas) o el
+  **2026-12-06**, lo que ocurra primero.

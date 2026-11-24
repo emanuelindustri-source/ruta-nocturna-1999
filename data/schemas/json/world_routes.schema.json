@@ -1,0 +1,903 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ruta-nocturna-1999.invalid/schemas/world_routes.schema.json",
+  "title": "Ruta Nocturna 1999 — contrato de rutas del mundo",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "contract_id",
+    "world_id",
+    "status",
+    "data_files",
+    "world_bounds",
+    "projection",
+    "regions",
+    "extract",
+    "dem",
+    "graph_rules",
+    "highway_classes",
+    "routes",
+    "alternatives",
+    "cache",
+    "budgets",
+    "attribution",
+    "anti_softlock",
+    "states",
+    "qa",
+    "notes"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "contract_id": {
+      "const": "world.routes"
+    },
+    "world_id": {
+      "const": "venezuela.1999"
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "active",
+        "deprecated"
+      ]
+    },
+    "data_files": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "network",
+        "manifest",
+        "network_schema"
+      ],
+      "properties": {
+        "network": {
+          "type": "string",
+          "pattern": "^data/content/world/[a-z0-9_./-]+\\.json$"
+        },
+        "manifest": {
+          "type": "string",
+          "pattern": "^data/content/world/[a-z0-9_./-]+\\.json$"
+        },
+        "network_schema": {
+          "type": "string",
+          "pattern": "^data/schemas/json/[a-z0-9_./-]+\\.schema\\.json$"
+        }
+      }
+    },
+    "world_bounds": {
+      "$ref": "#/$defs/bbox"
+    },
+    "projection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "origin",
+        "meters_per_degree_lat",
+        "meters_per_degree_lon",
+        "world_scale",
+        "vertical_scale",
+        "note"
+      ],
+      "properties": {
+        "mode": {
+          "const": "equirectangular_local"
+        },
+        "origin": {
+          "$ref": "#/$defs/geo"
+        },
+        "meters_per_degree_lat": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "meters_per_degree_lon": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "world_scale": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1
+        },
+        "vertical_scale": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1
+        },
+        "note": {
+          "type": "string",
+          "minLength": 20
+        }
+      }
+    },
+    "regions": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "items": {
+        "$ref": "#/$defs/region"
+      }
+    },
+    "extract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "method",
+        "endpoint_priority",
+        "queries",
+        "license",
+        "license_url",
+        "copyright",
+        "copyright_url",
+        "extract_note",
+        "raw_cache_dir"
+      ],
+      "properties": {
+        "source": {
+          "const": "OpenStreetMap"
+        },
+        "method": {
+          "const": "Overpass API"
+        },
+        "endpoint_priority": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^https://"
+          }
+        },
+        "queries": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/osm_query"
+          }
+        },
+        "license": {
+          "const": "ODbL 1.0"
+        },
+        "license_url": {
+          "type": "string",
+          "pattern": "^https://"
+        },
+        "copyright": {
+          "type": "string",
+          "minLength": 3
+        },
+        "copyright_url": {
+          "type": "string",
+          "pattern": "^https://"
+        },
+        "extract_note": {
+          "type": "string",
+          "minLength": 20
+        },
+        "raw_cache_dir": {
+          "type": "string",
+          "pattern": "^build/cache/"
+        }
+      }
+    },
+    "dem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "method",
+        "tile_url",
+        "zoom",
+        "sample_interval_m",
+        "smoothing",
+        "vertical_datum",
+        "attribution",
+        "attribution_url",
+        "cache_dir",
+        "note"
+      ],
+      "properties": {
+        "source": {
+          "type": "string",
+          "minLength": 3
+        },
+        "method": {
+          "type": "string",
+          "minLength": 10
+        },
+        "tile_url": {
+          "type": "string",
+          "pattern": "^https://"
+        },
+        "zoom": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 15
+        },
+        "sample_interval_m": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "smoothing": {
+          "type": "string",
+          "minLength": 5
+        },
+        "vertical_datum": {
+          "type": "string",
+          "minLength": 5
+        },
+        "attribution": {
+          "type": "string",
+          "minLength": 10
+        },
+        "attribution_url": {
+          "type": "string",
+          "pattern": "^https://"
+        },
+        "cache_dir": {
+          "type": "string",
+          "pattern": "^build/cache/"
+        },
+        "note": {
+          "type": "string",
+          "minLength": 20
+        }
+      }
+    },
+    "graph_rules": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "node_id_scheme",
+        "edge_id_scheme",
+        "snap_max_offset_m",
+        "max_sample_spacing_m",
+        "max_edge_length_m",
+        "min_used_degree",
+        "max_grade_pct",
+        "grade_window_m",
+        "coordinate_precision_decimals",
+        "elevation_required"
+      ],
+      "properties": {
+        "node_id_scheme": {
+          "type": "string",
+          "minLength": 5
+        },
+        "edge_id_scheme": {
+          "type": "string",
+          "minLength": 5
+        },
+        "snap_max_offset_m": {
+          "type": "number",
+          "minimum": 100
+        },
+        "max_sample_spacing_m": {
+          "type": "number",
+          "minimum": 100
+        },
+        "max_edge_length_m": {
+          "type": "number",
+          "minimum": 1000
+        },
+        "min_used_degree": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_grade_pct": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 100
+        },
+        "grade_window_m": {
+          "type": "number",
+          "minimum": 50
+        },
+        "coordinate_precision_decimals": {
+          "type": "integer",
+          "minimum": 4,
+          "maximum": 8
+        },
+        "elevation_required": {
+          "type": "boolean"
+        }
+      }
+    },
+    "highway_classes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "motorway",
+        "trunk",
+        "primary",
+        "secondary"
+      ],
+      "properties": {
+        "motorway": {
+          "$ref": "#/$defs/highway_class"
+        },
+        "trunk": {
+          "$ref": "#/$defs/highway_class"
+        },
+        "primary": {
+          "$ref": "#/$defs/highway_class"
+        },
+        "secondary": {
+          "$ref": "#/$defs/highway_class"
+        }
+      }
+    },
+    "routes": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "items": {
+        "$ref": "#/$defs/route_requirement"
+      }
+    },
+    "alternatives": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "method",
+        "penalty_factor",
+        "max_candidates",
+        "selection",
+        "note"
+      ],
+      "properties": {
+        "method": {
+          "const": "penalized_shortest_path"
+        },
+        "penalty_factor": {
+          "type": "number",
+          "minimum": 1.1
+        },
+        "max_candidates": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "selection": {
+          "type": "string",
+          "minLength": 5
+        },
+        "note": {
+          "type": "string",
+          "minLength": 20
+        }
+      }
+    },
+    "cache": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "raw_dir",
+        "dem_dir",
+        "committed_artifacts",
+        "regenerable",
+        "regen_command",
+        "offline_command",
+        "policy"
+      ],
+      "properties": {
+        "raw_dir": {
+          "type": "string",
+          "pattern": "^build/"
+        },
+        "dem_dir": {
+          "type": "string",
+          "pattern": "^build/"
+        },
+        "committed_artifacts": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^data/content/world/[a-z0-9_./-]+\\.json$"
+          }
+        },
+        "regenerable": {
+          "const": true
+        },
+        "regen_command": {
+          "type": "string",
+          "minLength": 10
+        },
+        "offline_command": {
+          "type": "string",
+          "minLength": 10
+        },
+        "policy": {
+          "type": "string",
+          "minLength": 30
+        }
+      }
+    },
+    "budgets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_nodes",
+        "max_edges",
+        "max_file_bytes",
+        "max_route_edge_refs",
+        "max_alternatives_per_route",
+        "runtime_load_budget_ms",
+        "runtime_load_status"
+      ],
+      "properties": {
+        "max_nodes": {
+          "type": "integer",
+          "minimum": 10
+        },
+        "max_edges": {
+          "type": "integer",
+          "minimum": 10
+        },
+        "max_file_bytes": {
+          "type": "integer",
+          "minimum": 10000
+        },
+        "max_route_edge_refs": {
+          "type": "integer",
+          "minimum": 10
+        },
+        "max_alternatives_per_route": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "runtime_load_budget_ms": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "runtime_load_status": {
+          "type": "string",
+          "minLength": 5
+        }
+      }
+    },
+    "attribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dataset",
+        "copyright",
+        "license",
+        "license_url",
+        "copyright_url",
+        "notice_es",
+        "notice_en",
+        "in_game_key",
+        "credits_file",
+        "data_license_file",
+        "share_alike",
+        "note"
+      ],
+      "properties": {
+        "dataset": {
+          "const": "OpenStreetMap"
+        },
+        "copyright": {
+          "type": "string",
+          "minLength": 3
+        },
+        "license": {
+          "const": "ODbL 1.0"
+        },
+        "license_url": {
+          "type": "string",
+          "pattern": "^https://"
+        },
+        "copyright_url": {
+          "type": "string",
+          "pattern": "^https://"
+        },
+        "notice_es": {
+          "type": "string",
+          "minLength": 20
+        },
+        "notice_en": {
+          "type": "string",
+          "minLength": 20
+        },
+        "in_game_key": {
+          "type": "string",
+          "pattern": "^[A-Z0-9_]+$"
+        },
+        "credits_file": {
+          "const": "CREDITS.md"
+        },
+        "data_license_file": {
+          "type": "string",
+          "pattern": "^licenses/[A-Za-z0-9_.-]+\\.txt$"
+        },
+        "share_alike": {
+          "const": true
+        },
+        "note": {
+          "type": "string",
+          "minLength": 30
+        }
+      }
+    },
+    "anti_softlock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "all_regions_reachable",
+        "fallback_hub",
+        "route_recompute_on_block",
+        "no_permanent_route_block",
+        "note"
+      ],
+      "properties": {
+        "all_regions_reachable": {
+          "const": true
+        },
+        "fallback_hub": {
+          "type": "string",
+          "pattern": "^hub_"
+        },
+        "route_recompute_on_block": {
+          "const": true
+        },
+        "no_permanent_route_block": {
+          "const": true
+        },
+        "note": {
+          "type": "string",
+          "minLength": 30
+        }
+      }
+    },
+    "states": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "network",
+        "route"
+      ],
+      "properties": {
+        "network": {
+          "$ref": "#/$defs/state_list"
+        },
+        "route": {
+          "$ref": "#/$defs/state_list"
+        }
+      }
+    },
+    "qa": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "checks",
+        "test_scene",
+        "test_command"
+      ],
+      "properties": {
+        "checks": {
+          "type": "array",
+          "minItems": 5,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+$"
+          }
+        },
+        "test_scene": {
+          "type": "string",
+          "pattern": "^tests/[A-Za-z0-9_./-]+\\.tscn$"
+        },
+        "test_command": {
+          "type": "string",
+          "pattern": "^tools/[A-Za-z0-9_./-]+\\.cmd$"
+        }
+      }
+    },
+    "notes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 10
+      }
+    }
+  },
+  "$defs": {
+    "geo": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "type": "number"
+      },
+      "prefixItems": [
+        {
+          "type": "number",
+          "minimum": -90,
+          "maximum": 90
+        },
+        {
+          "type": "number",
+          "minimum": -180,
+          "maximum": 180
+        }
+      ]
+    },
+    "bbox": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "min_lat",
+        "min_lon",
+        "max_lat",
+        "max_lon"
+      ],
+      "properties": {
+        "min_lat": {
+          "type": "number",
+          "minimum": -90,
+          "maximum": 90
+        },
+        "min_lon": {
+          "type": "number",
+          "minimum": -180,
+          "maximum": 180
+        },
+        "max_lat": {
+          "type": "number",
+          "minimum": -90,
+          "maximum": 90
+        },
+        "max_lon": {
+          "type": "number",
+          "minimum": -180,
+          "maximum": 180
+        }
+      }
+    },
+    "region": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "center",
+        "hub_node",
+        "radius_km",
+        "elevation_expected_m",
+        "terrain_character",
+        "note"
+      ],
+      "properties": {
+        "id": {
+          "enum": [
+            "carabobo",
+            "falcon",
+            "merida",
+            "llanos",
+            "amazonas",
+            "delta"
+          ]
+        },
+        "center": {
+          "$ref": "#/$defs/geo"
+        },
+        "hub_node": {
+          "type": "string",
+          "pattern": "^hub_[a-z_]+$"
+        },
+        "radius_km": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "elevation_expected_m": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "number",
+            "minimum": -50,
+            "maximum": 5000
+          }
+        },
+        "terrain_character": {
+          "enum": [
+            "coast",
+            "mountains",
+            "plains",
+            "rainforest",
+            "delta"
+          ]
+        },
+        "note": {
+          "type": "string",
+          "minLength": 5
+        }
+      }
+    },
+    "osm_query": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "description",
+        "highway_regex",
+        "bbox"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 10
+        },
+        "highway_regex": {
+          "type": "string",
+          "minLength": 3
+        },
+        "bbox": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {
+            "type": "number"
+          },
+          "prefixItems": [
+            {
+              "type": "number",
+              "minimum": -90,
+              "maximum": 90
+            },
+            {
+              "type": "number",
+              "minimum": -180,
+              "maximum": 180
+            },
+            {
+              "type": "number",
+              "minimum": -90,
+              "maximum": 90
+            },
+            {
+              "type": "number",
+              "minimum": -180,
+              "maximum": 180
+            }
+          ]
+        }
+      }
+    },
+    "highway_class": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "design_speed_kph",
+        "priority"
+      ],
+      "properties": {
+        "design_speed_kph": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 200
+        },
+        "priority": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "route_requirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "from_region",
+        "to_region",
+        "from",
+        "to",
+        "alternatives_required",
+        "min_alternatives",
+        "max_alternatives",
+        "max_detour_ratio",
+        "max_overlap_ratio",
+        "max_distance_km",
+        "display_order"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^route\\.[a-z0-9_]+$"
+        },
+        "from_region": {
+          "enum": [
+            "carabobo",
+            "falcon",
+            "merida",
+            "llanos",
+            "amazonas",
+            "delta"
+          ]
+        },
+        "to_region": {
+          "enum": [
+            "carabobo",
+            "falcon",
+            "merida",
+            "llanos",
+            "amazonas",
+            "delta"
+          ]
+        },
+        "from": {
+          "type": "string",
+          "pattern": "^hub_"
+        },
+        "to": {
+          "type": "string",
+          "pattern": "^hub_"
+        },
+        "alternatives_required": {
+          "type": "boolean"
+        },
+        "min_alternatives": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_alternatives": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_detour_ratio": {
+          "type": "number",
+          "minimum": 1
+        },
+        "max_overlap_ratio": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "max_distance_km": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "display_order": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "next"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z_]+$"
+        },
+        "next": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z_]+$"
+          }
+        }
+      }
+    },
+    "state_list": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "$ref": "#/$defs/state"
+      }
+    }
+  }
+}

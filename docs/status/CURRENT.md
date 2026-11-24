@@ -1,10 +1,10 @@
 # Estado actual
 
-**Subfase:** 3.5 — Integración, compresión, warm-up, rendimiento y capturas de referencia visual
-**Versión:** `v0.3.4`
-**Modelo de la subfase:** MiMo Flash (`opencode-go/mimo-v2.6-flash`)
-**Fecha:** 2026-11-23
-**Estado:** completada y publicada.
+**Subfase:** 4.1 — Pipeline OSM/Overpass, DEM, grafo, rutas alternativas, caché y atribución ODbL
+**Versión:** `v0.4.0`
+**Modelo de la subfase:** DS-R (`opencode-go/deepseek-v4.1-flash#max`)
+**Fecha:** 2026-11-24
+**Estado:** completada; commit y tag `v0.4.0` en este cierre.
 
 ## Enlaces
 
@@ -16,95 +16,93 @@
 
 | Prueba | Resultado |
 |---|---|
-| Contratos JSON + Schemas | **8 contratos válidos**, 0 errores, 1 advertencia conocida (202 claves de datos → F8.4); `rain_surface_fx.json` v1 **sin cambios** |
-| Localización | 11 idiomas, 0 errores; `BOOT_KICKER` actualizado a Fase 3.5; fuentes CJK pendientes de F8.4 |
-| Assets generados | 4 manifiestos válidos, 0 errores; F3.5 no genera ni modifica assets |
-| Roadmap | `ROADMAP.md` + `docs/roadmap-data.json` sincronizados (**13/45 completadas, 28,9 %**) |
-| Smoke test | **270/270**, exit 0 (versión 0.3.4) |
+| Contratos JSON + Schemas | **9 contratos válidos**, 0 errores, 1 advertencia conocida (202 claves de datos → F8.4); nuevo `world_routes` v1 y red derivada validados |
+| Red de rutas (Python) | **329 nodos, 413 aristas, 6 principales + 12 alternativas**; conectividad desde `hub_carabobo`; ODbL y hash del manifiesto OK |
+| Localización | 11 idiomas, 0 errores; `CREDITS_OSM` en 11 idiomas; `BOOT_KICKER` actualizado a Fase 4.1; fuentes CJK pendientes de F8.4 |
+| Assets generados | 4 manifiestos válidos, 0 errores; F4.1 no genera ni modifica assets 3D |
+| Roadmap | `ROADMAP.md` + `docs/roadmap-data.json` sincronizados (**14/45 completadas, 31,1 %**) |
+| Smoke test | **270/270**, exit 0 (versión 0.4.0) |
 | Tren motriz | **125/125**, exit 0 |
 | Cabina y rig | **46/46**, exit 0 |
 | Interacción contextual | **257/257**, exit 0 |
 | Prueba de lluvia | **206/206**, exit 0 |
+| Red de rutas (Godot) | **143/143**, exit 0 (`tools/dev/world_routes_test.cmd`) |
 | Godot import headless | exit 0; sin `SCRIPT ERROR`/`Parse Error`/`Failed to load` |
-| Presets de export | Windows y Android válidos; `0.3.4`, Android `version/code=111` |
-| Prueba de render real (ventana, Vulkan Forward+) | **RENDER_OK** con sonda GPU; capturas `build/logs/render/f35_*.png` + evidencia `*_visual_off/on/diff.png` |
-| Build Windows exportada | `build/exports/windows/RutaNocturna1999.exe`, 103.070.208 bytes + pck 1.516.108 bytes; ejecutada **21,5 s**, exit 0, sin stderr |
-| Compresión (`asset_compression_report.py`) | **OK**: `import_etc2_astc` activo, S3TC en Windows; 1 textura (19.060 B) y 16 mallas (761.672 B) importados; `.godot/imported` = 780.732 B |
-| Prueba ADB completa en el Redmi | **exit 0**: APK `553F9128B4E09E7C6D6C9952A42934AC7BF34552D25882F40078978CFE59ABAF` (29.557.514 B), install Success, arranque **0,8 s**, logcat 15 s sin `FATAL EXCEPTION` ni errores Godot/Vulkan, ruta de rendimiento `done=true` sin errores |
-| Presupuestos en dispositivo | PSS **415,6 / 535,3 / 614,7 MB** (boot/rebanada/cabina) ≤ 1.228,8; rebanada **15.874 triángulos** ≤ 120.000, frame **12,76 ms media / 16,96 p95** ≤ 33,333; cabina **7.435 triángulos**, frame **10,14 / 16,83 ms**; warm-up hecho antes del gameplay en ambas (1.924 y 2.018 ms) |
-| Frame pacing en dispositivo | Rebanada: 1 jank > 33 ms y 0 > 100 ms en 300 frames (máx. 39,9 ms); cabina: 0 jank (máx. 19,6 ms) |
-| Carga en dispositivo | Rebanada **8.765 ms**, cabina **4.525 ms** (presupuesto QA 15.000 ms) |
-| Prueba de juego en PC (build exportado) | Sesión completa con input sintético: boot/rebanada/cabina/QA; seguro central con LED verde→rojo, manos al volante, retículo con3 estados, panel QA con clima `Tormenta · 95 %/90 %`. Informe: `build/logs/gameplay/REPORT.md` (no versionado) |
-| Espacio libre | 77,5 GB en `C:` (mínimo 20 GB) |
+| Presets de export | Windows y Android válidos; `0.4.0`, Android `version/code=112`; `licenses/*.txt` y `CREDITS.md` incluidos |
+| Prueba de render real (ventana, Vulkan Forward+) | **RENDER_OK**; frame 16,66–16,67 ms, 0 jank; draw calls añadidos ≤2,40; overdraw ≤1,0; fill visual 0,02 %/2,51 %; capturas `build/logs/render/f35_*` |
+| Build Windows exportada | `build/exports/windows/RutaNocturna1999.exe`, **103.070.208 bytes**, SHA-256 `88992CA9…B91766`; ejecutada sin errores |
+| APK Android | **29.820.429 bytes**, SHA-256 `2AE80503…2C4E`; `versionName=0.4.0`, `versionCode=112` |
+| Prueba ADB completa en el Redmi | **exit 0**: install Success, arranque **0,8 s**, logcat 15 s sin `FATAL EXCEPTION` ni errores Godot/Vulkan, ruta de rendimiento `done=true` |
+| Presupuestos en dispositivo | PSS **428,1 / 545,9 / 630,1 MB** (boot/rebanada/cabina) ≤ 1.228,8; rebanada **15.874 triángulos** ≤ 120.000, frame **11,01 / 16,81 / 34,9 ms** (1 jank > 33 ms, 0 > 100 ms); cabina **7.342 triángulos**, frame **9,81 / 16,63 / 18,96 ms** (0 jank) |
+| Carga en dispositivo | Rebanada **9.521 ms**, cabina **4.740 ms** (presupuesto QA 15.000 ms); warm-up **1.973 / 2.174 ms** antes del gameplay |
+| Prueba de juego en PC (build exportado) | Boot 11/11 + atribución ODbL; rebanada; cabina; manos al volante al mantener; palanca con ratón **no** responde (H2); QA F12 con clima `Tormenta · 95 %/90 %`. Informe: `build/logs/gameplay/REPORT_F41.md` |
+| Prueba manual en Android | Boot/cabina/volante con toque OK; **palanca táctil P → L1 OK** (H2 es solo ratón/teclado/gamepad de PC). Informe: `build/logs/android-smoke/REPORT_F41.md` |
+| Espacio libre | **83,1 GB** en `C:` (mínimo 20 GB) |
 | Dispositivo ADB | Redmi 22101316G autorizado (`obojropz89mbwgpn`) |
-| Git | Rama `main`, commit y tag `v0.3.4` publicados |
+| Git | Rama `main`, commit y tag `v0.4.0` publicados |
 
 Advertencias conocidas:
 
-- **H1 (→ F4.4):** las gotas de cámara (`camera_drops`) cubren pantalla
-  completa y parecen caer **dentro** del habitáculo; en el exterior la lluvia
-  cae bien. Hay que recortar la máscara al parabrisas; toca el shader de F3.4
-  y **no se modifica en F3.5**.
-- **H2 (→ F5.1/F9.1):** la palanca de cambio **no responde con ratón,
-  teclado ni gamepad**: `drag_focused()` solo escucha
-  `InputEventScreenDrag` (táctil). Verificado en vivo (foco en la palanca +
-  arrastre → HUD sigue en Marcha P). El motor funciona (257 lo cubre por
-  API). Falta decidir la ruta de input de conducción.
-- **H3 (→ F9.1):** el radio ejecuta la presión pero no muestra feedback
-  visual (sin clave de feedback ni LED observable en cabina).
-- Quad de fill de cabina a **91,80 % de fragmentos** (sin `discard`): el fill
-  visual real es2,78 %; la optimización queda para F10.1 junto con H1.
-- `budgets.*.gpu.status` sigue en `pending_f34_f35`: **el contrato no se
-  modificó en F3.5**; F10.1/F10.2 lo cierran con medición fina en dispositivo.
-- 202 claves de contenido aún no están en el CSV de localización (F8.4).
-- Las fuentes CJK/cirílicas se empaquetan y validan visualmente en F8.4.
-- Las cotas de carrocería/interior siguen siendo `provisional_design_value`
-  (`ESTEEM_MECHANICAL_NOTES.md`).
-- Los valores de humedad, gotas, barrido y charcos siguen siendo
-  `design_value` provisionales de F3.3.
-- La lluvia de las escenas es **lookdev** (`demo_*`): F4.4 inyecta la lluvia
-  real con `RainFxController.set_weather()`.
-- No hay pérdida de agarre, daño, vadeo ni anti-atasco: eso es F5.1; no hay
-  conducción real (chasis `VehicleBody3D`: F5).
-- La prueba ADB del PC (gamepad físico) no se ejecutó: sin mando conectado;
-  el flujo D-Pad/A/B está cubierto por `interaction_test` con eventos
-  sintéticos.
+- **H1 (→ F4.4):** las gotas de cámara (`camera_drops`) cubren la pantalla
+  completa y parecen caer **dentro** del habitáculo; visible en PC y Android.
+  Recortar la máscara al parabrisas; toca el shader de F3.4 y **no se modifica
+  en F4.1**.
+- **H2 (→ F5.1/F9.1):** la palanca **no responde con ratón, teclado ni gamepad
+  en PC** (`drag_focused()` solo escucha `InputEventScreenDrag`). En Android el
+  **arrastre táctil sí funciona** (verificado P → L1). Falta decidir la ruta de
+  input de PC antes de la conducción.
+- **H3 (→ F9.1):** el radio ejecuta la presión pero no muestra feedback visual
+  (sin clave de feedback ni LED observable en cabina).
+- La red de rutas se comprime a 1:20 y se muestrea cada **500 m**; las
+  horquillas locales, el viario urbano y el terreno quedan para F4.2/F4.3.
+- La DEM Terrarium z10 (~150 m/píxel) no resuelve puentes/túneles; se aplica
+  limpieza de picos y suavizado. No es un DEM de precisión ni sirve para
+  navegación.
+- `budgets.runtime_load_budget_ms` (250 ms) está **pendiente de medición** en
+  F4.2; no se declara cumplido.
+- La alternativa de `route.merida_llanos` con mayor solapamiento (0,828) es un
+  bucle paralelo real; se conserva para rodear bloqueos.
+- Los 202 claves de contenido y las fuentes CJK/cirílicas siguen pendientes de
+  F8.4.
+- La biblioteca externa cambió con 3 vídeos nuevos del Esteem; la próxima
+  revisión completa sigue siendo obligatoria antes de F4.3 o el 2026-12-06.
+- No hay pérdida de agarre, daño, vadeo ni anti-atasco (F5.1); no hay
+  conducción real (chasis `VehicleBody3D`: F5) ni terreno/streaming (F4.2).
 - Las builds exportadas son debug de referencia, no versionadas, en
   `build/exports/`.
 
 ## Completado
 
-- **`DevicePerfProbe`** (`src/debug/device_perf_probe.gd`): servicio de escena
-  en Boot/Rebanada/Cabina, inerte sin marcador; con
-  `tools/test_android_adb.ps1` navega `slice,cabin`, pre-simula90 s, mide
-  carga/warm-up/frame pacing/triángulos/draw calls y escribe
-  `perf_report.json`. Sin nuevos autoloads.
-- **Sonda GPU real** en la prueba de render: fill visual, fill de fragmentos
-  y capas (sonda aditiva calibrada de1/2 capas), coste de frame con vsync
-  off y delta de draw calls, contrastados con `budgets.pc.gpu` (≤8/≤5/≤6 % →
-  todos cumplidos).
-- **Frame pacing y tiempos de carga** en PC (`[RENDER][PACING]`/`[LOAD]`) y
-  en el Redmi (300 frames por escena).
-- **Compresión**: `tools/asset_compression_report.py` + revisión ETC2/ASTC,
-  tamaño de APK/exe/pck dentro de lo esperado.
-- **Prueba de juego en PC** sobre el build exportado con
-  `tools/dev/gameplay_input.ps1` + `gameplay_diff.py` (informe y capturas en
-  `build/logs/gameplay/`).
-- **Capturas de referencia visual**: `f35_boot.png`,
-  `f35_vertical_slice.png`, `f35_vertical_slice_detail.png`, `f35_cabin.png`,
-  `f35_cabin_debug.png` + evidencia `*_visual_*` y capturas del Redmi
-  (`screenshot.png`, `screenshot_slice.png`, `screenshot_cabin.png`).
-- **APK nueva probada en el Redmi** con la ruta de rendimiento completa
-  (exit 0) y **build Windows** exportada, ejecutada y cerrada limpia.
-- Versión `0.3.4` en `VERSION`, `project.godot`, `export_presets.cfg`
-  (`version/code=111`), `EXPECTED_VERSION` del smoke y la lluvia, `PHASE` de
+- **Contrato `world.routes` v1** (`data/schemas/world_routes.json`) y JSON
+  Schemas `world_routes` / `world_route_network`; regiones, proyección 1:20,
+  extracción OSM, DEM, reglas de grafo, clases de vía, seis rutas, alternativas,
+  caché, presupuestos, ODbL, anti-softlock y estados.
+- **Pipeline `tools/osm/build_world_routes.py`**: Overpass con caché, grafo
+  nacional (17.756 ways troncales/primarias + 9.638 secundarias), snap de hubs,
+  Dijkstra, alternativas penalizadas, grafo comprimido, muestreo DEM por
+  distancia, validación y escritura atómica. Modos `--refresh`, `--offline` y
+  `--check`.
+- **Artefacto `data/content/world/route_network.json`** (1.108.711 bytes) y
+  **manifiesto** (2.111 bytes): 329 nodos, 413 aristas, 6 principales y 12
+  alternativas; 4.751,7 km principales / 16.265,7 km con alternativas;
+  elevación 2,9–3.459,6 m; pendiente máxima 18,9 % (< 30 %).
+- **`src/world/route_network.gd`** (`RouteNetwork`, `RefCounted`, no autoload):
+  carga y valida contrato/red/manifiesto, SHA-256, A*, alternativas, proyección,
+  elevación y polilíneas 3D.
+- **Prueba `tests/world/WorldRoutesTest.tscn`** + `tools/dev/world_routes_test.cmd`
+  (**143/143**).
+- **Validación compartida** `tools/osm/route_graph_validation.py` integrada en
+  `tools/validate_schemas.py` y `health_check.py`; CI ejecuta la prueba de rutas.
+- **Atribución ODbL**: `licenses/ODbL-1.0.txt`, aviso en `CREDITS.md`, pie de la
+  web y clave `CREDITS_OSM` visible en Boot (11 idiomas).
+- **`docs/architecture/WORLD_ROUTES.md`** y secciones nuevas en
+  `DATA_CONTRACTS.md` y `SYSTEM_ARCHITECTURE.md`.
+- Versión `0.4.0` en `VERSION`, `project.godot`, `export_presets.cfg`
+  (`version/code=112`), `EXPECTED_VERSION` del smoke/lluvia/rutas, `PHASE` de
   Boot y `BOOT_KICKER` en once idiomas.
-- Referencias: revisión rápida al inicio y al cierre (95 archivos, sin
-  cambios); F3.5 no usa imágenes de la biblioteca externa (registrado en
-  `REFERENCE_USAGE_LOG.md`).
 
 ## Siguiente
 
-Fase **4.1 con DS-R**: pipeline OSM/Overpass, DEM, grafo, rutas
-alternativas, caché y atribución ODbL (tag `v0.4.0`). No se inicia en este
-chat. El prompt completo está en `docs/status/HANDOFF.md`.
+Fase **4.2 con DS-R**: Terrain3D, streaming de sectores de 800 m, colisión,
+carga asíncrona y PSS ≤ 1,2 GB (tag `v0.4.1`). No se inicia en este chat. El
+prompt completo está en `docs/status/HANDOFF.md`.
