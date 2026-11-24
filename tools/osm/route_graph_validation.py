@@ -42,6 +42,15 @@ def shape_distance_m(shape: list[list[float]]) -> float:
     return total
 
 
+def normalized_bytes(data: bytes) -> bytes:
+    """Normaliza CRLF→LF para que los hashes no dependan del checkout.
+
+    Git puede convertir CRLF a LF al hacer checkout; el manifiesto debe hashear
+    exactamente los bytes que verá CI y cualquier otro clon.
+    """
+    return data.replace(b"\r\n", b"\n")
+
+
 def project_geo(geo: list[float], projection: dict[str, Any]) -> list[float]:
     origin_lat, origin_lon = projection["origin"]
     scale = float(projection["world_scale"])
@@ -296,14 +305,16 @@ def validate_manifest(
     network_path = contract.get("data_files", {}).get("network")
     artifacts = {entry.get("path"): entry for entry in manifest.get("artifacts", [])}
     artifact_entry = artifacts.get(network_path)
+    artifact_hash_bytes = normalized_bytes(artifact_bytes) if artifact_bytes is not None else None
+    contract_hash_bytes = normalized_bytes(contract_bytes) if contract_bytes is not None else None
     if not artifact_entry:
         errors.append(f"world_route_manifest: no registra el artefacto {network_path}")
     else:
-        if artifact_bytes is not None:
-            digest = hashlib.sha256(artifact_bytes).hexdigest()
+        if artifact_hash_bytes is not None:
+            digest = hashlib.sha256(artifact_hash_bytes).hexdigest()
             if artifact_entry.get("sha256") != digest:
                 errors.append("world_route_manifest: sha256 del artefacto no coincide")
-            if int(artifact_entry.get("bytes", -1)) != len(artifact_bytes):
+            if int(artifact_entry.get("bytes", -1)) != len(artifact_hash_bytes):
                 errors.append("world_route_manifest: bytes del artefacto no coinciden")
         if not str(artifact_entry.get("sha256", "")).strip():
             errors.append("world_route_manifest: el artefacto no tiene sha256")
@@ -311,11 +322,11 @@ def validate_manifest(
     contract_entry = manifest.get("contract", {})
     if contract_entry.get("path") != "data/schemas/world_routes.json":
         errors.append("world_route_manifest: ruta del contrato inválida")
-    if contract_bytes is not None:
-        digest = hashlib.sha256(contract_bytes).hexdigest()
+    if contract_hash_bytes is not None:
+        digest = hashlib.sha256(contract_hash_bytes).hexdigest()
         if contract_entry.get("sha256") != digest:
             errors.append("world_route_manifest: sha256 del contrato no coincide")
-        if int(contract_entry.get("bytes", -1)) != len(contract_bytes):
+        if int(contract_entry.get("bytes", -1)) != len(contract_hash_bytes):
             errors.append("world_route_manifest: bytes del contrato no coinciden")
 
     source_queries = {entry.get("id"): entry for entry in manifest.get("sources", [])}

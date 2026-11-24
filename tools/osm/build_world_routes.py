@@ -1197,6 +1197,7 @@ def main() -> int:
         return 0
 
     contract_bytes = CONTRACT_PATH.read_bytes()
+    contract_bytes_normalized = contract_bytes.replace(b"\r\n", b"\n")
     contract = json.loads(contract_bytes.decode("utf-8"))
     speeds = {
         name: float(entry["design_speed_kph"])
@@ -1414,6 +1415,7 @@ def main() -> int:
         snapped,
     )
     artifact_bytes = canonical_json(artifact, indent=1)
+    artifact_bytes_normalized = artifact_bytes.replace(b"\r\n", b"\n")
     write_atomic(ROOT / "build" / "cache" / "osm" / "debug_network.json", artifact_bytes)
     longest = sorted(artifact["edges"], key=lambda edge: edge["distance_m"], reverse=True)[:8]
     log("aristas más largas: " + ", ".join(f"{edge['id']}={edge['distance_m']/1000:.1f}km" for edge in longest))
@@ -1432,14 +1434,14 @@ def main() -> int:
         "artifacts": [
             {
                 "path": contract["data_files"]["network"],
-                "sha256": sha256_bytes(artifact_bytes),
-                "bytes": len(artifact_bytes),
+                "sha256": sha256_bytes(artifact_bytes_normalized),
+                "bytes": len(artifact_bytes_normalized),
             }
         ],
         "contract": {
             "path": "data/schemas/world_routes.json",
-            "sha256": sha256_bytes(contract_bytes),
-            "bytes": len(contract_bytes),
+            "sha256": sha256_bytes(contract_bytes_normalized),
+            "bytes": len(contract_bytes_normalized),
         },
         "sources": [
             {

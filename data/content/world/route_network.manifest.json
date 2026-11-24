@@ -2,7 +2,7 @@
   "schema_version": 1,
   "contract_id": "world.routes",
   "world_id": "venezuela.1999",
-  "generated_utc": "2026-11-24T04:35:48Z",
+  "generated_utc": "2026-11-24T05:48:17Z",
   "tool": {
     "name": "tools/osm/build_world_routes.py",
     "version": "1.0.0"
@@ -19,8 +19,8 @@
   ],
   "contract": {
     "path": "data/schemas/world_routes.json",
-    "sha256": "51d136eef8ed22ac44a86ee51370bc6172031a100a2ad9d9bfb48dec4c6f16ec",
-    "bytes": 13326
+    "sha256": "5983bef08086c28e63911cb63df80b61496b4a537e54c5e50764952999ef2de1",
+    "bytes": 12892
   },
   "sources": [
     {
