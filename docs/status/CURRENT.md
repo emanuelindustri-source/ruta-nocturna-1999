@@ -39,7 +39,7 @@
 | Prueba manual en Android | Boot/cabina/volante con toque OK; **palanca táctil P → L1 OK** (H2 es solo ratón/teclado/gamepad de PC). Informe: `build/logs/android-smoke/REPORT_F41.md` |
 | Espacio libre | **83,1 GB** en `C:` (mínimo 20 GB) |
 | Dispositivo ADB | Redmi 22101316G autorizado (`obojropz89mbwgpn`) |
-| Git | Rama `main`, commit y tag `v0.4.0` publicados |
+| Git | Rama `main`, tag `v0.4.0` y fix de CI `8b9b83c` publicados; **CI de main en verde** |
 
 Advertencias conocidas:
 
@@ -70,6 +70,11 @@ Advertencias conocidas:
   conducción real (chasis `VehicleBody3D`: F5) ni terreno/streaming (F4.2).
 - Las builds exportadas son debug de referencia, no versionadas, en
   `build/exports/`.
+- **Nota de tag:** `v0.4.0` apunta al commit de la feature (`52f2033`). La CI de
+  ese commit falló solo por la normalización CRLF→LF del contrato; el fix
+  `8b9b83c` (hash sobre LF) está en `main` y su CI pasa. No se movió el tag
+  (sin force-push). El artefacto y la build no cambian: el hash del artefacto ya
+  era correcto; solo se corrigió el hash del contrato en el manifiesto.
 
 ## Completado
 

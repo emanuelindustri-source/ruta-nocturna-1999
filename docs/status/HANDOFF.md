@@ -7,6 +7,10 @@ está integrada como contrato y artefacto reproducible, con DEM, grafo, rutas
 principales y alternativas, caché y atribución ODbL. **No hay terreno,
 streaming, colisión ni biomas todavía**: eso es F4.2/F4.3/F4.4.
 
+> **Base para F4.2:** parte de `main` en `8b9b83c` (incluye el fix de CI
+> CRLF→LF). El tag `v0.4.0` apunta a `52f2033`; no se movió (sin force-push).
+> El artefacto y las builds son los mismos.
+
 - Web: https://emanuelindustri-source.github.io/ruta-nocturna-1999/
 - Repositorio: https://github.com/emanuelindustri-source/ruta-nocturna-1999
 - Versión: `v0.4.0` (Android `version/code=112`, Windows `0.4.0.0`)

@@ -45,6 +45,14 @@ Todas las fechas usan ISO 8601. Las versiones siguen SemVer.
 - `README.md`, `AGENTS.md` (contrato nuevo), `DATA_CONTRACTS.md` y
   `SYSTEM_ARCHITECTURE.md` documentan F4.1.
 
+### Corregido
+
+- **CI multiplataforma (`8b9b83c`):** el manifiesto hashea el contrato sobre
+  bytes normalizados **LF**, no sobre el CRLF del checkout de Windows. La CI de
+  `main` pasa. El tag `v0.4.0` apunta al commit de la feature (`52f2033`); no se
+  movió el tag (sin force-push). El artefacto, la build y el hash del artefacto
+  no cambian.
+
 ### Datos y rendimiento (F4.1)
 
 - OSM: extracto `2026-11-24T04:23:03Z`, 17.756 ways troncales/primarias y 9.638
