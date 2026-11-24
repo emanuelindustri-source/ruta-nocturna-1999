@@ -55,21 +55,27 @@ Pasos obligatorios, alineados con `QA_AND_RECOVERY.md`:
    de Godot/Vulkan.
 6. Captura la pantalla con `screencap`.
 7. Recoge el PSS con `dumpsys meminfo` y lo compara con 1,2 GB.
-8. **Ruta de rendimiento (F3.5):** fuerza el cierre, escribe
-   `files/perf_route.marker` con `run-as` (contenido `slice,cabin`), reabre la
-   app y espera `files/perf_report.json` con `done=true` (hasta 240 s). El
+8. **Ruta de rendimiento (F3.5/F4.2):** fuerza el cierre, escribe
+   `files/perf_route.marker` con `run-as` (contenido `slice,cabin,world`), reabre
+   la app y espera `files/perf_report.json` con `done=true` (hasta 300 s). El
    servicio de escena `DevicePerfProbe` (`src/debug/device_perf_probe.gd`)
-   navega a la rebanada y a la cabina, pre-simula 90 s de tormenta, mide frame
-   pacing, triángulos, draw calls, tiempos de carga y warm-up, y borra el
-   marcador al terminar. Sin marcador la sonda es inerte.
-9. Durante la medición captura `screenshot_slice.png` + `meminfo_slice.txt`;
-   al terminar captura `screenshot_cabin.png` + `meminfo_cabin.txt`.
+   navega a la rebanada, la cabina y el mundo, pre-simula 90 s de tormenta donde
+   aplica, somete el mundo a streaming a 1.200 m/s durante la medición, mide
+   frame pacing, triángulos, draw calls, tiempos de carga, warm-up y el bloque
+   `world` (sectores, solicitudes máximas, carga del grafo y errores), y borra
+   el marcador al terminar. Sin marcador la sonda es inerte.
+9. Durante la medición captura una pantalla y un PSS por escena:
+   `screenshot_slice.png`, `screenshot_cabin.png`, `screenshot_world.png` y sus
+   `meminfo_*.txt`; al terminar captura `screenshot_world_final.png`.
 10. Valida contra los presupuestos del propio reporte: frame medio
     ≤ 33,333 ms, triángulos ≤ 120.000, carga de escena ≤ 15 s, warm-up
-    completado y PSS ≤ 1.228,8 MB en ambas escenas.
+    completado, PSS ≤ 1.228,8 MB en las tres escenas y, en mundo, carga del
+    grafo ≤ 250 ms, ≤ 2 solicitudes, cero `load()` síncrono y cero errores de
+    sector.
 11. Guarda `logcat.txt`, `logcat-godot.txt`, `screenshot.png`,
-    `screenshot_slice.png`, `screenshot_cabin.png`, `meminfo*.txt`,
-    `perf_report.json` y `latest.json` en `build/logs/android-smoke/`.
+     `screenshot_slice.png`, `screenshot_cabin.png`, `screenshot_world.png`,
+     `screenshot_world_final.png`, `meminfo*.txt`, `perf_report.json` y
+     `latest.json` en `build/logs/android-smoke/`.
 
 La APK no se etiqueta como válida si falta el arranque, hay un error fatal o
 el PSS supera el presupuesto. Los logs y capturas no se commitean.
@@ -91,8 +97,9 @@ Notas de dispositivo:
   presets de export, la sincronización del roadmap y rechaza binarios/secretos
   versionados.
 - **godot:** descarga Godot 4.7.2 stable para Linux, importa el proyecto en
-  headless, ejecuta el smoke test, el tren motriz y las pruebas de lluvia, y
-  falla si aparecen `SCRIPT ERROR`, `Parse Error` o `Failed to load`.
+  headless, ejecuta el smoke test, el tren motriz, la lluvia, las rutas y el
+  streaming de sectores, y falla si aparecen `SCRIPT ERROR`, `Parse Error` o
+  `Failed to load`.
 
 La CI no publica binarios. Los artefactos de release se generan localmente y, si se
 decide publicarlos, van a GitHub Releases, nunca al repositorio.

@@ -17,7 +17,7 @@ se añadirán con manifiesto de procedencia, licencia, hash y comando de generac
 |---|---|---|
 | Godot Engine 4.7.2 | MIT | Motor |
 | Blender 4.5.16 LTS | GPL-2.0-or-later (herramienta) | Generación de arte 3D |
-| Terrain3D | MIT, sujeto a verificación de compatibilidad | Terreno y streaming |
+| Terreno procedural propio (F4.2) | MIT del proyecto; sin addon nativo | Terreno, vía y streaming de sectores |
 | OpenStreetMap / Overpass | ODbL 1.0 | Datos viales |
 | Fuentes Noto | SIL OFL 1.1 | Interfaz multilingüe |
 | Python, numpy, scipy, Pillow, pypdf | Licencias permisivas respectivas | Herramientas de producción |
@@ -60,6 +60,11 @@ en `licenses/ODbL-1.0.txt`.
   `data/content/world/route_network.manifest.json`.
 - La red comprimida se ofrece bajo la misma licencia; los cambios y la
   simplificación están documentados en `docs/architecture/WORLD_ROUTES.md`.
+- Los **sectores de terreno de 800 m** de F4.2
+  (`data/content/world/sectors/*.res`) son una base derivada de esa red y se
+  distribuyen bajo ODbL 1.0 con la misma atribución. El terreno y la vía se
+  generan con código MIT del proyecto; no se usa el addon Terrain3D ni ninguna
+  textura de la biblioteca externa.
 
 ### Elevación (DEM)
 

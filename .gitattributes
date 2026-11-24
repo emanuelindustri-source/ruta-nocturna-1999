@@ -12,6 +12,7 @@
 *.blend binary
 *.fbx binary
 *.png binary
+*.res binary
 *.jpg binary
 *.jpeg binary
 *.webp binary

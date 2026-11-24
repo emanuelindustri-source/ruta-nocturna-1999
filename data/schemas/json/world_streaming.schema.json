@@ -1,0 +1,363 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ruta-nocturna-1999.invalid/schemas/world_streaming.schema.json",
+  "title": "Ruta Nocturna 1999 — contrato de terreno y streaming del mundo",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "contract_id",
+    "world_id",
+    "status",
+    "data_files",
+    "terrain",
+    "streaming",
+    "collision",
+    "budgets",
+    "attribution",
+    "anti_softlock",
+    "states",
+    "qa"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "contract_id": {
+      "const": "world.streaming"
+    },
+    "world_id": {
+      "const": "venezuela.1999"
+    },
+    "status": {
+      "enum": ["draft", "active", "deprecated"]
+    },
+    "data_files": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "routes_contract",
+        "route_network",
+        "route_manifest",
+        "sectors_dir",
+        "sectors_manifest",
+        "scene",
+        "streamer_script",
+        "builder_script",
+        "bake_scene",
+        "bake_command"
+      ],
+      "properties": {
+        "routes_contract": {"type": "string", "pattern": "^data/schemas/[A-Za-z0-9_./-]+\\.json$"},
+        "route_network": {"type": "string", "pattern": "^data/content/world/[A-Za-z0-9_./-]+\\.json$"},
+        "route_manifest": {"type": "string", "pattern": "^data/content/world/[A-Za-z0-9_./-]+\\.json$"},
+        "sectors_dir": {"type": "string", "pattern": "^data/content/world/[A-Za-z0-9_./-]+$"},
+        "sectors_manifest": {"type": "string", "pattern": "^data/content/world/[A-Za-z0-9_./-]+\\.json$"},
+        "scene": {"type": "string", "pattern": "^scenes/[A-Za-z0-9_./-]+\\.tscn$"},
+        "streamer_script": {"type": "string", "pattern": "^src/[A-Za-z0-9_./-]+\\.gd$"},
+        "builder_script": {"type": "string", "pattern": "^src/[A-Za-z0-9_./-]+\\.gd$"},
+        "bake_scene": {"type": "string", "pattern": "^tools/[A-Za-z0-9_./-]+\\.tscn$"},
+        "bake_command": {"type": "string", "pattern": "^tools/[A-Za-z0-9_./-]+\\.cmd$"}
+      }
+    },
+    "terrain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "implementation",
+        "third_party_addon",
+        "license",
+        "note",
+        "sector_size_m",
+        "grid_resolution",
+        "grid_spacing_m",
+        "vertical_offset_m",
+        "road",
+        "relief",
+        "materials",
+        "lod_policy",
+        "lod_note"
+      ],
+      "properties": {
+        "source": {"const": "route_network_dem"},
+        "implementation": {"const": "generated_array_mesh"},
+        "third_party_addon": {"type": "null"},
+        "license": {"type": "string", "minLength": 1},
+        "note": {"type": "string", "minLength": 1},
+        "sector_size_m": {"const": 800.0},
+        "grid_resolution": {"type": "integer", "minimum": 17, "maximum": 65},
+        "grid_spacing_m": {"type": "number", "exclusiveMinimum": 0},
+        "vertical_offset_m": {"type": "number"},
+        "road": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "width_m",
+            "shoulder_m",
+            "surface_offset_m",
+            "marking_width_m",
+            "marking_period_m",
+            "marking_length_m",
+            "asphalt_color",
+            "marking_color"
+          ],
+          "properties": {
+            "width_m": {"type": "number", "exclusiveMinimum": 2},
+            "shoulder_m": {"type": "number", "minimum": 0},
+            "surface_offset_m": {"type": "number"},
+            "marking_width_m": {"type": "number", "exclusiveMinimum": 0},
+            "marking_period_m": {"type": "number", "exclusiveMinimum": 0},
+            "marking_length_m": {"type": "number", "exclusiveMinimum": 0},
+            "asphalt_color": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 4,
+              "items": {"type": "number", "minimum": 0, "maximum": 1}
+            },
+            "marking_color": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 4,
+              "items": {"type": "number", "minimum": 0, "maximum": 1}
+            }
+          }
+        },
+        "relief": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "flat_radius_m",
+            "blend_end_m",
+            "noise_amplitude_m",
+            "noise_wavelength_m",
+            "max_offset_m",
+            "octaves"
+          ],
+          "properties": {
+            "flat_radius_m": {"type": "number", "minimum": 0},
+            "blend_end_m": {"type": "number", "exclusiveMinimum": 0},
+            "noise_amplitude_m": {"type": "number", "minimum": 0},
+            "noise_wavelength_m": {"type": "number", "exclusiveMinimum": 0},
+            "max_offset_m": {"type": "number", "minimum": 0},
+            "octaves": {"type": "integer", "minimum": 1, "maximum": 4}
+          }
+        },
+        "materials": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["terrain_roughness", "road_roughness", "uses_textures", "note"],
+          "properties": {
+            "terrain_roughness": {"type": "number", "minimum": 0, "maximum": 1},
+            "road_roughness": {"type": "number", "minimum": 0, "maximum": 1},
+            "uses_textures": {"const": false},
+            "note": {"type": "string", "minLength": 1}
+          }
+        },
+        "lod_policy": {"const": "procedural_sector_single_lod"},
+        "lod_note": {"type": "string", "minLength": 1}
+      }
+    },
+    "streaming": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "sector_size_m",
+        "ahead_sectors",
+        "behind_sectors",
+        "unload_margin_sectors",
+        "max_concurrent_requests",
+        "loader_api",
+        "sync_load_forbidden",
+        "poll_every_frame",
+        "max_sector_builds_per_frame",
+        "initial_fill_timeout_ms",
+        "retry_after_frames",
+        "note"
+      ],
+      "properties": {
+        "mode": {"const": "route_sequence_async"},
+        "sector_size_m": {"const": 800.0},
+        "ahead_sectors": {"type": "integer", "minimum": 1, "maximum": 8},
+        "behind_sectors": {"type": "integer", "minimum": 0, "maximum": 8},
+        "unload_margin_sectors": {"type": "integer", "minimum": 0, "maximum": 4},
+        "max_concurrent_requests": {"const": 2},
+        "loader_api": {"const": "ResourceLoader.load_threaded_request"},
+        "sync_load_forbidden": {"const": true},
+        "poll_every_frame": {"const": true},
+        "max_sector_builds_per_frame": {"type": "integer", "minimum": 1, "maximum": 2},
+        "initial_fill_timeout_ms": {"type": "integer", "minimum": 1000},
+        "retry_after_frames": {"type": "integer", "minimum": 1},
+        "note": {"type": "string", "minLength": 1}
+      }
+    },
+    "collision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "body_type",
+        "terrain_shape",
+        "terrain_stride",
+        "road_shape",
+        "collision_layer",
+        "collision_mask",
+        "safe_respawn"
+      ],
+      "properties": {
+        "body_type": {"const": "StaticBody3D"},
+        "terrain_shape": {"const": "ConcavePolygonShape3D"},
+        "terrain_stride": {"type": "integer", "minimum": 1, "maximum": 4},
+        "road_shape": {"const": "ConcavePolygonShape3D"},
+        "collision_layer": {"type": "integer", "minimum": 1},
+        "collision_mask": {"type": "integer", "minimum": 1},
+        "safe_respawn": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "method",
+            "clearance_m",
+            "max_slope_pct",
+            "requires_raycast_hit",
+            "on_road_width_fraction",
+            "fallback_hub",
+            "note"
+          ],
+          "properties": {
+            "method": {"const": "WorldDirector.safe_respawn_point"},
+            "clearance_m": {"type": "number", "minimum": 0},
+            "max_slope_pct": {"type": "number", "exclusiveMinimum": 0},
+            "requires_raycast_hit": {"const": true},
+            "on_road_width_fraction": {"type": "number", "exclusiveMinimum": 0, "maximum": 1},
+            "fallback_hub": {"type": "string", "pattern": "^hub_[a-z_]+$"},
+            "note": {"type": "string", "minLength": 1}
+          }
+        }
+      }
+    },
+    "budgets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "runtime_load_budget_ms",
+        "initial_stream_budget_ms",
+        "max_loaded_sectors",
+        "max_pending_requests",
+        "max_sector_resources",
+        "max_sector_bytes",
+        "max_triangles_per_sector",
+        "max_road_triangles_per_sector",
+        "max_total_visible_triangles_mobile",
+        "max_total_visible_triangles_pc",
+        "max_pss_mb",
+        "target_frame_ms_mobile",
+        "target_frame_ms_pc",
+        "note"
+      ],
+      "properties": {
+        "runtime_load_budget_ms": {"type": "number", "exclusiveMinimum": 0},
+        "initial_stream_budget_ms": {"type": "number", "exclusiveMinimum": 0},
+        "max_loaded_sectors": {"type": "integer", "minimum": 1},
+        "max_pending_requests": {"const": 2},
+        "max_sector_resources": {"type": "integer", "minimum": 1},
+        "max_sector_bytes": {"type": "integer", "minimum": 1},
+        "max_triangles_per_sector": {"type": "integer", "minimum": 1},
+        "max_road_triangles_per_sector": {"type": "integer", "minimum": 1},
+        "max_total_visible_triangles_mobile": {"const": 120000},
+        "max_total_visible_triangles_pc": {"const": 450000},
+        "max_pss_mb": {"const": 1228.8},
+        "target_frame_ms_mobile": {"type": "number", "exclusiveMinimum": 0},
+        "target_frame_ms_pc": {"type": "number", "exclusiveMinimum": 0},
+        "note": {"type": "string", "minLength": 1}
+      }
+    },
+    "attribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dataset",
+        "license",
+        "license_url",
+        "copyright",
+        "copyright_url",
+        "in_game_key",
+        "license_file",
+        "share_alike",
+        "note"
+      ],
+      "properties": {
+        "dataset": {"const": "OpenStreetMap"},
+        "license": {"const": "ODbL 1.0"},
+        "license_url": {"type": "string", "format": "uri"},
+        "copyright": {"type": "string", "minLength": 1},
+        "copyright_url": {"type": "string", "format": "uri"},
+        "in_game_key": {"const": "CREDITS_OSM"},
+        "license_file": {"const": "licenses/ODbL-1.0.txt"},
+        "share_alike": {"const": true},
+        "note": {"type": "string", "minLength": 1}
+      }
+    },
+    "anti_softlock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["respawn_on_network", "requires_collision", "fallback_hub", "note"],
+      "properties": {
+        "respawn_on_network": {"const": true},
+        "requires_collision": {"const": true},
+        "fallback_hub": {"type": "string", "pattern": "^hub_[a-z_]+$"},
+        "note": {"type": "string", "minLength": 1}
+      }
+    },
+    "states": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["streaming", "sector"],
+      "properties": {
+        "streaming": {
+          "type": "array",
+          "items": {"enum": ["idle", "initial_fill", "streaming", "degraded", "failed"]},
+          "minItems": 5,
+          "maxItems": 5,
+          "uniqueItems": true
+        },
+        "sector": {
+          "type": "array",
+          "items": {"enum": ["queued", "loading", "ready", "unloading", "failed"]},
+          "minItems": 5,
+          "maxItems": 5,
+          "uniqueItems": true
+        }
+      }
+    },
+    "qa": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scene",
+        "test_scene",
+        "test_command",
+        "bake_scene",
+        "bake_command",
+        "validate_command",
+        "expected_sector_count",
+        "tour_route",
+        "android_route",
+        "pc_report",
+        "android_report"
+      ],
+      "properties": {
+        "scene": {"type": "string", "pattern": "^scenes/[A-Za-z0-9_./-]+\\.tscn$"},
+        "test_scene": {"type": "string", "pattern": "^tests/[A-Za-z0-9_./-]+\\.tscn$"},
+        "test_command": {"type": "string", "pattern": "^tools/[A-Za-z0-9_./-]+\\.cmd$"},
+        "bake_scene": {"type": "string", "pattern": "^tools/[A-Za-z0-9_./-]+\\.tscn$"},
+        "bake_command": {"type": "string", "pattern": "^tools/[A-Za-z0-9_./-]+\\.cmd$"},
+        "validate_command": {"type": "string", "pattern": "^tools/[A-Za-z0-9_./-]+\\.py$"},
+        "expected_sector_count": {"type": "integer", "minimum": 1},
+        "tour_route": {"type": "string", "pattern": "^route\\.[a-z0-9_]+$"},
+        "android_route": {"const": "slice,cabin,world"},
+        "pc_report": {"type": "string", "pattern": "^build/[A-Za-z0-9_./-]+\\.md$"},
+        "android_report": {"type": "string", "pattern": "^build/[A-Za-z0-9_./-]+\\.json$"}
+      }
+    }
+  }
+}

@@ -26,6 +26,7 @@ PAIRS = {
     "dialogue_and_endings": "dialogue_and_endings",
     "autoload_dependencies": "autoload_dependencies",
     "world_routes": "world_routes",
+    "world_streaming": "world_streaming",
 }
 
 BLOCKOUT_SPEC = ROOT / "data" / "vehicle" / "blockout_spec.json"
@@ -910,6 +911,56 @@ def validate() -> tuple[list[str], list[str]]:
         warnings.extend(world_warnings)
     except Exception as exc:  # noqa: BLE001
         errors.append(f"world_routes: no se pudo ejecutar la validación de la red: {exc}")
+
+    # Terreno y streaming de sectores de 800 m (F4.2). El módulo verifica el
+    # manifiesto, los hashes de los recursos, la cobertura de la red y los
+    # presupuestos de terreno.
+    world_streaming = data.get("world_streaming", {})
+    if world_streaming:
+        streaming = world_streaming.get("streaming", {})
+        terrain = world_streaming.get("terrain", {})
+        collision = world_streaming.get("collision", {})
+        budgets = world_streaming.get("budgets", {})
+        qa = world_streaming.get("qa", {})
+        if float(terrain.get("sector_size_m", 0)) != 800.0:
+            errors.append("world_streaming: terrain.sector_size_m debe ser 800")
+        if float(streaming.get("sector_size_m", 0)) != 800.0:
+            errors.append("world_streaming: streaming.sector_size_m debe ser 800")
+        if abs(
+            float(terrain.get("grid_spacing_m", 0))
+            - float(terrain.get("sector_size_m", 0)) / max(1.0, float(terrain.get("grid_resolution", 1) - 1))
+        ) > 0.01:
+            errors.append("world_streaming: grid_spacing_m no coincide con sector_size_m / (grid_resolution - 1)")
+        if int(streaming.get("ahead_sectors", 0)) + int(streaming.get("behind_sectors", 0)) + 1 > int(
+            budgets.get("max_loaded_sectors", 0)
+        ):
+            errors.append("world_streaming: la ventana de streaming excede max_loaded_sectors")
+        if int(budgets.get("max_pending_requests", 0)) != int(streaming.get("max_concurrent_requests", -1)):
+            errors.append("world_streaming: max_pending_requests debe coincidir con max_concurrent_requests")
+        if int(budgets.get("max_triangles_per_sector", 0)) < 2048:
+            errors.append("world_streaming: max_triangles_per_sector es demasiado bajo para la rejilla")
+        if collision.get("terrain_shape") != "ConcavePolygonShape3D":
+            errors.append("world_streaming: la colisión del terreno debe ser ConcavePolygonShape3D")
+        if collision.get("road_shape") != "ConcavePolygonShape3D":
+            errors.append("world_streaming: la colisión de la vía debe ser ConcavePolygonShape3D")
+        if int(collision.get("terrain_stride", 0)) < 1 or int(collision.get("terrain_stride", 0)) > 4:
+            errors.append("world_streaming: terrain_stride debe estar entre 1 y 4")
+        if qa.get("android_route") != "slice,cabin,world":
+            errors.append("world_streaming: qa.android_route debe incluir world")
+        if not str(world_streaming.get("attribution", {}).get("in_game_key", "")) == "CREDITS_OSM":
+            errors.append("world_streaming: la atribución debe usar CREDITS_OSM")
+
+        world_tools = ROOT / "tools" / "world"
+        if str(world_tools) not in sys.path:
+            sys.path.insert(0, str(world_tools))
+        try:
+            from validate_world_sectors import load_and_validate as validate_world_sectors
+
+            sector_errors, sector_warnings = validate_world_sectors(ROOT)
+            errors.extend(sector_errors)
+            warnings.extend(sector_warnings)
+        except Exception as exc:  # noqa: BLE001
+            errors.append(f"world_streaming: no se pudo validar los sectores: {exc}")
 
     return errors, warnings
 

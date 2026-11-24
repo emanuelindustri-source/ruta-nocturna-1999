@@ -81,6 +81,8 @@ def validate() -> tuple[list[str], list[str]]:
             warnings.append(f"{label}: exclude_filter no excluye tests/*")
         if "tools/*" not in preset.get("exclude_filter", ""):
             warnings.append(f"{label}: exclude_filter no excluye tools/*")
+        if "data/content/world/sectors/*.res" not in preset.get("include_filter", ""):
+            errors.append(f"{label}: include_filter debe incluir los sectores de 800 m")
 
     windows = presets.get("Windows Desktop")
     if windows is not None:
@@ -89,6 +91,17 @@ def validate() -> tuple[list[str], list[str]]:
         options = sections.get(_section_for(sections, "Windows Desktop"), {})
         if options.get("binary_format/architecture", "x86_64") != "x86_64":
             errors.append("Windows Desktop: arquitectura esperada x86_64")
+        expected_file_version = f"{version}.0"
+        if options.get("application/file_version", "") != expected_file_version:
+            errors.append(
+                f"Windows Desktop: application/file_version '{options.get('application/file_version', '')}' "
+                f"no coincide con VERSION '{expected_file_version}'"
+            )
+        if options.get("application/product_version", "") != expected_file_version:
+            errors.append(
+                f"Windows Desktop: application/product_version '{options.get('application/product_version', '')}' "
+                f"no coincide con VERSION '{expected_file_version}'"
+            )
 
     android = presets.get("Android")
     if android is not None:

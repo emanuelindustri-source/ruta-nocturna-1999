@@ -1,0 +1,151 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://src/world/world_director.gd" id="1_director"]
+[ext_resource type="Script" path="res://src/world/sector_streamer.gd" id="2_streamer"]
+[ext_resource type="PackedScene" path="res://scenes/vehicle/EsteemExterior.tscn" id="3_esteem"]
+[ext_resource type="Script" path="res://src/debug/device_perf_probe.gd" id="4_perf"]
+
+[sub_resource type="ProceduralSkyMaterial" id="Sky_material"]
+sky_top_color = Color(0.008, 0.016, 0.032, 1)
+sky_horizon_color = Color(0.075, 0.12, 0.17, 1)
+ground_bottom_color = Color(0.008, 0.012, 0.018, 1)
+ground_horizon_color = Color(0.05, 0.075, 0.1, 1)
+
+[sub_resource type="Sky" id="Sky_world"]
+sky_material = SubResource("Sky_material")
+
+[sub_resource type="Environment" id="Environment_world"]
+background_mode = 2
+sky = SubResource("Sky_world")
+ambient_light_source = 2
+ambient_light_color = Color(0.27, 0.34, 0.42, 1)
+ambient_light_energy = 1.35
+fog_enabled = true
+fog_light_color = Color(0.11, 0.16, 0.21, 1)
+fog_density = 0.0011
+fog_sky_affect = 0.25
+tonemap_mode = 2
+tonemap_exposure = 1.12
+
+[node name="WorldTerrain" type="Node3D"]
+script = ExtResource("1_director")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_world")
+
+[node name="MoonLight" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-42, 138, 0)
+light_color = Color(0.68, 0.77, 0.9, 1)
+light_energy = 1.15
+shadow_enabled = false
+
+[node name="SectorStreamer" type="Node3D" parent="."]
+script = ExtResource("2_streamer")
+
+[node name="Vehicle" parent="." instance=ExtResource("3_esteem")]
+position = Vector3(0, 0, 0)
+
+[node name="Headlight" type="SpotLight3D" parent="Vehicle"]
+position = Vector3(0, 0.78, -2.05)
+rotation_degrees = Vector3(-5, 0, 0)
+light_color = Color(1, 0.91, 0.74, 1)
+light_energy = 9.0
+shadow_enabled = false
+spot_range = 130.0
+spot_angle = 38.0
+spot_angle_attenuation = 1.2
+
+[node name="Camera3D" type="Camera3D" parent="."]
+position = Vector3(0, 4, 10)
+fov = 68.0
+near = 0.1
+far = 2600.0
+
+[node name="Overlay" type="CanvasLayer" parent="."]
+
+[node name="Panel" type="PanelContainer" parent="Overlay"]
+offset_left = 22.0
+offset_top = 22.0
+offset_right = 560.0
+offset_bottom = 210.0
+
+[node name="Margin" type="MarginContainer" parent="Overlay/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 12
+
+[node name="VBox" type="VBoxContainer" parent="Overlay/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="Overlay/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.941, 0.788, 0.361, 1)
+theme_override_font_sizes/font_size = 21
+text = "MUNDO · TERRENO Y STREAMING"
+
+[node name="Route" type="Label" parent="Overlay/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.74, 0.8, 0.78, 1)
+theme_override_font_sizes/font_size = 14
+text = "RUTA 1/6 · CARABOBO → FALCON"
+
+[node name="Stats" type="Label" parent="Overlay/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.408, 0.718, 0.71, 1)
+theme_override_font_sizes/font_size = 13
+text = "6 sectores · 12.000 triángulos · 0 FPS · carga 0 ms"
+autowrap_mode = 3
+
+[node name="Buttons" type="HBoxContainer" parent="Overlay/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="NextRoute" type="Button" parent="Overlay/Panel/Margin/VBox/Buttons"]
+custom_minimum_size = Vector2(210, 48)
+layout_mode = 2
+text = "Siguiente ruta"
+
+[node name="Back" type="Button" parent="Overlay/Panel/Margin/VBox/Buttons"]
+custom_minimum_size = Vector2(150, 48)
+layout_mode = 2
+text = "Volver"
+
+[node name="Loading" type="Label" parent="Overlay"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -220.0
+offset_top = -18.0
+offset_right = 220.0
+offset_bottom = 18.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.941, 0.788, 0.361, 1)
+theme_override_font_sizes/font_size = 22
+text = "Cargando mundo..."
+horizontal_alignment = 1
+
+[node name="Credits" type="Label" parent="Overlay"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -560.0
+offset_top = -34.0
+offset_right = -22.0
+offset_bottom = -12.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.34, 0.45, 0.44, 1)
+theme_override_font_sizes/font_size = 11
+text = "Datos de rutas © OpenStreetMap contributors · ODbL 1.0"
+horizontal_alignment = 2
+
+[node name="DevicePerfProbe" type="Node" parent="."]
+script = ExtResource("4_perf")

@@ -26,6 +26,9 @@ const REPORT_PATH := "user://perf_report.json"
 const BOOT_SCENE := "res://scenes/boot/Boot.tscn"
 const SLICE_SCENE := "res://scenes/vertical_slice/VerticalSlice.tscn"
 const CABIN_SCENE := "res://scenes/vehicle/CabinInteraction.tscn"
+const WORLD_SCENE := "res://scenes/world/WorldTerrain.tscn"
+const WORLD_WAIT_MS := 30000
+const WORLD_STRESS_SPEED_MPS := 1200.0
 
 const MEASURE_FRAMES := 300
 const AUTO_FRAMES := 15
@@ -62,7 +65,7 @@ func _ready() -> void:
 				routes_text += ","
 			routes_text += _routes[route_index]
 		print("[PERF] ROUTE_ARMED routes=%s" % routes_text)
-	elif root_path in [SLICE_SCENE, CABIN_SCENE]:
+	elif root_path in [SLICE_SCENE, CABIN_SCENE, WORLD_SCENE]:
 		_run_for_scene(root_path)
 
 
@@ -101,11 +104,21 @@ func _run_for_scene(root_path: String) -> void:
 
 func _measure(label: String, index: int, state: Dictionary) -> void:
 	var t0_ms := int(state.get("t0_ms", Time.get_ticks_msec()))
+	var root := get_parent()
+	var world: WorldDirector = root as WorldDirector
+	var world_ready := true
+	if world != null:
+		var waited := 0
+		while not world.is_world_ready() and waited < WORLD_WAIT_MS:
+			await get_tree().process_frame
+			waited += 16
+		world_ready = world.is_world_ready()
+		world.set_tour_speed(WORLD_STRESS_SPEED_MPS)
+		world.set_paused(false)
 	await get_tree().process_frame
 	await get_tree().process_frame
 	var load_ms := Time.get_ticks_msec() - t0_ms
 
-	var root := get_parent()
 	var controller := root.get_node_or_null("RainFx") as RainFxController
 	var warmup_done := true
 	var warmup_ms := 0.0
@@ -127,11 +140,13 @@ func _measure(label: String, index: int, state: Dictionary) -> void:
 		"scene": label,
 		"status": "measuring",
 		"load_ms": load_ms,
-		"warmup_done": warmup_done,
+		"warmup_done": warmup_done and world_ready,
 		"warmup_ms": warmup_ms,
 		"soak_seconds": SOAK_SECONDS if controller != null else 0.0,
 		"measuring_started_utc": Time.get_datetime_string_from_system(true),
 	}
+	if world != null:
+		section["world"] = world.streaming_snapshot()
 	_write_report(section, index, false)
 	print("[PERF] MEASURE_START scene=%s load_ms=%d warmup=%s" % [label, load_ms, str(warmup_done)])
 
@@ -179,6 +194,10 @@ func _measure(label: String, index: int, state: Dictionary) -> void:
 	section["draw_calls_avg"] = draw_calls / count
 	section["objects_avg"] = objects / count
 	section["measuring_done_utc"] = Time.get_datetime_string_from_system(true)
+	if world != null:
+		world.set_tour_speed(0.0)
+		world.set_paused(true)
+		section["world"] = world.streaming_snapshot()
 
 	var last := index >= _routes.size() - 1
 	_write_report(section, index, last)
@@ -267,6 +286,8 @@ func _scene_for(route: String) -> String:
 			return SLICE_SCENE
 		"cabin":
 			return CABIN_SCENE
+		"world":
+			return WORLD_SCENE
 	return ""
 
 
@@ -274,7 +295,7 @@ func _parse_marker(text: String) -> Array[String]:
 	var result: Array[String] = []
 	for entry in text.strip_edges().split(","):
 		var route := entry.strip_edges().to_lower()
-		if route in ["boot", "slice", "cabin"] and not result.has(route):
+		if route in ["boot", "slice", "cabin", "world"] and not result.has(route):
 			result.append(route)
 	return result
 

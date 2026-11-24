@@ -1,78 +1,95 @@
-# Handoff — Fase 4.2
+# Handoff — Fase 4.3
 
 ## Estado de partida
 
-La Fase 4.1 quedó cerrada y publicada (`v0.4.0`): la base vial real de Venezuela
-está integrada como contrato y artefacto reproducible, con DEM, grafo, rutas
-principales y alternativas, caché y atribución ODbL. **No hay terreno,
-streaming, colisión ni biomas todavía**: eso es F4.2/F4.3/F4.4.
+La Fase 4.2 quedó cerrada y publicada (`v0.4.1`): la red OSM/DEM de F4.1 ya se
+convierte en terreno de presentación con **454 sectores de 800 m**, vía, colisión
+y streaming asíncrono. El mundo se puede abrir desde Boot («Ver mundo»), recorre
+las seis rutas con un coche de presentación y respeta los presupuestos móviles.
 
-> **Base para F4.2:** parte de `main` en `8b9b83c` (incluye el fix de CI
-> CRLF→LF). El tag `v0.4.0` apunta a `52f2033`; no se movió (sin force-push).
-> El artefacto y las builds son los mismos.
+> **Base para F4.3:** parte de `main` en el commit de cierre de F4.2 (tag
+> `v0.4.1`). El artefacto de rutas y el contrato `world_routes` v1 **no
+> cambiaron**; el streaming vive en el contrato aditivo `world.streaming` v1.
 
 - Web: https://emanuelindustri-source.github.io/ruta-nocturna-1999/
 - Repositorio: https://github.com/emanuelindustri-source/ruta-nocturna-1999
-- Versión: `v0.4.0` (Android `version/code=112`, Windows `0.4.0.0`)
-- Contratos existentes: los ocho de F1–F3.5 **sin cambios** + `world_routes` v1
-  nuevo (`data/schemas/world_routes.json`).
-- Nuevas piezas de F4.1:
-  - `data/content/world/route_network.json` (1.108.711 bytes) y
-    `route_network.manifest.json` (2.111 bytes).
-  - `tools/osm/build_world_routes.py` y `tools/osm/route_graph_validation.py`.
-  - `src/world/route_network.gd` (`RouteNetwork`, `RefCounted`; **no autoload**).
-  - `tests/world/WorldRoutesTest.tscn` +
-    `tools/dev/world_routes_test.cmd` (**143/143**).
-  - `licenses/ODbL-1.0.txt`, atribución `CREDITS_OSM` en Boot/CREDITS/web.
-  - `docs/architecture/WORLD_ROUTES.md`.
-- Pruebas (todas exit 0): smoke **270**, tren motriz **125**, cabina **46**,
-  interacción **257**, lluvia **206**, rutas **143**, render **RENDER_OK**.
+- Versión: `v0.4.1` (Android `version/code=113`, Windows `0.4.1.0`)
+- Contratos existentes: los ocho de F1–F3.5 + `world_routes` v1 + `world_streaming`
+  v1, **sin cambios** en los cerrados.
+- Nuevas piezas de F4.2:
+  - `data/schemas/world_streaming.json` y su JSON Schema.
+  - `data/content/world/sectors/*.res` (454) y `sectors.manifest.json`
+    (4.671.964 bytes; 929.792 triángulos de terreno, 30.644 de vía).
+  - `tools/world/bake_world_sectors.gd`,
+    `tools/world/validate_world_sectors.py`, `tools/dev/bake_world_sectors.cmd`.
+  - `src/world/world_sector_data.gd`, `world_sector_builder.gd`,
+    `sector_streamer.gd` y `world_director.gd` (`WorldDirector`, no autoload).
+  - `scenes/world/WorldTerrain.tscn`.
+  - `tests/world/WorldStreamingTest.tscn` + wrapper (**99/99**).
+  - `docs/architecture/WORLD_STREAMING.md`.
+- Pruebas (todas exit 0): smoke **270**, tren **125**, cabina **46**,
+  interacción **257**, lluvia **206**, rutas **143**, streaming **99**, render
+  **RENDER_OK**.
 - ADB completo en el Redmi `obojropz89mbwgpn`: **exit 0**; PSS
-  428,1/545,9/630,1 MB; rebanada 11,01 ms media y 15.874 triángulos; cabina
-  9,81 ms y 7.342 triángulos; cargas 9.521/4.740 ms; warm-up 1.973/2.174 ms.
-- PC: build Windows ejecutada; manos al volante OK; QA `Tormenta 95 %/90 %` OK;
-  palanca con ratón sigue sin responder (H2); capturas `f41_pc_*`.
-- Android: además del ADB, se probó a mano el volante y la **palanca táctil
-  P → L1**, que **sí funciona**; H2 es un hueco de PC.
-- Health de F4.1: validado con 9 contratos, 1 advertencia de localización
-  (202 claves → F8.4), 0 errores.
+  404,4/509,6/646,0/630,5 MB (boot/rebanada/cabina/mundo); mundo frame
+  **8,52 ms** medio y **18.802 primitivas**; 7 sectores y 24.147 triángulos;
+  grafo **76 ms**; 2 solicitudes; 0 síncronas; 0 errores.
+- PC: build Windows ejecutada; mundo con **16,66 ms** medio, 15.952 primitivas,
+  8 sectores, grafo **44 ms**, construcción media **3,76 ms**; `Siguiente ruta`
+  y `Esc` → Boot; capturas `f42_pc_*`.
+- Android manual: Boot → **Ver mundo** con toque real OK
+  (`f42_android_world_touch2.png`).
+- Health de F4.2: 10 contratos, 1 advertencia de localización (202 claves →
+  F8.4), 0 errores.
 
-## Qué debe hacer F4.2
+## Qué debe hacer F4.3
 
-Alcance exclusivo de **DS-R** (tag `v0.4.1`), según `ROADMAP.md`:
-**Terrain3D, streaming de sectores de 800 m, colisión, carga asíncrona y PSS
-≤ 1,2 GB**.
+Alcance exclusivo de **MiMo Pro** (tag `v0.4.2`), según `ROADMAP.md`:
+**kits de biomas, gasolineras, moteles, peajes, señalización, agua, polvo y
+nieve**.
 
-1. **Consumir F4.1, no rehacerla.** Instanciar `RouteNetwork` desde el
-   `WorldDirector` de escena (servicio de escena, **no autoload**), cargar
-   `data/content/world/route_network.json` y usar `edge_world_points()`,
-   `node_game_position()`, `project_geo()` y las rutas/alternativas.
-2. **Terrain3D** sobre la red: terreno, carretera y colisión. Puede usar
-   Terrain3D (MIT, verificar compatibilidad) o una malla propia; documentar la
-   decisión y el manifiesto/licencia.
-3. **Sectores de 800 m** con `ResourceLoader.load_threaded_request()`, máximo
-   dos solicitudes simultáneas y sin `load()` síncrono durante la conducción.
-4. **Colisión** de carretera/terreno y reaparición segura sobre la red; el
-   anti-atasco completo (grúa, deuda, vadeo) es F5.1.
-5. **Medir** la carga del grafo contra `budgets.runtime_load_budget_ms` (250 ms,
-   pendiente F4.2) y el PSS en el Redmi; actualizar el contrato solo si cambia
-   la estructura (subir `schema_version` y documentar migración).
-6. **Pruebas**: ampliar la prueba de rutas o crear una prueba de terreno/
-   streaming; mantener smoke 270, tren 125, cabina 46, interacción 257, lluvia
-   206, rutas 143 y render RENDER_OK. Añadir la ruta al wrapper/CI.
-7. **Presupuestos**: ≥30 FPS Android baja/TV, 60 objetivo Redmi/PC, ≤120.000
-   triángulos visibles Android (incluidos espejos), ≤450.000 PC, RAM ≤1,2 GB PSS,
-   sector 800 m, warm-up antes del gameplay.
+1. **Consumir F4.2, no rehacerla.** Usar `WorldDirector`, `WorldSectorStreamer`
+   y `WorldSectorData` como base. No cambiar `world_routes` v1 ni el artefacto
+   OSM. Si se amplía la estructura de `world.streaming`, subir `schema_version`
+   y documentar la migración; los campos actuales (800 m, 33×33, 2 solicitudes,
+   `load_threaded_request`, colisión, ODbL) se conservan.
+2. **Kits de bioma** para las seis regiones (costa, montaña, llanos, selva,
+   delta y eje industrial): materiales, vegetación, rocas, suelo, detalles de
+   borde de vía y variaciones de relieve, respetando el presupuesto de
+   **≤ 3.000 triángulos por sector** (2.048 son terreno) y el PSS.
+3. **POIs y mobiliario vial**: gasolineras, moteles, peajes, señalización,
+   postes, vallas y cruces. Deben ser assets reproducibles (`bpy` o procedurales)
+   con LOD0/LOD1/LOD2, manifiesto, licencia y sin marcas reales.
+4. **Agua, polvo y nieve**: presets visuales/materiales por bioma y clima;
+   la simulación de lluvia/humedad real y `WeatherManager` es F4.4. No duplicar
+   `rain_surface_fx` ni adelantar el clima.
+5. **Integración de escena**: cargar los kits desde `WorldDirector`/sectores sin
+   romper la carga threaded, el máximo de 2 solicitudes, la construcción de una
+   malla por frame ni el `load()` síncrono prohibido.
+6. **Pruebas**: ampliar `WorldStreamingTest` o crear una prueba de biomas/POIs;
+   mantener smoke 270, tren 125, cabina 46, interacción 257, lluvia 206, rutas
+   143 y render `RENDER_OK`. Añadir la ruta a health/CI.
+7. **Presupuestos**: ≥30 FPS Android baja/TV, 60 objetivo Redmi/PC,
+   ≤120.000 triángulos visibles Android (incluidos espejos), ≤450.000 PC,
+   PSS ≤ 1,2 GB, sector 800 m, warm-up antes del gameplay.
+8. **Referencias**: la revisión visual completa es **obligatoria antes de F4.3**
+   (o el 2026-12-06). Revisar los 3 vídeos nuevos del Esteem y los conceptos de
+   paisajes/biomas; no copiar imágenes al repositorio. Registrar el uso en
+   `docs/reference/REFERENCE_USAGE_LOG.md`.
 
 Reglas:
 
-- No rehacer F1–F4.1. `world_routes` v1 se consume sin cambios; si hace falta
-  cambiar la estructura, subir versión y migrar.
+- No rehacer F1–F4.2. `world_routes` y `world.streaming` se consumen sin cambios
+  cerrados; si hace falta cambiar estructura, subir versión y migrar.
 - No crear autoloads nuevos. `WorldDirector` es servicio de escena.
-- No corregir H1/H2/H3: H1 → F4.4; H2 → F5.1/F9.1; H3 → F9.1.
-- No empezar F4.3 (biomas/POIs) ni F4.4 (clima/mapa de papel) en el mismo chat.
+- No corregir H1/H2/H3/H4: H1 → F4.4; H2 → F5.1/F9.1; H3 → F9.1; H4 → F9.1/F10.2.
+- No empezar F4.4 (clima/mapa de papel) ni F5 (conducción/vadeo/anti-atasco).
 - Mantener la atribución ODbL visible y el texto de licencia en el build.
 - No versionar respuestas OSM, teselas DEM, cachés ni binarios de build.
+- Los kits deben tener manifiesto, LOD0/1/2, licencia verificable y no usar
+  imágenes de `C:\Dev\fotos de ejemplo` como textura.
+- La red comprimida no resuelve cruces a distinto nivel; F4.3 puede añadir kits de
+  puente/cruce, pero no reabrir el pipeline OSM de F4.1 sin justificación.
 
 Al iniciar:
 
@@ -82,9 +99,9 @@ Al iniciar:
 ## Prompt para el siguiente chat
 
 ```text
-[RN1999 · Subfase 4.2]
+[RN1999 · Subfase 4.3]
 CWD: C:\Dev\RutaNocturna1999
-Modelo asignado: DS-R (opencode-go/deepseek-v4.1-flash#max)
+Modelo asignado: MiMo Pro (opencode-go/mimo-v2.6-pro)
 
 Lee completos:
 - AGENTS.md
@@ -95,36 +112,44 @@ Lee completos:
 - docs/architecture/DATA_CONTRACTS.md
 - docs/architecture/BUILD_AND_RELEASE.md
 - docs/architecture/WORLD_ROUTES.md
+- docs/architecture/WORLD_STREAMING.md
 
-Ejecuta únicamente la Subfase 4.2 (tag v0.4.1): Terrain3D, streaming de
-sectores de 800 m, colisión, carga asíncrona y PSS ≤ 1,2 GB. No rehagas
-F1–F4.1 ni cambies contratos cerrados. No avances a F4.3/F4.4.
+Ejecuta únicamente la Subfase 4.3 (tag v0.4.2): kits de biomas, gasolineras,
+moteles, peajes, señalización, agua, polvo y nieve. Consume el terreno, los 454
+sectores de 800 m, el streaming asíncrono y la colisión de F4.2. No rehagas
+F1–F4.2, no cambies contratos cerrados y no avances a F4.4/F5.
 
-La Fase 4.1 ya cerró:
-- v0.4.0: contrato world.routes v1, red OSM comprimida (329 nodos, 413 aristas,
-  6 principales + 12 alternativas, 4.751,7 km principales), DEM Terrarium,
-  caché, ODbL y RouteNetwork; tests rutas 143.
-- Hallazgos: H1 gotas en cabina → F4.4; H2 palanca PC sin ratón/teclado/gamepad
-  (el táctil Android sí funciona) → F5.1/F9.1; H3 radio sin feedback → F9.1.
+La Fase 4.2 ya cerró:
+- v0.4.1: contrato world.streaming v1, 454 sectores de 800 m (4.671.964 bytes;
+  929.792 triángulos de terreno), vía, colisión, carga threaded (máx. 2),
+  reaparición segura y ODbL.
 - Tests: smoke 270, tren 125, cabina 46, interacción 257, lluvia 206, rutas 143,
-  render RENDER_OK; ADB exit 0 en el Redmi.
+  streaming 99, render RENDER_OK.
+- PC: mundo 60 FPS, 15.952 primitivas, grafo 44 ms, 3,76 ms por sector.
+- Redmi: PSS mundo 630,5 MB, 18.802 primitivas, frame 8,52 ms, grafo 76 ms,
+  7 sectores, 2 solicitudes, 0 carga síncrona.
+- Hallazgos: H1 gotas en cabina → F4.4; H2 palanca PC sin ratón/teclado/gamepad
+  (el táctil Android sí funciona) → F5.1/F9.1; H3 radio sin feedback → F9.1;
+  H4 retrato/letterbox Android → F9.1/F10.2.
 
 Al iniciar:
   python tools/health_check.py --start
   python tools/scan_reference_library.py --quick
 
-Revisa solo las referencias del catálogo relevantes para esta subfase y registra
-su uso. No copies archivos de C:\Dev\fotos de ejemplo al repositorio. Respeta
-presupuestos, contratos, licencias (ODbL) y el anti-softlock.
+La revisión visual completa de referencias es obligatoria antes de F4.3.
+Revisa solo las referencias relevantes (biomas, paisajes, vehículo, vía) y
+registra su uso en docs/reference/REFERENCE_USAGE_LOG.md. No copies archivos de
+C:\Dev\fotos de ejemplo al repositorio. Respeta presupuestos, contratos,
+licencias (ODbL) y el anti-softlock.
 
 Al cerrar: valida esquemas, localización, manifiestos, roadmap y presets;
 importa en Godot headless; ejecuta smoke, tren motriz, cabina, interacción,
-lluvia, rutas y render; prueba el juego en PC y en el Redmi con capturas; mide
-PSS/triángulos/carga; comprueba espacio; health_check --end; actualiza ROADMAP,
-docs/roadmap-data.json, CHANGELOG, CURRENT y HANDOFF; commit, tag v0.4.1 y push
-solo si todo pasa; entrega el prompt de F4.3 con MiMo Pro.
+lluvia, rutas, streaming y render; prueba el juego en PC y en el Redmi con
+capturas; mide PSS/triángulos/carga; comprueba espacio; health_check --end;
+actualiza ROADMAP, docs/roadmap-data.json, CHANGELOG, CURRENT y HANDOFF; commit,
+tag v0.4.2 y push solo si todo pasa; entrega el prompt de F4.4 con DS-S.
 
-No avances a la Fase 4.3.
+No avances a la Fase 4.4.
 ```
 
 ## Recordatorios
@@ -133,20 +158,25 @@ No avances a la Fase 4.3.
   completa siguiente es **obligatoria antes de F4.3** o el **2026-12-06**.
 - La ExecutionPolicy de PowerShell está restringida: usar wrappers `.cmd`.
 - El export se hace con `tools\dev\export.cmd`; los binarios van a `build/` y
-  nunca a Git. `licenses/*.txt` y `CREDITS.md` viajan en el export.
+  nunca a Git. `licenses/*.txt`, `CREDITS.md` y los sectores viajan en el build.
 - Los presupuestos móviles siguen vigentes: ≤120.000 triángulos visibles
   (incluidos los tres viewports de espejo), RAM ≤1,2 GB PSS.
 - Al cambiar `EXPECTED_VERSION`, actualizar `VERSION`, `project.godot`,
   `export_presets.cfg` (`version/name` y `version/code`) y `PHASE` de `Boot.gd`;
-  la prueba de rutas también tiene su `EXPECTED_VERSION`.
-- La red de rutas es ODbL 1.0: conservar atribución, licencia y share-alike.
-  No editar `route_network.json` a mano: regenerar con el pipeline.
+  la prueba de rutas, la de lluvia, la de streaming y el smoke tienen su
+  `EXPECTED_VERSION`.
+- La red y los sectores son ODbL 1.0: conservar atribución, licencia y
+  share-alike. No editar `route_network.json` ni los `.res` a mano: regenerar con
+  el pipeline/horneado.
 - El warm-up de shaders debe seguir ejecutándose antes del gameplay.
 - No se sube ningún token, keystore, APK o AAB a Git.
 - La pérdida de agarre, el vadeo y el anti-atasco son F5.1; la lluvia real de
-  `WeatherManager` es F4.4; el mapa de papel es F4.4; los biomas/POIs son F4.3.
-- F4.2 debe medir, no “optimizar sin medición”: la carga del grafo y el PSS se
-  contrastan con `budgets` y el Redmi.
+  `WeatherManager` es F4.4; el mapa de papel es F4.4.
+- El terreno de F4.2 es greybox: no se declara “arte final” ni se usan las fotos
+  como textura. F4.3 añade los kits con manifiesto y LODs.
+- H4 (retrato/letterbox) es preexistente; no se corrigió en F4.2. Si F4.3 toca
+  menús/UI, no cambiar la orientación sin una prueba completa de todas las
+  escenas y del Redmi.
 
 ## Seguridad
 

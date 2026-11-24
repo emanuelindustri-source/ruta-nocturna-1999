@@ -14,6 +14,8 @@ se implementó en Fase 1.2. Las mecánicas se implementan después.
 | `data/schemas/folklore_entities.json` | Reglas de aparición, percepción, audio, evasión y combate |
 | `data/schemas/dialogue_and_endings.json` | Pasajeros, confianza, nodos de diálogo y finales |
 | `data/schemas/autoload_dependencies.json` | Grafo acíclico de autoloads y servicios de escena |
+| `data/schemas/world_routes.json` | Regiones, OSM, DEM, grafo, rutas, alternativas, caché y ODbL (F4.1) |
+| `data/schemas/world_streaming.json` | Terreno, sectores de 800 m, streaming, colisión y presupuestos (F4.2) |
 | `data/schemas/json/*.schema.json` | JSON Schemas de validación |
 
 ## 2. Reglas generales
@@ -525,3 +527,58 @@ Reglas:
 
 Detalle completo del pipeline, la tabla de rutas y las limitaciones en
 `docs/architecture/WORLD_ROUTES.md`.
+
+## 20. Terreno y streaming de sectores (Fase 4.2)
+
+El streaming es un contrato de **sistemas y datos** nuevo:
+`data/schemas/world_streaming.json` (`schema_version: 1`,
+`contract_id: world.streaming`, `world_id: venezuela.1999`). Su JSON Schema vive
+en `data/schemas/json/world_streaming.schema.json`. No modifica
+`world_routes` v1: lo consume.
+
+| Archivo | Contenido |
+|---|---|
+| `data/schemas/world_streaming.json` | Sector 800 m, rejilla 33×33, vía, relieve, materiales, streaming, colisión, presupuestos, ODbL, anti-softlock, estados y QA |
+| `data/content/world/sectors/*.res` | 454 recursos `WorldSectorData` horneados (alturas, vía, marcas y atribución) |
+| `data/content/world/sectors.manifest.json` | Hash, tamaño, triángulos, cobertura y procedencia de cada sector |
+| `src/world/world_sector_data.gd` | Recurso compacto del sector |
+| `src/world/world_sector_builder.gd` | `ArrayMesh` y `ConcavePolygonShape3D` |
+| `src/world/sector_streamer.gd` | Ventana de streaming, dos solicitudes threaded y una construcción por frame |
+| `src/world/world_director.gd` | Servicio de escena del mundo, tour y reaparición segura |
+| `scenes/world/WorldTerrain.tscn` | Presentación del mundo y overlay |
+| `tests/world/WorldStreamingTest.tscn` | 95 comprobaciones de recursos, streaming, colisión y reaparición |
+
+Secciones del contrato:
+
+| Sección | Contenido |
+|---|---|
+| `terrain` | Origen DEM, `generated_array_mesh`, ausencia de addon, 800 m, 33×33, vía, relieve y materiales |
+| `streaming` | Secuencia de ruta, 3 delante / 2 detrás / 2 de margen, 2 solicitudes, `ResourceLoader.load_threaded_request`, prohibición de `load()` síncrono, una construcción por frame |
+| `collision` | `StaticBody3D`, `ConcavePolygonShape3D` para terreno y vía, capas/máscaras y reaparición segura |
+| `budgets` | 250 ms de grafo, 20 s de carga inicial, 10 residentes, 3.000 triángulos por sector, 120.000/450.000 visibles, 1.228,8 MB PSS, frames 33,333/16,667 ms |
+| `attribution` | ODbL 1.0, © OpenStreetMap contributors, `CREDITS_OSM` y `licenses/ODbL-1.0.txt` |
+| `anti_softlock` | Reaparición sobre la red y con colisión; la recuperación completa es F5.1 |
+| `states` | Estados de streaming y de sector |
+| `qa` | Escena, prueba, comandos de horneado/validación, 454 sectores, ruta de tour y ruta Android |
+
+Reglas:
+
+- Los sectores son una **base de datos derivada** de OSM y se publican bajo
+  ODbL 1.0. El manifiesto y los recursos conservan la atribución y el
+  share-alike.
+- El terreno se genera como `ArrayMesh` reproducible; no se usa el addon nativo
+  Terrain3D (decisión y licencia en `WORLD_STREAMING.md`).
+- El runtime no usa `load()` de sector: solo
+  `ResourceLoader.load_threaded_request()`, con un máximo de dos solicitudes y
+  una construcción de malla/colisión por frame.
+- La rejilla 33×33 y la vía de 7,2 m son valores de F4.2. Cambiar la estructura
+  exige subir `schema_version` y documentar la migración. Cambiar un valor exige
+  actualizar su nota de fuente en el contrato.
+- `tools/world/validate_world_sectors.py` recalcula la cobertura desde la red,
+  verifica SHA-256/tamaño de los 454 recursos y contrasta presupuestos y
+  atribución; se ejecuta desde `validate_schemas.py` y `health_check.py`.
+- La prueba Godot carga todos los recursos, instancia el mundo, mide la carga
+  del grafo, comprueba el pico de dos solicitudes, la ausencia de carga síncrona,
+  la colisión, el punto de reaparición, el avance de 12 km y el cambio de ruta.
+- El detalle de arquitectura, presupuestos medidos y limitaciones está en
+  `docs/architecture/WORLD_STREAMING.md`.

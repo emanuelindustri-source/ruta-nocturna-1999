@@ -148,6 +148,7 @@ Los sistemas de juego se implementan solo después de que existan y validen:
 - `data/schemas/inventory_tools.json`
 - `data/schemas/autoload_dependencies.json`
 - `data/schemas/world_routes.json`
+- `data/schemas/world_streaming.json`
 - JSON Schemas en `data/schemas/json/`
 - Diagramas y dependencias en `docs/architecture/`
 

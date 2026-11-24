@@ -4,8 +4,8 @@ Terror psicológico, conducción de supervivencia y exploración en una Venezuel
 nocturna de diciembre de 1999. El protagonista cruza el país en un sedán beige
 de 1999, con su mecánica, su radio y sus carreteras como sistema de supervivencia.
 
-> **Estado actual:** Fase 4.1 completada (pipeline de rutas OSM/Overpass, DEM, grafo y alternativas).  
-> **Versión:** `0.4.0`  
+> **Estado actual:** Fase 4.2 completada (terreno, sectores de 800 m, colisión y streaming asíncrono).  
+> **Versión:** `0.4.1`  
 > **Web:** https://emanuelindustri-source.github.io/ruta-nocturna-1999/  
 > **Repositorio:** https://github.com/emanuelindustri-source/ruta-nocturna-1999  
 > **No hay todavía una build jugable.** Las fases 2.1–2.4 implementan motor, caja
@@ -13,8 +13,9 @@ de 1999, con su mecánica, su radio y sus carreteras como sistema de supervivenc
 > espejos, HUD, gamepad y guardado. F3.1/F3.2 añadieron el exterior y el interior
 > definitivos; F3.3–F3.5 la lluvia física, el GLSL, los VFX y la medición en
 > dispositivo. F4.1 añade la red de rutas reales comprimidas de Venezuela, con
-> elevación DEM, atribución ODbL y alternativas. El terreno, el streaming de
-> sectores de 800 m y los biomas llegan en F4.2/F4.3.
+> elevación DEM, atribución ODbL y alternativas. F4.2 añade el terreno de
+> presentación, la vía, la colisión y el streaming de 454 sectores de 800 m con
+> carga asíncrona. Biomas, POIs y clima llegan en F4.3/F4.4.
 
 ## Objetivo técnico
 
@@ -67,8 +68,14 @@ Godot tenía una marca de compatibilidad “Ejecutar como administrador” que i
 # Pruebas de la red de rutas OSM, DEM, grafo y alternativas.
 .\tools\dev\world_routes_test.cmd
 
+# Pruebas de terreno, sectores de 800 m, colisión y carga asíncrona.
+.\tools\dev\world_streaming_test.cmd
+
 # Regenerar la red de rutas (Overpass + DEM; escribe data/content/world/).
 .\.venv\Scripts\python.exe tools\osm\build_world_routes.py
+
+# Hornear los sectores de 800 m desde la red ya versionada.
+.\tools\dev\bake_world_sectors.cmd
 
 # Export de referencia (Windows y Android) a build/exports/.
 .\tools\dev\export.cmd -Target all
@@ -100,17 +107,18 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\dev\bootstrap.ps1
 AGENTS.md                 reglas de ejecución y validación
 ROADMAP.md                fases, versiones, modelos y gates de chat
 data/schemas/             contratos canónicos y JSON Schemas
-data/content/world/       red de rutas OSM comprimida y manifiesto (F4.1)
+data/content/world/       red de rutas OSM (F4.1) y sectores de 800 m (F4.2)
 src/vehicle/              simulación del tren motriz y la cabina (F2)
 src/weather/              humedad, gotas, limpiaparabrisas y charcos (F3.3)
-src/world/                cargador de la red de rutas y rebanada vertical
+src/world/                red de rutas, terreno, streaming y rebanada vertical
 tests/vehicle/            pruebas headless del vehículo
 tests/weather/            pruebas headless de lluvia y superficies
-tests/world/              pruebas headless de rutas, DEM y ODbL
+tests/world/              pruebas headless de rutas, DEM, sectores y ODbL
 docs/                     web de GitHub Pages, arquitectura y estado
 localization/             claves base para los once idiomas
 tools/                    validación, referencias y automatización
 tools/osm/                pipeline Overpass/DEM y validador de rutas
+tools/world/              horneado y validación de sectores de 800 m
 assets/                   arte generado y manifiestos
 scenes/ y src/            proyecto Godot
 ```

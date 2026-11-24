@@ -4,6 +4,99 @@ Todas las fechas usan ISO 8601. Las versiones siguen SemVer.
 
 ## [Unreleased]
 
+## [0.4.1] — 2026-11-24
+
+### Añadido
+
+- Contrato **`data/schemas/world_streaming.json`** (`world.streaming` v1) y JSON
+  Schema: terreno de 800 m, rejilla 33×33, vía, relieve, materiales, streaming
+  asíncrono, colisión, presupuestos, ODbL y anti-softlock. No modifica
+  `world_routes` v1.
+- **454 sectores** `WorldSectorData` horneados en
+  `data/content/world/sectors/*.res` (4.671.964 bytes) y manifiesto con SHA-256,
+  tamaño, triángulos y cobertura. 929.792 triángulos de terreno y 30.644 de vía.
+- **`tools/world/bake_world_sectors.gd`** + escena y wrapper
+  `tools/dev/bake_world_sectors.cmd`: horneado reproducible con vía mitrada,
+  marcas discontinuas, colisión y atribución ODbL.
+- **Runtime**: `WorldSectorData`, `WorldSectorBuilder`, `WorldSectorStreamer` y
+  `WorldDirector` (servicio de escena, no autoload). Carga con
+  `ResourceLoader.load_threaded_request()`, máximo 2 solicitudes, una
+  construcción por frame, sin `load()` síncrono, descarga por ventana y
+  reaparición segura sobre la red con colisión.
+- **`scenes/world/WorldTerrain.tscn`**: terreno, vía, coche de presentación,
+  cámara de persecución, faro, overlay de sectores/triángulos/FPS/carga y tour
+  por las seis rutas. No es conducción física (F5).
+- **`tests/world/WorldStreamingTest.tscn`** y wrapper: **99 comprobaciones** de
+  recursos, hashes, colisión, raycast, reaparición, streaming, avance de 12 km y
+  las seis rutas al 10/50/90 %.
+- **`tools/world/validate_world_sectors.py`** integrado en
+  `validate_schemas.py` y `health_check.py`; la CI ejecuta la prueba de
+  streaming.
+- **Localización**: `UI_VIEW_WORLD`, `WORLD_TITLE`, `WORLD_LOADING`,
+  `WORLD_ROUTE_LINE`, `WORLD_STATS`, `WORLD_NEXT_ROUTE` y `WORLD_LOAD_FAILED` en
+  los once idiomas; `BOOT_KICKER` a Fase 4.2 y `SLICE_TITLE` a v0.4.1.
+- **Documentación**: `docs/architecture/WORLD_STREAMING.md` y secciones nuevas
+  en `SYSTEM_ARCHITECTURE.md`, `DATA_CONTRACTS.md`, `WORLD_ROUTES.md`,
+  `BUILD_AND_RELEASE.md`, `CREDITS.md` y `README.md`.
+
+### Cambiado
+
+- Versión `0.4.1` en `VERSION`, `project.godot`, `export_presets.cfg`
+  (`version/code=113`), `EXPECTED_VERSION` del smoke/lluvia/rutas/streaming,
+  `PHASE` de Boot y `BOOT_KICKER` en once idiomas.
+- El Boot ofrece «Ver mundo» (`UI_VIEW_WORLD`) además de la rebanada y la cabina.
+- La ruta Android de rendimiento pasa a `slice,cabin,world`; la prueba captura
+  PSS y pantalla de las tres escenas y valida el bloque `world`.
+- `DevicePerfProbe` mide también el mundo, espera `world_ready`, lo somete a
+  1.200 m/s y registra sectores, triángulos, solicitudes, carga del grafo y
+  errores.
+
+### Medido
+
+- **PC**: mundo con 515 ms de carga, 16,66 ms de frame medio (60 FPS), 15.952
+  primitivas, 8 sectores, 24.682 triángulos, grafo 44 ms, construcción media
+  3,76 ms, 2 solicitudes máximas, 0 `load()` síncrono y 0 errores.
+- **Redmi 22101316G**: mundo con 2.771 ms de carga, 8,52 ms de frame medio,
+  9,50 ms p95, 18.802 primitivas, 7 sectores, 24.147 triángulos, grafo 76 ms,
+  PSS **630,5 MB**; rebanada 509,6 MB; cabina 646,0 MB. Límite 1.228,8 MB.
+- **Android**: arranque 0,9 s, PSS 404,4 MB, sin `FATAL EXCEPTION` ni errores
+  Godot/Vulkan en 15 s; toque manual Boot → «Ver mundo» OK.
+- `WorldStreamingTest` **99/99**; smoke **270**, tren **125**, cabina **46**,
+  interacción **257**, lluvia **206**, rutas **143**, render **RENDER_OK**.
+
+### Corregido / decisiones
+
+- Se descartó el addon nativo **Terrain3D**: se usa `ArrayMesh` propio (MIT) para
+  evitar una GDExtension nativa por plataforma y controlar el presupuesto. La
+  decisión y la licencia están en `WORLD_STREAMING.md`.
+- La vía se hornea con uniones mitradas y recorte por sector para eliminar los
+  abanicos y solapes de las curvas cerradas.
+- La colisión del terreno usa paso 2 (512 triángulos) para reducir el coste de
+  construcción; la vía conserva su malla completa.
+- La ventana inicial se autolimpia: la cola se rellena si faltan sectores y un
+  timeout de 20 s evita quedarse en «Cargando mundo».
+
+### Hallazgos
+
+- **H1 (→ F4.4):** gotas de cámara en el habitáculo; sin cambios.
+- **H2 (→ F5.1/F9.1):** palanca sin ratón/teclado/gamepad en PC; el táctil
+  Android funciona; sin cambios.
+- **H3 (→ F9.1):** radio sin feedback visual; sin cambios.
+- **H4 (→ F9.1/F10.2):** el juego corre en retrato en el Redmi y la vista
+  1280×720 queda con bandas negras. Es preexistente, no rompe presupuestos ni
+  toque; se revisará en menús/QA de dispositivo.
+- Cuatro sectores de borde solo contienen terreno (sin centro de vía); la red
+  comprimida puede solapar vías cercanas sin resolver cruces a distinto nivel.
+  F4.3 podrá añadir kits de puente/cruce.
+- El terreno es greybox: biomas, POIs, gasolineras, clima y agua son F4.3/F4.4.
+
+### Licencia
+
+- Los 454 sectores son una base derivada de OpenStreetMap y se distribuyen bajo
+  **ODbL 1.0**. Se conserva © OpenStreetMap contributors, `CREDITS_OSM`,
+  `licenses/ODbL-1.0.txt` y el share-alike. El generador y el terreno procedural
+  son MIT del proyecto; no se copió ninguna imagen de la biblioteca externa.
+
 ## [0.4.0] — 2026-11-24
 
 ### Añadido

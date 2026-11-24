@@ -645,3 +645,50 @@ ninguna imagen de la biblioteca externa.
 
 - Revisión completa obligatoria antes de **F4.3** (kits de biomas) o el
   **2026-12-06**, lo que ocurra primero.
+
+## 2026-11-24 — Fase 4.2 — terreno, sectores de 800 m y streaming
+
+**Alcance:** subfase de terreno/streaming. No es una subfase de modelado ni de
+UI: no se abrió ninguna imagen de la biblioteca externa. Se revisaron solo los
+metadatos del catálogo y el artefacto OSM/DEM de F4.1. **No se cargaron las 95
+fichas en contexto** y **no se copió ningún archivo** de
+`C:\Dev\fotos de ejemplo` al repositorio. La biblioteca externa quedó intacta;
+el escaneo rápido detectó 3 vídeos nuevos del Esteem (2009/2021/2023) que no se
+usan en esta subfase.
+
+### Referencias utilizadas
+
+| Familia | Uso | Resultado |
+|---|---|---|
+| Catálogo externo (`reference_catalog.json`, 95 fichas) | Revisión rápida de relevancia para F4.2 | Ninguna ficha está marcada para F4.2; las de paisajes/biomas son F4.3 y las del vehículo F1–F3/F5. Se revisaron solo metadatos. |
+| Red OSM/DEM de F4.1 (`route_network.json`, manifiesto) | Base del terreno, la vía, la elevación y la atribución | 329 nodos/413 aristas; 454 sectores horneados; ODbL 1.0; sin teselas ni respuestas crudas versionadas. |
+| Conceptos de paisajes (Gemini) | Dirección visual de biomas | **No usados en F4.2**; quedan para la revisión completa de F4.3. No se derivaron colores, texturas ni formas. |
+| 3 vídeos nuevos del Esteem | Inventario | Catalogados como referencia de vehículo; no se usan en terreno/streaming. La revisión completa queda para F4.3/F5.1. |
+
+### Decisiones
+
+- El terreno es **procedural y greybox**, generado desde la red y la DEM de
+  F4.1; no se usan texturas, fotografías ni conceptos de IA como asset.
+- No se incorpora el addon nativo Terrain3D: se usa `ArrayMesh` propio (MIT) por
+  compatibilidad, empaquetado y control del presupuesto. La decisión y la
+  licencia están en `WORLD_STREAMING.md`.
+- La paleta nocturna (verde petróleo, ámbar, hueso) se mantiene de F1.1; el
+  terreno/vía no introduce una dirección de arte nueva ni marcas.
+- La atribución ODbL se conserva en el cielo/overlay (`CREDITS_OSM`), en
+  `CREDITS.md`, en la web y en el manifiesto de sectores.
+- Los 3 vídeos nuevos se dejan para la revisión visual completa; no se extraen
+  fotogramas en F4.2.
+
+### Descartado
+
+- Copiar imágenes, texturas, recortes o fotogramas de la biblioteca externa.
+- Usar los conceptos de IA como canon o como capturas de tienda.
+- Presentar el terreno greybox como arte final o como dato topográfico.
+- Tomar cotas, colores o materiales de las fotos para el terreno/vía.
+
+### Próxima revisión
+
+- Revisión completa **obligatoria antes de F4.3** (kits de biomas) o el
+  **2026-12-06**, lo que ocurra primero. Incluye los 3 vídeos nuevos, los
+  conceptos de paisajes y las fichas de biomas/POIs.
+- Revisión rápida: inicio y cierre de cada subfase.

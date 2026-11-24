@@ -59,6 +59,7 @@ REQUIRED_FILES = [
     "docs/architecture/BUILD_AND_RELEASE.md",
     "docs/architecture/RAIN_AND_SURFACE_FX.md",
     "docs/architecture/WORLD_ROUTES.md",
+    "docs/architecture/WORLD_STREAMING.md",
     "licenses/ODbL-1.0.txt",
     "data/schemas/vehicle_components.json",
     "data/schemas/vehicle_powertrain.json",
@@ -67,6 +68,7 @@ REQUIRED_FILES = [
     "data/schemas/inventory_tools.json",
     "data/schemas/autoload_dependencies.json",
     "data/schemas/world_routes.json",
+    "data/schemas/world_streaming.json",
     "data/schemas/json/vehicle_components.schema.json",
     "data/schemas/json/vehicle_powertrain.schema.json",
     "data/schemas/json/folklore_entities.schema.json",
@@ -75,8 +77,10 @@ REQUIRED_FILES = [
     "data/schemas/json/autoload_dependencies.schema.json",
     "data/schemas/json/world_routes.schema.json",
     "data/schemas/json/world_route_network.schema.json",
+    "data/schemas/json/world_streaming.schema.json",
     "data/content/world/route_network.json",
     "data/content/world/route_network.manifest.json",
+    "data/content/world/sectors.manifest.json",
     "localization/strings.csv",
     "src/core/event_bus.gd",
     "src/core/Boot.gd",
@@ -102,6 +106,20 @@ REQUIRED_FILES = [
     "tools/osm/build_world_routes.py",
     "tools/osm/route_graph_validation.py",
     "src/world/route_network.gd",
+    "src/world/world_sector_data.gd",
+    "src/world/world_sector_builder.gd",
+    "src/world/sector_streamer.gd",
+    "src/world/world_director.gd",
+    "scenes/world/WorldTerrain.tscn",
+    "tests/world/WorldStreamingTest.tscn",
+    "tests/world/world_streaming_test.gd",
+    "tools/dev/world_streaming_test.cmd",
+    "tools/dev/world_streaming_test.ps1",
+    "tools/dev/bake_world_sectors.cmd",
+    "tools/dev/bake_world_sectors.ps1",
+    "tools/world/bake_world_sectors.gd",
+    "tools/world/BakeWorldSectors.tscn",
+    "tools/world/validate_world_sectors.py",
     "tests/vehicle/PowertrainTest.tscn",
     "tests/vehicle/powertrain_test.gd",
     "tools/dev/smoke_test.cmd",
@@ -643,6 +661,27 @@ def check_rain_test(checks: list[Check], skip_smoke: bool) -> None:
     )
 
 
+def check_world_streaming_test(checks: list[Check], skip_smoke: bool) -> None:
+    if skip_smoke:
+        result(checks, "world_streaming_tests", True, "Omitido por --skip-godot/--skip-smoke", warn=True)
+        return
+    if not GODOT.exists():
+        result(checks, "world_streaming_tests", False, "Godot no está instalado en la ruta esperada")
+        return
+    code, output = run_command(
+        [str(GODOT), "--headless", "--path", str(ROOT), "res://tests/world/WorldStreamingTest.tscn"],
+        timeout=300,
+    )
+    ok = code == 0 and "[STREAM] OK" in output
+    result(
+        checks,
+        "world_streaming_tests",
+        ok,
+        f"Exit {code}; {'terreno y streaming superados' if ok else 'sin marca de éxito'}",
+        {"exit_code": code, "tail": "\n".join(output.splitlines()[-30:])},
+    )
+
+
 def check_godot_import(checks: list[Check], skip_import: bool) -> None:
     if skip_import:
         result(checks, "godot_import", True, "Omitido por --skip-godot", warn=True)
@@ -739,6 +778,7 @@ def main() -> int:
     check_cabin_test(checks, args.skip_godot or args.skip_smoke)
     check_interaction_test(checks, args.skip_godot or args.skip_smoke)
     check_rain_test(checks, args.skip_godot or args.skip_smoke)
+    check_world_streaming_test(checks, args.skip_godot or args.skip_smoke)
 
     report = build_report(checks, mode)
     REPORT_DIR.mkdir(parents=True, exist_ok=True)

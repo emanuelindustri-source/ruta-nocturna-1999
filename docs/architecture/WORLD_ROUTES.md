@@ -227,7 +227,7 @@ La prueba carga el contrato y el artefacto, verifica el hash, el grafo, las seis
 rutas y sus alternativas, la proyección, la atribución y el enrutado A* runtime.
 Resultado de cierre: **143 comprobaciones OK**.
 
-## 10. Runtime y handoff a F4.2
+## 10. Runtime y consumo en F4.2
 
 `src/world/route_network.gd` (`RouteNetwork`) es un `RefCounted`, **no un
 autoload**:
@@ -241,16 +241,19 @@ autoload**:
 - `edge_world_points()` devuelve la polilínea 3D para el futuro generador de
   terreno.
 
-F4.2 debe:
+F4.2 ejecutó el handoff:
 
-1. Instanciar `RouteNetwork` en el `WorldDirector` de escena.
-2. Construir Terrain3D y los sectores de 800 m a partir de nodos/aristas.
-3. Usar `ResourceLoader.load_threaded_request()` y máximo dos solicitudes
-   simultáneas.
-4. Medir la carga del grafo contra `budgets.runtime_load_budget_ms` (250 ms,
-   pendiente de medición real).
-5. No modificar la red ni el contrato sin subir `schema_version` y documentar la
-   migración.
+1. `WorldDirector` (servicio de escena) instancia `RouteNetwork`.
+2. Construye terreno propio (`ArrayMesh`, no el addon Terrain3D) y 454 sectores
+   de 800 m a partir de nodos/aristas y DEM.
+3. Usa `ResourceLoader.load_threaded_request()` con máximo dos solicitudes y una
+   construcción de malla/colisión por frame; no hay `load()` síncrono.
+4. Mide la carga del grafo contra `budgets.runtime_load_budget_ms`: ~30 ms en PC,
+   por debajo de 250 ms; el PSS/triángulos se miden en el Redmi.
+5. No se modificó la red ni el contrato `world_routes` v1; el streaming vive en
+   el contrato aditivo `world.streaming` v1.
+
+El detalle está en `docs/architecture/WORLD_STREAMING.md`.
 
 ## 11. Limitaciones conocidas
 
@@ -262,7 +265,8 @@ F4.2 debe:
 - El `route.merida_llanos` conserva una alternativa con solapamiento alto (bucle
   paralelo); sigue siendo una ruta OSM real y válida para rodear un bloqueo.
 - La red no es navegable ni apta para uso real; es contenido de juego.
-- La carga runtime, el terreno, la colisión y el streaming son F4.2.
+- El terreno, la colisión y el streaming se implementaron en F4.2
+  (`WORLD_STREAMING.md`); los biomas, POIs y el clima son F4.3/F4.4.
 
 ## 12. Evidencia de cierre
 

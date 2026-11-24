@@ -1,0 +1,137 @@
+{
+  "schema_version": 1,
+  "contract_id": "world.streaming",
+  "world_id": "venezuela.1999",
+  "status": "active",
+  "data_files": {
+    "routes_contract": "data/schemas/world_routes.json",
+    "route_network": "data/content/world/route_network.json",
+    "route_manifest": "data/content/world/route_network.manifest.json",
+    "sectors_dir": "data/content/world/sectors",
+    "sectors_manifest": "data/content/world/sectors.manifest.json",
+    "scene": "scenes/world/WorldTerrain.tscn",
+    "streamer_script": "src/world/sector_streamer.gd",
+    "builder_script": "src/world/world_sector_builder.gd",
+    "bake_scene": "tools/world/BakeWorldSectors.tscn",
+    "bake_command": "tools/dev/bake_world_sectors.cmd"
+  },
+  "terrain": {
+    "source": "route_network_dem",
+    "implementation": "generated_array_mesh",
+    "third_party_addon": null,
+    "license": "MIT (código del proyecto)",
+    "note": "No se usa el addon nativo Terrain3D en F4.2. El terreno se genera como ArrayMesh reproducible a partir de la red OSM/DEM de F4.1, sin dependencias nativas, sin texturas externas y con licencia MIT del proyecto. La decisión y la compatibilidad se documentan en docs/architecture/WORLD_STREAMING.md.",
+    "sector_size_m": 800.0,
+    "grid_resolution": 33,
+    "grid_spacing_m": 25.0,
+    "vertical_offset_m": -0.18,
+    "road": {
+      "width_m": 7.2,
+      "shoulder_m": 2.2,
+      "surface_offset_m": 0.06,
+      "marking_width_m": 0.14,
+      "marking_period_m": 25.0,
+      "marking_length_m": 5.0,
+      "asphalt_color": [0.115, 0.12, 0.13],
+      "marking_color": [0.72, 0.68, 0.55]
+    },
+    "relief": {
+      "flat_radius_m": 12.0,
+      "blend_end_m": 80.0,
+      "noise_amplitude_m": 18.0,
+      "noise_wavelength_m": 420.0,
+      "max_offset_m": 28.0,
+      "octaves": 2
+    },
+    "materials": {
+      "terrain_roughness": 0.95,
+      "road_roughness": 0.86,
+      "uses_textures": false,
+      "note": "Materiales procedurales originales; ninguna textura o color procede de la biblioteca externa."
+    },
+    "lod_policy": "procedural_sector_single_lod",
+    "lod_note": "Los sectores son mallas procedurales de terreno, no modelos de la fábrica. La política LOD0/LOD1/LOD2 aplica a mallas de assets; el sector usa una resolución única de 33×33 y se descarga al salir del anillo de streaming."
+  },
+  "streaming": {
+    "mode": "route_sequence_async",
+    "sector_size_m": 800.0,
+    "ahead_sectors": 3,
+    "behind_sectors": 2,
+    "unload_margin_sectors": 2,
+    "max_concurrent_requests": 2,
+    "loader_api": "ResourceLoader.load_threaded_request",
+    "sync_load_forbidden": true,
+    "poll_every_frame": true,
+    "max_sector_builds_per_frame": 1,
+    "initial_fill_timeout_ms": 20000,
+    "retry_after_frames": 30,
+    "note": "La secuencia de sectores se deriva del orden de la ruta. La carga usa ResourceLoader.load_threaded_request() con un máximo de dos solicitudes simultáneas; la construcción de malla y colisión se reparte a una por frame. Nunca se usa load() durante la conducción."
+  },
+  "collision": {
+    "body_type": "StaticBody3D",
+    "terrain_shape": "ConcavePolygonShape3D",
+    "terrain_stride": 2,
+    "road_shape": "ConcavePolygonShape3D",
+    "collision_layer": 1,
+    "collision_mask": 1,
+    "safe_respawn": {
+      "method": "WorldDirector.safe_respawn_point",
+      "clearance_m": 2.0,
+      "max_slope_pct": 20.0,
+      "requires_raycast_hit": true,
+      "on_road_width_fraction": 0.5,
+      "fallback_hub": "hub_carabobo",
+      "note": "F4.2 valida un punto de reaparición sobre la red y con colisión. La grúa, la deuda y el anti-atasco completo son F5.1."
+    }
+  },
+  "budgets": {
+    "runtime_load_budget_ms": 250.0,
+    "initial_stream_budget_ms": 20000.0,
+    "max_loaded_sectors": 10,
+    "max_pending_requests": 2,
+    "max_sector_resources": 600,
+    "max_sector_bytes": 16777216,
+    "max_triangles_per_sector": 3000,
+    "max_road_triangles_per_sector": 800,
+    "max_total_visible_triangles_mobile": 120000,
+    "max_total_visible_triangles_pc": 450000,
+    "max_pss_mb": 1228.8,
+    "target_frame_ms_mobile": 33.333,
+    "target_frame_ms_pc": 16.667,
+    "note": "Los presupuestos móviles incluyen cámara principal y retrovisores. La carga del grafo se mide contra runtime_load_budget_ms; el PSS se mide en el Redmi con dumpsys meminfo."
+  },
+  "attribution": {
+    "dataset": "OpenStreetMap",
+    "license": "ODbL 1.0",
+    "license_url": "https://opendatacommons.org/licenses/odbl/1-0/",
+    "copyright": "© OpenStreetMap contributors",
+    "copyright_url": "https://www.openstreetmap.org/copyright",
+    "in_game_key": "CREDITS_OSM",
+    "license_file": "licenses/ODbL-1.0.txt",
+    "share_alike": true,
+    "note": "Los sectores son una base de datos derivada de la red OSM de F4.1. Conservan la atribución y se redistribuyen bajo ODbL 1.0."
+  },
+  "anti_softlock": {
+    "respawn_on_network": true,
+    "requires_collision": true,
+    "fallback_hub": "hub_carabobo",
+    "note": "F4.2 expone un punto seguro; la recuperación completa por volcadura, agua o daño es F5.1."
+  },
+  "states": {
+    "streaming": ["idle", "initial_fill", "streaming", "degraded", "failed"],
+    "sector": ["queued", "loading", "ready", "unloading", "failed"]
+  },
+  "qa": {
+    "scene": "scenes/world/WorldTerrain.tscn",
+    "test_scene": "tests/world/WorldStreamingTest.tscn",
+    "test_command": "tools/dev/world_streaming_test.cmd",
+    "bake_scene": "tools/world/BakeWorldSectors.tscn",
+    "bake_command": "tools/dev/bake_world_sectors.cmd",
+    "validate_command": "tools/world/validate_world_sectors.py",
+    "expected_sector_count": 454,
+    "tour_route": "route.carabobo_falcon",
+    "android_route": "slice,cabin,world",
+    "pc_report": "build/logs/gameplay/REPORT_F42.md",
+    "android_report": "build/logs/android-smoke/latest.json"
+  }
+}

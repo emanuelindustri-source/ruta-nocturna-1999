@@ -21,6 +21,19 @@ function Fail {
     exit 1
 }
 
+function Get-PssMbFromFile {
+    param([string]$Path)
+    if (-not (Test-Path -LiteralPath $Path)) { return $null }
+    $text = Get-Content -LiteralPath $Path -Raw
+    $line = ($text -split "`n" | Where-Object { $_ -match 'TOTAL PSS|TOTAL:' } | Select-Object -First 1)
+    if ($line -match '(\d[\d,\.]*)') {
+        $raw = [double](($matches[1]) -replace ',', '')
+        if ($raw -gt 100000) { $raw = $raw / 1024.0 }
+        return [math]::Round($raw, 1)
+    }
+    return $null
+}
+
 if (-not (Test-Path -LiteralPath $adb)) {
     Fail "No existe ADB en $adb."
 }
@@ -171,13 +184,13 @@ if (-not $screenshotOk) { Fail 'No se pudo capturar la pantalla.' }
 if ($null -eq $pssMb) { Fail 'No se pudo leer el PSS con dumpsys meminfo.' }
 if ($pssMb -gt $pssBudgetMb) { Fail "PSS $pssMb MB supera el presupuesto de $pssBudgetMb MB." }
 
-# --- Ruta de rendimiento en dispositivo (F3.5) -------------------------------
+# --- Ruta de rendimiento en dispositivo (F3.5/F4.2) --------------------------
 # El marcador hace que DevicePerfProbe (servicio de escena) navegue a la
-# rebanada y a la cabina, mida frame pacing, triangulos, carga y warm-up, y
-# escriba files/perf_report.json. Sin marcador la app no cambia de comportamiento.
-Write-Host '--- Ruta de rendimiento en dispositivo (F3.5) ---'
+# rebanada, la cabina y el mundo, mida frame pacing, triangulos, carga y
+# streaming, y escriba files/perf_report.json. Sin marcador la app no cambia.
+Write-Host '--- Ruta de rendimiento en dispositivo (F3.5/F4.2) ---'
 & $adb -s $Serial shell am force-stop $package 2>&1 | Out-Null
-$markerPush = & $adb -s $Serial shell "run-as $package sh -c 'echo slice,cabin > files/perf_route.marker'" 2>&1
+$markerPush = & $adb -s $Serial shell "run-as $package sh -c 'echo slice,cabin,world > files/perf_route.marker'" 2>&1
 $markerPush | Write-Host
 $markerCheck = (& $adb -s $Serial shell "run-as $package ls files/perf_route.marker" 2>&1) -join ' '
 if ($markerCheck -notmatch 'perf_route.marker') {
@@ -189,8 +202,9 @@ $relaunch | Write-Host
 if ($LASTEXITCODE -ne 0) { Fail 'monkey no pudo reabrir la aplicacion para la ruta de rendimiento.' }
 
 $perfStarted = Get-Date
-$perfTimeoutSeconds = 240
-$sliceCaptured = $false
+$perfTimeoutSeconds = 300
+$routeScenes = @('slice', 'cabin', 'world')
+$captured = @{}
 $perfJson = ''
 $perfReport = $null
 $perfDone = $false
@@ -203,54 +217,50 @@ while (((Get-Date) - $perfStarted).TotalSeconds -lt $perfTimeoutSeconds) {
     if ($null -eq $parsedReport) { continue }
     $perfJson = $rawReport
     $perfReport = $parsedReport
-    $sliceSection = @($parsedReport.sections | Where-Object { $_.scene -eq 'slice' })
-    if (-not $sliceCaptured -and $sliceSection.Count -gt 0) {
-        # La sonda esta midiendo la rebanada: captura y PSS representativos.
-        & $adb -s $Serial shell screencap -p /sdcard/rn1999-slice.png 2>&1 | Out-Null
-        & $adb -s $Serial pull /sdcard/rn1999-slice.png (Join-Path $logDir 'screenshot_slice.png') 2>&1 | Out-Null
-        & $adb -s $Serial shell rm /sdcard/rn1999-slice.png 2>&1 | Out-Null
-        $sliceMeminfo = (& $adb -s $Serial shell dumpsys meminfo $package 2>&1) -join "`n"
-        Set-Content -LiteralPath (Join-Path $logDir 'meminfo_slice.txt') -Value $sliceMeminfo -Encoding utf8
-        $sliceCaptured = $true
-        Write-Host '[OK] Captura y PSS de la rebanada registrados.'
+    foreach ($scene in $routeScenes) {
+        if ($captured.ContainsKey($scene)) { continue }
+        $section = @($parsedReport.sections | Where-Object { $_.scene -eq $scene -and $_.status -eq 'measuring' })
+        if ($section.Count -eq 0) { continue }
+        $remoteShot = "/sdcard/rn1999-$scene.png"
+        & $adb -s $Serial shell screencap -p $remoteShot 2>&1 | Out-Null
+        & $adb -s $Serial pull $remoteShot (Join-Path $logDir "screenshot_$scene.png") 2>&1 | Out-Null
+        & $adb -s $Serial shell rm $remoteShot 2>&1 | Out-Null
+        $meminfo = (& $adb -s $Serial shell dumpsys meminfo $package 2>&1) -join "`n"
+        Set-Content -LiteralPath (Join-Path $logDir "meminfo_$scene.txt") -Value $meminfo -Encoding utf8
+        $captured[$scene] = $true
+        Write-Host "[OK] Captura y PSS de $scene registrados."
     }
     if ($parsedReport.done -eq $true) { $perfDone = $true; break }
 }
 if (-not $perfDone -or $null -eq $perfReport) {
-    Fail "La ruta de rendimiento no termino en $perfTimeoutSeconds s. Reporte parcial: $($perfJson.Substring(0, [math]::Min(400, $perfJson.Length)))"
+    $partial = if ($perfJson.Length -gt 0) { $perfJson.Substring(0, [math]::Min(400, $perfJson.Length)) } else { '<sin reporte>' }
+    Fail "La ruta de rendimiento no termino en $perfTimeoutSeconds s. Reporte parcial: $partial"
 }
 
-# Captura y PSS en la ultima escena (cabina) con la app ya en reposo de medida.
-& $adb -s $Serial shell screencap -p /sdcard/rn1999-cabin.png 2>&1 | Out-Null
-& $adb -s $Serial pull /sdcard/rn1999-cabin.png (Join-Path $logDir 'screenshot_cabin.png') 2>&1 | Out-Null
-& $adb -s $Serial shell rm /sdcard/rn1999-cabin.png 2>&1 | Out-Null
-$cabinScreenshotOk = Test-Path -LiteralPath (Join-Path $logDir 'screenshot_cabin.png')
-$cabinMeminfo = (& $adb -s $Serial shell dumpsys meminfo $package 2>&1) -join "`n"
-Set-Content -LiteralPath (Join-Path $logDir 'meminfo_cabin.txt') -Value $cabinMeminfo -Encoding utf8
-$pssCabinMb = $null
-$cabinTotalLine = ($cabinMeminfo -split "`n" | Where-Object { $_ -match 'TOTAL PSS|TOTAL:' } | Select-Object -First 1)
-if ($cabinTotalLine -match '(\d[\d,\.]*)') {
-    $rawPssCabin = [double](($matches[1]) -replace ',', '')
-    if ($rawPssCabin -gt 100000) { $rawPssCabin = $rawPssCabin / 1024.0 }
-    $pssCabinMb = [math]::Round($rawPssCabin, 1)
-}
-$pssSliceMb = $null
-if (Test-Path -LiteralPath (Join-Path $logDir 'meminfo_slice.txt')) {
-    $sliceMeminfoText = Get-Content -LiteralPath (Join-Path $logDir 'meminfo_slice.txt') -Raw
-    $sliceTotalLine = ($sliceMeminfoText -split "`n" | Where-Object { $_ -match 'TOTAL PSS|TOTAL:' } | Select-Object -First 1)
-    if ($sliceTotalLine -match '(\d[\d,\.]*)') {
-        $rawPssSlice = [double](($matches[1]) -replace ',', '')
-        if ($rawPssSlice -gt 100000) { $rawPssSlice = $rawPssSlice / 1024.0 }
-        $pssSliceMb = [math]::Round($rawPssSlice, 1)
-    }
-}
+# La sonda deja la app en la ultima escena (mundo) en reposo de medida.
+& $adb -s $Serial shell screencap -p /sdcard/rn1999-world-final.png 2>&1 | Out-Null
+& $adb -s $Serial pull /sdcard/rn1999-world-final.png (Join-Path $logDir 'screenshot_world_final.png') 2>&1 | Out-Null
+& $adb -s $Serial shell rm /sdcard/rn1999-world-final.png 2>&1 | Out-Null
+$worldFinalScreenshotOk = Test-Path -LiteralPath (Join-Path $logDir 'screenshot_world_final.png')
 Set-Content -LiteralPath (Join-Path $logDir 'perf_report.json') -Value $perfJson -Encoding utf8
 # Limpieza defensiva del marcador (la app ya lo borra al terminar la ruta).
 & $adb -s $Serial shell "run-as $package sh -c 'rm -f files/perf_route.marker files/perf_state.json'" 2>&1 | Out-Null
 
+$pss = @{}
+foreach ($scene in $routeScenes) {
+    $pss[$scene] = Get-PssMbFromFile (Join-Path $logDir "meminfo_$scene.txt")
+}
+
 $perfBudgets = $perfReport.budgets
 $perfErrors = @()
 $perfSections = @()
+foreach ($scene in $routeScenes) {
+    $found = @($perfReport.sections | Where-Object { $_.scene -eq $scene })
+    if ($found.Count -eq 0) {
+        $perfErrors += "seccion:$scene:missing"
+        continue
+    }
+}
 foreach ($section in @($perfReport.sections)) {
     $perfSections += [pscustomobject]@{
         scene = $section.scene
@@ -277,24 +287,44 @@ foreach ($section in @($perfReport.sections)) {
         $perfErrors += "carga:$($section.scene)=$($section.load_ms)"
     }
 }
-if ($null -eq $pssSliceMb) { $perfErrors += 'pss_slice:no_readable' }
-elseif ($pssSliceMb -gt $pssBudgetMb) { $perfErrors += "pss_slice=$pssSliceMb" }
-if ($null -eq $pssCabinMb) { $perfErrors += 'pss_cabin:no_readable' }
-elseif ($pssCabinMb -gt $pssBudgetMb) { $perfErrors += "pss_cabin=$pssCabinMb" }
-if (-not $cabinScreenshotOk) { $perfErrors += 'captura_cabin' }
-if (-not $sliceCaptured) { $perfErrors += 'captura_slice' }
+$worldSection = @($perfReport.sections | Where-Object { $_.scene -eq 'world' })
+if ($worldSection.Count -eq 0) {
+    $perfErrors += 'world:missing'
+} elseif ($null -eq $worldSection[0].world) {
+    $perfErrors += 'world:stats_missing'
+} else {
+    $worldStats = $worldSection[0].world
+    if ($worldStats.world_ready -ne $true) { $perfErrors += 'world:not_ready' }
+    if ([int]$worldStats.sync_load_calls -ne 0) { $perfErrors += "world:sync_loads=$($worldStats.sync_load_calls)" }
+    if ([int]$worldStats.max_concurrent_requests_seen -gt 2) { $perfErrors += "world:requests=$($worldStats.max_concurrent_requests_seen)" }
+    if ([int]$worldStats.sector_errors -ne 0) { $perfErrors += "world:sector_errors=$($worldStats.sector_errors)" }
+    if ([int]$worldStats.loaded_sectors -lt 3) { $perfErrors += "world:sectors=$($worldStats.loaded_sectors)" }
+    if ([double]$worldStats.network_load_ms -gt 250.0) { $perfErrors += "world:graph_ms=$($worldStats.network_load_ms)" }
+}
+foreach ($scene in $routeScenes) {
+    if ($null -eq $pss[$scene]) { $perfErrors += "pss_$($scene):no_readable" }
+    elseif ($pss[$scene] -gt $pssBudgetMb) { $perfErrors += "pss_$($scene)=$($pss[$scene])" }
+    if (-not $captured.ContainsKey($scene)) { $perfErrors += "captura_$scene" }
+}
+if (-not $worldFinalScreenshotOk) { $perfErrors += 'captura_world_final' }
 
+$worldStatsForSummary = $null
+if ($worldSection.Count -gt 0) { $worldStatsForSummary = $worldSection[0].world }
 $summary | Add-Member -NotePropertyName perf -NotePropertyValue ([pscustomobject]@{
     done = $perfDone
     budgets = $perfBudgets
     sections = $perfSections
-    pss_slice_mb = $pssSliceMb
-    pss_cabin_mb = $pssCabinMb
-    screenshot_slice = $sliceCaptured
-    screenshot_cabin = $cabinScreenshotOk
+    pss_slice_mb = $pss['slice']
+    pss_cabin_mb = $pss['cabin']
+    pss_world_mb = $pss['world']
+    screenshot_slice = $captured.ContainsKey('slice')
+    screenshot_cabin = $captured.ContainsKey('cabin')
+    screenshot_world = $captured.ContainsKey('world')
+    screenshot_world_final = $worldFinalScreenshotOk
+    world = $worldStatsForSummary
     errors = $perfErrors
 }) -Force
-$summary | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $logDir 'latest.json') -Encoding utf8
+$summary | ConvertTo-Json -Depth 7 | Set-Content -LiteralPath (Join-Path $logDir 'latest.json') -Encoding utf8
 
 foreach ($section in $perfSections) {
     Write-Host ("[INFO] {0}: carga {1} ms, warm-up {2} ms, frame {3} ms (p95 {4}), {5} triangulos, {6} draw calls" -f `
@@ -302,7 +332,13 @@ foreach ($section in $perfSections) {
         [math]::Round($section.frame_ms_avg, 2), [math]::Round($section.frame_ms_p95, 2), `
         [math]::Round($section.primitives_avg, 0), [math]::Round($section.draw_calls_avg, 1))
 }
-Write-Host ("[INFO] PSS rebanada: {0} MB; PSS cabina: {1} MB (presupuesto {2} MB)" -f $pssSliceMb, $pssCabinMb, $pssBudgetMb)
+Write-Host ("[INFO] PSS rebanada: {0} MB; PSS cabina: {1} MB; PSS mundo: {2} MB (presupuesto {3} MB)" -f `
+    $pss['slice'], $pss['cabin'], $pss['world'], $pssBudgetMb)
+if ($worldSection.Count -gt 0 -and $null -ne $worldSection[0].world) {
+    $ws = $worldSection[0].world
+    Write-Host ("[INFO] Mundo: {0} sectores, {1} triangulos de streaming, grafo {2} ms, max {3} solicitudes, {4} errores" -f `
+        $ws.loaded_sectors, $ws.loaded_triangles, $ws.network_load_ms, $ws.max_concurrent_requests_seen, $ws.sector_errors)
+}
 if ($perfErrors.Count -gt 0) {
     Fail ("Ruta de rendimiento con errores: " + ($perfErrors -join ', '))
 }

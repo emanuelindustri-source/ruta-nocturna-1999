@@ -511,5 +511,50 @@ Reglas:
   usará `fallback_hub` y el recálculo de ruta.
 - Las aristas miden ≤ 40 km y guardan su polilínea para que F4.2 las subdivida
   en sectores de 800 m con carga asíncrona.
-- La medición de carga del grafo (`budgets.runtime_load_budget_ms`) queda
-  pendiente de F4.2; no se declara cumplida sin medición.
+- La medición de carga del grafo (`budgets.runtime_load_budget_ms`) se cerró en
+  F4.2 (sección 15); no se declara cumplida sin medición.
+
+## 15. Terreno y streaming de sectores (Fase 4.2)
+
+F4.2 convierte la red de F4.1 en terreno de presentación con streaming. No
+añade biomas, clima, tráfico ni conducción física.
+
+```mermaid
+flowchart LR
+    NET[(route_network.json · F4.1)] --> BAKE[tools/world/bake_world_sectors.gd]
+    BAKE --> SEC[(454 sectores .res + manifiesto)]
+    NET --> WD[WorldDirector · servicio de escena]
+    SC[(world_streaming.json)] -.-> WD
+    SEC -.-> SS[WorldSectorStreamer]
+    WD --> SS
+    SS -->|load_threaded_request ×2| SEC
+    SS -->|1 por frame| SB[WorldSectorBuilder]
+    SB -->|ArrayMesh + StaticBody3D| WORLD[WorldTerrain.tscn]
+```
+
+| Componente | Responsabilidad | No debe hacer |
+|---|---|---|
+| `WorldDirector` | Cargar red/contrato/manifiesto, construir la secuencia de ruta, mover el tour y exponer reaparición segura | Ser autoload, cambiar rutas o simular conducción |
+| `WorldSectorStreamer` | Ventana de sectores, cola, `load_threaded_request`, límite de dos solicitudes, descarga y estadísticas | Usar `load()` síncrono, construir más de un sector por frame o solicitar fuera de la ventana |
+| `WorldSectorBuilder` | Crear `ArrayMesh` de terreno/vía y `ConcavePolygonShape3D` desde `WorldSectorData` | Cargar recursos, decidir rutas o editar contratos |
+| `WorldSectorData` | Datos compactos del sector (alturas, vía, marcas y atribución) | Contener mallas o colisión serializadas |
+| `WorldTerrain.tscn` | Presentación, cámara de persecución, overlay y sonda de rendimiento | Ser gameplay de conducción o introducir tráfico/clima |
+| `bake_world_sectors.gd` | Hornear 454 sectores y su manifiesto desde OSM/DEM | Ejecutarse en runtime o versionar teselas/respuestas |
+
+Reglas:
+
+- No se usa el addon nativo Terrain3D: la decisión, la licencia MIT y los
+  motivos están en `docs/architecture/WORLD_STREAMING.md`.
+- El sector mide 800 m y la rejilla 33×33 (25 m). La construcción se reparte a
+  una por frame; la carga usa `ResourceLoader.load_threaded_request()` con un
+  máximo de dos solicitudes simultáneas.
+- `WorldDirector` no es autoload y no conoce la UI de cabina. La escena de mundo
+  es una presentación; la conducción, el vadeo y el anti-atasco son F5.1.
+- Los sectores son una base derivada de OSM bajo ODbL 1.0; la atribución
+  `CREDITS_OSM` es visible y el texto de licencia viaja en el build.
+- `tools/world/validate_world_sectors.py` y `WorldStreamingTest.tscn` validan
+  cobertura, hashes, colisión, reaparición, límite de solicitudes y ausencia de
+  carga síncrona.
+- La carga del grafo medida (PC) es ~30 ms, por debajo del presupuesto de
+  250 ms. El PSS y los triángulos visibles se miden en el Redmi con la ruta
+  `slice,cabin,world`; ver `WORLD_STREAMING.md` y el informe de cierre.
