@@ -37,7 +37,7 @@
 | Carga en dispositivo | Rebanada **9.521 ms**, cabina **4.740 ms** (presupuesto QA 15.000 ms); warm-up **1.973 / 2.174 ms** antes del gameplay |
 | Prueba de juego en PC (build exportado) | Boot 11/11 + atribución ODbL; rebanada; cabina; manos al volante al mantener; palanca con ratón **no** responde (H2); QA F12 con clima `Tormenta · 95 %/90 %`. Informe: `build/logs/gameplay/REPORT_F41.md` |
 | Prueba manual en Android | Boot/cabina/volante con toque OK; **palanca táctil P → L1 OK** (H2 es solo ratón/teclado/gamepad de PC). Informe: `build/logs/android-smoke/REPORT_F41.md` |
-| Espacio libre | **83,1 GB** en `C:` (mínimo 20 GB) |
+| Espacio libre | **77,4 GB** en `C:` (mínimo 20 GB) |
 | Dispositivo ADB | Redmi 22101316G autorizado (`obojropz89mbwgpn`) |
 | Git | Rama `main`, tag `v0.4.0` y fix de CI `8b9b83c` publicados; **CI de main en verde** |
 
