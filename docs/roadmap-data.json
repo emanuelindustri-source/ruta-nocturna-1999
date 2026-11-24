@@ -2,11 +2,11 @@
   "project": "Ruta Nocturna: 1999",
   "repository": "emanuelindustri-source/ruta-nocturna-1999",
   "generated_from": "ROADMAP.md",
-  "source_sha256": "a8823ca8d6a3387643266eb7fe3315a465fa4614e6c5fc5523e8bfa3cbc84f85",
-  "current_version": "v0.3.3",
-  "version_file": "0.3.3",
-  "current_subphase": "3.4",
-  "global_status": "Fase 1 y Fase 2 completadas; Fase 3 en marcha (3.4); siguiente gate 3.5",
+  "source_sha256": "61d4c4845fd90f6964e566be6f5c32df339be4ecebfe1b2ba1f4aa0e7380e194",
+  "current_version": "v0.3.4",
+  "version_file": "0.3.4",
+  "current_subphase": "3.5",
+  "global_status": "Fase 1, Fase 2 y Fase 3 completadas; siguiente gate F4.1",
   "models": {
     "DS-R": "DeepSeek V4.1 Flash 1017 · Razonamiento",
     "DS-S": "DeepSeek V4.1 Flash 1017 · Estándar",
@@ -14,11 +14,11 @@
     "MiMo Flash": "MiMo-V2.6-Flash"
   },
   "summary": {
-    "completed": 12,
+    "completed": 13,
     "in_progress": 0,
-    "pending": 33,
+    "pending": 32,
     "total": 45,
-    "percent": 26.7
+    "percent": 28.9
   },
   "phases": [
     {
@@ -171,18 +171,18 @@
           "version": "v0.3.4",
           "model": "MiMo Flash",
           "model_label": "MiMo-V2.6-Flash",
-          "summary": "Integración, compresión, warm-up, rendimiento y capturas de referencia visual.",
-          "status": "pending",
-          "status_label": "Pendiente"
+          "summary": "Integración, compresión, warm-up, rendimiento y capturas de referencia visual. Validado y publicado.",
+          "status": "completed",
+          "status_label": "Completada"
         }
       ],
       "version_range": "v0.3.0 → v0.3.4",
-      "status": "in_progress",
-      "status_label": "En curso",
+      "status": "completed",
+      "status_label": "Completada",
       "progress": {
-        "completed": 4,
+        "completed": 5,
         "in_progress": 0,
-        "pending": 1,
+        "pending": 0,
         "total": 5
       }
     },

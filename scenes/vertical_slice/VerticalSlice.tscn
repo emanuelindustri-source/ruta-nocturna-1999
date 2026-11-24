@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://src/world/vertical_slice.gd" id="1_slice"]
 [ext_resource type="PackedScene" path="res://scenes/vehicle/EsteemExterior.tscn" id="2_esteem"]
 [ext_resource type="Script" path="res://src/weather/rain_fx_controller.gd" id="3_rainfx"]
+[ext_resource type="Script" path="res://src/debug/device_perf_probe.gd" id="4_perf"]
 
 [sub_resource type="Environment" id="Environment_night"]
 background_mode = 1
@@ -124,3 +125,6 @@ custom_minimum_size = Vector2(200, 48)
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Volver"
+
+[node name="DevicePerfProbe" type="Node" parent="."]
+script = ExtResource("4_perf")

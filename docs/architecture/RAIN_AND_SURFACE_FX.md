@@ -300,3 +300,71 @@ carga boot, rebanada y cabina con los shaders/VFX, captura
 medio/p95, draw calls y primitivas reales, más overdraw y fill proyectados.
 Las cifras medidas de esta subfase y la comparación con `budgets.*.gpu` se
 registran en `docs/status/CURRENT.md`.
+
+## 13. Medición F3.5 (evidencia)
+
+F3.5 completó la medición que F3.4 dejó pendiente. La misma prueba de render
+(`tools/dev/render_test.cmd`, Intel UHD, Vulkan Forward+, 1280x720, vsync
+60 Hz) añade **tiempos de carga**, **frame pacing** y una **sonda GPU real**
+(`[RENDER][GPU]`) además de las capturas de referencia `f35_*.png`.
+
+### Carga y warm-up (PC)
+
+| Escena | Carga `load()` | Instanciación | Warm-up `RainFxWarmup` |
+|---|---|---|---|
+| Boot | 140,74 ms | 5,06 ms | 135,35 ms (primera compilación de 6 variantes) |
+| Rebanada | 77,51 ms | 24,25 ms | 47,96 ms |
+| Cabina | 214,47 ms | 2,29 ms | 112,34 ms |
+
+El warm-up termina antes de `BOOT_READY`/`VERTICAL_SLICE_READY` y los FX
+quedan inactivos hasta que `fx_active=true` (comprobado por la prueba).
+
+### Frame pacing (90 frames por escena, vsync 60 Hz)
+
+| Escena | media | p95 | máximo | jank > 25 ms | jank > 100 ms | draw calls | primitivas |
+|---|---|---|---|---|---|---|---|
+| Boot | 16,662 ms | 17,265 ms | 17,927 ms | 0 | 0 | 12 | 548 |
+| Rebanada (tormenta 90 s) | 16,666 ms | 17,093 ms | 17,576 ms | 0 | 0 | 228 | 15.874 |
+| Cabina (gotas + 3 espejos) | 16,671 ms | 17,482 ms | 17,804 ms | 0 | 0 | 195,5 | 9.227 |
+
+Sin frames perdidos ni estancamientos; todas las medias dentro de
+`budgets.pc.frame_budget_ms` (16,667 ms con tolerancia de vsync).
+
+### Sonda GPU real (F3.5)
+
+Cuatro mediciones por escena con lluvia activa, contrastadas con
+`budgets.pc.gpu` (8 draw calls / 5 capas / 6 % de fill):
+
+1. **Delta exacto de draw calls** (`Performance`, FX off vs on): rebanada
+   **2,00**; cabina **2,40** (ruido del monitor; el FX real de cabina es 1:
+   solo el quad de gotas de cámara, `enable_vfx=false`). Ambos ≤ 8.
+2. **Fill visual real** (píxeles que cambian >6/255 con los FX visibles,
+   materiales reales, menos el piso de ruido por la animación con `TIME`):
+   rebanada **0,02 %** (ruido 0,00), cabina **2,78 %** (ruido 0,00). Evidencia
+   en `f35_*_visual_off/on/diff.png`. Ambos ≤ 6 %.
+3. **Fill de fragmentos y capas de overdraw** (sonda aditiva de 1/255 lineal
+   sobre los materiales de los FX, calibrada con un quad a pantalla completa
+   de 1 y 2 capas; sin asumir sRGB/gamma/tonemap): rebanada **3,64 %** de
+   fragmentos, cabina **91,80 %**; capas máximas **1,0** en ambas (ruido de
+   fondo 0,05 / 0,00 capas; píxeles excluidos 0,5 % / 4,3 %). Capas ≤ 5.
+   - `fill_fragments` de cabina es **pantalla completa**: el quad de
+     `camera_drops.gdshader` no tiene `discard`, así que la GPU procesa todos
+     los píxeles aunque solo el 2,78 % sea visualmente distinto. Es
+     diagnóstico, no una violación del presupuesto de fill (F3.4 definió el
+     fill como cobertura visual); la optimización con `discard` queda
+     anotada para F10.1 y **no** se toca el shader de F3.4 en esta subfase.
+4. **Coste real de frame** (vsync desactivado, FX off vs on): rebanada
+   **+1,164 ms**; cabina **+2,328 ms** (aprox. 7 % y 14 % del presupuesto de
+   frame). Este método es inmune a la saturación por vsync.
+
+`budgets.*.gpu.status` sigue en `pending_f34_f35` porque **el contrato no se
+modifica en F3.5** (la prueba de lluvia lo exige); F10.1/F10.2 lo cierran con
+la medición fina en dispositivo (RenderDoc/Adreno).
+
+### Dispositivo (F3.5)
+
+La prueba ADB ejecuta la **ruta de rendimiento** en el Redmi
+(`DevicePerfProbe` + `tools/test_android_adb.ps1`): frame pacing, triángulos,
+carga de escena, warm-up y PSS en rebanada y cabina. Los resultados se
+registran en `docs/status/CURRENT.md` y en
+`build/logs/android-smoke/perf_report.json`.

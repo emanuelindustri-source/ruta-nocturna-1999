@@ -81,8 +81,9 @@ $booted = $false
 $bootLog = ''
 $sessionFound = $false
 $appPid = ''
+$bootSeconds = $null
 while (((Get-Date) - $started).TotalSeconds -lt $BootTimeoutSeconds) {
-    Start-Sleep -Seconds 2
+    Start-Sleep -Milliseconds 500
     $bootLog = (& $adb -s $Serial logcat -d -s godot:V 2>&1) -join "`n"
     $appPid = ((& $adb -s $Serial shell pidof $package 2>&1) -join '').Trim()
     $session = (& $adb -s $Serial shell run-as $package ls files/sesion_activa.json 2>&1) -join "`n"
@@ -93,6 +94,7 @@ while (((Get-Date) - $started).TotalSeconds -lt $BootTimeoutSeconds) {
     }
     if ($sessionFound -or $bootLog -match 'BOOT_READY' -or $bootLog -match 'VERTICAL_SLICE_READY') {
         $booted = $true
+        $bootSeconds = [math]::Round(((Get-Date) - $started).TotalSeconds, 1)
         break
     }
     if ($bootLog -match 'FATAL EXCEPTION|E/AndroidRuntime') {
@@ -148,6 +150,7 @@ $summary = [pscustomobject]@{
     apk = $ApkPath
     apk_sha256 = $apkHash
     booted = $booted
+    boot_seconds = $bootSeconds
     boot_marker = ($sessionFound -or $bootLog -match 'BOOT_READY' -or $bootLog -match 'VERTICAL_SLICE_READY')
     session_marker = $sessionFound
     app_pid = $appPid
@@ -167,6 +170,142 @@ if ($warnings.Count -gt 0) { Write-Host ("[WARN] Patrones de error no fatal: " +
 if (-not $screenshotOk) { Fail 'No se pudo capturar la pantalla.' }
 if ($null -eq $pssMb) { Fail 'No se pudo leer el PSS con dumpsys meminfo.' }
 if ($pssMb -gt $pssBudgetMb) { Fail "PSS $pssMb MB supera el presupuesto de $pssBudgetMb MB." }
+
+# --- Ruta de rendimiento en dispositivo (F3.5) -------------------------------
+# El marcador hace que DevicePerfProbe (servicio de escena) navegue a la
+# rebanada y a la cabina, mida frame pacing, triangulos, carga y warm-up, y
+# escriba files/perf_report.json. Sin marcador la app no cambia de comportamiento.
+Write-Host '--- Ruta de rendimiento en dispositivo (F3.5) ---'
+& $adb -s $Serial shell am force-stop $package 2>&1 | Out-Null
+$markerPush = & $adb -s $Serial shell "run-as $package sh -c 'echo slice,cabin > files/perf_route.marker'" 2>&1
+$markerPush | Write-Host
+$markerCheck = (& $adb -s $Serial shell "run-as $package ls files/perf_route.marker" 2>&1) -join ' '
+if ($markerCheck -notmatch 'perf_route.marker') {
+    Fail "No se pudo escribir files/perf_route.marker con run-as: $markerCheck"
+}
+& $adb -s $Serial logcat -c 2>&1 | Out-Null
+$relaunch = & $adb -s $Serial shell monkey -p $package -c android.intent.category.LAUNCHER 1 2>&1
+$relaunch | Write-Host
+if ($LASTEXITCODE -ne 0) { Fail 'monkey no pudo reabrir la aplicacion para la ruta de rendimiento.' }
+
+$perfStarted = Get-Date
+$perfTimeoutSeconds = 240
+$sliceCaptured = $false
+$perfJson = ''
+$perfReport = $null
+$perfDone = $false
+while (((Get-Date) - $perfStarted).TotalSeconds -lt $perfTimeoutSeconds) {
+    Start-Sleep -Milliseconds 1000
+    $rawReport = (& $adb -s $Serial shell "run-as $package cat files/perf_report.json" 2>&1) -join "`n"
+    if ($rawReport -notmatch 'sections') { continue }
+    $parsedReport = $null
+    try { $parsedReport = $rawReport | ConvertFrom-Json } catch { $parsedReport = $null }
+    if ($null -eq $parsedReport) { continue }
+    $perfJson = $rawReport
+    $perfReport = $parsedReport
+    $sliceSection = @($parsedReport.sections | Where-Object { $_.scene -eq 'slice' })
+    if (-not $sliceCaptured -and $sliceSection.Count -gt 0) {
+        # La sonda esta midiendo la rebanada: captura y PSS representativos.
+        & $adb -s $Serial shell screencap -p /sdcard/rn1999-slice.png 2>&1 | Out-Null
+        & $adb -s $Serial pull /sdcard/rn1999-slice.png (Join-Path $logDir 'screenshot_slice.png') 2>&1 | Out-Null
+        & $adb -s $Serial shell rm /sdcard/rn1999-slice.png 2>&1 | Out-Null
+        $sliceMeminfo = (& $adb -s $Serial shell dumpsys meminfo $package 2>&1) -join "`n"
+        Set-Content -LiteralPath (Join-Path $logDir 'meminfo_slice.txt') -Value $sliceMeminfo -Encoding utf8
+        $sliceCaptured = $true
+        Write-Host '[OK] Captura y PSS de la rebanada registrados.'
+    }
+    if ($parsedReport.done -eq $true) { $perfDone = $true; break }
+}
+if (-not $perfDone -or $null -eq $perfReport) {
+    Fail "La ruta de rendimiento no termino en $perfTimeoutSeconds s. Reporte parcial: $($perfJson.Substring(0, [math]::Min(400, $perfJson.Length)))"
+}
+
+# Captura y PSS en la ultima escena (cabina) con la app ya en reposo de medida.
+& $adb -s $Serial shell screencap -p /sdcard/rn1999-cabin.png 2>&1 | Out-Null
+& $adb -s $Serial pull /sdcard/rn1999-cabin.png (Join-Path $logDir 'screenshot_cabin.png') 2>&1 | Out-Null
+& $adb -s $Serial shell rm /sdcard/rn1999-cabin.png 2>&1 | Out-Null
+$cabinScreenshotOk = Test-Path -LiteralPath (Join-Path $logDir 'screenshot_cabin.png')
+$cabinMeminfo = (& $adb -s $Serial shell dumpsys meminfo $package 2>&1) -join "`n"
+Set-Content -LiteralPath (Join-Path $logDir 'meminfo_cabin.txt') -Value $cabinMeminfo -Encoding utf8
+$pssCabinMb = $null
+$cabinTotalLine = ($cabinMeminfo -split "`n" | Where-Object { $_ -match 'TOTAL PSS|TOTAL:' } | Select-Object -First 1)
+if ($cabinTotalLine -match '(\d[\d,\.]*)') {
+    $rawPssCabin = [double](($matches[1]) -replace ',', '')
+    if ($rawPssCabin -gt 100000) { $rawPssCabin = $rawPssCabin / 1024.0 }
+    $pssCabinMb = [math]::Round($rawPssCabin, 1)
+}
+$pssSliceMb = $null
+if (Test-Path -LiteralPath (Join-Path $logDir 'meminfo_slice.txt')) {
+    $sliceMeminfoText = Get-Content -LiteralPath (Join-Path $logDir 'meminfo_slice.txt') -Raw
+    $sliceTotalLine = ($sliceMeminfoText -split "`n" | Where-Object { $_ -match 'TOTAL PSS|TOTAL:' } | Select-Object -First 1)
+    if ($sliceTotalLine -match '(\d[\d,\.]*)') {
+        $rawPssSlice = [double](($matches[1]) -replace ',', '')
+        if ($rawPssSlice -gt 100000) { $rawPssSlice = $rawPssSlice / 1024.0 }
+        $pssSliceMb = [math]::Round($rawPssSlice, 1)
+    }
+}
+Set-Content -LiteralPath (Join-Path $logDir 'perf_report.json') -Value $perfJson -Encoding utf8
+# Limpieza defensiva del marcador (la app ya lo borra al terminar la ruta).
+& $adb -s $Serial shell "run-as $package sh -c 'rm -f files/perf_route.marker files/perf_state.json'" 2>&1 | Out-Null
+
+$perfBudgets = $perfReport.budgets
+$perfErrors = @()
+$perfSections = @()
+foreach ($section in @($perfReport.sections)) {
+    $perfSections += [pscustomobject]@{
+        scene = $section.scene
+        load_ms = $section.load_ms
+        warmup_done = $section.warmup_done
+        warmup_ms = $section.warmup_ms
+        frame_ms_avg = $section.frame_ms_avg
+        frame_ms_p95 = $section.frame_ms_p95
+        frame_ms_max = $section.frame_ms_max
+        fps_avg = $section.fps_avg
+        jank_gt_frame_budget = $section.jank_gt_frame_budget
+        jank_gt_100ms = $section.jank_gt_100ms
+        primitives_avg = $section.primitives_avg
+        draw_calls_avg = $section.draw_calls_avg
+    }
+    if ($section.warmup_done -ne $true) { $perfErrors += "warmup:$($section.scene)" }
+    if ([double]$section.frame_ms_avg -gt [double]$perfBudgets.frame_budget_ms) {
+        $perfErrors += "frame_ms_avg:$($section.scene)=$($section.frame_ms_avg)"
+    }
+    if ([double]$section.primitives_avg -gt [double]$perfBudgets.max_triangles) {
+        $perfErrors += "triangulos:$($section.scene)=$($section.primitives_avg)"
+    }
+    if ([double]$section.load_ms -gt [double]$perfBudgets.max_load_ms) {
+        $perfErrors += "carga:$($section.scene)=$($section.load_ms)"
+    }
+}
+if ($null -eq $pssSliceMb) { $perfErrors += 'pss_slice:no_readable' }
+elseif ($pssSliceMb -gt $pssBudgetMb) { $perfErrors += "pss_slice=$pssSliceMb" }
+if ($null -eq $pssCabinMb) { $perfErrors += 'pss_cabin:no_readable' }
+elseif ($pssCabinMb -gt $pssBudgetMb) { $perfErrors += "pss_cabin=$pssCabinMb" }
+if (-not $cabinScreenshotOk) { $perfErrors += 'captura_cabin' }
+if (-not $sliceCaptured) { $perfErrors += 'captura_slice' }
+
+$summary | Add-Member -NotePropertyName perf -NotePropertyValue ([pscustomobject]@{
+    done = $perfDone
+    budgets = $perfBudgets
+    sections = $perfSections
+    pss_slice_mb = $pssSliceMb
+    pss_cabin_mb = $pssCabinMb
+    screenshot_slice = $sliceCaptured
+    screenshot_cabin = $cabinScreenshotOk
+    errors = $perfErrors
+}) -Force
+$summary | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $logDir 'latest.json') -Encoding utf8
+
+foreach ($section in $perfSections) {
+    Write-Host ("[INFO] {0}: carga {1} ms, warm-up {2} ms, frame {3} ms (p95 {4}), {5} triangulos, {6} draw calls" -f `
+        $section.scene, [math]::Round($section.load_ms, 1), [math]::Round($section.warmup_ms, 1), `
+        [math]::Round($section.frame_ms_avg, 2), [math]::Round($section.frame_ms_p95, 2), `
+        [math]::Round($section.primitives_avg, 0), [math]::Round($section.draw_calls_avg, 1))
+}
+Write-Host ("[INFO] PSS rebanada: {0} MB; PSS cabina: {1} MB (presupuesto {2} MB)" -f $pssSliceMb, $pssCabinMb, $pssBudgetMb)
+if ($perfErrors.Count -gt 0) {
+    Fail ("Ruta de rendimiento con errores: " + ($perfErrors -join ', '))
+}
 
 Write-Host ("[OK] Smoke Android superado. Logs en {0}" -f $logDir)
 exit 0

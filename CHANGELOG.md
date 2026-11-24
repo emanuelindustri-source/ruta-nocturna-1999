@@ -4,6 +4,85 @@ Todas las fechas usan ISO 8601. Las versiones siguen SemVer.
 
 ## [Unreleased]
 
+## [0.3.4] — 2026-11-23
+
+### Añadido
+
+- `src/debug/device_perf_probe.gd` (`DevicePerfProbe`): servicio de escena (no
+  autoload) instanciado en Boot, Rebanada y Cabina; inerte sin
+  `user://perf_route.marker`. Con el marcador navega `slice,cabin`,
+  pre-simula 90 s de tormenta y mide carga, warm-up, frame pacing, triángulos
+  y draw calls hacia `user://perf_report.json`.
+- Sonda GPU real en `tests/render/rain_fx_render_test.gd` (`[RENDER][GPU]`):
+  fill visual (diff de píxeles con materiales reales), fill de fragmentos y
+  capas de overdraw (sonda aditiva de 1/255 lineal calibrada con un quad de
+  1 y 2 capas), coste real de frame (vsync desactivado, FX off vs on) y delta
+  exacto de draw calls, con aserciones contra `budgets.pc.gpu`.
+- Tiempos de carga (`[RENDER][LOAD]`) y frame pacing (`[RENDER][PACING]`) en
+  la prueba de render; capturas de referencia `f35_*.png` con evidencia
+  `*_visual_off/on/diff.png`.
+- `tools/dev/gameplay_input.ps1` (input sintético sobre la ventana del build
+  exportado) y `tools/dev/gameplay_diff.py` (comparación y recorte de
+  capturas) para la sesión de prueba de juego en PC.
+- `tools/asset_compression_report.py`: banderas ETC2/ASTC/S3TC, inventario de
+  texturas/mallas importadas y tamaño de artefactos
+  (`build/logs/compression/latest.json`).
+- `tools/test_android_adb.ps1`: **ruta de rendimiento en dispositivo**
+  (marcador `perf_route.marker` con `slice,cabin`, capturas y PSS por escena,
+  validación contra los presupuestos del propio reporte).
+
+### Cambiado
+
+- Versión `0.3.4` en `VERSION`, `project.godot`, `export_presets.cfg`
+  (`version/name`, `version/code=111`, `file/product_version 0.3.4.0`),
+  `EXPECTED_VERSION` del smoke y de la prueba de lluvia, `PHASE` de Boot y
+  `BOOT_KICKER` en once idiomas.
+- Pruebas sin cambios de conteo, todas exit 0: smoke **270**, tren motriz
+  **125**, cabina **46**, interacción **257**, lluvia **206** y render
+  **RENDER_OK**.
+
+### Rendimiento medido (F3.5)
+
+- PC (Intel UHD, Vulkan Forward+, 1280x720, vsync 60 Hz): carga boot
+  140,7 ms / rebanada 77,5 ms / cabina 214,5 ms; frame 16,66–16,67 ms de
+  media, p95 ≤ 17,5 ms, **0 jank** en 90 frames; warm-up 135/48/113 ms antes
+  del gameplay.
+- Sonda GPU en PC: draw calls añadidos **2,00** (rebanada) y **2,40** (cabina,
+  ruido de monitor) ≤ 8; overdraw máximo **1,0** ≤ 5; fill visual **0,02 %**
+  y **2,78 %** ≤ 6 %; coste real de los FX **+1,164 ms** y **+2,328 ms**;
+  fill de fragmentos 3,64 % y **91,80 %** (el quad de gotas de cabina cubre
+  pantalla completa sin `discard`: ver hallazgo H1/F10.1).
+- Redmi Note 12 Pro 5G (APK `553F9128…FE59ABAF`, 29.557.514 bytes): arranque
+  **0,8 s**; PSS **415,6 / 535,3 / 614,7 MB** (boot/rebanada/cabina) dentro de
+  1.228,8 MB; rebanada carga 8.765 ms, warm-up 1.924 ms, frame
+  **12,76 ms media / 16,96 p95**, **15.874 triángulos** ≤ 120.000, 125 draw
+  calls, 1 jank > 33 ms de 300 frames; cabina carga 4.525 ms, warm-up
+  2.018 ms, frame **10,14 / 16,83 ms**, 7.435 triángulos, 154,7 draw calls,
+  0 jank. logcat sin `FATAL EXCEPTION` ni errores Godot/Vulkan.
+- Compresión: 1 textura (19 KB) y 16 mallas (762 KB) importados;
+  `import_etc2_astc` activo y S3TC en el preset de Windows; APK 29,56 MB;
+  ejecutable Windows 103.070.208 bytes + pck 1.516.108 bytes.
+- Build de Windows exportada ejecutada 21,5 s con exit 0 y sin stderr.
+
+### Hallazgos (registrados en CURRENT/HANDOFF)
+
+- **H1 → F4.4:** las gotas de cámara cubren pantalla completa y parecen caer
+  dentro del habitáculo; hay que recortar la máscara al parabrisas. No se toca
+  el shader en F3.5.
+- **H2 → F5.1/F9.1:** la palanca de cambio no responde con ratón, teclado ni
+  gamepad (`drag_focused` solo recibe `InputEventScreenDrag`); falta decidir
+  la ruta de input de conducción.
+- **H3 → F9.1:** el radio ejecuta la presión pero no muestra feedback visual.
+
+### Prueba de juego en PC (F3.5)
+
+- Boot: clic en botones, Tab con anillo de foco, Enter y F12 (panel QA con
+  cambio de clima real a `Tormenta · 95 % / 90 %`). Rebanada: hover del
+  botón, “Atrás” y Esc de vuelta al boot. Cabina: mirada con límites, retículo
+  con tres estados y prompts por control, seguro central con LED verde →
+  rojo, manos al volante al mantener pulsado, y foco en luces/radio/guantera/
+  antena/freno. Evidencia en `build/logs/gameplay/` (no versionada).
+
 ## [0.3.3] — 2026-11-23
 
 ### Añadido

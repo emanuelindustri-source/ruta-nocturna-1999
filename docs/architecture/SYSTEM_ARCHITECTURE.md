@@ -437,3 +437,35 @@ flowchart LR
 - `src/weather/rain_fx_warmup.gd` compila las pipelines antes del gameplay
   (marcadores `[RAINFX] WARMUP_*`); los FX quedan inactivos hasta que
   termina.
+
+### 13.2 Medición de dispositivo y compresión (Fase 3.5)
+
+F3.5 no añade simulación ni shaders: añade **instrumentación de medición**.
+
+```mermaid
+flowchart LR
+    ADB[tools/test_android_adb.ps1] -->|marcador| MK[(user://perf_route.marker)]
+    MK --> P[DevicePerfProbe: servicio de escena]
+    P -->|BOOT_READY| SR[SceneRouter]
+    SR --> S[VerticalSlice]
+    SR --> C[CabinInteraction]
+    S -->|perf_report.json| ADB
+    C -->|perf_report.json| ADB
+    RT[tests/render/RainFxRenderTest.tscn] -->|f35_*.png + [RENDER][GPU]| LOG[(build/logs/render)]
+    CR[tools/asset_compression_report.py] -->|latest.json| LOG2[(build/logs/compression)]
+```
+
+| Componente | Responsabilidad | No debe hacer |
+|---|---|---|
+| `src/debug/device_perf_probe.gd` (`DevicePerfProbe`) | Servicio de escena instanciado al final de `Boot.tscn`, `VerticalSlice.tscn` y `CabinInteraction.tscn`. Inerte sin `user://perf_route.marker`: mide carga, warm-up, frame pacing, triángulos y draw calls en la ruta `slice,cabin` y escribe `user://perf_report.json` | Existir como autoload, cambiar el comportamiento sin marcador o tocar contratos |
+| Sonda GPU de `rain_fx_render_test.gd` | Fill visual, fill de fragmentos, capas de overdraw y coste real de frame de los FX, contrastados con `budgets.pc.gpu` | Modificar shaders ni materiales de forma permanente (todo se restaura) |
+| `tools/asset_compression_report.py` | Banderas ETC2/ASTC/S3TC, inventario de texturas/mallas importadas y tamaño de artefactos (`build/logs/compression/latest.json`) | Versionar artefactos ni sustituir a `validate_export.py` |
+
+Reglas:
+
+- Sin marcador, `DevicePerfProbe` no emite ni navega: smoke, interacción y
+  render siguen comportándose igual.
+- El marcador lo escribe y borra `tools/test_android_adb.ps1`; sin dispositivo
+  o sin `run-as` (APK debug) la ruta no existe.
+- La sonda GPU de PC restaura materiales, visibilidad, UI y vsync; si algo
+  falla, la prueba termina con `RENDER_FAIL`, no deja la escena modificada.

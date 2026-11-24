@@ -156,7 +156,12 @@ Debe:
 7. Buscar `FATAL EXCEPTION`, errores Godot y errores Vulkan.
 8. Tomar captura.
 9. Recoger PSS con `dumpsys meminfo`.
-10. Guardar logs en `build/logs/android-smoke/`.
+10. **Ejecutar la ruta de rendimiento (F3.5):** marcador
+    `files/perf_route.marker` (`slice,cabin`), espera de `perf_report.json` con
+    `done=true`, capturas y PSS en rebanada y cabina, y validaci��n de frame
+    pacing (33,333 ms), tri��ngulos (120.000), carga (15 s), warm-up y PSS
+    (1.228,8 MB).
+11. Guardar logs en `build/logs/android-smoke/`.
 
 Un APK que no supera el smoke test no se etiqueta.
 

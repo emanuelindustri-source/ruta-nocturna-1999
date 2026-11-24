@@ -573,3 +573,36 @@ imágenes en contexto** y **no se copió ningún archivo** de
 - Revisión rápida: inicio y cierre de cada subfase.
 - Revisión completa: **2026-12-07**, o antes de la subfase de modelado/UI que
   corresponda (obligatoria antes de F4.3/F5.1).
+
+## 2026-11-23 - Fase 3.5 - medicion y capturas (sin uso de referencias)
+
+**Alcance:** integracion, compresion, warm-up, rendimiento y capturas de
+referencia visual. Subfase de medicion: no se consulta la biblioteca externa.
+
+### Referencias utilizadas
+
+| Familia | Uso | Resultado |
+|---|---|---|
+| Ninguna | - | Revision rapida scan_reference_library.py --quick al inicio y al cierre: 95 archivos, sin cambios; no se cargo ninguna imagen en contexto |
+
+### Decisiones
+
+- Las capturas de la subfase (uild/logs/render/f35_*.png y las de ADB) son
+  del juego real, se generan con la prueba de render/ruta y no se copia nada de
+  C:\Dev\fotos de ejemplo.
+- La medicion de fill/overdraw se hace con una sonda aditiva calibrada sobre
+  el render real, sin extraer texturas ni valores de las fotos.
+- Los presupuestos se contrastan con udgets.*.gpu del contrato; los
+  resultados se documentan en CURRENT.md y RAIN_AND_SURFACE_FX.md.
+
+### Descartado
+
+- Usar capturas de la biblioteca externa como evidencia o capturas de tienda.
+- Ajustar el lookdev de la lluvia a partir de fotos (sigue siendo design_value
+  hasta F4.4/F5.1).
+
+### Proxima revision
+
+- Revision rapida: inicio y cierre de cada subfase.
+- Revision completa: **2026-12-07**, o antes de la subfase de modelado/UI
+  que corresponda (obligatoria antes de F4.3/F5.1).
