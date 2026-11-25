@@ -13,6 +13,8 @@ extends Node3D
 ## aquí y en la escena, nunca en el contrato.
 
 const SPEC_PATH := "res://data/schemas/rain_surface_fx.json"
+const WEATHER_CONTRACT_PATH := "res://data/schemas/world_weather.json"
+const EXTERIOR_SPEC_PATH := "res://data/vehicle/exterior_spec.json"
 const SHADER_PAINT := "res://shaders/wet_paint.gdshader"
 const SHADER_GLASS := "res://shaders/wet_glass.gdshader"
 const SHADER_ROAD := "res://shaders/wet_road.gdshader"
@@ -48,6 +50,9 @@ const PANEL_BINDINGS := {
 @export var vehicle_root_path: NodePath = NodePath("../EsteemExterior")
 @export var road_paths: Array[NodePath] = [NodePath("../Road"), NodePath("../ShoulderLeft"), NodePath("../ShoulderRight")]
 @export var camera_path: NodePath = NodePath("../Camera3D")
+## Marco de coordenadas del parabrisas (corners_m de exterior_spec). En cabina
+## es la raíz de la escena; las gotas solo se dibujan dentro de ese polígono.
+@export var windshield_frame_path: NodePath = NodePath("..")
 @export var bind_vehicle := true
 @export var bind_road := true
 @export var camera_drops := false
@@ -85,6 +90,10 @@ var _vfx: Node3D = null
 var _camera: Camera3D = null
 var _camera_overlay: MeshInstance3D = null
 var _env := {"rain": 0.0, "humidity": 0.6, "wind": 2.0, "temperature": 19.0}
+var _camera_mask: Dictionary = {}
+var _windshield_corners: Array = []
+var _mask_polygon := PackedVector2Array()
+var _using_windshield_mesh := false
 
 
 func _ready() -> void:
@@ -131,6 +140,7 @@ func configure() -> bool:
 	if enable_vfx:
 		_setup_vfx()
 	if camera_drops:
+		_load_camera_mask()
 		_setup_camera_overlay()
 	set_weather(demo_rain, demo_humidity, demo_wind_mps, demo_temperature_c)
 	var warmup := RainFxWarmup.run(self)
@@ -536,7 +546,79 @@ func _update_camera_drops(stats: Dictionary) -> void:
 	material.set_shader_parameter("wiper_sweep", progress * 2.0 - 1.0)
 	material.set_shader_parameter("wiper_wear", wipers.get_wear())
 	material.set_shader_parameter("wiper_efficiency", wipers.get_clearing_efficiency())
-	overlay.visible = wetness_value > 0.02 or float(_env["rain"]) > 0.02
+	if _using_windshield_mesh:
+		overlay.visible = wetness_value > 0.02 or float(_env["rain"]) > 0.02
+		return
+	_update_camera_mask(material)
+	var has_mask := _mask_polygon.size() >= 3
+	var mask_active := bool(_camera_mask.get("enabled", true)) and has_mask
+	overlay.visible = mask_active and (wetness_value > 0.02 or float(_env["rain"]) > 0.02)
+
+
+## Calcula el polígono del parabrisas proyectado y lo envía al shader (H1).
+func _update_camera_mask(material: ShaderMaterial) -> void:
+	_mask_polygon = PackedVector2Array()
+	material.set_shader_parameter("mask_enabled", false)
+	material.set_shader_parameter("mask_count", 0)
+	if not bool(_camera_mask.get("enabled", true)) or _camera == null or _windshield_corners.is_empty():
+		return
+	var frame := get_node_or_null(windshield_frame_path) as Node3D
+	if frame == null:
+		frame = get_parent() as Node3D
+	var screen := WindshieldMask.project_corners(_camera, frame, _windshield_corners)
+	if screen.size() < 3:
+		return
+	var viewport_size := get_viewport().get_visible_rect().size
+	var max_points := mini(
+		int(_camera_mask.get("max_points", 8)), WindshieldMask.MAX_POINTS
+	)
+	_mask_polygon = WindshieldMask.convex_hull_uv(screen, viewport_size, max_points)
+	if _mask_polygon.size() < 3:
+		return
+	var packed := PackedVector2Array()
+	packed.resize(WindshieldMask.MAX_POINTS)
+	for index in range(WindshieldMask.MAX_POINTS):
+		packed[index] = _mask_polygon[index] if index < _mask_polygon.size() else Vector2.ZERO
+	material.set_shader_parameter("mask_points", packed)
+	material.set_shader_parameter("mask_count", _mask_polygon.size())
+	material.set_shader_parameter("mask_feather", float(_camera_mask.get("feather", 0.015)))
+	material.set_shader_parameter("mask_enabled", true)
+
+
+func _load_camera_mask() -> void:
+	_camera_mask = {}
+	_windshield_corners = []
+	var contract := _read_json(WEATHER_CONTRACT_PATH)
+	_camera_mask = contract.get("camera_mask", {}).duplicate(true)
+	var exterior := _read_json(EXTERIOR_SPEC_PATH)
+	for panel in exterior.get("glass_panels", []):
+		if str(panel.get("id", "")) == "windshield":
+			_windshield_corners = panel.get("corners_m", []).duplicate(true)
+			break
+	if _camera_mask.is_empty():
+		_camera_mask = {"enabled": true, "max_points": 8, "feather": 0.015}
+	print(
+		"[RAINFX] MASK enabled=%s corners=%d max_points=%d"
+		% [str(bool(_camera_mask.get("enabled", false))), _windshield_corners.size(), int(_camera_mask.get("max_points", 8))]
+	)
+
+
+## Estado de la máscara para pruebas y QA (H1).
+func get_camera_mask() -> Dictionary:
+	var vertices := 0
+	if _using_windshield_mesh and _camera_overlay != null and _camera_overlay.mesh is ArrayMesh:
+		var arrays: Array = (_camera_overlay.mesh as ArrayMesh).surface_get_arrays(0)
+		if arrays.size() > Mesh.ARRAY_VERTEX and arrays[Mesh.ARRAY_VERTEX] is PackedVector3Array:
+			vertices = (arrays[Mesh.ARRAY_VERTEX] as PackedVector3Array).size()
+	return {
+		"polygon": _mask_polygon,
+		"points": _mask_polygon.size(),
+		"corners": _windshield_corners.size(),
+		"enabled": bool(_camera_mask.get("enabled", false)),
+		"mode": "windshield_mesh" if _using_windshield_mesh else "screen_mask",
+		"mesh_vertices": vertices,
+		"overlay_visible": _camera_overlay.visible if _camera_overlay != null else false,
+	}
 
 
 # --- Animación de escobillas ------------------------------------------------
@@ -578,8 +660,12 @@ func _update_vfx() -> void:
 	_vfx.call("update_fx", float(_env["rain"]), float(_env["wind"]), _camera)
 
 
-## Gotas sobre cámara (cabina): un quad, una llamada de dibujo.
+## Gotas sobre el parabrisas (cabina): malla real del panel con profundidad.
+## Si no hay esquinas disponibles, cae al quad de cámara con máscara de pantalla.
 func _setup_camera_overlay() -> void:
+	if _windshield_corners.size() == 4:
+		_setup_windshield_mesh()
+		return
 	var overlay := MeshInstance3D.new()
 	overlay.name = "CameraDrops"
 	var quad := QuadMesh.new()
@@ -588,6 +674,8 @@ func _setup_camera_overlay() -> void:
 	var material := ShaderMaterial.new()
 	material.shader = load("res://shaders/camera_drops.gdshader") as Shader
 	material.set_shader_parameter("time_offset", 7.3)
+	material.set_shader_parameter("mask_enabled", false)
+	material.set_shader_parameter("mask_count", 0)
 	overlay.material_override = material
 	overlay.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	if _camera != null:
@@ -596,6 +684,51 @@ func _setup_camera_overlay() -> void:
 	else:
 		add_child(overlay)
 	_camera_overlay = overlay
+
+
+## Malla de gotas sobre la geometría real del parabrisas: el salpicadero y los
+## pilares la ocluyen con el depth buffer, así que nunca hay gotas «dentro» del
+## habitáculo. Sustituye la máscara de pantalla de H1 cuando hay esquinas.
+func _setup_windshield_mesh() -> void:
+	var frame := get_node_or_null(windshield_frame_path) as Node3D
+	if frame == null:
+		frame = get_parent() as Node3D
+	if frame == null:
+		return
+	var mesh := ArrayMesh.new()
+	var arrays: Array = []
+	arrays.resize(Mesh.ARRAY_MAX)
+	var vertices := PackedVector3Array()
+	var uvs := PackedVector2Array()
+	var normals := PackedVector3Array()
+	var indices := PackedInt32Array([0, 1, 2, 0, 2, 3])
+	for corner in _windshield_corners:
+		vertices.append(Vector3(float(corner[0]), float(corner[1]), float(corner[2])))
+	uvs.append_array([Vector2(0, 0), Vector2(1, 0), Vector2(1, 1), Vector2(0, 1)])
+	var normal := (vertices[1] - vertices[0]).cross(vertices[2] - vertices[0]).normalized()
+	for _index in range(4):
+		normals.append(normal)
+	arrays[Mesh.ARRAY_VERTEX] = vertices
+	arrays[Mesh.ARRAY_TEX_UV] = uvs
+	arrays[Mesh.ARRAY_NORMAL] = normals
+	arrays[Mesh.ARRAY_INDEX] = indices
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	var overlay := MeshInstance3D.new()
+	overlay.name = "WindshieldDrops"
+	overlay.mesh = mesh
+	var material := ShaderMaterial.new()
+	material.shader = load("res://shaders/camera_drops.gdshader") as Shader
+	material.set_shader_parameter("time_offset", 7.3)
+	material.set_shader_parameter("mask_enabled", false)
+	material.set_shader_parameter("mask_count", 0)
+	overlay.material_override = material
+	overlay.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(overlay)
+	overlay.top_level = true
+	overlay.global_transform = frame.global_transform
+	_camera_overlay = overlay
+	_using_windshield_mesh = true
+	print("[RAINFX] WindshieldDrops vertices=4 depth_test=true")
 
 
 # --- Medición (F3.4 deja evidencia; la medición completa en ruta/dispositivo es F3.5) ---
@@ -629,3 +762,10 @@ func estimate_gpu_budget() -> Dictionary:
 		"overdraw_layers": overdraw_layers,
 		"fill_percent": fill_percent,
 	}
+
+
+func _read_json(path: String) -> Dictionary:
+	if not FileAccess.file_exists(path):
+		return {}
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+	return parsed if parsed is Dictionary else {}

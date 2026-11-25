@@ -1,9 +1,9 @@
 # ROADMAP — Ruta Nocturna: 1999
 
-**Versión actual:** `v0.4.2`  
-**Subfase actual:** **4.3 — kits de biomas, gasolineras, moteles, peajes, señalización, agua, polvo y nieve; cerrada y publicada; siguiente gate F4.4 en un chat nuevo**  
-**Estado global:** Fase 1, Fase 2, Fase 3, F4.1, F4.2 y F4.3 completadas; siguiente gate F4.4  
-**Última fuente:** cierre de Fase 4.3 en GitHub
+**Versión actual:** `v0.4.3`  
+**Subfase actual:** **4.4 — clima real, rayos/truenos, humedad, QA de regiones y mapa de papel; cerrada y publicada; siguiente gate F5.1 en un chat nuevo**  
+**Estado global:** Fase 1, Fase 2, Fase 3 y Fase 4 completadas; siguiente gate F5.1  
+**Última fuente:** cierre de Fase 4.4 en GitHub
 
 Esta es la fuente de verdad del desarrollo. Cada fila es un gate cerrado: no se
 avanza sin validación, actualización de estado, commit, tag y cambio de chat.
@@ -97,7 +97,7 @@ invertir en arte o mecánicas complejas.
 | **4.1** | `v0.4.0` | **DS-R** | Pipeline OSM/Overpass, DEM, grafo, rutas alternativas, caché y atribución ODbL. Validado y publicado. | Completada |
 | **4.2** | `v0.4.1` | **DS-R** | Terreno procedural, 454 sectores de 800 m, colisión, carga asíncrona, streaming y PSS ≤ 1,2 GB. Validado y publicado. | Completada |
 | **4.3** | `v0.4.2` | **MiMo Pro** | Kits de biomas, gasolineras, moteles, peajes, señalización, agua, polvo y nieve. Validado y publicado. | Completada |
-| **4.4** | `v0.4.3` | **DS-S** | WeatherManager, transiciones, rayos/truenos, humedad, QA de regiones/clima y mapa de papel. | Pendiente |
+| **4.4** | `v0.4.3` | **DS-S** | WeatherManager, transiciones, rayos/truenos, humedad, QA de regiones/clima y mapa de papel. Validado y publicado. | Completada |
 
 **Cierre:** revisar referencias de paisajes; `/new` tras cada fila.
 

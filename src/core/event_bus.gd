@@ -44,6 +44,7 @@ signal test_mode_changed(enabled: bool)
 # --- Clima -------------------------------------------------------------------
 
 signal weather_changed(preset: String, state: Dictionary)
+signal weather_lightning(strike: Dictionary)
 
 # --- Audio y accesibilidad ---------------------------------------------------
 

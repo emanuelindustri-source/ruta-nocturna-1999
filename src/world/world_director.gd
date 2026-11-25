@@ -58,6 +58,10 @@ var _loading_label: Label
 var _next_button: Button
 var _back_button: Button
 var _credits_label: Label
+var _paper_map: PaperMap
+var _paper_layer: CanvasLayer
+var _map_button: Button
+var _last_biome := ""
 
 
 func _ready() -> void:
@@ -86,6 +90,7 @@ func _ready() -> void:
 	if not _load_world():
 		_set_loading_text("WORLD_LOAD_FAILED")
 		return
+	_setup_paper_map()
 	var initial := 0
 	if not route_id.is_empty():
 		initial = maxi(0, route_ids.find(route_id))
@@ -107,6 +112,54 @@ func _configure_ui() -> void:
 		_back_button.pressed.connect(_return_to_boot)
 	if _credits_label != null:
 		_credits_label.text = tr("CREDITS_OSM")
+
+
+func _setup_paper_map() -> void:
+	_paper_layer = CanvasLayer.new()
+	_paper_layer.name = "PaperMapLayer"
+	_paper_layer.layer = 5
+	add_child(_paper_layer)
+	_paper_map = PaperMap.new()
+	_paper_map.name = "PaperMap"
+	_paper_map.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_paper_map.offset_left = 0.0
+	_paper_map.offset_top = 0.0
+	_paper_map.offset_right = 0.0
+	_paper_map.offset_bottom = 0.0
+	_paper_layer.add_child(_paper_map)
+	if not _paper_map.setup(network, routes_contract):
+		world_errors.append("mapa de papel no pudo construir la red")
+		return
+	_paper_map.close()
+	var buttons := get_node_or_null("Overlay/Panel/Margin/VBox/Buttons") as HBoxContainer
+	if buttons != null:
+		_map_button = Button.new()
+		_map_button.name = "Map"
+		_map_button.custom_minimum_size = Vector2(150, 48)
+		_map_button.text = tr("WORLD_MAP_BUTTON")
+		_map_button.pressed.connect(toggle_paper_map)
+		buttons.add_child(_map_button)
+	print("[WORLD] MAP routes=%d edges=%d hubs=%d" % [
+		int(_paper_map.get_map_stats().get("routes", 0)),
+		int(_paper_map.get_map_stats().get("edges", 0)),
+		int(_paper_map.get_map_stats().get("hubs", 0)),
+	])
+
+
+func toggle_paper_map() -> void:
+	if _paper_map == null:
+		return
+	_paper_map.toggle()
+	if _map_button != null:
+		_map_button.text = tr("WORLD_MAP_BUTTON_CLOSE") if _paper_map.is_open() else tr("WORLD_MAP_BUTTON")
+
+
+func is_paper_map_open() -> bool:
+	return _paper_map != null and _paper_map.is_open()
+
+
+func paper_map_stats() -> Dictionary:
+	return _paper_map.get_map_stats() if _paper_map != null else {}
 
 
 func _load_world() -> bool:
@@ -181,6 +234,7 @@ func _activate_route(index: int, fraction: float = DEFAULT_START_FRACTION) -> vo
 	_loading_started_ms = Time.get_ticks_msec()
 	_sample_index = 0
 	_update_vehicle()
+	_sync_weather_biome(true)
 	var sector_index := _sector_index_for_distance(_progress_m)
 	_streamer.set_route(data.get("sequence", []), sector_index)
 	print("[WORLD] KITS %s" % kit_library.stats())
@@ -270,6 +324,20 @@ func _update_vehicle() -> void:
 		_camera.look_at(look_target, Vector3.UP)
 
 
+func _sync_weather_biome(force_region_change: bool) -> void:
+	if _vehicle == null or kit_library.contract.is_empty():
+		return
+	var biome := kit_library.biome_for_position(_vehicle.global_position)
+	var biome_id := str(biome.get("id", ""))
+	if biome_id.is_empty():
+		return
+	if biome_id == _last_biome and not force_region_change:
+		return
+	var was_empty := _last_biome.is_empty()
+	_last_biome = biome_id
+	WeatherManager.set_biome(biome_id, was_empty or force_region_change)
+
+
 func _update_stats() -> void:
 	if _stats_label == null:
 		return
@@ -278,12 +346,21 @@ func _update_stats() -> void:
 	var fps := 0.0
 	if viewport != null:
 		fps = Engine.get_frames_per_second()
+	_sync_weather_biome(false)
+	if _paper_map != null and _vehicle != null:
+		_paper_map.set_progress(current_route_id(), _vehicle.global_position)
+	var weather := WeatherManager.get_state()
 	_stats_label.text = tr("WORLD_STATS").format({
 		"sectors": int(stats.get("loaded_sectors", 0)),
 		"triangles": int(stats.get("loaded_triangles", 0)),
 		"fps": int(fps),
 		"load_ms": network_load_ms,
 		"pending": int(stats.get("pending_requests", 0)),
+	}) + " · " + tr("WORLD_WEATHER_LINE").format({
+		"preset": tr("WEATHER_PRESET_%s" % str(weather.get("preset", "")).to_upper()),
+		"humidity": int(float(weather.get("humidity", 0.0)) * 100.0),
+		"rain": int(float(weather.get("rain", 0.0)) * 100.0),
+		"wind": int(float(weather.get("wind", 0.0))),
 	})
 	if _title_label != null:
 		var biome := kit_library.biome_for_position(_vehicle.global_position) if _vehicle != null else {}
@@ -460,6 +537,8 @@ func streaming_snapshot() -> Dictionary:
 	snapshot["kits"] = kit_library.stats()
 	if poi_manager != null:
 		snapshot["pois"] = poi_manager.stats()
+	snapshot["weather"] = WeatherManager.get_state()
+	snapshot["paper_map"] = paper_map_stats()
 	return snapshot
 
 
@@ -535,6 +614,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		match (event as InputEventKey).keycode:
 			KEY_N:
 				next_route()
+			KEY_M:
+				toggle_paper_map()
 			KEY_R:
 				_progress_m = 0.0
 			KEY_SPACE:

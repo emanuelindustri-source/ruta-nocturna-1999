@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene load_steps=17 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/vehicle/EsteemInterior.tscn" id="1_cabin"]
 [ext_resource type="Script" path="res://src/vehicle/vehicle_powertrain.gd" id="2_powertrain"]
@@ -13,6 +13,8 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/CreatorQAMenu.tscn" id="11_qa"]
 [ext_resource type="Script" path="res://src/weather/rain_fx_controller.gd" id="12_rainfx"]
 [ext_resource type="Script" path="res://src/debug/device_perf_probe.gd" id="13_perf"]
+[ext_resource type="Script" path="res://src/weather/weather_bridge.gd" id="14_bridge"]
+[ext_resource type="Script" path="res://src/weather/lightning_director.gd" id="15_lightning"]
 
 [sub_resource type="Environment" id="Environment_cabin"]
 background_mode = 1
@@ -95,3 +97,11 @@ demo_temperature_c = 19.0
 
 [node name="DevicePerfProbe" type="Node" parent="."]
 script = ExtResource("13_perf")
+
+[node name="WeatherBridge" type="Node" parent="."]
+script = ExtResource("14_bridge")
+rain_fx_path = NodePath("../RainFx")
+always_follow = false
+
+[node name="LightningDirector" type="Node3D" parent="."]
+script = ExtResource("15_lightning")

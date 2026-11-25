@@ -5,9 +5,10 @@
 **Pruebas:** `tests/weather/RainFxTest.tscn` y `tools/dev/rain_test.cmd`.  
 **Render:** `tests/render/RainFxRenderTest.tscn` y `tools/dev/render_test.cmd`.  
 **Estado:** matemática y contratos de F3.3 + GLSL de producción y VFX de F3.4.
-Sin pérdida de agarre, vadeo ni clima real: F4.4 conecta `WeatherManager` y
-F5.1 consume charcos/vadeo. La medición GPU completa en ruta y dispositivo es
-F3.5/F10.1.
+F4.4 conecta `WeatherManager` (lluvia, humedad, viento y temperatura reales) y
+corrige H1 con gotas sobre la geometría del parabrisas. Sin pérdida de agarre,
+vadeo ni anti-atasco: F5.1 consume charcos/vadeo. La medición GPU completa en ruta
+y dispositivo es F3.5/F10.1.
 
 ## 1. Alcance
 
@@ -189,8 +190,12 @@ ninguna optimización sin medición.
 
 - **F3.4:** shader de película, gotas, estela del barrido, asfalto mojado y
   charcos. Debe respetar `instance_stride`, `budgets.*.gpu` y el warm-up.
-- **F4.4:** `WeatherManager` inyecta lluvia, humedad, viento y temperatura. No
-  se crean autoloads nuevos; `SurfaceWetnessModel` es un servicio de escena.
+- **F4.4 (implementado en v0.4.3):** `WeatherManager` inyecta lluvia, humedad,
+  viento y temperatura con `WeatherBridge` → `RainFxController.set_weather()`.
+  Los rayos/truenos son servicios de escena. H1 se corrigió sustituyendo el quad
+  de cámara a pantalla completa por una malla de gotas sobre las cuatro esquinas
+  reales del parabrisas con `depth_test`; el fill de fragmentos de cabina bajó de
+  90,17 % a 6,44 %. No se crean autoloads nuevos.
 - **F5.1:** consume `PuddleModel` para agarre, hidroplaneo, vadeo y anti-atasco;
   la reparación/sustitución de la goma del limpiaparabrisas se enlaza con el
   inventario existente.

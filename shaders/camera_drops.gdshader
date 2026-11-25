@@ -5,7 +5,7 @@
 // la de F3.3 (uniforms).
 
 shader_type spatial;
-render_mode blend_mix, unshaded, cull_disabled, depth_draw_never, depth_test_disabled;
+render_mode blend_mix, unshaded, cull_disabled, depth_draw_never;
 
 #include "res://shaders/rain_fx_common.gdshaderinc"
 
@@ -20,6 +20,13 @@ uniform bool wiper_enabled = false;
 uniform float wiper_sweep : hint_range(-1.0, 1.0) = 0.0;
 uniform float wiper_wear : hint_range(0.0, 1.0) = 0.0;
 uniform float wiper_efficiency = 0.94;
+// H1 (F4.4): mascara del parabrisas proyectada desde su malla real. El quad de
+// gotas de camara solo existe dentro del poligono visible; al girar la vista
+// hacia la puerta el poligono sale de pantalla y las gotas desaparecen.
+uniform bool mask_enabled = false;
+uniform int mask_count = 0;
+uniform vec2 mask_points[8];
+uniform float mask_feather : hint_range(0.0, 0.2) = 0.015;
 // Depuracion de lookdev (F3.4): 1.0 pinta el quad en rojo plano para validar
 // colocacion y mezcla antes de depurar el campo de gotas. Siempre 0 en juego.
 uniform float debug_flat : hint_range(0.0, 1.0) = 0.0;
@@ -29,6 +36,25 @@ void fragment() {
 		ALBEDO = vec3(1.0, 0.0, 0.0);
 		ALPHA = 0.6;
 	} else {
+		if (mask_enabled) {
+			bool inside = false;
+			for (int i = 0; i < 8; i++) {
+				if (i >= mask_count) {
+					break;
+				}
+				vec2 a = mask_points[i];
+				vec2 b = mask_points[(i + 1) % mask_count];
+				if ((a.y > UV.y) != (b.y > UV.y)) {
+					float x_cross = (b.x - a.x) * (UV.y - a.y) / (b.y - a.y) + a.x;
+					if (UV.x < x_cross) {
+						inside = !inside;
+					}
+				}
+			}
+			if (!inside) {
+				discard;
+			}
+		}
 		// Pantalla completa en mm aproximados (720p de referencia).
 		vec2 p_mm = UV * vec2(320.0, 180.0);
 		float time_s = TIME + time_offset;

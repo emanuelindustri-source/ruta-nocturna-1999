@@ -16,6 +16,8 @@ se implementó en Fase 1.2. Las mecánicas se implementan después.
 | `data/schemas/autoload_dependencies.json` | Grafo acíclico de autoloads y servicios de escena |
 | `data/schemas/world_routes.json` | Regiones, OSM, DEM, grafo, rutas, alternativas, caché y ODbL (F4.1) |
 | `data/schemas/world_streaming.json` | Terreno, sectores de 800 m, streaming, colisión y presupuestos (F4.2) |
+| `data/schemas/world_biomes.json` | Biomas, props, POIs/mobiliario, presets de superficie y presupuestos (F4.3) |
+| `data/schemas/world_weather.json` | Clima por bioma/región, transiciones, humedad, rayos/truenos, máscara de parabrisas y mapa (F4.4) |
 | `data/schemas/json/*.schema.json` | JSON Schemas de validación |
 
 ## 2. Reglas generales
@@ -626,3 +628,43 @@ Reglas:
   bajo CC BY-NC-SA 4.0 (`ASSET_LICENSE.md`).
 
 Detalle completo en `docs/architecture/WORLD_BIOMES.md`.
+
+## 22. Clima, rayos y mapa de papel (Fase 4.4)
+
+El clima es un contrato de **sistemas y datos** nuevo:
+`data/schemas/world_weather.json` (`schema_version: 1`,
+`contract_id: world.weather`, `world_id: venezuela.1999`). Su JSON Schema vive en
+`data/schemas/json/world_weather.schema.json` y se valida en
+`tools/validate_schemas.py` (12 contratos). **No modifica** `world.biomes` v1,
+`world_routes` v1, `world_streaming` v1 ni `rain_surface_fx` v1: los consume.
+
+| Archivo | Contenido |
+|---|---|
+| `data/schemas/world_weather.json` | Nueve presets, seis perfiles de bioma/región, transiciones, rayos/truenos, máscara de parabrisas, presupuestos, ODbL y QA |
+| `src/core/weather_manager.gd` | Autoload de clima: perfiles regionales, transiciones, humedad, autoavance y rayos |
+| `src/weather/lightning_director.gd` | VFX de rayo y trueno sintetizado (servicio de escena) |
+| `src/weather/weather_bridge.gd` | Puente escena entre `WeatherManager` y `RainFxController` |
+| `src/weather/windshield_mask.gd` | Casco convexo/proyección de la máscara de pantalla (respaldo de H1) |
+| `src/world/paper_map.gd` | Mapa de papel de la red de F4.1 (sin OSM nuevo) |
+| `tests/weather/WeatherRegionsTest.tscn` | 242 comprobaciones de clima, regiones, rayos, H1, mapa y localización |
+
+Reglas:
+
+- `WeatherManager` sigue siendo el único autoload de clima. `LightningDirector`,
+  `WeatherBridge` y `PaperMap` son servicios de escena y no se añaden autoloads.
+- `AudioDirector` y `WeatherManager` no se referencian entre sí; los rayos se
+  consumen desde `EventBus.weather_lightning`.
+- Los perfiles cubren exactamente los seis biomas de `world.biomes`; los pesos
+  suman 1 y los enlaces `dust_link`/`snow_link` coinciden con los presets de
+  superficie de F4.3.
+- `rain_coupling.rain_intensity_to_mm_h` debe coincidir con
+  `rain_surface_fx.precipitation.rain_intensity_to_mm_h` (45 mm/h).
+- La lluvia/humedad es de este contrato; el agarre, el hidroplaneo, el vadeo y el
+  anti-atasco siguen siendo F5.1. El clima no bloquea rutas ni daña el vehículo.
+- El trueno se sintetiza en runtime; no se usan samples ni APIs de audio de pago.
+- El mapa de papel solo presenta la red comprimida existente, conserva la
+  atribución ODbL y no añade datos OSM.
+- Cambiar la estructura exige subir `schema_version` y documentar la migración;
+  cambiar un valor exige actualizar su nota de fuente.
+
+Detalle completo en `docs/architecture/WORLD_WEATHER.md`.

@@ -1,9 +1,12 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://src/world/world_director.gd" id="1_director"]
 [ext_resource type="Script" path="res://src/world/sector_streamer.gd" id="2_streamer"]
 [ext_resource type="PackedScene" path="res://scenes/vehicle/EsteemExterior.tscn" id="3_esteem"]
 [ext_resource type="Script" path="res://src/debug/device_perf_probe.gd" id="4_perf"]
+[ext_resource type="Script" path="res://src/weather/rain_fx_controller.gd" id="5_rainfx"]
+[ext_resource type="Script" path="res://src/weather/weather_bridge.gd" id="6_bridge"]
+[ext_resource type="Script" path="res://src/weather/lightning_director.gd" id="7_lightning"]
 
 [sub_resource type="ProceduralSkyMaterial" id="Sky_material"]
 sky_top_color = Color(0.008, 0.016, 0.032, 1)
@@ -149,3 +152,22 @@ horizontal_alignment = 2
 
 [node name="DevicePerfProbe" type="Node" parent="."]
 script = ExtResource("4_perf")
+
+[node name="RainFx" type="Node3D" parent="."]
+script = ExtResource("5_rainfx")
+vehicle_root_path = NodePath("../Vehicle")
+camera_path = NodePath("../Camera3D")
+bind_road = false
+camera_drops = false
+demo_rain = 0.0
+demo_humidity = 0.6
+demo_wind_mps = 2.0
+demo_temperature_c = 24.0
+
+[node name="WeatherBridge" type="Node" parent="."]
+script = ExtResource("6_bridge")
+rain_fx_path = NodePath("../RainFx")
+always_follow = true
+
+[node name="LightningDirector" type="Node3D" parent="."]
+script = ExtResource("7_lightning")

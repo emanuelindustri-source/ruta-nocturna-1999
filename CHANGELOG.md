@@ -4,6 +4,60 @@ Todas las fechas usan ISO 8601. Las versiones siguen SemVer.
 
 ## [Unreleased]
 
+## [0.4.3] - 2026-11-25
+
+### Añadido
+
+- Contrato **`data/schemas/world_weather.json`** (`world.weather` v1) y JSON
+  Schema: nueve presets, seis perfiles de bioma/región, transiciones de humedad,
+  lluvia, viento y temperatura, rayos/truenos, máscara de parabrisas, presupuestos,
+  atribución ODbL y QA. Aditivo: no modifica `world.biomes`, `world_routes`,
+  `world_streaming` ni `rain_surface_fx`.
+- **`WeatherManager` real**: presets por los seis biomas de F4.3, selección
+  ponderada determinista, autoavance cada 45–120 s, humedad de superficie,
+  rayos programados solo en tormenta, tope por minuto y API de QA.
+- **`LightningDirector`**: destello de luz y flash de pantalla con reducción de
+  flashes por accesibilidad, y **trueno sintetizado en runtime** (PCM 16 bits,
+  sin samples) con retardo por distancia.
+- **`WeatherBridge`**: inyecta lluvia/humedad/viento/temperatura reales en
+  `RainFxController`; conserva el lookdev de F3.4 hasta que el clima cambia.
+- **Mapa de papel** (`PaperMap`): dibuja las 413 aristas y las seis rutas de la
+  red comprimida de F4.1, hubs, ruta activa y atribución OSM; se abre con `M` o
+  el botón «Mapa». Sin datos OSM nuevos ni `load()` en runtime.
+- **H1 corregido**: las gotas de cámara se dibujan sobre las cuatro esquinas
+  reales del parabrisas (`exterior_spec.json`) con `depth_test`; el salpicadero
+  las ocluye y no aparecen al mirar a la puerta.
+- **`tests/weather/WeatherRegionsTest.tscn`** y wrapper: **242 comprobaciones**
+  de contrato, seis regiones, transiciones, humedad, rayos/truenos, H1, mapa y
+  localización.
+- **Localización**: 15 claves nuevas (`WEATHER_PRESET_*`, `WORLD_WEATHER_LINE`,
+  `WORLD_MAP_*`, `MAP_*`) en los once idiomas; `BOOT_KICKER` a Fase 4.4 y
+  `SLICE_TITLE` a v0.4.3.
+- **Documentación**: `docs/architecture/WORLD_WEATHER.md` y secciones nuevas en
+  `DATA_CONTRACTS.md`, `SYSTEM_ARCHITECTURE.md`, `RAIN_AND_SURFACE_FX.md`,
+  `WORLD_BIOMES.md` y `EVENT_BUS.md`.
+
+### Cambiado
+
+- El overlay del mundo muestra el clima activo (preset, humedad, lluvia, viento) y
+  el bioma; el mundo tiene lluvia real, rayos y puente de clima.
+- `EventBus` publica `weather_lightning(strike)` además de `weather_changed`.
+- Versión `0.4.3` en `VERSION`, `project.godot`, `export_presets.cfg`
+  (`version/code=115`), `EXPECTED_VERSION` de smoke/lluvia/rutas/streaming/biomas
+  y `PHASE` de Boot.
+- `tools/validate_schemas.py` valida **12 contratos**; `health_check.py` y la CI
+  ejecutan la prueba de clima y regiones.
+
+### Arreglado
+
+- **H1**: el quad de gotas a pantalla completa pintaba agua sobre el salpicadero,
+  el volante y la puerta. Ahora la malla de gotas vive en el parabrisas y el fill
+  de fragmentos de cabina bajó de **90,17 %** a **6,44 %** con la misma lluvia.
+- **Mapa de papel**: la proyección tenía el eje norte/sur invertido (Falcón
+  aparecía al sur y Amazonas al norte) y las etiquetas de los hubs se cortaban en
+  el borde. Ahora el mapa es **norte arriba**, con rosa de los vientos, borde y
+  etiquetas ajustadas; la prueba verifica la orientación con los hubs reales.
+
 ## [0.4.2] - 2026-11-24
 
 ### Añadido

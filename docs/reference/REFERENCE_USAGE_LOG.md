@@ -749,3 +749,40 @@ repositorio; la biblioteca externa quedó intacta.
 - Revisión rápida: inicio y cierre de cada subfase.
 - Revisión completa: **2026-12-08**, o antes de la subfase de modelado/UI que
   corresponda (obligatoria antes de F5.1/F5.3).
+
+## 2026-11-24 — Fase 4.4 — clima, rayos, humedad y mapa de papel
+
+**Alcance:** revisión de las referencias del catálogo relevantes para clima,
+atmósferas nocturnas, lluvia y mapas. Se usaron las hojas de contacto existentes
+`generated_concepts.jpg` y `rain_f34_detail.jpg` (en `build/reference/`, no
+versionadas) y metadatos del catálogo; no se abrieron las 98 imágenes en
+contexto, no se copió ningún archivo y la biblioteca externa permaneció intacta.
+
+### Referencias utilizadas
+
+| Familia / ficha | Uso | Resultado |
+|---|---|---|
+| Conceptos de mapa y rutas (`Gemini_Generated_Image_2pv8vc2pv8vc2pv8.png`, `…_4c0ere…`, `…_8yds52…`, `…_cy8md5…`, `…_f5u431…`, `…_s7uasj…`) | Jerarquía de mapa, ruta activa y leyenda | Se adopta la idea de ruta resaltada y hubs, pero en **mapa de papel** propio, sin copiar el marco digital ni textos |
+| Conceptos de lluvia nocturna (`…_4owb87…`, `…_6eil8g…`, `…_9fwaao…`, `…_e41whd…`, `…_kokkx d…`, `…_rc0h8y…`) | Atmósfera de tormenta, reflejos y niebla | Inspiración para presets `storm`/`fog`/`swamp_mist` y el balance de humedad; ningún píxel entra al juego |
+| `rain_f34_detail.jpg` (fotos reales del Esteem + conceptos) | Vidrio mojado, gotas en el parabrisas y salpicadero | Confirma que las gotas deben quedarse en el vidrio y no caer dentro del habitáculo (H1) |
+| Concepto de cabina con gotas (`… /concepto lluvia en cabina`) | Lectura de gotas sobre el cristal desde dentro | Inspira la malla de gotas sobre la geometría del parabrisas; no se usa como textura |
+| `video_v2009.jpg`, `video_v2021.jpg`, `video_v2023.jpg` | Movimiento y humedad en carretera | Sin cambios: la física sigue siendo F5.1; solo se revisó la lectura visual del clima |
+
+### Decisiones
+
+- El mapa es de papel (pergamino, tinta y ruta ámbar), no una copia del mapa
+  digital oscuro de los conceptos; solo comparte la idea de ruta activa y hubs.
+- La lluvia de cámara se recorta a la geometría real del parabrisas; el
+  salpicadero la ocluye con `depth_test`. Se descarta el quad a pantalla completa.
+- Los truenos son síntesis procedural propia; no se usa ningún audio de la
+  biblioteca ni banco externo.
+- Los presets de clima se derivan de los seis biomas de F4.3 y de la latitud
+  nocturna de diciembre de 1999; no se copian cifras de los conceptos.
+- No se copiaron imágenes, fotogramas, textos ni sonidos al repositorio.
+
+### Descartado
+
+- Estética de mapa digital con paneles y botones flotantes.
+- Gotas de agua a pantalla completa o «dentro» del coche.
+- Rayos con daño al vehículo o bloqueo de ruta (anti-softlock).
+- Cualquier textura o sample tomado de `C:\Dev\fotos de ejemplo`.

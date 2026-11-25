@@ -11,7 +11,7 @@ extends Node3D
 ## carga threaded de kits (máx. 2 solicitudes, 0 load() síncrono) y que la
 ## reaparición segura de F4.2 sigue operativa.
 
-const EXPECTED_VERSION := "0.4.2"
+const EXPECTED_VERSION := "0.4.3"
 const BIOMES_PATH := "res://data/schemas/world_biomes.json"
 const KITS_SPEC_PATH := "res://data/world/kits_spec.json"
 const STREAMING_PATH := "res://data/schemas/world_streaming.json"

@@ -69,11 +69,13 @@ aplica la carga sobre `GameState`, nunca sobre nodos del mundo.
 | Señal | Payload | Emisor |
 |---|---|---|
 | `weather_changed` | `preset: String, state: Dictionary` | `WeatherManager` |
+| `weather_lightning` | `strike: Dictionary` | `WeatherManager` (F4.4) |
 | `audio_bus_volume_changed` | `bus_name: String, volume_db: float` | `AudioDirector` |
 | `accessibility_cue` | `kind: String, direction: Vector3, intensity: float` | Audio/UI (futuro) |
 
 `AudioDirector` y `WeatherManager` no se llaman entre sí. Si en el futuro el audio
-reacciona al clima, lo hace escuchando `weather_changed`.
+reacciona al clima, lo hace escuchando `weather_changed`; los rayos llegan por
+`weather_lightning` y los consume `LightningDirector` como servicio de escena.
 
 ## 7. Actualizaciones
 

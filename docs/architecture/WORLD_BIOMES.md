@@ -148,6 +148,14 @@ declara colisión, un `StaticBody3D` con caja derivada del LOD0.
 
 Ninguno duplica `rain_surface_fx` (contrato del vehículo) ni simula clima.
 
+### 7.1 Consumo en F4.4 (`v0.4.3`)
+
+`WeatherManager` consume `region_biome_map` y los presets de superficie para
+elegir el clima de cada bioma; `weather_link` queda satisfecho sin cambiar este
+contrato. `dust_link` y `snow_link` de `world_weather.json` se validan contra
+`surface_presets.dust.enabled` y `surface_presets.snow.enabled`. La física de
+polvo, nieve y agua sigue en F5.1.
+
 ## 8. Presupuestos y medición
 
 | Presupuesto | Valor | Verificación |

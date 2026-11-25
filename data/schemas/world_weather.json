@@ -1,0 +1,315 @@
+{
+  "schema_version": 1,
+  "contract_id": "world.weather",
+  "world_id": "venezuela.1999",
+  "status": "active",
+  "phase": "4.4",
+  "note": "Estado meteorologico real de Ruta Nocturna 1999. Consume world.biomes (region -> bioma y presets de superficie) y rain_surface_fx (lluvia normalizada -> mm/h). No crea datos OSM nuevos, no simula agarre/vadeo (F5.1) ni decide misiones. WeatherManager es el unico autoload de clima; los VFX y el trueno son servicios de escena que escuchan EventBus.",
+  "data_sources": {
+    "biomes_contract": "data/schemas/world_biomes.json",
+    "rain_contract": "data/schemas/rain_surface_fx.json",
+    "routes_contract": "data/schemas/world_routes.json"
+  },
+  "units": {
+    "humidity": "0..1 relative humidity",
+    "rain": "0..1 normalized intensity (rain_intensity_to_mm_h converts to mm/h)",
+    "wind": "m/s at 10 m",
+    "temperature": "degrees Celsius ambient",
+    "fog": "0..1 normalized fog density",
+    "wetness": "0..1 surface film (owned by rain_surface_fx)"
+  },
+  "presets": {
+    "clear": {
+      "name_key": "WEATHER_PRESET_CLEAR",
+      "humidity": 0.45,
+      "rain": 0.0,
+      "wind_mps": 4.0,
+      "fog": 0.0,
+      "temperature_c": 26.0,
+      "wetness_target": 0.0,
+      "lightning": false
+    },
+    "overcast": {
+      "name_key": "WEATHER_PRESET_OVERCAST",
+      "humidity": 0.65,
+      "rain": 0.0,
+      "wind_mps": 6.0,
+      "fog": 0.05,
+      "temperature_c": 23.0,
+      "wetness_target": 0.0,
+      "lightning": false
+    },
+    "drizzle": {
+      "name_key": "WEATHER_PRESET_DRIZZLE",
+      "humidity": 0.8,
+      "rain": 0.25,
+      "wind_mps": 7.0,
+      "fog": 0.1,
+      "temperature_c": 21.0,
+      "wetness_target": 0.3,
+      "lightning": false
+    },
+    "rain": {
+      "name_key": "WEATHER_PRESET_RAIN",
+      "humidity": 0.9,
+      "rain": 0.6,
+      "wind_mps": 10.0,
+      "fog": 0.15,
+      "temperature_c": 19.0,
+      "wetness_target": 0.75,
+      "lightning": false
+    },
+    "storm": {
+      "name_key": "WEATHER_PRESET_STORM",
+      "humidity": 0.95,
+      "rain": 0.9,
+      "wind_mps": 18.0,
+      "fog": 0.2,
+      "temperature_c": 18.0,
+      "wetness_target": 1.0,
+      "lightning": true
+    },
+    "fog": {
+      "name_key": "WEATHER_PRESET_FOG",
+      "humidity": 0.92,
+      "rain": 0.0,
+      "wind_mps": 2.0,
+      "fog": 0.85,
+      "temperature_c": 16.0,
+      "wetness_target": 0.1,
+      "lightning": false
+    },
+    "sandstorm": {
+      "name_key": "WEATHER_PRESET_SANDSTORM",
+      "humidity": 0.2,
+      "rain": 0.0,
+      "wind_mps": 22.0,
+      "fog": 0.35,
+      "temperature_c": 31.0,
+      "wetness_target": 0.0,
+      "lightning": false
+    },
+    "snow": {
+      "name_key": "WEATHER_PRESET_SNOW",
+      "humidity": 0.7,
+      "rain": 0.0,
+      "wind_mps": 8.0,
+      "fog": 0.25,
+      "temperature_c": -2.0,
+      "wetness_target": 0.0,
+      "lightning": false
+    },
+    "swamp_mist": {
+      "name_key": "WEATHER_PRESET_SWAMP_MIST",
+      "humidity": 0.95,
+      "rain": 0.1,
+      "wind_mps": 3.0,
+      "fog": 0.7,
+      "temperature_c": 27.0,
+      "wetness_target": 0.2,
+      "lightning": false
+    }
+  },
+  "biome_profiles": {
+    "biome.costa": {
+      "region": "falcon",
+      "base": "overcast",
+      "presets": [
+        {"id": "clear", "weight": 0.28},
+        {"id": "overcast", "weight": 0.24},
+        {"id": "drizzle", "weight": 0.2},
+        {"id": "rain", "weight": 0.18},
+        {"id": "storm", "weight": 0.1}
+      ],
+      "temperature_bias_c": 1.0,
+      "humidity_bias": 0.0,
+      "wind_bias_mps": 1.0,
+      "dust_link": true,
+      "snow_link": false,
+      "note": "Litoral seco con brisa salina y chaparrones de diciembre."
+    },
+    "biome.montana": {
+      "region": "merida",
+      "base": "fog",
+      "presets": [
+        {"id": "clear", "weight": 0.14},
+        {"id": "overcast", "weight": 0.2},
+        {"id": "fog", "weight": 0.24},
+        {"id": "drizzle", "weight": 0.14},
+        {"id": "snow", "weight": 0.18},
+        {"id": "storm", "weight": 0.1}
+      ],
+      "temperature_bias_c": -6.0,
+      "humidity_bias": 0.02,
+      "wind_bias_mps": 2.0,
+      "dust_link": false,
+      "snow_link": true,
+      "note": "Páramo: niebla fría, aguanieve y nieve de altura sin acumulación física (F5.1)."
+    },
+    "biome.llanos": {
+      "region": "llanos",
+      "base": "clear",
+      "presets": [
+        {"id": "clear", "weight": 0.34},
+        {"id": "overcast", "weight": 0.18},
+        {"id": "sandstorm", "weight": 0.16},
+        {"id": "drizzle", "weight": 0.12},
+        {"id": "rain", "weight": 0.12},
+        {"id": "storm", "weight": 0.08}
+      ],
+      "temperature_bias_c": 2.0,
+      "humidity_bias": -0.04,
+      "wind_bias_mps": 1.5,
+      "dust_link": true,
+      "snow_link": false,
+      "note": "Sabana abierta: polvo y tormentas secas de tarde."
+    },
+    "biome.selva": {
+      "region": "amazonas",
+      "base": "overcast",
+      "presets": [
+        {"id": "overcast", "weight": 0.2},
+        {"id": "drizzle", "weight": 0.18},
+        {"id": "rain", "weight": 0.24},
+        {"id": "storm", "weight": 0.18},
+        {"id": "fog", "weight": 0.1},
+        {"id": "swamp_mist", "weight": 0.1}
+      ],
+      "temperature_bias_c": 1.0,
+      "humidity_bias": 0.03,
+      "wind_bias_mps": -1.0,
+      "dust_link": false,
+      "snow_link": false,
+      "note": "Selva húmeda: lluvia persistente, niebla y vapor de dosel."
+    },
+    "biome.delta": {
+      "region": "delta",
+      "base": "swamp_mist",
+      "presets": [
+        {"id": "overcast", "weight": 0.18},
+        {"id": "drizzle", "weight": 0.18},
+        {"id": "rain", "weight": 0.24},
+        {"id": "storm", "weight": 0.16},
+        {"id": "swamp_mist", "weight": 0.16},
+        {"id": "fog", "weight": 0.08}
+      ],
+      "temperature_bias_c": 1.0,
+      "humidity_bias": 0.03,
+      "wind_bias_mps": -1.5,
+      "dust_link": false,
+      "snow_link": false,
+      "note": "Humedales del Orinoco: bruma densa y lluvia cálida."
+    },
+    "biome.industrial": {
+      "region": "carabobo",
+      "base": "clear",
+      "presets": [
+        {"id": "clear", "weight": 0.3},
+        {"id": "overcast", "weight": 0.22},
+        {"id": "drizzle", "weight": 0.16},
+        {"id": "rain", "weight": 0.16},
+        {"id": "storm", "weight": 0.08},
+        {"id": "sandstorm", "weight": 0.08}
+      ],
+      "temperature_bias_c": 1.0,
+      "humidity_bias": -0.02,
+      "wind_bias_mps": 0.5,
+      "dust_link": true,
+      "snow_link": false,
+      "note": "Eje industrial periurbano: calima, vallas y lluvia intermitente."
+    }
+  },
+  "transition": {
+    "rate_per_s": 0.55,
+    "wetness_rate_per_s": 0.08,
+    "min_visible_change": 0.001,
+    "hysteresis": 0.02,
+    "auto_advance": true,
+    "auto_advance_s": [45.0, 120.0],
+    "region_change_immediate": true,
+    "region_change_rate_per_s": 1.2,
+    "note": "Interpolación exponencial por delta; la humedad y la lluvia nunca cambian de golpe salvo en QA. La región usa una transición más rápida para evitar un clima incoherente en el límite del bioma."
+  },
+  "lightning": {
+    "enabled": true,
+    "requires_preset": "storm",
+    "interval_s": [4.0, 11.0],
+    "flash_duration_s": 0.18,
+    "double_flash_chance": 0.35,
+    "double_flash_gap_s": 0.09,
+    "distance_km": [0.8, 6.0],
+    "thunder_delay_s_per_km": 2.9,
+    "max_strikes_per_minute": 12,
+    "light_energy": 9.0,
+    "screen_flash_alpha": 0.32,
+    "thunder": {
+      "duration_s": 2.6,
+      "sample_rate": 22050,
+      "rumble_hz": 42.0,
+      "crack_hz": 180.0,
+      "decay": 2.4,
+      "gain": 0.62,
+      "note": "Trueno sintetizado en runtime con ruido determinista y graves; sin samples ni APIs de audio de pago."
+    },
+    "accessibility_cue": {
+      "kind": "lightning",
+      "min_interval_s": 2.0,
+      "reduced_flash_alpha": 0.08,
+      "note": "La accesibilidad de F9.1 podrá reducir el destello; por ahora se publica el evento y se limita el alfa."
+    }
+  },
+  "camera_mask": {
+    "enabled": true,
+    "max_points": 8,
+    "feather": 0.015,
+    "note": "Máscara del parabrisas calculada por proyección de la malla real en pantalla (H1). Sustituye el quad de gotas a pantalla completa: las gotas de cámara solo existen dentro del parabrisas visible y también al girar la vista hacia la puerta."
+  },
+  "rain_coupling": {
+    "rain_intensity_to_mm_h": 45.0,
+    "humidity_source": "weather",
+    "wetness_owner": "rain_surface_fx",
+    "note": "WeatherManager publica lluvia/humedad/viento/temperatura; SurfaceWetnessModel, DropletFlowModel y PuddleModel los consumen. La física de agarre y el vadeo son F5.1."
+  },
+  "budgets": {
+    "pc": {
+      "weather_cpu_budget_ms": 0.25,
+      "max_lightning_lights": 1,
+      "added_draw_calls": 1,
+      "added_triangles": 0
+    },
+    "mobile": {
+      "weather_cpu_budget_ms": 0.4,
+      "max_lightning_lights": 1,
+      "added_draw_calls": 1,
+      "added_triangles": 0
+    },
+    "note": "Un solo destello (DirectionalLight3D o luz de escena) y un CanvasItem; sin mallas nuevas. El coste se mide en WeatherRegionsTest y en la ruta de dispositivo."
+  },
+  "attribution": {
+    "network_license": "ODbL-1.0",
+    "credit_key": "CREDITS_OSM",
+    "no_new_osm_data": true,
+    "map_note": "El mapa de papel presenta la red comprimida de F4.1; no descarga ni versiona datos OSM nuevos."
+  },
+  "states": {
+    "weather": ["clear", "overcast", "drizzle", "rain", "storm", "fog", "sandstorm", "snow", "swamp_mist"],
+    "transition": ["idle", "blending", "settled"],
+    "lightning": ["idle", "flash", "thunder_pending", "thunder_playing"]
+  },
+  "anti_softlock": {
+    "weather_never_blocks": true,
+    "storm_still_driveable": true,
+    "lightning_no_damage": true,
+    "note": "El clima no cierra rutas, no daña el vehículo ni impide conducir; la pérdida de agarre y el vadeo son F5.1."
+  },
+  "qa": {
+    "test_scene": "tests/weather/WeatherRegionsTest.tscn",
+    "test_command": "tools/dev/weather_regions_test.cmd",
+    "validate_command": "tools/validate_schemas.py",
+    "expected_biomes": 6,
+    "expected_presets": 9,
+    "android_route": "slice,cabin,world",
+    "pc_report": "build/logs/gameplay/REPORT_F44.md",
+    "android_report": "build/logs/android-smoke/latest.json"
+  }
+}

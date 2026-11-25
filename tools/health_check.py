@@ -61,6 +61,7 @@ REQUIRED_FILES = [
     "docs/architecture/WORLD_ROUTES.md",
     "docs/architecture/WORLD_STREAMING.md",
     "docs/architecture/WORLD_BIOMES.md",
+    "docs/architecture/WORLD_WEATHER.md",
     "licenses/ODbL-1.0.txt",
     "data/schemas/vehicle_components.json",
     "data/schemas/vehicle_powertrain.json",
@@ -71,6 +72,8 @@ REQUIRED_FILES = [
     "data/schemas/world_routes.json",
     "data/schemas/world_streaming.json",
     "data/schemas/world_biomes.json",
+    "data/schemas/world_weather.json",
+    "data/schemas/json/world_weather.schema.json",
     "data/world/kits_spec.json",
     "data/schemas/json/vehicle_components.schema.json",
     "data/schemas/json/vehicle_powertrain.schema.json",
@@ -126,6 +129,14 @@ REQUIRED_FILES = [
     "tests/world/world_biomes_test.gd",
     "tools/dev/world_biomes_test.cmd",
     "tools/dev/world_biomes_test.ps1",
+    "src/weather/lightning_director.gd",
+    "src/weather/weather_bridge.gd",
+    "src/weather/windshield_mask.gd",
+    "src/world/paper_map.gd",
+    "tests/weather/WeatherRegionsTest.tscn",
+    "tests/weather/weather_regions_test.gd",
+    "tools/dev/weather_regions_test.cmd",
+    "tools/dev/weather_regions_test.ps1",
     "tools/dev/world_streaming_test.cmd",
     "tools/dev/world_streaming_test.ps1",
     "tools/dev/bake_world_sectors.cmd",
@@ -716,6 +727,27 @@ def check_world_biomes_test(checks: list[Check], skip_smoke: bool) -> None:
     )
 
 
+def check_weather_regions_test(checks: list[Check], skip_smoke: bool) -> None:
+    if skip_smoke:
+        result(checks, "weather_tests", True, "Omitido por --skip-godot/--skip-smoke", warn=True)
+        return
+    if not GODOT.exists():
+        result(checks, "weather_tests", False, "Godot no está instalado en la ruta esperada")
+        return
+    code, output = run_command(
+        [str(GODOT), "--headless", "--path", str(ROOT), "res://tests/weather/WeatherRegionsTest.tscn"],
+        timeout=300,
+    )
+    ok = code == 0 and "[WEATHER] SUPERADO" in output
+    result(
+        checks,
+        "weather_tests",
+        ok,
+        f"Exit {code}; {'clima, regiones y mapa superados' if ok else 'sin marca de éxito'}",
+        {"exit_code": code, "tail": "\n".join(output.splitlines()[-30:])},
+    )
+
+
 def check_godot_import(checks: list[Check], skip_import: bool) -> None:
     if skip_import:
         result(checks, "godot_import", True, "Omitido por --skip-godot", warn=True)
@@ -814,6 +846,7 @@ def main() -> int:
     check_rain_test(checks, args.skip_godot or args.skip_smoke)
     check_world_streaming_test(checks, args.skip_godot or args.skip_smoke)
     check_world_biomes_test(checks, args.skip_godot or args.skip_smoke)
+    check_weather_regions_test(checks, args.skip_godot or args.skip_smoke)
 
     report = build_report(checks, mode)
     REPORT_DIR.mkdir(parents=True, exist_ok=True)

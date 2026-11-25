@@ -1,0 +1,261 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ruta-nocturna-1999.local/schemas/world_weather.schema.json",
+  "title": "world.weather v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "contract_id", "world_id", "status", "phase", "note",
+    "data_sources", "units", "presets", "biome_profiles", "transition",
+    "lightning", "camera_mask", "rain_coupling", "budgets", "attribution",
+    "states", "anti_softlock", "qa"
+  ],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "contract_id": {"type": "string", "const": "world.weather"},
+    "world_id": {"type": "string", "const": "venezuela.1999"},
+    "status": {"type": "string", "enum": ["active"]},
+    "phase": {"type": "string"},
+    "note": {"type": "string"},
+    "data_sources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["biomes_contract", "rain_contract", "routes_contract"],
+      "properties": {
+        "biomes_contract": {"type": "string"},
+        "rain_contract": {"type": "string"},
+        "routes_contract": {"type": "string"}
+      }
+    },
+    "units": {"type": "object", "minProperties": 6, "additionalProperties": {"type": "string"}},
+    "presets": {
+      "type": "object",
+      "minProperties": 9,
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name_key", "humidity", "rain", "wind_mps", "fog", "temperature_c",
+          "wetness_target", "lightning"
+        ],
+        "properties": {
+          "name_key": {"type": "string", "pattern": "^WEATHER_PRESET_[A-Z0-9_]+$"},
+          "humidity": {"type": "number", "minimum": 0, "maximum": 1},
+          "rain": {"type": "number", "minimum": 0, "maximum": 1},
+          "wind_mps": {"type": "number", "minimum": 0, "maximum": 25},
+          "fog": {"type": "number", "minimum": 0, "maximum": 1},
+          "temperature_c": {"type": "number", "minimum": -10, "maximum": 45},
+          "wetness_target": {"type": "number", "minimum": 0, "maximum": 1},
+          "lightning": {"type": "boolean"}
+        }
+      }
+    },
+    "biome_profiles": {
+      "type": "object",
+      "minProperties": 6,
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "region", "base", "presets", "temperature_bias_c", "humidity_bias",
+          "wind_bias_mps", "dust_link", "snow_link", "note"
+        ],
+        "properties": {
+          "region": {"type": "string"},
+          "base": {"type": "string"},
+          "presets": {
+            "type": "array",
+            "minItems": 3,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["id", "weight"],
+              "properties": {
+                "id": {"type": "string"},
+                "weight": {"type": "number", "exclusiveMinimum": 0, "maximum": 1}
+              }
+            }
+          },
+          "temperature_bias_c": {"type": "number", "minimum": -15, "maximum": 15},
+          "humidity_bias": {"type": "number", "minimum": -0.2, "maximum": 0.2},
+          "wind_bias_mps": {"type": "number", "minimum": -10, "maximum": 10},
+          "dust_link": {"type": "boolean"},
+          "snow_link": {"type": "boolean"},
+          "note": {"type": "string"}
+        }
+      }
+    },
+    "transition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rate_per_s", "wetness_rate_per_s", "min_visible_change", "hysteresis",
+        "auto_advance", "auto_advance_s", "region_change_immediate",
+        "region_change_rate_per_s", "note"
+      ],
+      "properties": {
+        "rate_per_s": {"type": "number", "exclusiveMinimum": 0},
+        "wetness_rate_per_s": {"type": "number", "exclusiveMinimum": 0},
+        "min_visible_change": {"type": "number", "minimum": 0},
+        "hysteresis": {"type": "number", "minimum": 0, "maximum": 0.1},
+        "auto_advance": {"type": "boolean"},
+        "auto_advance_s": {
+          "type": "array", "minItems": 2, "maxItems": 2,
+          "items": {"type": "number", "exclusiveMinimum": 0}
+        },
+        "region_change_immediate": {"type": "boolean"},
+        "region_change_rate_per_s": {"type": "number", "exclusiveMinimum": 0},
+        "note": {"type": "string"}
+      }
+    },
+    "lightning": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "enabled", "requires_preset", "interval_s", "flash_duration_s",
+        "double_flash_chance", "double_flash_gap_s", "distance_km",
+        "thunder_delay_s_per_km", "max_strikes_per_minute", "light_energy",
+        "screen_flash_alpha", "thunder", "accessibility_cue"
+      ],
+      "properties": {
+        "enabled": {"type": "boolean"},
+        "requires_preset": {"type": "string"},
+        "interval_s": {
+          "type": "array", "minItems": 2, "maxItems": 2,
+          "items": {"type": "number", "exclusiveMinimum": 0}
+        },
+        "flash_duration_s": {"type": "number", "exclusiveMinimum": 0},
+        "double_flash_chance": {"type": "number", "minimum": 0, "maximum": 1},
+        "double_flash_gap_s": {"type": "number", "minimum": 0},
+        "distance_km": {
+          "type": "array", "minItems": 2, "maxItems": 2,
+          "items": {"type": "number", "exclusiveMinimum": 0}
+        },
+        "thunder_delay_s_per_km": {"type": "number", "exclusiveMinimum": 0},
+        "max_strikes_per_minute": {"type": "integer", "minimum": 1, "maximum": 60},
+        "light_energy": {"type": "number", "exclusiveMinimum": 0},
+        "screen_flash_alpha": {"type": "number", "minimum": 0, "maximum": 1},
+        "thunder": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["duration_s", "sample_rate", "rumble_hz", "crack_hz", "decay", "gain", "note"],
+          "properties": {
+            "duration_s": {"type": "number", "exclusiveMinimum": 0},
+            "sample_rate": {"type": "integer", "minimum": 8000, "maximum": 48000},
+            "rumble_hz": {"type": "number", "exclusiveMinimum": 0},
+            "crack_hz": {"type": "number", "exclusiveMinimum": 0},
+            "decay": {"type": "number", "exclusiveMinimum": 0},
+            "gain": {"type": "number", "minimum": 0, "maximum": 1},
+            "note": {"type": "string"}
+          }
+        },
+        "accessibility_cue": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "min_interval_s", "reduced_flash_alpha", "note"],
+          "properties": {
+            "kind": {"type": "string"},
+            "min_interval_s": {"type": "number", "minimum": 0},
+            "reduced_flash_alpha": {"type": "number", "minimum": 0, "maximum": 1},
+            "note": {"type": "string"}
+          }
+        }
+      }
+    },
+    "camera_mask": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "max_points", "feather", "note"],
+      "properties": {
+        "enabled": {"type": "boolean"},
+        "max_points": {"type": "integer", "minimum": 3, "maximum": 12},
+        "feather": {"type": "number", "minimum": 0, "maximum": 0.2},
+        "note": {"type": "string"}
+      }
+    },
+    "rain_coupling": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rain_intensity_to_mm_h", "humidity_source", "wetness_owner", "note"],
+      "properties": {
+        "rain_intensity_to_mm_h": {"type": "number", "exclusiveMinimum": 0},
+        "humidity_source": {"type": "string"},
+        "wetness_owner": {"type": "string"},
+        "note": {"type": "string"}
+      }
+    },
+    "budgets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pc", "mobile", "note"],
+      "properties": {
+        "pc": {"$ref": "#/$defs/budget"},
+        "mobile": {"$ref": "#/$defs/budget"},
+        "note": {"type": "string"}
+      }
+    },
+    "attribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["network_license", "credit_key", "no_new_osm_data", "map_note"],
+      "properties": {
+        "network_license": {"type": "string", "const": "ODbL-1.0"},
+        "credit_key": {"type": "string", "const": "CREDITS_OSM"},
+        "no_new_osm_data": {"type": "boolean"},
+        "map_note": {"type": "string"}
+      }
+    },
+    "states": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["weather", "transition", "lightning"],
+      "properties": {
+        "weather": {"type": "array", "minItems": 9, "items": {"type": "string"}},
+        "transition": {"type": "array", "minItems": 3, "items": {"type": "string"}},
+        "lightning": {"type": "array", "minItems": 4, "items": {"type": "string"}}
+      }
+    },
+    "anti_softlock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["weather_never_blocks", "storm_still_driveable", "lightning_no_damage", "note"],
+      "properties": {
+        "weather_never_blocks": {"type": "boolean"},
+        "storm_still_driveable": {"type": "boolean"},
+        "lightning_no_damage": {"type": "boolean"},
+        "note": {"type": "string"}
+      }
+    },
+    "qa": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "test_scene", "test_command", "validate_command", "expected_biomes",
+        "expected_presets", "android_route", "pc_report", "android_report"
+      ],
+      "properties": {
+        "test_scene": {"type": "string"},
+        "test_command": {"type": "string"},
+        "validate_command": {"type": "string"},
+        "expected_biomes": {"type": "integer", "minimum": 1},
+        "expected_presets": {"type": "integer", "minimum": 1},
+        "android_route": {"type": "string"},
+        "pc_report": {"type": "string"},
+        "android_report": {"type": "string"}
+      }
+    }
+  },
+  "$defs": {
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["weather_cpu_budget_ms", "max_lightning_lights", "added_draw_calls", "added_triangles"],
+      "properties": {
+        "weather_cpu_budget_ms": {"type": "number", "exclusiveMinimum": 0},
+        "max_lightning_lights": {"type": "integer", "minimum": 1},
+        "added_draw_calls": {"type": "integer", "minimum": 0},
+        "added_triangles": {"type": "integer", "minimum": 0}
+      }
+    }
+  }
+}

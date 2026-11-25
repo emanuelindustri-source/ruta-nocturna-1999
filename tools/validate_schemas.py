@@ -28,6 +28,7 @@ PAIRS = {
     "world_routes": "world_routes",
     "world_streaming": "world_streaming",
     "world_biomes": "world_biomes",
+    "world_weather": "world_weather",
 }
 
 BLOCKOUT_SPEC = ROOT / "data" / "vehicle" / "blockout_spec.json"
@@ -1092,6 +1093,120 @@ def validate() -> tuple[list[str], list[str]]:
                 f"world_biomes: se esperaban {world_biomes['qa'].get('expected_kit_families')} manifiestos "
                 f"de kits y hay {len(kit_manifests)}"
             )
+
+    world_weather = data.get("world_weather", {})
+    if world_weather and world_biomes:
+        weather_presets = world_weather["presets"]
+        weather_profiles = world_weather["biome_profiles"]
+        biome_ids = {biome["id"] for biome in world_biomes["biomes"]}
+        region_map = world_biomes["region_biome_map"]
+        if set(weather_profiles) != biome_ids:
+            errors.append(
+                "world_weather: biome_profiles debe cubrir exactamente los seis biomas de world_biomes"
+            )
+        declared_weather_states = set(world_weather["states"]["weather"])
+        if set(weather_presets) != declared_weather_states:
+            errors.append("world_weather: states.weather no coincide con los presets declarados")
+        if len(weather_presets) != int(world_weather["qa"].get("expected_presets", 0)):
+            errors.append("world_weather: expected_presets no coincide con los presets declarados")
+        if len(weather_profiles) != int(world_weather["qa"].get("expected_biomes", 0)):
+            errors.append("world_weather: expected_biomes no coincide con los perfiles declarados")
+        used_presets: set[str] = set()
+        for biome_id, profile in weather_profiles.items():
+            region = str(profile.get("region", ""))
+            if region_map.get(region) != biome_id:
+                errors.append(
+                    f"world_weather: {biome_id} no coincide con region_biome_map[{region}]"
+                )
+            base = str(profile.get("base", ""))
+            if base not in weather_presets:
+                errors.append(f"world_weather: {biome_id} usa un preset base inexistente {base}")
+            weight_total = 0.0
+            for entry in profile["presets"]:
+                preset_id = str(entry.get("id", ""))
+                weight_total += float(entry.get("weight", 0.0))
+                used_presets.add(preset_id)
+                if preset_id not in weather_presets:
+                    errors.append(
+                        f"world_weather: {biome_id} referencia el preset inexistente {preset_id}"
+                    )
+                    continue
+                preset = weather_presets[preset_id]
+                temperature = float(preset["temperature_c"]) + float(profile["temperature_bias_c"])
+                if temperature < -10.0 or temperature > 45.0:
+                    errors.append(
+                        f"world_weather: {biome_id}/{preset_id} sale del rango de temperatura del contrato"
+                    )
+                humidity = float(preset["humidity"]) + float(profile["humidity_bias"])
+                if humidity < 0.0 or humidity > 1.0:
+                    errors.append(
+                        f"world_weather: {biome_id}/{preset_id} sale del rango de humedad del contrato"
+                    )
+                wind = float(preset["wind_mps"]) + float(profile["wind_bias_mps"])
+                if wind < 0.0 or wind > 25.0:
+                    errors.append(
+                        f"world_weather: {biome_id}/{preset_id} sale del viento máximo de rain_surface_fx"
+                    )
+            if abs(weight_total - 1.0) > 0.001:
+                errors.append(
+                    f"world_weather: los pesos de {biome_id} suman {weight_total:.3f}, se esperaba 1.0"
+                )
+            biome_entry = next(
+                (biome for biome in world_biomes["biomes"] if biome["id"] == biome_id), None
+            )
+            if biome_entry is not None:
+                surface = biome_entry.get("surface_presets", {})
+                dust_enabled = bool(surface.get("dust", {}).get("enabled", False))
+                snow_enabled = bool(surface.get("snow", {}).get("enabled", False))
+                if bool(profile["dust_link"]) != dust_enabled:
+                    errors.append(
+                        f"world_weather: {biome_id} dust_link no coincide con world.biomes"
+                    )
+                if bool(profile["snow_link"]) != snow_enabled:
+                    errors.append(
+                        f"world_weather: {biome_id} snow_link no coincide con world.biomes"
+                    )
+        if used_presets != set(weather_presets):
+            missing = sorted(set(weather_presets) - used_presets)
+            errors.append(f"world_weather: presets declarados sin uso por bioma: {missing}")
+
+        lightning = world_weather["lightning"]
+        required_preset = str(lightning.get("requires_preset", ""))
+        if required_preset not in weather_presets:
+            errors.append("world_weather: lightning.requires_preset no existe")
+        elif not bool(weather_presets[required_preset].get("lightning", False)):
+            errors.append("world_weather: el preset de rayos no declara lightning=true")
+        interval_min = float(lightning["interval_s"][0])
+        interval_max = float(lightning["interval_s"][1])
+        if interval_min > interval_max:
+            errors.append("world_weather: lightning.interval_s invertido")
+        if int(lightning["max_strikes_per_minute"]) > int(60.0 / max(0.001, interval_min)) + 1:
+            errors.append("world_weather: max_strikes_per_minute excede la cadencia mínima")
+        distance = lightning["distance_km"]
+        if float(distance[0]) > float(distance[1]):
+            errors.append("world_weather: lightning.distance_km invertido")
+        thunder = lightning["thunder"]
+        if float(thunder["duration_s"]) <= 0.0:
+            errors.append("world_weather: thunder.duration_s debe ser positivo")
+
+        rain_mm_h = float(
+            data["rain_surface_fx"]["precipitation"].get("rain_intensity_to_mm_h", 0.0)
+        )
+        if abs(float(world_weather["rain_coupling"]["rain_intensity_to_mm_h"]) - rain_mm_h) > 0.001:
+            errors.append(
+                "world_weather: rain_coupling.rain_intensity_to_mm_h no coincide con rain_surface_fx"
+            )
+        if bool(world_weather["attribution"]["no_new_osm_data"]) is not True:
+            errors.append("world_weather: el mapa de papel no debe introducir datos OSM nuevos")
+        if str(world_weather["attribution"]["network_license"]) != "ODbL-1.0":
+            errors.append("world_weather: la red del mapa debe seguir bajo ODbL-1.0")
+        if int(world_weather["camera_mask"]["max_points"]) > 8:
+            errors.append("world_weather: camera_mask.max_points no puede superar los 8 del shader")
+        loc_keys = localization_keys()
+        for preset_id, preset in weather_presets.items():
+            key = str(preset["name_key"])
+            if key not in loc_keys:
+                errors.append(f"world_weather: falta la clave de localización {key} ({preset_id})")
 
     return errors, warnings
 

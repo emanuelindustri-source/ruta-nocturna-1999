@@ -599,3 +599,50 @@ Reglas:
 - Marca real prohibida en kits y rótulos; el arte es propio (CC BY-NC-SA 4.0).
 - La atribución ODbL (`CREDITS_OSM`) sigue visible en el mundo y en el build.
 
+
+## 17. Clima real, rayos y mapa de papel (Fase 4.4)
+
+F4.4 conecta el clima al mundo de F4.2/F4.3 sin reabrir sus contratos ni añadir
+autoloads.
+
+```mermaid
+flowchart LR
+    BIO[(world.biomes · F4.3)] --> WW[(world_weather.json · v1)]
+    WW --> WM[WeatherManager · autoload]
+    WM -->|weather_changed| EB[EventBus]
+    WM -->|weather_lightning| EB
+    EB --> LD[LightningDirector · escena]
+    EB --> QA[CreatorQAMenu]
+    WD[WorldDirector · escena] -->|biome_for_position| WM
+    WD --> PM[PaperMap · escena]
+    WM --> WB[WeatherBridge · escena]
+    WB --> RF[RainFxController · F3.4]
+    RF --> FX[SurfaceWetness / Droplets / Puddles · F3.3]
+```
+
+| Componente | Responsabilidad | No debe hacer |
+|---|---|---|
+| `WeatherManager` | Presets por bioma, transiciones, humedad, temperatura, viento y programación de rayos | Dibujar VFX, reproducir audio, decidir misiones ni simular agarre |
+| `LightningDirector` | Destello de luz, flash accesible y trueno sintetizado con retardo por distancia | Referenciar `AudioDirector` o `WeatherManager`; crear autoloads |
+| `WeatherBridge` | Inyectar el estado real en `RainFxController.set_weather()` | Duplicar humedad, gotas o charcos |
+| `PaperMap` | Dibujar la red comprimida, hubs, ruta activa y atribución ODbL | Descargar/hornear datos OSM, cargar recursos en runtime o ser autoload |
+| `WorldDirector` | Informar el bioma activo al clima y actualizar el mapa | Ser autoload o simular clima |
+| `RainFxController` (F3.4/H1) | Malla de gotas en el parabrisas real y uniforms de lluvia | Simular humedad ni decidir el clima |
+
+Reglas:
+
+- `WeatherManager` es el único autoload de clima; los demás son servicios de
+  escena. `AudioDirector` y `WeatherManager` no se llaman entre sí.
+- Los presets y perfiles viven en `world_weather.json`; no hay valores de balance
+  dispersos en GDScript.
+- El clima nunca bloquea la ruta ni daña el vehículo: la pérdida de agarre, el
+  vadeo y el anti-atasco son F5.1.
+- H1: la cabina deja de usar el quad a pantalla completa. Las gotas se dibujan
+  sobre la geometría del parabrisas con `depth_test`, de modo que el salpicadero
+  las ocluye y no aparecen al mirar a la puerta. La máscara de pantalla queda como
+  respaldo del quad antiguo.
+- El mapa de papel es solo presentación de la red de F4.1; no añade datos OSM y
+  conserva la atribución y el share-alike ODbL.
+- La prueba `WeatherRegionsTest` (242 comprobaciones) valida contrato, regiones,
+  transiciones, humedad, rayos/truenos, H1, mapa y localización; se ejecuta en
+  `health_check.py` y en la CI.

@@ -2,7 +2,7 @@ extends Control
 ## Pantalla de arranque desde la Fase 1.2 y acceso a la rebanada vertical de 1.4.
 ## Verifica los servicios base y abre el panel QA, sin mecánicas de conducción.
 
-const PHASE := "4.3"
+const PHASE := "4.4"
 const VERTICAL_SLICE_SCENE := "res://scenes/vertical_slice/VerticalSlice.tscn"
 const CABIN_SCENE := "res://scenes/vehicle/CabinInteraction.tscn"
 const WORLD_SCENE := "res://scenes/world/WorldTerrain.tscn"

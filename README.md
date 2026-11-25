@@ -4,8 +4,8 @@ Terror psicológico, conducción de supervivencia y exploración en una Venezuel
 nocturna de diciembre de 1999. El protagonista cruza el país en un sedán beige
 de 1999, con su mecánica, su radio y sus carreteras como sistema de supervivencia.
 
-> **Estado actual:** Fase 4.3 completada (kits de biomas, POIs, mobiliario vial, agua, polvo y nieve).  
-> **Versión:** `0.4.2`  
+> **Estado actual:** Fase 4 completada (mundo Venezuela, biomas, POIs, clima real, rayos/truenos y mapa de papel).  
+> **Versión:** `0.4.3`  
 > **Web:** https://emanuelindustri-source.github.io/ruta-nocturna-1999/  
 > **Repositorio:** https://github.com/emanuelindustri-source/ruta-nocturna-1999  
 > **No hay todavía una build jugable.** Las fases 2.1–2.4 implementan motor, caja

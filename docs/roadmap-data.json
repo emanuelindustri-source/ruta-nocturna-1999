@@ -2,11 +2,11 @@
   "project": "Ruta Nocturna: 1999",
   "repository": "emanuelindustri-source/ruta-nocturna-1999",
   "generated_from": "ROADMAP.md",
-  "source_sha256": "c0b605f0aa9c1f557423dd60390873624c4acdbb5c5e4a56abbfeb318496bafb",
-  "current_version": "v0.4.2",
-  "version_file": "0.4.2",
-  "current_subphase": "4.3",
-  "global_status": "Fase 1, Fase 2, Fase 3, F4.1, F4.2 y F4.3 completadas; siguiente gate F4.4",
+  "source_sha256": "9d6dc68a388cbf064c02fb0db2fe8fce8b01c1c97b9daff8610835261e11d9b6",
+  "current_version": "v0.4.3",
+  "version_file": "0.4.3",
+  "current_subphase": "4.4",
+  "global_status": "Fase 1, Fase 2, Fase 3 y Fase 4 completadas; siguiente gate F5.1",
   "models": {
     "DS-R": "DeepSeek V4.1 Flash 1017 · Razonamiento",
     "DS-S": "DeepSeek V4.1 Flash 1017 · Estándar",
@@ -14,11 +14,11 @@
     "MiMo Flash": "MiMo-V2.6-Flash"
   },
   "summary": {
-    "completed": 16,
+    "completed": 17,
     "in_progress": 0,
-    "pending": 29,
+    "pending": 28,
     "total": 45,
-    "percent": 35.6
+    "percent": 37.8
   },
   "phases": [
     {
@@ -223,18 +223,18 @@
           "version": "v0.4.3",
           "model": "DS-S",
           "model_label": "DeepSeek V4.1 Flash 1017 · Estándar",
-          "summary": "WeatherManager, transiciones, rayos/truenos, humedad, QA de regiones/clima y mapa de papel.",
-          "status": "pending",
-          "status_label": "Pendiente"
+          "summary": "WeatherManager, transiciones, rayos/truenos, humedad, QA de regiones/clima y mapa de papel. Validado y publicado.",
+          "status": "completed",
+          "status_label": "Completada"
         }
       ],
       "version_range": "v0.4.0 → v0.4.3",
-      "status": "in_progress",
-      "status_label": "En curso",
+      "status": "completed",
+      "status_label": "Completada",
       "progress": {
-        "completed": 3,
+        "completed": 4,
         "in_progress": 0,
-        "pending": 1,
+        "pending": 0,
         "total": 4
       }
     },

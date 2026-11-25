@@ -1,9 +1,11 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://src/world/vertical_slice.gd" id="1_slice"]
 [ext_resource type="PackedScene" path="res://scenes/vehicle/EsteemExterior.tscn" id="2_esteem"]
 [ext_resource type="Script" path="res://src/weather/rain_fx_controller.gd" id="3_rainfx"]
 [ext_resource type="Script" path="res://src/debug/device_perf_probe.gd" id="4_perf"]
+[ext_resource type="Script" path="res://src/weather/weather_bridge.gd" id="5_bridge"]
+[ext_resource type="Script" path="res://src/weather/lightning_director.gd" id="6_lightning"]
 
 [sub_resource type="Environment" id="Environment_night"]
 background_mode = 1
@@ -128,3 +130,11 @@ text = "Volver"
 
 [node name="DevicePerfProbe" type="Node" parent="."]
 script = ExtResource("4_perf")
+
+[node name="WeatherBridge" type="Node" parent="."]
+script = ExtResource("5_bridge")
+rain_fx_path = NodePath("../RainFx")
+always_follow = false
+
+[node name="LightningDirector" type="Node3D" parent="."]
+script = ExtResource("6_lightning")

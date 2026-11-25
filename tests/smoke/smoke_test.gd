@@ -8,7 +8,7 @@ extends Node
 ## bloqueo (F1.3), el exterior definitivo (F3.1) y el interior definitivo (F3.2)
 ## conservan LOD0/LOD1/LOD2, manifiesto y ancla de rig.
 
-const EXPECTED_VERSION := "0.4.2"
+const EXPECTED_VERSION := "0.4.3"
 const AUTOLOADS := [
 	"EventBus",
 	"HardwareProfiler",
