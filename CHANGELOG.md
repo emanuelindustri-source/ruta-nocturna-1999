@@ -4,6 +4,79 @@ Todas las fechas usan ISO 8601. Las versiones siguen SemVer.
 
 ## [Unreleased]
 
+## [0.4.2] - 2026-11-24
+
+### Añadido
+
+- Contrato **`data/schemas/world_biomes.json`** (`world.biomes` v1) y JSON
+  Schema: seis biomas (costa, montaña, llanos, selva, delta, eje industrial),
+  props procedurales, POIs/mobiliario vial, presets de superficie (agua, polvo,
+  nieve), presupuestos, colocación determinista, atribución y anti-softlock.
+  Aditivo: no modifica `world_routes` v1 ni `world_streaming` v1.
+- **Especificación de kits** `data/world/kits_spec.json` y generador bpy
+  `tools/blender/world_kits.py` (fábrica Blender headless): siete familias de
+  kits con **LOD0/LOD1/LOD2** + ancla `anchor_root`, materiales PBR propios,
+  sin marcas reales y sin texto en las mallas: gasolinera, motel, peaje, cruce,
+  señal, poste y valla. Manifiestos reproducibles en `assets/manifests/kit_*` y
+  GLB en `assets/generated/world/`.
+- **Runtime de biomas**: `WorldKitLibrary` (contrato, bioma por sector y carga
+  threaded de kits con máximo 2 solicitudes y 0 `load()` síncrono),
+  `BiomeDecorBuilder` (ocho props procedurales con tres LODs decrecientes) y
+  `PoiManager` (POIs de ruta deterministas con `visibility_range` y colisión de
+  caja, ≤ 72 nodos por ruta).
+- **Decorado de sector**: `WorldSectorBuilder.build_sector_decor` coloca
+  mobiliario vial, vegetación (MultiMesh) y agua visual con presupuesto estricto
+  de **620 triángulos** por sector (subpresupuesto de 300 para mobiliario);
+  terreno + vía + decor ≤ 3.000. La colisión y las alturas de F4.2 no se tocan.
+- **Presets de superficie**: `shaders/world_water.gdshader` (agua por bioma),
+  tinte de polvo y nieve de altura sobre la línea de nieve (solo montaña).
+  Visuales: el clima real es F4.4 y la física (vadeo/agarre) es F5.1.
+- **`tests/world/WorldBiomesTest.tscn`** y wrapper: **276 comprobaciones** de
+  contrato, kits, manifiestos, hashes, LODs, presupuestos por sector, POIs
+  fuera de la vía, agua, nieve, reaparición segura y carga threaded de kits.
+- **Localización**: 26 claves nuevas (`BIOME_*`, `POI_*`, `ROAD_*`) en los once
+  idiomas; `BOOT_KICKER` a Fase 4.3 y `SLICE_TITLE` a v0.4.2.
+- **Documentación**: `docs/architecture/WORLD_BIOMES.md` y secciones nuevas en
+  `DATA_CONTRACTS.md`, `SYSTEM_ARCHITECTURE.md`, `WORLD_STREAMING.md`,
+  `BUILD_AND_RELEASE.md` y `CREDITS.md`.
+
+### Cambiado
+
+- El título del overlay del mundo muestra el bioma activo; `WorldDirector`
+  retrasa la activación del streaming hasta cargar los kits (o 12 s en modo
+  degradado) y expone kits/POIs en `streaming_snapshot()`.
+- `tools/validate_schemas.py` (11 contratos), `tools/health_check.py` y la CI
+  ejecutan la validación de `world.biomes` y la prueba de biomas.
+- Versión `0.4.2` en `VERSION`, `project.godot`, `export_presets.cfg`
+  (`version/code=114`), `EXPECTED_VERSION` de smoke/lluvia/rutas/streaming y
+  `PHASE` de Boot.
+
+### Arreglado
+
+- **`WorldSectorStreamer`**: un sector ya completado y esperando su turno de
+  construcción podía re-encolarse y construirse dos veces, duplicando el
+  contador de triángulos y fugando el nodo de la primera construcción. Ahora la
+  cola/lista de preparados se deduplican y `_build_sector` ignora claves ya
+  cargadas (detectado por la auditoría de decorado de F4.3; no cambia el
+  comportamiento de streaming validado en F4.2: 99/99).
+- **Cabina — volante y radio enterrados (H7/H10):** las cajas del salpicadero
+  (`dashboard_upper/lower`, fondo z=−0,30) atravesaban el plano del volante y
+  ocultaban media corona y la radio. El fondo pasa a z=−0,48 (con nota de fuente
+  en `interior_spec.json`) y el interior se reconstruye con la fábrica Blender;
+  verificado en captura real (`f43_fix_01_cabin.png`).
+- **Cabina — clics de ratón (H8):** el clic izquierdo pulsaba siempre el control
+  del retículo (por eso cualquier clic acababa en el volante). Ahora se resuelve
+  por posición, igual que el tacto en Android.
+- **Cabina — palanca con ratón (H2, preliminar PC):** el arrastre con botón
+  izquierdo llega ahora a `drag_focused` (antes solo `InputEventScreenDrag`);
+  verificado P→N con el HUD. La ruta de gamepad/teclado sigue en F5.1/F9.1.
+- **Cabina — sin salida (H13):** `Esc` no hacía nada en la cabina y el jugador
+  quedaba atrapado hasta cerrar el juego; ahora `ui_cancel` vuelve al Boot con el
+  patrón de `WorldDirector`.
+- **Cabina — testigos (H11/H3 parcial):** `lights_indicator_m` se reubica sobre
+  la cara del cuadro de instrumentos (nota de fuente en `cabin_interaction.json`);
+  el LED de radio queda sobre la radio y hace observable el encendido.
+
 ## [0.4.1] — 2026-11-24
 
 ### Añadido

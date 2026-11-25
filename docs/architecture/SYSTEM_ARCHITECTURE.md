@@ -558,3 +558,44 @@ Reglas:
 - La carga del grafo medida (PC) es ~30 ms, por debajo del presupuesto de
   250 ms. El PSS y los triángulos visibles se miden en el Redmi con la ruta
   `slice,cabin,world`; ver `WORLD_STREAMING.md` y el informe de cierre.
+
+## 16. Kits de biomas, POIs y mobiliario vial (Fase 4.3)
+
+F4.3 añade la capa visual de presentación sobre el streaming de F4.2. No toca
+los contratos cerrados ni la red OSM.
+
+```mermaid
+flowchart LR
+    SPEC[(kits_spec.json)] --> BK[tools/blender/world_kits.py]
+    BK --> GLB[(kit_*_lod0/1/2.glb + manifiestos)]
+    BIO[(world_biomes.json)] --> KL[WorldKitLibrary · servicio de escena]
+    GLB -. load_threaded_request ×2 .-> KL
+    KL -->|bioma + LOD| SB[WorldSectorBuilder.build_sector_decor]
+    KL --> PM[PoiManager · servicio de escena]
+    SB -->|MultiMesh + agua| WORLD[WorldTerrain.tscn]
+    PM -->|POIs con visibility_range| WORLD
+    BB[BiomeDecorBuilder] -->|props LOD0/1/2| SB
+```
+
+| Componente | Responsabilidad | No debe hacer |
+|---|---|---|
+| `WorldKitLibrary` | Contrato `world.biomes`, bioma por sector, carga threaded de kits (máx. 2, 0 síncrono) y mallas de props | Ser autoload, simular clima o tocar la red |
+| `BiomeDecorBuilder` | Props procedurales (vegetación, rocas, mojones, guarda-falsos) con tres LODs | Cargar recursos ni usar texturas externas |
+| `PoiManager` | POIs de ruta deterministas, LOD por distancia y colisión de caja | Bloquear la vía, contener mecánicas de repostaje/descanso (F5.1) ni simular tráfico |
+| `WorldSectorBuilder` (F4.3) | Decorado por sector con presupuesto de 620 triángulos, agua visual y nieve de altura | Modificar terreno/vía/colisión de F4.2 |
+| `shaders/world_water.gdshader` | Oleaje visual del agua por bioma | Simular vadeo, humedad ni clima |
+
+Reglas:
+
+- El orden de carga es: contratos → kits (threaded, antes de la ventana de
+  sectores) → streaming F4.2 sin cambios. Así el techo global de dos
+  solicitudes y la prohibición de `load()` síncrono se conservan.
+- El decorado es determinista por coordenadas de sector y respeta el presupuesto
+  por construcción; la colisión de reaparición de F4.2 queda intacta.
+- Los POIs usan `visibility_range` (LOD0 <90 m, LOD1 <260 m, LOD2) y nunca se
+  colocan sobre la vía ni el corredor de reaparición.
+- Los presets de agua/polvo/nieve son visuales; `WeatherManager` (F4.4) los
+  consumirá como estado de clima y F5.1 les dará física (vadeo/agarre).
+- Marca real prohibida en kits y rótulos; el arte es propio (CC BY-NC-SA 4.0).
+- La atribución ODbL (`CREDITS_OSM`) sigue visible en el mundo y en el build.
+

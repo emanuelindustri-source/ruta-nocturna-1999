@@ -1,0 +1,406 @@
+{
+  "schema_version": 1,
+  "contract_id": "world.biomes",
+  "world_id": "venezuela.1999",
+  "status": "active",
+  "phase": "F4.3",
+  "note": "Contrato aditivo de F4.3: kits de biomas, POIs, mobiliario vial y presets de superficie (agua, polvo, nieve). No modifica world_routes v1 ni world_streaming v1: los consume. Los kits no contienen marcas reales ni texturas de la biblioteca externa. La simulación de clima/humedad real es F4.4 (WeatherManager) y la conducción/vadeo es F5.1.",
+  "data_files": {
+    "streaming_contract": "data/schemas/world_streaming.json",
+    "routes_contract": "data/schemas/world_routes.json",
+    "kits_spec": "data/world/kits_spec.json",
+    "kits_manifest_dir": "assets/manifests",
+    "kits_generated_dir": "assets/generated/world",
+    "kit_library_script": "src/world/world_kit_library.gd",
+    "decor_script": "src/world/biome_decor_builder.gd",
+    "poi_manager_script": "src/world/poi_manager.gd",
+    "builder_script": "src/world/world_sector_builder.gd",
+    "bake_script": "tools/blender/world_kits.py",
+    "build_command": "tools/blender/build_assets.cmd",
+    "water_shader": "shaders/world_water.gdshader"
+  },
+  "region_biome_map": {
+    "carabobo": "biome.industrial",
+    "falcon": "biome.costa",
+    "merida": "biome.montana",
+    "llanos": "biome.llanos",
+    "amazonas": "biome.selva",
+    "delta": "biome.delta"
+  },
+  "biome_selection": {
+    "method": "nearest_region_hub",
+    "source": "route_network region hubs",
+    "fallback_biome": "biome.llanos",
+    "deterministic": true,
+    "note": "Cada sector recibe el bioma del hub de región más cercano en el espacio de juego (proyección 1:20 de F4.1). La asignación es determinista y no requiere rehornear los sectores de F4.2."
+  },
+  "biomes": [
+    {
+      "id": "biome.costa",
+      "region": "falcon",
+      "name_key": "BIOME_COSTA_NAME",
+      "description_key": "BIOME_COSTA_DESC",
+      "terrain": {
+        "low_color": [0.135, 0.145, 0.105],
+        "high_color": [0.205, 0.2, 0.155],
+        "rock_color": [0.27, 0.25, 0.2],
+        "roughness": 0.92,
+        "slope_rock_blend": 2.5
+      },
+      "relief_variation": {
+        "color_noise": 0.16,
+        "source_status": "design_value",
+        "note": "Variación de relieve visual (color/roca por pendiente); la geometría de alturas sigue siendo la de los sectores horneados de F4.2 (sin rehornear)."
+      },
+      "decor": [
+        {"prop": "prop.palm", "max_instances": 4, "min_lateral_m": 8.0, "max_lateral_m": 60.0, "max_slope_pct": 30.0},
+        {"prop": "prop.bush", "max_instances": 8, "min_lateral_m": 6.5, "max_lateral_m": 55.0, "max_slope_pct": 35.0},
+        {"prop": "prop.grass", "max_instances": 18, "min_lateral_m": 6.0, "max_lateral_m": 50.0, "max_slope_pct": 40.0},
+        {"prop": "prop.rock", "max_instances": 3, "min_lateral_m": 7.0, "max_lateral_m": 60.0, "max_slope_pct": 45.0}
+      ],
+      "roadside": [
+        {"kit": "road.kit_pole", "max_instances": 2, "min_lateral_m": 6.5, "max_lateral_m": 9.0, "every_n_km": 1.6},
+        {"kit": "road.kit_sign", "max_instances": 1, "min_lateral_m": 6.2, "max_lateral_m": 8.5, "every_n_km": 12.0},
+        {"kit": "prop.km_post", "max_instances": 3, "min_lateral_m": 5.8, "max_lateral_m": 7.0, "every_n_km": 0.8}
+      ],
+      "surface_presets": {
+        "water": {"enabled": true, "level_mode": "sector_low_fill", "level_bias_m": 1.2, "color": [0.05, 0.11, 0.13], "roughness": 0.12, "metallic": 0.25, "wave_amplitude_m": 0.12, "wave_speed_mps": 0.35},
+        "dust": {"enabled": true, "tint": [0.62, 0.55, 0.42], "particle_density": 0.35, "note": "Preset visual; la emisión real de polvo por conducción es F5.1/F4.4."},
+        "snow": {"enabled": false, "tint": [0.9, 0.92, 0.95], "snow_line_m": 9999.0, "blend_m": 10.0}
+      }
+    },
+    {
+      "id": "biome.montana",
+      "region": "merida",
+      "name_key": "BIOME_MONTANA_NAME",
+      "description_key": "BIOME_MONTANA_DESC",
+      "terrain": {
+        "low_color": [0.1, 0.135, 0.1],
+        "high_color": [0.185, 0.2, 0.185],
+        "rock_color": [0.29, 0.285, 0.27],
+        "roughness": 0.94,
+        "slope_rock_blend": 2.0
+      },
+      "relief_variation": {
+        "color_noise": 0.2,
+        "source_status": "design_value",
+        "note": "Roca de ladera y variación cromática por pendiente; sin cambios de geometría horneada."
+      },
+      "decor": [
+        {"prop": "prop.frailejon", "max_instances": 5, "min_lateral_m": 6.5, "max_lateral_m": 55.0, "max_slope_pct": 45.0},
+        {"prop": "prop.tree", "max_instances": 3, "min_lateral_m": 8.0, "max_lateral_m": 60.0, "max_slope_pct": 35.0},
+        {"prop": "prop.bush", "max_instances": 6, "min_lateral_m": 6.5, "max_lateral_m": 50.0, "max_slope_pct": 45.0},
+        {"prop": "prop.rock", "max_instances": 6, "min_lateral_m": 7.0, "max_lateral_m": 65.0, "max_slope_pct": 60.0},
+        {"prop": "prop.grass", "max_instances": 12, "min_lateral_m": 6.0, "max_lateral_m": 45.0, "max_slope_pct": 50.0}
+      ],
+      "roadside": [
+        {"kit": "road.kit_pole", "max_instances": 2, "min_lateral_m": 6.5, "max_lateral_m": 9.0, "every_n_km": 1.2},
+        {"kit": "road.kit_sign", "max_instances": 2, "min_lateral_m": 6.2, "max_lateral_m": 8.5, "every_n_km": 8.0},
+        {"kit": "prop.guardrail", "max_instances": 6, "min_lateral_m": 5.6, "max_lateral_m": 6.4, "every_n_km": 0.4},
+        {"kit": "prop.km_post", "max_instances": 3, "min_lateral_m": 5.8, "max_lateral_m": 7.0, "every_n_km": 0.8}
+      ],
+      "surface_presets": {
+        "water": {"enabled": true, "level_mode": "sector_low_fill", "level_bias_m": 0.6, "color": [0.07, 0.12, 0.14], "roughness": 0.16, "metallic": 0.15, "wave_amplitude_m": 0.05, "wave_speed_mps": 0.2},
+        "dust": {"enabled": false, "tint": [0.55, 0.5, 0.42], "particle_density": 0.0},
+        "snow": {"enabled": true, "tint": [0.88, 0.91, 0.95], "snow_line_m": 150.0, "blend_m": 24.0, "note": "Nieve/escarcha visual de altura en el páramo; sin acumulación física ni clima simulado (F4.4)."}
+      }
+    },
+    {
+      "id": "biome.llanos",
+      "region": "llanos",
+      "name_key": "BIOME_LLANOS_NAME",
+      "description_key": "BIOME_LLANOS_DESC",
+      "terrain": {
+        "low_color": [0.145, 0.15, 0.085],
+        "high_color": [0.225, 0.215, 0.14],
+        "rock_color": [0.26, 0.24, 0.19],
+        "roughness": 0.95,
+        "slope_rock_blend": 3.0
+      },
+      "relief_variation": {
+        "color_noise": 0.14,
+        "source_status": "design_value",
+        "note": "Sabana abierta: variación suave de color; geometría horneada sin cambios."
+      },
+      "decor": [
+        {"prop": "prop.grass", "max_instances": 24, "min_lateral_m": 6.0, "max_lateral_m": 60.0, "max_slope_pct": 30.0},
+        {"prop": "prop.tree", "max_instances": 4, "min_lateral_m": 9.0, "max_lateral_m": 65.0, "max_slope_pct": 25.0},
+        {"prop": "prop.bush", "max_instances": 8, "min_lateral_m": 6.5, "max_lateral_m": 55.0, "max_slope_pct": 30.0}
+      ],
+      "roadside": [
+        {"kit": "road.kit_pole", "max_instances": 2, "min_lateral_m": 6.5, "max_lateral_m": 9.0, "every_n_km": 1.4},
+        {"kit": "road.kit_billboard", "max_instances": 1, "min_lateral_m": 8.0, "max_lateral_m": 12.0, "every_n_km": 18.0},
+        {"kit": "prop.km_post", "max_instances": 3, "min_lateral_m": 5.8, "max_lateral_m": 7.0, "every_n_km": 0.8}
+      ],
+      "surface_presets": {
+        "water": {"enabled": true, "level_mode": "sector_low_fill", "level_bias_m": 0.8, "color": [0.08, 0.13, 0.13], "roughness": 0.18, "metallic": 0.1, "wave_amplitude_m": 0.06, "wave_speed_mps": 0.25},
+        "dust": {"enabled": true, "tint": [0.68, 0.58, 0.4], "particle_density": 0.7, "note": "Preset visual de sequía; la polvareda de conducción es F5.1."},
+        "snow": {"enabled": false, "tint": [0.9, 0.92, 0.95], "snow_line_m": 9999.0, "blend_m": 10.0}
+      }
+    },
+    {
+      "id": "biome.selva",
+      "region": "amazonas",
+      "name_key": "BIOME_SELVA_NAME",
+      "description_key": "BIOME_SELVA_DESC",
+      "terrain": {
+        "low_color": [0.075, 0.115, 0.075],
+        "high_color": [0.14, 0.175, 0.12],
+        "rock_color": [0.23, 0.235, 0.2],
+        "roughness": 0.93,
+        "slope_rock_blend": 2.2
+      },
+      "relief_variation": {
+        "color_noise": 0.18,
+        "source_status": "design_value",
+        "note": "Follaje denso y humedad visual; geometría horneada sin cambios."
+      },
+      "decor": [
+        {"prop": "prop.tree", "max_instances": 6, "min_lateral_m": 8.0, "max_lateral_m": 60.0, "max_slope_pct": 35.0},
+        {"prop": "prop.bush", "max_instances": 10, "min_lateral_m": 6.5, "max_lateral_m": 55.0, "max_slope_pct": 40.0},
+        {"prop": "prop.grass", "max_instances": 14, "min_lateral_m": 6.0, "max_lateral_m": 45.0, "max_slope_pct": 45.0},
+        {"prop": "prop.rock", "max_instances": 3, "min_lateral_m": 7.0, "max_lateral_m": 60.0, "max_slope_pct": 50.0}
+      ],
+      "roadside": [
+        {"kit": "road.kit_pole", "max_instances": 2, "min_lateral_m": 6.5, "max_lateral_m": 9.0, "every_n_km": 1.8},
+        {"kit": "road.kit_sign", "max_instances": 1, "min_lateral_m": 6.2, "max_lateral_m": 8.5, "every_n_km": 14.0},
+        {"kit": "prop.km_post", "max_instances": 2, "min_lateral_m": 5.8, "max_lateral_m": 7.0, "every_n_km": 0.8}
+      ],
+      "surface_presets": {
+        "water": {"enabled": true, "level_mode": "sector_low_fill", "level_bias_m": 1.0, "color": [0.055, 0.115, 0.1], "roughness": 0.14, "metallic": 0.2, "wave_amplitude_m": 0.08, "wave_speed_mps": 0.3},
+        "dust": {"enabled": false, "tint": [0.5, 0.45, 0.35], "particle_density": 0.0},
+        "snow": {"enabled": false, "tint": [0.9, 0.92, 0.95], "snow_line_m": 9999.0, "blend_m": 10.0}
+      }
+    },
+    {
+      "id": "biome.delta",
+      "region": "delta",
+      "name_key": "BIOME_DELTA_NAME",
+      "description_key": "BIOME_DELTA_DESC",
+      "terrain": {
+        "low_color": [0.1, 0.13, 0.095],
+        "high_color": [0.17, 0.185, 0.14],
+        "rock_color": [0.24, 0.235, 0.2],
+        "roughness": 0.9,
+        "slope_rock_blend": 3.2
+      },
+      "relief_variation": {
+        "color_noise": 0.15,
+        "source_status": "design_value",
+        "note": "Humedal: planicies verdes y caños; geometría horneada sin cambios."
+      },
+      "decor": [
+        {"prop": "prop.palm", "max_instances": 5, "min_lateral_m": 7.5, "max_lateral_m": 60.0, "max_slope_pct": 25.0},
+        {"prop": "prop.grass", "max_instances": 20, "min_lateral_m": 6.0, "max_lateral_m": 50.0, "max_slope_pct": 30.0},
+        {"prop": "prop.bush", "max_instances": 8, "min_lateral_m": 6.5, "max_lateral_m": 50.0, "max_slope_pct": 30.0}
+      ],
+      "roadside": [
+        {"kit": "road.kit_pole", "max_instances": 2, "min_lateral_m": 6.5, "max_lateral_m": 9.0, "every_n_km": 1.8},
+        {"kit": "prop.km_post", "max_instances": 2, "min_lateral_m": 5.8, "max_lateral_m": 7.0, "every_n_km": 0.8}
+      ],
+      "surface_presets": {
+        "water": {"enabled": true, "level_mode": "sector_low_fill", "level_bias_m": 1.4, "color": [0.06, 0.115, 0.11], "roughness": 0.12, "metallic": 0.22, "wave_amplitude_m": 0.1, "wave_speed_mps": 0.3},
+        "dust": {"enabled": false, "tint": [0.5, 0.45, 0.35], "particle_density": 0.0},
+        "snow": {"enabled": false, "tint": [0.9, 0.92, 0.95], "snow_line_m": 9999.0, "blend_m": 10.0}
+      }
+    },
+    {
+      "id": "biome.industrial",
+      "region": "carabobo",
+      "name_key": "BIOME_INDUSTRIAL_NAME",
+      "description_key": "BIOME_INDUSTRIAL_DESC",
+      "terrain": {
+        "low_color": [0.13, 0.135, 0.115],
+        "high_color": [0.2, 0.2, 0.185],
+        "rock_color": [0.27, 0.26, 0.24],
+        "roughness": 0.92,
+        "slope_rock_blend": 2.6
+      },
+      "relief_variation": {
+        "color_noise": 0.12,
+        "source_status": "design_value",
+        "note": "Periurbano/gravilla; geometría horneada sin cambios."
+      },
+      "decor": [
+        {"prop": "prop.bush", "max_instances": 6, "min_lateral_m": 6.5, "max_lateral_m": 50.0, "max_slope_pct": 35.0},
+        {"prop": "prop.grass", "max_instances": 12, "min_lateral_m": 6.0, "max_lateral_m": 45.0, "max_slope_pct": 40.0},
+        {"prop": "prop.rock", "max_instances": 4, "min_lateral_m": 7.0, "max_lateral_m": 55.0, "max_slope_pct": 45.0},
+        {"prop": "prop.tree", "max_instances": 2, "min_lateral_m": 9.0, "max_lateral_m": 60.0, "max_slope_pct": 30.0}
+      ],
+      "roadside": [
+        {"kit": "road.kit_pole", "max_instances": 3, "min_lateral_m": 6.5, "max_lateral_m": 9.0, "every_n_km": 0.7},
+        {"kit": "road.kit_billboard", "max_instances": 1, "min_lateral_m": 8.0, "max_lateral_m": 12.0, "every_n_km": 12.0},
+        {"kit": "road.kit_sign", "max_instances": 1, "min_lateral_m": 6.2, "max_lateral_m": 8.5, "every_n_km": 10.0},
+        {"kit": "prop.km_post", "max_instances": 3, "min_lateral_m": 5.8, "max_lateral_m": 7.0, "every_n_km": 0.8}
+      ],
+      "surface_presets": {
+        "water": {"enabled": true, "level_mode": "sector_low_fill", "level_bias_m": 0.5, "color": [0.07, 0.11, 0.12], "roughness": 0.18, "metallic": 0.12, "wave_amplitude_m": 0.04, "wave_speed_mps": 0.15},
+        "dust": {"enabled": true, "tint": [0.6, 0.55, 0.46], "particle_density": 0.5, "note": "Preset visual; sin partículas de conducción en F4.3."},
+        "snow": {"enabled": false, "tint": [0.9, 0.92, 0.95], "snow_line_m": 9999.0, "blend_m": 10.0}
+      }
+    }
+  ],
+  "props": [
+    {"id": "prop.palm", "kind": "procedural_vegetation", "generator": "biome_decor_builder.gd#build_palm", "lods": [{"id": "lod0", "max_triangles": 60}, {"id": "lod1", "max_triangles": 45}, {"id": "lod2", "max_triangles": 30}], "cast_shadow": true},
+    {"id": "prop.tree", "kind": "procedural_vegetation", "generator": "biome_decor_builder.gd#build_tree", "lods": [{"id": "lod0", "max_triangles": 140}, {"id": "lod1", "max_triangles": 50}, {"id": "lod2", "max_triangles": 24}], "cast_shadow": true},
+    {"id": "prop.bush", "kind": "procedural_vegetation", "generator": "biome_decor_builder.gd#build_bush", "lods": [{"id": "lod0", "max_triangles": 120}, {"id": "lod1", "max_triangles": 32}, {"id": "lod2", "max_triangles": 12}], "cast_shadow": false},
+    {"id": "prop.grass", "kind": "procedural_vegetation", "generator": "biome_decor_builder.gd#build_grass", "lods": [{"id": "lod0", "max_triangles": 12}, {"id": "lod1", "max_triangles": 8}, {"id": "lod2", "max_triangles": 4}], "cast_shadow": false},
+    {"id": "prop.rock", "kind": "procedural_rock", "generator": "biome_decor_builder.gd#build_rock", "lods": [{"id": "lod0", "max_triangles": 64}, {"id": "lod1", "max_triangles": 24}, {"id": "lod2", "max_triangles": 8}], "cast_shadow": true},
+    {"id": "prop.frailejon", "kind": "procedural_vegetation", "generator": "biome_decor_builder.gd#build_frailejon", "lods": [{"id": "lod0", "max_triangles": 60}, {"id": "lod1", "max_triangles": 45}, {"id": "lod2", "max_triangles": 35}], "cast_shadow": false},
+    {"id": "prop.km_post", "kind": "procedural_furniture", "generator": "biome_decor_builder.gd#build_km_post", "lods": [{"id": "lod0", "max_triangles": 24}, {"id": "lod1", "max_triangles": 12}, {"id": "lod2", "max_triangles": 4}], "cast_shadow": false},
+    {"id": "prop.guardrail", "kind": "procedural_furniture", "generator": "biome_decor_builder.gd#build_guardrail", "lods": [{"id": "lod0", "max_triangles": 60}, {"id": "lod1", "max_triangles": 48}, {"id": "lod2", "max_triangles": 24}], "cast_shadow": true}
+  ],
+  "pois": [
+    {
+      "id": "poi.gasolinera",
+      "kind": "poi",
+      "kit_id": "poi.kit_gasolinera",
+      "name_key": "POI_GASOLINERA_NAME",
+      "description_key": "POI_GASOLINERA_DESC",
+      "biomes": ["biome.costa", "biome.montana", "biome.llanos", "biome.selva", "biome.delta", "biome.industrial"],
+      "placement": {"mode": "route_interval", "every_n_km": 140.0, "jitter_km": 18.0, "lateral_m": 16.0, "side": "alternate", "min_clear_road_m": 9.0},
+      "lods": [{"id": "lod0", "max_triangles": 3200, "range_m": 90.0}, {"id": "lod1", "max_triangles": 1100, "range_m": 260.0}, {"id": "lod2", "max_triangles": 320}],
+      "collision": true,
+      "brands_forbidden": true
+    },
+    {
+      "id": "poi.motel",
+      "kind": "poi",
+      "kit_id": "poi.kit_motel",
+      "name_key": "POI_MOTEL_NAME",
+      "description_key": "POI_MOTEL_DESC",
+      "biomes": ["biome.costa", "biome.montana", "biome.llanos", "biome.selva", "biome.delta", "biome.industrial"],
+      "placement": {"mode": "route_interval", "every_n_km": 190.0, "jitter_km": 22.0, "lateral_m": 18.0, "side": "alternate", "min_clear_road_m": 9.0},
+      "lods": [{"id": "lod0", "max_triangles": 2800, "range_m": 90.0}, {"id": "lod1", "max_triangles": 950, "range_m": 260.0}, {"id": "lod2", "max_triangles": 280}],
+      "collision": true,
+      "brands_forbidden": true
+    },
+    {
+      "id": "poi.peaje",
+      "kind": "poi",
+      "kit_id": "poi.kit_peaje",
+      "name_key": "POI_PEAJE_NAME",
+      "description_key": "POI_PEAJE_DESC",
+      "biomes": ["biome.costa", "biome.montana", "biome.llanos", "biome.selva", "biome.delta", "biome.industrial"],
+      "placement": {"mode": "route_interval", "every_n_km": 110.0, "jitter_km": 15.0, "lateral_m": 11.0, "side": "right", "min_clear_road_m": 9.0},
+      "lods": [{"id": "lod0", "max_triangles": 2400, "range_m": 110.0}, {"id": "lod1", "max_triangles": 820, "range_m": 300.0}, {"id": "lod2", "max_triangles": 240}],
+      "collision": true,
+      "brands_forbidden": true
+    },
+    {
+      "id": "poi.cruce",
+      "kind": "poi",
+      "kit_id": "poi.kit_cruce",
+      "name_key": "POI_CRUCE_NAME",
+      "description_key": "POI_CRUCE_DESC",
+      "biomes": ["biome.costa", "biome.llanos", "biome.selva", "biome.delta", "biome.industrial"],
+      "placement": {"mode": "route_interval", "every_n_km": 75.0, "jitter_km": 12.0, "lateral_m": 9.5, "side": "alternate", "min_clear_road_m": 9.0},
+      "lods": [{"id": "lod0", "max_triangles": 1200, "range_m": 80.0}, {"id": "lod1", "max_triangles": 420, "range_m": 220.0}, {"id": "lod2", "max_triangles": 130}],
+      "collision": true,
+      "brands_forbidden": true
+    },
+    {
+      "id": "road.kit_sign",
+      "kind": "furniture",
+      "kit_id": "road.kit_sign",
+      "name_key": "ROAD_SIGN_NAME",
+      "description_key": "ROAD_SIGN_DESC",
+      "biomes": ["biome.costa", "biome.montana", "biome.llanos", "biome.selva", "biome.delta", "biome.industrial"],
+      "placement": {"mode": "sector_decor", "min_clear_road_m": 6.2},
+      "lods": [{"id": "lod0", "max_triangles": 220, "range_m": 70.0}, {"id": "lod1", "max_triangles": 120, "range_m": 200.0}, {"id": "lod2", "max_triangles": 50}],
+      "collision": true,
+      "brands_forbidden": true
+    },
+    {
+      "id": "road.kit_pole",
+      "kind": "furniture",
+      "kit_id": "road.kit_pole",
+      "name_key": "ROAD_POLE_NAME",
+      "description_key": "ROAD_POLE_DESC",
+      "biomes": ["biome.costa", "biome.montana", "biome.llanos", "biome.selva", "biome.delta", "biome.industrial"],
+      "placement": {"mode": "sector_decor", "min_clear_road_m": 6.5},
+      "lods": [{"id": "lod0", "max_triangles": 300, "range_m": 70.0}, {"id": "lod1", "max_triangles": 140, "range_m": 200.0}, {"id": "lod2", "max_triangles": 50}],
+      "collision": true,
+      "brands_forbidden": true
+    },
+    {
+      "id": "road.kit_billboard",
+      "kind": "furniture",
+      "kit_id": "road.kit_billboard",
+      "name_key": "ROAD_BILLBOARD_NAME",
+      "description_key": "ROAD_BILLBOARD_DESC",
+      "biomes": ["biome.llanos", "biome.industrial", "biome.costa"],
+      "placement": {"mode": "sector_decor", "min_clear_road_m": 8.0},
+      "lods": [{"id": "lod0", "max_triangles": 340, "range_m": 120.0}, {"id": "lod1", "max_triangles": 140, "range_m": 320.0}, {"id": "lod2", "max_triangles": 70}],
+      "collision": true,
+      "brands_forbidden": true
+    }
+  ],
+  "surface_presets": {
+    "note": "Presets visuales/materiales por bioma y clima. No simulan lluvia, humedad ni clima: WeatherManager es F4.4 y el agarre/vadeo es F5.1. No duplican rain_surface_fx (que es del vehículo).",
+    "water": {"shader": "shaders/world_water.gdshader", "animated": true, "physics": false, "vadeo": "F5.1"},
+    "dust": {"applies_to": ["biome.llanos", "biome.industrial", "biome.costa"], "physics": false, "weather_link": "F4.4"},
+    "snow": {"applies_to": ["biome.montana"], "physics": false, "weather_link": "F4.4"}
+  },
+  "budgets": {
+    "max_sector_triangles_total": 3000,
+    "terrain_triangles_per_sector": 2048,
+    "road_triangles_per_sector_observed_f42": 328,
+    "max_decor_triangles_per_sector": 620,
+    "max_road_furniture_triangles_per_sector": 300,
+    "max_water_quads_per_sector": 1,
+    "max_poi_nodes_per_route": 72,
+    "max_visible_poi_triangles_mobile": 24000,
+    "max_visible_poi_triangles_pc": 80000,
+    "max_kit_concurrent_load_requests": 2,
+    "kit_sync_load_forbidden": true,
+    "max_sector_builds_per_frame": 1,
+    "pss_budget_mb": 1228.8,
+    "note": "Decor + vía + terreno no superan max_sector_triangles_total por sector (2.048 terreno + ≤ 328 vía + ≤ 620 decor = ≤ 2.996). Los POIs se contabilizan aparte con LOD por distancia y caben en el presupuesto móvil global de 120.000 triángulos visibles."
+  },
+  "placement_rules": {
+    "deterministic_seed": "route_id + distance_m",
+    "never_on_road": true,
+    "min_clear_road_m": 5.6,
+    "respawn_corridor_protected_m": 4.0,
+    "max_slope_pct_for_poi": 12.0,
+    "note": "Los kits nunca invaden la vía ni el corredor de reaparición de F4.2: safe_respawn_point sigue proyectando sobre la red. La recuperación completa es F5.1."
+  },
+  "attribution": {
+    "dataset": "OpenStreetMap",
+    "license": "ODbL 1.0",
+    "license_url": "https://opendatacommons.org/licenses/odbl/1-0/",
+    "copyright": "© OpenStreetMap contributors",
+    "copyright_url": "https://www.openstreetmap.org/copyright",
+    "in_game_key": "CREDITS_OSM",
+    "license_file": "licenses/ODbL-1.0.txt",
+    "share_alike": true,
+    "kits_license": "CC BY-NC-SA 4.0 (arte 3D propio del proyecto). Ver ASSET_LICENSE.md.",
+    "note": "La atribución ODbL de la red y de los sectores se conserva sin cambios. Los kits son arte propio del proyecto sin marcas reales ni texturas de la biblioteca externa."
+  },
+  "anti_softlock": {
+    "respawn_on_network": true,
+    "requires_collision": true,
+    "fallback_hub": "hub_carabobo",
+    "props_block_road": false,
+    "note": "El decorado y los POIs no bloquean la vía ni el corredor de reaparición. El anti-atasco completo (grúa, deuda, retorno) es F5.1."
+  },
+  "states": {
+    "kit": ["declared", "loading", "loaded", "failed"],
+    "poi": ["planned", "placed", "hidden", "removed"],
+    "surface": ["dry", "dust", "wet_visual", "frost_visual"]
+  },
+  "qa": {
+    "test_scene": "tests/world/WorldBiomesTest.tscn",
+    "test_command": "tools/dev/world_biomes_test.cmd",
+    "build_kits_command": "tools/blender/build_assets.cmd",
+    "validate_assets_command": "tools/validate_assets.py",
+    "validate_command": "tools/validate_schemas.py",
+    "expected_kit_families": 7,
+    "expected_procedural_props": 8,
+    "expected_biomes": 6,
+    "android_route": "slice,cabin,world",
+    "pc_report": "build/logs/gameplay/REPORT_F43.md",
+    "android_report": "build/logs/android-smoke/latest.json"
+  }
+}

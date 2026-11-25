@@ -1,0 +1,92 @@
+{
+  "manifest_version": 1,
+  "asset_id": "world.poi.kit_cruce",
+  "content_status": "generated",
+  "author": "Ruta Nocturna 1999 - asset factory (modelado parametrico, MiMo-V2.6-Pro)",
+  "license": "CC BY-NC-SA 4.0 (arte 3D propio del proyecto). Ver ASSET_LICENSE.md. Sin texturas ni mallas de terceros.",
+  "created_utc": "2026-11-24T12:26:51Z",
+  "generator": {
+    "tool": "tools/blender/build_assets.py",
+    "script": "tools/blender/world_kits.py",
+    "script_sha256": "012489352dcbeeef5956a7d9dcfdce3d19346731a64842b8f3f7e12f5de3756e",
+    "spec": "data/world/kits_spec.json",
+    "spec_sha256": "61785c2c5888915908d2acec5549ca1c76bf28de865d633f772655394864dcc9",
+    "blender_version": "4.5.16 LTS",
+    "blender_path": "C:\\Program Files\\Blender Foundation\\Blender 4.5\\blender.exe",
+    "command": "C:\\Program Files\\Blender Foundation\\Blender 4.5\\blender.exe --background --factory-startup --python C:\\Dev\\RutaNocturna1999\\tools\\blender\\world_kits.py -- --spec C:\\Dev\\RutaNocturna1999\\data\\world\\kits_spec.json --output-dir C:\\Dev\\RutaNocturna1999\\assets\\generated\\world --report C:\\Dev\\RutaNocturna1999\\build\\logs\\blender\\world_poi_kit_cruce_report.json --anchor-mode empties --kit poi.kit_cruce",
+    "reproducible": true
+  },
+  "reference_notes": [
+    "Referencia visual de gasolinera/motel/carretera: hojas de contacto de la biblioteca externa revisadas en F4.3 (REFERENCE_USAGE_LOG.md 2026-11-24). Solo inspiración de formas; ninguna textura, malla ni color se copia.",
+    "Las marcas reales (PDV, Chevrolet y otras) se omiten por AGENTS.md sección 11: marquesinas, rótulos y vallas son geometría neutra.",
+    "Cotas provisionales de diseño (provisional_design_value): no representan una instalación real concreta."
+  ],
+  "outputs": [
+    {
+      "file": "assets/generated/world/kit_cruce_lod0.glb",
+      "kind": "mesh_lod",
+      "lod": 0,
+      "triangles": 500,
+      "vertices": 264,
+      "max_triangles": 1200,
+      "objects": [
+        "bollard_0",
+        "bollard_1",
+        "lamp_head",
+        "panel_0",
+        "panel_1",
+        "post_0",
+        "post_1"
+      ],
+      "size_bytes": 37336,
+      "sha256": "ba1f55f095fe7e901b685591bd6c5975f5ae48e6e24af722ae59a0168d8624f8"
+    },
+    {
+      "file": "assets/generated/world/kit_cruce_lod1.glb",
+      "kind": "mesh_lod",
+      "lod": 1,
+      "triangles": 244,
+      "vertices": 136,
+      "max_triangles": 420,
+      "objects": [
+        "bollard_0",
+        "bollard_1",
+        "lamp_head",
+        "panel_0",
+        "panel_1",
+        "post_0",
+        "post_1"
+      ],
+      "size_bytes": 22244,
+      "sha256": "5d051389d9a140c940b17b123a432c88fe8dacefdfb21202cc426c859c508ffa"
+    },
+    {
+      "file": "assets/generated/world/kit_cruce_lod2.glb",
+      "kind": "mesh_lod",
+      "lod": 2,
+      "triangles": 64,
+      "vertices": 40,
+      "max_triangles": 130,
+      "objects": [
+        "panel_0",
+        "panel_1",
+        "post_0",
+        "post_1"
+      ],
+      "size_bytes": 7684,
+      "sha256": "8be20249677b92be71ee84db20014ac94bf006110bb1018b80d9d1c37e90bf5e"
+    },
+    {
+      "file": "assets/generated/world/kit_cruce_anchor.glb",
+      "kind": "rig_anchor",
+      "anchor_mode": "empties",
+      "anchors": [
+        "anchor_root"
+      ],
+      "triangles": 0,
+      "vertices": 0,
+      "size_bytes": 180,
+      "sha256": "252d5ace2ad454d41e8ece99fcb891a113dc1d35b4d0119208e48d40f78a71dc"
+    }
+  ]
+}

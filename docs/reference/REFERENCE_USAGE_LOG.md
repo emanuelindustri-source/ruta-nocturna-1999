@@ -692,3 +692,60 @@ usan en esta subfase.
   **2026-12-06**, lo que ocurra primero. Incluye los 3 vídeos nuevos, los
   conceptos de paisajes y las fichas de biomas/POIs.
 - Revisión rápida: inicio y cierre de cada subfase.
+
+## 2026-11-24 - Fase 4.3 - kits de biomas y POIs (revisión visual completa obligatoria)
+
+**Alcance:** revisión visual completa exigida antes de F4.3. Se ejecutó
+`scan_reference_library.py --full` (98 archivos, 665,28 MB; 3 hojas de contacto en
+`build/reference/contact_sheets/`, no versionadas). Se revisaron las hojas de
+contacto completas (`all_images`, `vehicle_references`, `generated_concepts`) y se
+abrieron a tamaño completo solo las referencias directamente relevantes para los
+kits de biomas/POIs. Se extrajeron fotogramas de los 3 vídeos nuevos del Esteem
+con VLC a `build/reference/extracted/video_frames/` (5 + 57 + 31 fotogramas,
+hojas `video_v2009/v2021/v2023.jpg`); el programa se cerró tras verificar la
+extracción. No se copió ningún archivo de `C:\Dev\fotos de ejemplo` al
+repositorio; la biblioteca externa quedó intacta.
+
+### Referencias utilizadas
+
+| Referencia | Uso | Resultado |
+|---|---|---|
+| Hoja `generated_concepts.jpg` (40 conceptos Gemini) | Dirección visual de biomas, vía y POIs nocturnos | Paleta nocturna coherente (verde petróleo, ámbar, hueso); vegetación de borde, palmeras, asfalto con charcos, luces de poste. Solo inspiración: los conceptos no son canon |
+| `Gemini_Generated_Image_6eil8g6eil8g6eil.png` (gasolinera + motel, tamaño completo) | Kit de gasolinera y motel | Marquesina con islas de surtidores y luces fluorescentes, tienda pequeña, motel de una planta con rótulo de neón; bordes con césped alto, cerca de eslabón, noche lluviosa. Marca real PDV/Chevrolet: se omiten (regla 11) |
+| `Gemini_Generated_Image_xju2soxju2soxju2.png` (carretera de montaña con niebla, tamaño completo) | Kit de montaña/páramo y mobiliario vial | Vía con línea central, guarda-falso metálico, corta rocosa, cascada, frailejones, señal vial direccional y santuario de orilla; niebla densa. Útil para rocas, agua y señalización |
+| Hoja `vehicle_references.jpg` + `all_images.jpg` | Contexto de vehículo y vía | Silueta 3 cajas confirmada; fotos reales con gravilla, césped y entorno urbano de borde (insumo de suelo/borde de vía) |
+| Vídeo `[2009-09-25] Chevrolet Esteem 1999.mp4` (5 fotogramas) | Exterior real del Esteem | Sedán blanco de exhibición: parachoques con listón negro, tapacubos, tapa de combustible trasera izquierda |
+| Vídeo `[2021-12-01] Chevrolet Esteem.mp4` (57 fotogramas) | Taller, suspensión y entorno | Esteem rojo en elevador: llantas de aleación, escape, tren inferior; matrícula Anzoátegui. Insumo mecánico (F5.1), no de biomas |
+| Vídeo `[2023-04-19] chevrolet esteem, vehículo económico...mp4` (31 fotogramas) | Entorno de borde de vía urbano | Esteem rojo en lote de gravilla con cerca de eslabón con grafiti, césped, edificios lejanos; interior e instrumental (204.689 km). Insumo de suelo/vegetación de borde |
+
+### Decisiones
+
+- Los kits de bioma de F4.3 se diseñan sobre la paleta nocturna aprobada y la
+  vegetación/entorno observado (palmeras, césped de borde, roca de ladera,
+  frailejones de páramo, gravilla urbana), siempre como geometría procedural
+  reproducible: ninguna textura, malla o color se extrae de las imágenes.
+- Gasolinera y motel se modelan como kits neutros sin marcas: rótulos
+  sustituidos por texto localizable o geometría neutra (regla 11 de AGENTS.md).
+- El rótulo de señal vial se genera sin textos visibles quemados en la malla;
+  las etiquetas siguen siendo claves de localización.
+- El santuario, las entidades y los elementos de folclore de los conceptos no
+  son alcance de F4.3 (F6/F7); solo se adoptan mobiliario vial y naturaleza.
+- Los fotogramas de los 3 vídeos se usan como referencia de contexto de vía y
+  vehículo; no se extraen texturas ni se usan como capturas de tienda.
+- La extracción de fotogramas vive en `build/reference/extracted/` (no
+  versionada); VLC se cerró tras verificar la tarea.
+
+### Descartado
+
+- Copiar imágenes, fotogramas o texturas de la biblioteca externa al repositorio.
+- Reproducir marcas reales (PDV, Chevrolet, Suzuki) en los kits o en los rótulos.
+- Tomar los conceptos de IA como canon, como datos de ruta o como capturas de
+  tienda.
+- Introducir entidades, santuarios o mecánicas de folclore en F4.3.
+- Usar los valores numéricos de los mockups (precios, km, porcentajes) como datos.
+
+### Próxima revisión
+
+- Revisión rápida: inicio y cierre de cada subfase.
+- Revisión completa: **2026-12-08**, o antes de la subfase de modelado/UI que
+  corresponda (obligatoria antes de F5.1/F5.3).

@@ -7,7 +7,7 @@ extends Node
 ## Ejecutar:
 ##   .\tools\dev\world_routes_test.cmd
 
-const EXPECTED_VERSION := "0.4.1"
+const EXPECTED_VERSION := "0.4.2"
 const NETWORK_SCRIPT := "res://src/world/route_network.gd"
 const CONTRACT_PATH := "res://data/schemas/world_routes.json"
 const NETWORK_PATH := "res://data/content/world/route_network.json"

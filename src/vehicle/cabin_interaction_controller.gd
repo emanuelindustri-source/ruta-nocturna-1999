@@ -380,6 +380,11 @@ func _on_controls_feedback(code: String) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if not input_enabled or not _configured:
 		return
+	if event.is_action_pressed("ui_cancel"):
+		# F4.3 (H13): la cabina no tenia salida por teclado y dejaba al jugador
+		# atrapado hasta cerrar el juego. Se usa el patron de WorldDirector.
+		SceneRouter.change_scene("res://scenes/boot/Boot.tscn", "cabin_back")
+		return
 	if event is InputEventScreenTouch:
 		var touch := event as InputEventScreenTouch
 		if touch.pressed:
@@ -400,19 +405,26 @@ func _unhandled_input(event: InputEvent) -> void:
 			return
 		if mouse.button_index == MOUSE_BUTTON_LEFT:
 			if mouse.pressed:
-				if not focused_control_id.is_empty():
-					press_control(focused_control_id)
-				else:
-					var touched := touch_at(mouse.position)
-					if not touched.is_empty():
-						press_control(touched)
+				# PC: el clic se resuelve por POSICION, igual que el tacto en
+				# Android (F4.3/H8). Antes se pulsaba siempre el control del
+				# retículo, con lo que cualquier clic acababa en el volante.
+				var touched := touch_at(mouse.position)
+				if not touched.is_empty():
+					press_control(touched)
+				elif focused_control_id.is_empty():
+					clear_focus()
 			else:
 				release_control()
-		return
+			return
 	if event is InputEventMouseMotion:
 		if _look_dragging:
 			_rotate_camera((event as InputEventMouseMotion).relative)
 			_update_look_focus()
+		elif not _held_control_id.is_empty():
+			# PC: el arrastre con boton izquierdo alimenta al gesto de la palanca
+			# (F4.3/H2 preliminar); en Android sigue mandando InputEventScreenDrag.
+			drag_focused((event as InputEventMouseMotion).relative)
+		return
 
 
 func _rotate_camera(relative: Vector2) -> void:

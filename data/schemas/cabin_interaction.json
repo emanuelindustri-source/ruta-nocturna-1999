@@ -639,8 +639,8 @@
   },
   "visual_proxies": {
     "placeholder": true,
-    "placeholder_note": "Los vidrios, la antena, los testigos, los botones y las manos que no existen como malla en el bloqueo de F2.2 se generan como primitivas de codigo para que la interaccion y la IK tengan retorno visual. No son arte final; el vidrio, la antena y las manos definitivos son F3.1/F3.2 y no se copian de la biblioteca externa.",
-    "lights_indicator_m": [-0.55, 1.13, -0.3],
+    "placeholder_note": "Los vidrios, la antena, los testigos, los botones y las manos que no existen como malla en el bloqueo de F2.2 se generan como primitivas de codigo para que la interaccion y la IK tengan retorno visual. No son arte final; el vidrio, la antena y las manos definitivos son F3.1/F3.2 y no se copian de la biblioteca externa. Correccion F4.3 (H11/H3): lights_indicator_m pasa de z=-0.30 a z=-0.455 para quedar sobre la cara del cuadro de instrumentos (con el salpicadero recortado a z=-0.48 el testigo quedaba flotando); radio_indicator_m se conserva en z=-0.30 porque asi cae sobre la cara visible de la radio y hace observable el feedback de encendido.",
+    "lights_indicator_m": [-0.55, 1.13, -0.455],
     "radio_indicator_m": [0.0, 1.065, -0.3],
     "lock_indicator_m": [-0.65, 1.08, 0.08],
     "control_proxy_size_m": [0.024, 0.012, 0.012],

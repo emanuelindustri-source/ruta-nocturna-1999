@@ -34,6 +34,11 @@ Reglas:
 .\tools\dev\export.cmd -Target android
 ```
 
+Los kits de bioma/POIs de F4.3 se generan con la fábrica Blender
+(`tools/blender/build_assets.py --target world.<familia>`) y sus GLB viajan en el
+export como recursos normales; los manifiestos se validan con
+`tools/validate_assets.py`.
+
 El script importa el proyecto en headless antes de exportar, escribe el log en
 `build/logs/export/` y genera `build/logs/export/latest.json` con rutas, tamaños y
 SHA-256. Un artefacto menor de 1 MB se considera fallo.

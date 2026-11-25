@@ -1,0 +1,109 @@
+{
+  "manifest_version": 1,
+  "asset_id": "world.poi.kit_motel",
+  "content_status": "generated",
+  "author": "Ruta Nocturna 1999 - asset factory (modelado parametrico, MiMo-V2.6-Pro)",
+  "license": "CC BY-NC-SA 4.0 (arte 3D propio del proyecto). Ver ASSET_LICENSE.md. Sin texturas ni mallas de terceros.",
+  "created_utc": "2026-11-24T12:26:47Z",
+  "generator": {
+    "tool": "tools/blender/build_assets.py",
+    "script": "tools/blender/world_kits.py",
+    "script_sha256": "012489352dcbeeef5956a7d9dcfdce3d19346731a64842b8f3f7e12f5de3756e",
+    "spec": "data/world/kits_spec.json",
+    "spec_sha256": "61785c2c5888915908d2acec5549ca1c76bf28de865d633f772655394864dcc9",
+    "blender_version": "4.5.16 LTS",
+    "blender_path": "C:\\Program Files\\Blender Foundation\\Blender 4.5\\blender.exe",
+    "command": "C:\\Program Files\\Blender Foundation\\Blender 4.5\\blender.exe --background --factory-startup --python C:\\Dev\\RutaNocturna1999\\tools\\blender\\world_kits.py -- --spec C:\\Dev\\RutaNocturna1999\\data\\world\\kits_spec.json --output-dir C:\\Dev\\RutaNocturna1999\\assets\\generated\\world --report C:\\Dev\\RutaNocturna1999\\build\\logs\\blender\\world_poi_kit_motel_report.json --anchor-mode empties --kit poi.kit_motel",
+    "reproducible": true
+  },
+  "reference_notes": [
+    "Referencia visual de gasolinera/motel/carretera: hojas de contacto de la biblioteca externa revisadas en F4.3 (REFERENCE_USAGE_LOG.md 2026-11-24). Solo inspiración de formas; ninguna textura, malla ni color se copia.",
+    "Las marcas reales (PDV, Chevrolet y otras) se omiten por AGENTS.md sección 11: marquesinas, rótulos y vallas son geometría neutra.",
+    "Cotas provisionales de diseño (provisional_design_value): no representan una instalación real concreta."
+  ],
+  "outputs": [
+    {
+      "file": "assets/generated/world/kit_motel_lod0.glb",
+      "kind": "mesh_lod",
+      "lod": 0,
+      "triangles": 1620,
+      "vertices": 840,
+      "max_triangles": 2800,
+      "objects": [
+        "building",
+        "door_0",
+        "door_1",
+        "door_2",
+        "lamp_glow",
+        "parapet_front",
+        "porch_post_0",
+        "porch_post_1",
+        "porch_slab",
+        "roof_slab",
+        "sign_panel",
+        "sign_post_0",
+        "sign_post_1",
+        "window_0",
+        "window_1"
+      ],
+      "size_bytes": 121416,
+      "sha256": "c62b7c43cc4ce9468c190ddc53e0b26def60e7735617feb00db175a1c3ab0333"
+    },
+    {
+      "file": "assets/generated/world/kit_motel_lod1.glb",
+      "kind": "mesh_lod",
+      "lod": 1,
+      "triangles": 660,
+      "vertices": 360,
+      "max_triangles": 950,
+      "objects": [
+        "building",
+        "door_0",
+        "door_1",
+        "door_2",
+        "lamp_glow",
+        "parapet_front",
+        "porch_post_0",
+        "porch_post_1",
+        "porch_slab",
+        "roof_slab",
+        "sign_panel",
+        "sign_post_0",
+        "sign_post_1",
+        "window_0",
+        "window_1"
+      ],
+      "size_bytes": 57896,
+      "sha256": "61758042fa8b634f5845790b9ccf058e5feafeb62b0d4a1d71d77f764dbdcab9"
+    },
+    {
+      "file": "assets/generated/world/kit_motel_lod2.glb",
+      "kind": "mesh_lod",
+      "lod": 2,
+      "triangles": 60,
+      "vertices": 40,
+      "max_triangles": 280,
+      "objects": [
+        "building",
+        "roof_slab",
+        "sign_panel",
+        "sign_post_0",
+        "sign_post_1"
+      ],
+      "size_bytes": 8268,
+      "sha256": "776b6d54a7fdddc465a1100179556b088725ce1d04978899929aef45b51aad9c"
+    },
+    {
+      "file": "assets/generated/world/kit_motel_anchor.glb",
+      "kind": "rig_anchor",
+      "anchor_mode": "empties",
+      "anchors": [
+        "anchor_root"
+      ],
+      "triangles": 0,
+      "vertices": 0,
+      "size_bytes": 180,
+      "sha256": "252d5ace2ad454d41e8ece99fcb891a113dc1d35b4d0119208e48d40f78a71dc"
+    }
+  ]
+}

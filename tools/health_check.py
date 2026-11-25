@@ -60,6 +60,7 @@ REQUIRED_FILES = [
     "docs/architecture/RAIN_AND_SURFACE_FX.md",
     "docs/architecture/WORLD_ROUTES.md",
     "docs/architecture/WORLD_STREAMING.md",
+    "docs/architecture/WORLD_BIOMES.md",
     "licenses/ODbL-1.0.txt",
     "data/schemas/vehicle_components.json",
     "data/schemas/vehicle_powertrain.json",
@@ -69,6 +70,8 @@ REQUIRED_FILES = [
     "data/schemas/autoload_dependencies.json",
     "data/schemas/world_routes.json",
     "data/schemas/world_streaming.json",
+    "data/schemas/world_biomes.json",
+    "data/world/kits_spec.json",
     "data/schemas/json/vehicle_components.schema.json",
     "data/schemas/json/vehicle_powertrain.schema.json",
     "data/schemas/json/folklore_entities.schema.json",
@@ -78,6 +81,7 @@ REQUIRED_FILES = [
     "data/schemas/json/world_routes.schema.json",
     "data/schemas/json/world_route_network.schema.json",
     "data/schemas/json/world_streaming.schema.json",
+    "data/schemas/json/world_biomes.schema.json",
     "data/content/world/route_network.json",
     "data/content/world/route_network.manifest.json",
     "data/content/world/sectors.manifest.json",
@@ -110,9 +114,18 @@ REQUIRED_FILES = [
     "src/world/world_sector_builder.gd",
     "src/world/sector_streamer.gd",
     "src/world/world_director.gd",
+    "src/world/world_kit_library.gd",
+    "src/world/biome_decor_builder.gd",
+    "src/world/poi_manager.gd",
+    "shaders/world_water.gdshader",
+    "tools/blender/world_kits.py",
     "scenes/world/WorldTerrain.tscn",
     "tests/world/WorldStreamingTest.tscn",
     "tests/world/world_streaming_test.gd",
+    "tests/world/WorldBiomesTest.tscn",
+    "tests/world/world_biomes_test.gd",
+    "tools/dev/world_biomes_test.cmd",
+    "tools/dev/world_biomes_test.ps1",
     "tools/dev/world_streaming_test.cmd",
     "tools/dev/world_streaming_test.ps1",
     "tools/dev/bake_world_sectors.cmd",
@@ -682,6 +695,27 @@ def check_world_streaming_test(checks: list[Check], skip_smoke: bool) -> None:
     )
 
 
+def check_world_biomes_test(checks: list[Check], skip_smoke: bool) -> None:
+    if skip_smoke:
+        result(checks, "world_biomes_tests", True, "Omitido por --skip-godot/--skip-smoke", warn=True)
+        return
+    if not GODOT.exists():
+        result(checks, "world_biomes_tests", False, "Godot no está instalado en la ruta esperada")
+        return
+    code, output = run_command(
+        [str(GODOT), "--headless", "--path", str(ROOT), "res://tests/world/WorldBiomesTest.tscn"],
+        timeout=300,
+    )
+    ok = code == 0 and "[BIOMES] SUPERADO" in output
+    result(
+        checks,
+        "world_biomes_tests",
+        ok,
+        f"Exit {code}; {'kits de biomas y POIs superados' if ok else 'sin marca de éxito'}",
+        {"exit_code": code, "tail": "\n".join(output.splitlines()[-30:])},
+    )
+
+
 def check_godot_import(checks: list[Check], skip_import: bool) -> None:
     if skip_import:
         result(checks, "godot_import", True, "Omitido por --skip-godot", warn=True)
@@ -779,6 +813,7 @@ def main() -> int:
     check_interaction_test(checks, args.skip_godot or args.skip_smoke)
     check_rain_test(checks, args.skip_godot or args.skip_smoke)
     check_world_streaming_test(checks, args.skip_godot or args.skip_smoke)
+    check_world_biomes_test(checks, args.skip_godot or args.skip_smoke)
 
     report = build_report(checks, mode)
     REPORT_DIR.mkdir(parents=True, exist_ok=True)

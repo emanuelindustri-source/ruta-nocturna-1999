@@ -1,0 +1,358 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://emanuelindustri-source.github.io/ruta-nocturna-1999/schemas/world_biomes.schema.json",
+  "title": "world_biomes",
+  "description": "Contrato de kits de biomas, POIs, mobiliario vial y presets de superficie (F4.3).",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "contract_id",
+    "world_id",
+    "status",
+    "data_files",
+    "region_biome_map",
+    "biome_selection",
+    "biomes",
+    "props",
+    "pois",
+    "surface_presets",
+    "budgets",
+    "placement_rules",
+    "attribution",
+    "anti_softlock",
+    "states",
+    "qa"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "contract_id": {"type": "string", "const": "world.biomes"},
+    "world_id": {"type": "string", "const": "venezuela.1999"},
+    "status": {"type": "string", "enum": ["active", "deprecated"]},
+    "phase": {"type": "string"},
+    "note": {"type": "string"},
+    "data_files": {
+      "type": "object",
+      "required": ["streaming_contract", "routes_contract", "kits_spec", "kit_library_script", "decor_script", "poi_manager_script", "bake_script"],
+      "additionalProperties": {"type": "string"}
+    },
+    "region_biome_map": {
+      "type": "object",
+      "required": ["carabobo", "falcon", "merida", "llanos", "amazonas", "delta"],
+      "additionalProperties": {"type": "string", "pattern": "^biome\\.[a-z_]+$"}
+    },
+    "biome_selection": {
+      "type": "object",
+      "required": ["method", "fallback_biome", "deterministic"],
+      "additionalProperties": true,
+      "properties": {
+        "method": {"type": "string", "enum": ["nearest_region_hub"]},
+        "source": {"type": "string"},
+        "fallback_biome": {"type": "string", "pattern": "^biome\\.[a-z_]+$"},
+        "deterministic": {"type": "boolean"},
+        "note": {"type": "string"}
+      }
+    },
+    "biomes": {
+      "type": "array",
+      "minItems": 6,
+      "items": {
+        "type": "object",
+        "required": ["id", "region", "name_key", "description_key", "terrain", "relief_variation", "decor", "roadside", "surface_presets"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {"type": "string", "pattern": "^biome\\.[a-z_]+$"},
+          "region": {"type": "string", "enum": ["carabobo", "falcon", "merida", "llanos", "amazonas", "delta"]},
+          "name_key": {"type": "string", "pattern": "^[A-Z0-9_]+$"},
+          "description_key": {"type": "string", "pattern": "^[A-Z0-9_]+$"},
+          "terrain": {
+            "type": "object",
+            "required": ["low_color", "high_color", "rock_color", "roughness", "slope_rock_blend"],
+            "additionalProperties": false,
+            "properties": {
+              "low_color": {"$ref": "#/$defs/color3"},
+              "high_color": {"$ref": "#/$defs/color3"},
+              "rock_color": {"$ref": "#/$defs/color3"},
+              "roughness": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+              "slope_rock_blend": {"type": "number", "minimum": 0.1, "maximum": 10.0}
+            }
+          },
+          "relief_variation": {
+            "type": "object",
+            "required": ["color_noise", "source_status"],
+            "additionalProperties": true,
+            "properties": {
+              "color_noise": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+              "source_status": {"type": "string", "enum": ["verified", "design_value", "provisional_design_value"]},
+              "note": {"type": "string"}
+            }
+          },
+          "decor": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["prop", "max_instances", "min_lateral_m", "max_lateral_m", "max_slope_pct"],
+              "additionalProperties": false,
+              "properties": {
+                "prop": {"type": "string", "pattern": "^prop\\.[a-z_]+$"},
+                "max_instances": {"type": "integer", "minimum": 0, "maximum": 64},
+                "min_lateral_m": {"type": "number", "minimum": 5.6},
+                "max_lateral_m": {"type": "number", "minimum": 6.0, "maximum": 80.0},
+                "max_slope_pct": {"type": "number", "minimum": 0.0, "maximum": 90.0}
+              }
+            }
+          },
+          "roadside": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["kit", "max_instances", "min_lateral_m", "max_lateral_m", "every_n_km"],
+              "additionalProperties": false,
+              "properties": {
+                "kit": {"type": "string", "pattern": "^(road\\.kit_|prop\\.)[a-z_]+$"},
+                "max_instances": {"type": "integer", "minimum": 0, "maximum": 16},
+                "min_lateral_m": {"type": "number", "minimum": 5.6},
+                "max_lateral_m": {"type": "number", "minimum": 5.6, "maximum": 20.0},
+                "every_n_km": {"type": "number", "minimum": 0.1, "maximum": 50.0}
+              }
+            }
+          },
+          "surface_presets": {
+            "type": "object",
+            "required": ["water", "dust", "snow"],
+            "additionalProperties": false,
+            "properties": {
+              "water": {"$ref": "#/$defs/water_preset"},
+              "dust": {"$ref": "#/$defs/dust_preset"},
+              "snow": {"$ref": "#/$defs/snow_preset"}
+            }
+          }
+        }
+      }
+    },
+    "props": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "kind", "generator", "lods", "cast_shadow"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {"type": "string", "pattern": "^prop\\.[a-z_]+$"},
+          "kind": {"type": "string", "enum": ["procedural_vegetation", "procedural_rock", "procedural_furniture"]},
+          "generator": {"type": "string", "pattern": "^biome_decor_builder\\.gd#build_[a-z_]+$"},
+          "lods": {"$ref": "#/$defs/lod_chain"},
+          "cast_shadow": {"type": "boolean"}
+        }
+      }
+    },
+    "pois": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "type": "object",
+        "required": ["id", "kind", "kit_id", "name_key", "description_key", "biomes", "placement", "lods", "collision", "brands_forbidden"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {"type": "string", "pattern": "^(poi|road)\\.[a-z_]+$"},
+          "kind": {"type": "string", "enum": ["poi", "furniture"]},
+          "kit_id": {"type": "string", "pattern": "^(poi|road)\\.kit_[a-z_]+$"},
+          "name_key": {"type": "string", "pattern": "^[A-Z0-9_]+$"},
+          "description_key": {"type": "string", "pattern": "^[A-Z0-9_]+$"},
+          "biomes": {
+            "type": "array",
+            "minItems": 1,
+            "items": {"type": "string", "pattern": "^biome\\.[a-z_]+$"}
+          },
+          "placement": {
+            "type": "object",
+            "required": ["mode", "min_clear_road_m"],
+            "additionalProperties": true,
+            "properties": {
+              "mode": {"type": "string", "enum": ["route_interval", "sector_decor"]},
+              "every_n_km": {"type": "number", "minimum": 1.0},
+              "jitter_km": {"type": "number", "minimum": 0.0},
+              "lateral_m": {"type": "number", "minimum": 5.6},
+              "side": {"type": "string", "enum": ["left", "right", "alternate"]},
+              "min_clear_road_m": {"type": "number", "minimum": 5.6}
+            }
+          },
+          "lods": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 3,
+            "items": {
+              "type": "object",
+              "required": ["id", "max_triangles"],
+              "additionalProperties": false,
+              "properties": {
+                "id": {"type": "string", "enum": ["lod0", "lod1", "lod2"]},
+                "max_triangles": {"type": "integer", "minimum": 1},
+                "range_m": {"type": "number", "minimum": 1.0}
+              }
+            }
+          },
+          "collision": {"type": "boolean"},
+          "brands_forbidden": {"type": "boolean", "const": true}
+        }
+      }
+    },
+    "surface_presets": {
+      "type": "object",
+      "required": ["water", "dust", "snow"],
+      "additionalProperties": true,
+      "properties": {
+        "note": {"type": "string"},
+        "water": {"type": "object"},
+        "dust": {"type": "object"},
+        "snow": {"type": "object"}
+      }
+    },
+    "budgets": {
+      "type": "object",
+      "required": ["max_sector_triangles_total", "terrain_triangles_per_sector", "max_decor_triangles_per_sector", "max_poi_nodes_per_route", "max_kit_concurrent_load_requests", "kit_sync_load_forbidden", "max_sector_builds_per_frame", "pss_budget_mb"],
+      "additionalProperties": true,
+      "properties": {
+        "max_sector_triangles_total": {"type": "integer", "const": 3000},
+        "terrain_triangles_per_sector": {"type": "integer", "const": 2048},
+        "max_decor_triangles_per_sector": {"type": "integer", "minimum": 1, "maximum": 952},
+        "max_road_furniture_triangles_per_sector": {"type": "integer", "minimum": 0, "maximum": 952},
+        "max_water_quads_per_sector": {"type": "integer", "minimum": 0, "maximum": 2},
+        "max_poi_nodes_per_route": {"type": "integer", "minimum": 0, "maximum": 200},
+        "max_visible_poi_triangles_mobile": {"type": "integer", "minimum": 0},
+        "max_visible_poi_triangles_pc": {"type": "integer", "minimum": 0},
+        "max_kit_concurrent_load_requests": {"type": "integer", "const": 2},
+        "kit_sync_load_forbidden": {"type": "boolean", "const": true},
+        "max_sector_builds_per_frame": {"type": "integer", "const": 1},
+        "pss_budget_mb": {"type": "number", "const": 1228.8},
+        "note": {"type": "string"}
+      }
+    },
+    "placement_rules": {
+      "type": "object",
+      "required": ["deterministic_seed", "never_on_road", "min_clear_road_m", "respawn_corridor_protected_m", "max_slope_pct_for_poi"],
+      "additionalProperties": true,
+      "properties": {
+        "deterministic_seed": {"type": "string"},
+        "never_on_road": {"type": "boolean", "const": true},
+        "min_clear_road_m": {"type": "number", "minimum": 5.6},
+        "respawn_corridor_protected_m": {"type": "number", "minimum": 0.0},
+        "max_slope_pct_for_poi": {"type": "number", "minimum": 0.0, "maximum": 30.0},
+        "note": {"type": "string"}
+      }
+    },
+    "attribution": {
+      "type": "object",
+      "required": ["dataset", "license", "copyright", "in_game_key", "license_file", "share_alike", "kits_license"],
+      "additionalProperties": true,
+      "properties": {
+        "dataset": {"type": "string", "const": "OpenStreetMap"},
+        "license": {"type": "string", "const": "ODbL 1.0"},
+        "license_url": {"type": "string"},
+        "copyright": {"type": "string"},
+        "copyright_url": {"type": "string"},
+        "in_game_key": {"type": "string", "const": "CREDITS_OSM"},
+        "license_file": {"type": "string", "const": "licenses/ODbL-1.0.txt"},
+        "share_alike": {"type": "boolean", "const": true},
+        "kits_license": {"type": "string"},
+        "note": {"type": "string"}
+      }
+    },
+    "anti_softlock": {
+      "type": "object",
+      "required": ["respawn_on_network", "requires_collision", "fallback_hub", "props_block_road"],
+      "additionalProperties": true,
+      "properties": {
+        "respawn_on_network": {"type": "boolean", "const": true},
+        "requires_collision": {"type": "boolean", "const": true},
+        "fallback_hub": {"type": "string", "const": "hub_carabobo"},
+        "props_block_road": {"type": "boolean", "const": false},
+        "note": {"type": "string"}
+      }
+    },
+    "states": {
+      "type": "object",
+      "required": ["kit", "poi", "surface"],
+      "additionalProperties": {"type": "array", "items": {"type": "string"}}
+    },
+    "qa": {
+      "type": "object",
+      "required": ["test_scene", "test_command", "build_kits_command", "expected_kit_families", "expected_procedural_props", "expected_biomes"],
+      "additionalProperties": true,
+      "properties": {
+        "test_scene": {"type": "string"},
+        "test_command": {"type": "string"},
+        "build_kits_command": {"type": "string"},
+        "validate_assets_command": {"type": "string"},
+        "validate_command": {"type": "string"},
+        "expected_kit_families": {"type": "integer", "minimum": 1},
+        "expected_procedural_props": {"type": "integer", "minimum": 1},
+        "expected_biomes": {"type": "integer", "const": 6},
+        "android_route": {"type": "string"},
+        "pc_report": {"type": "string"},
+        "android_report": {"type": "string"}
+      }
+    }
+  },
+  "$defs": {
+    "color3": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {"type": "number", "minimum": 0.0, "maximum": 1.0}
+    },
+    "lod_chain": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["id", "max_triangles"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {"type": "string", "enum": ["lod0", "lod1", "lod2"]},
+          "max_triangles": {"type": "integer", "minimum": 1}
+        }
+      }
+    },
+    "water_preset": {
+      "type": "object",
+      "required": ["enabled", "level_mode", "level_bias_m", "color", "roughness", "metallic", "wave_amplitude_m", "wave_speed_mps"],
+      "additionalProperties": true,
+      "properties": {
+        "enabled": {"type": "boolean"},
+        "level_mode": {"type": "string", "enum": ["sector_low_fill", "disabled"]},
+        "level_bias_m": {"type": "number", "minimum": -20.0, "maximum": 20.0},
+        "color": {"$ref": "#/$defs/color3"},
+        "roughness": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+        "metallic": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+        "wave_amplitude_m": {"type": "number", "minimum": 0.0, "maximum": 2.0},
+        "wave_speed_mps": {"type": "number", "minimum": 0.0, "maximum": 5.0},
+        "note": {"type": "string"}
+      }
+    },
+    "dust_preset": {
+      "type": "object",
+      "required": ["enabled", "tint", "particle_density"],
+      "additionalProperties": true,
+      "properties": {
+        "enabled": {"type": "boolean"},
+        "tint": {"$ref": "#/$defs/color3"},
+        "particle_density": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+        "note": {"type": "string"}
+      }
+    },
+    "snow_preset": {
+      "type": "object",
+      "required": ["enabled", "tint", "snow_line_m", "blend_m"],
+      "additionalProperties": true,
+      "properties": {
+        "enabled": {"type": "boolean"},
+        "tint": {"$ref": "#/$defs/color3"},
+        "snow_line_m": {"type": "number", "minimum": 0.0},
+        "blend_m": {"type": "number", "minimum": 0.0, "maximum": 200.0},
+        "note": {"type": "string"}
+      }
+    }
+  }
+}

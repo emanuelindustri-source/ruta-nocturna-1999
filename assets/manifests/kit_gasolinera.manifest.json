@@ -1,0 +1,121 @@
+{
+  "manifest_version": 1,
+  "asset_id": "world.poi.kit_gasolinera",
+  "content_status": "generated",
+  "author": "Ruta Nocturna 1999 - asset factory (modelado parametrico, MiMo-V2.6-Pro)",
+  "license": "CC BY-NC-SA 4.0 (arte 3D propio del proyecto). Ver ASSET_LICENSE.md. Sin texturas ni mallas de terceros.",
+  "created_utc": "2026-11-24T12:26:45Z",
+  "generator": {
+    "tool": "tools/blender/build_assets.py",
+    "script": "tools/blender/world_kits.py",
+    "script_sha256": "012489352dcbeeef5956a7d9dcfdce3d19346731a64842b8f3f7e12f5de3756e",
+    "spec": "data/world/kits_spec.json",
+    "spec_sha256": "61785c2c5888915908d2acec5549ca1c76bf28de865d633f772655394864dcc9",
+    "blender_version": "4.5.16 LTS",
+    "blender_path": "C:\\Program Files\\Blender Foundation\\Blender 4.5\\blender.exe",
+    "command": "C:\\Program Files\\Blender Foundation\\Blender 4.5\\blender.exe --background --factory-startup --python C:\\Dev\\RutaNocturna1999\\tools\\blender\\world_kits.py -- --spec C:\\Dev\\RutaNocturna1999\\data\\world\\kits_spec.json --output-dir C:\\Dev\\RutaNocturna1999\\assets\\generated\\world --report C:\\Dev\\RutaNocturna1999\\build\\logs\\blender\\world_poi_kit_gasolinera_report.json --anchor-mode empties --kit poi.kit_gasolinera",
+    "reproducible": true
+  },
+  "reference_notes": [
+    "Referencia visual de gasolinera/motel/carretera: hojas de contacto de la biblioteca externa revisadas en F4.3 (REFERENCE_USAGE_LOG.md 2026-11-24). Solo inspiración de formas; ninguna textura, malla ni color se copia.",
+    "Las marcas reales (PDV, Chevrolet y otras) se omiten por AGENTS.md sección 11: marquesinas, rótulos y vallas son geometría neutra.",
+    "Cotas provisionales de diseño (provisional_design_value): no representan una instalación real concreta."
+  ],
+  "outputs": [
+    {
+      "file": "assets/generated/world/kit_gasolinera_lod0.glb",
+      "kind": "mesh_lod",
+      "lod": 0,
+      "triangles": 1944,
+      "vertices": 1008,
+      "max_triangles": 3200,
+      "objects": [
+        "canopy_fascia",
+        "canopy_roof",
+        "column_0",
+        "column_1",
+        "column_2",
+        "column_3",
+        "island_0",
+        "island_1",
+        "lamp_0",
+        "lamp_1",
+        "pump_0",
+        "pump_1",
+        "pump_screen_0",
+        "pump_screen_1",
+        "shop_body",
+        "shop_door",
+        "shop_roof",
+        "shop_window"
+      ],
+      "size_bytes": 145088,
+      "sha256": "c56b5c586b4e56a32e9dbf8595df5ad233520a95bbe9f3fb5210aec02636f040"
+    },
+    {
+      "file": "assets/generated/world/kit_gasolinera_lod1.glb",
+      "kind": "mesh_lod",
+      "lod": 1,
+      "triangles": 792,
+      "vertices": 432,
+      "max_triangles": 1100,
+      "objects": [
+        "canopy_fascia",
+        "canopy_roof",
+        "column_0",
+        "column_1",
+        "column_2",
+        "column_3",
+        "island_0",
+        "island_1",
+        "lamp_0",
+        "lamp_1",
+        "pump_0",
+        "pump_1",
+        "pump_screen_0",
+        "pump_screen_1",
+        "shop_body",
+        "shop_door",
+        "shop_roof",
+        "shop_window"
+      ],
+      "size_bytes": 69248,
+      "sha256": "eeacac36d186f1f4024daec441f382f463401fa3e3b221d355dd134bf1ae2df3"
+    },
+    {
+      "file": "assets/generated/world/kit_gasolinera_lod2.glb",
+      "kind": "mesh_lod",
+      "lod": 2,
+      "triangles": 132,
+      "vertices": 88,
+      "max_triangles": 320,
+      "objects": [
+        "canopy_roof",
+        "column_0",
+        "column_1",
+        "column_2",
+        "column_3",
+        "island_0",
+        "island_1",
+        "pump_0",
+        "pump_1",
+        "shop_body",
+        "shop_roof"
+      ],
+      "size_bytes": 16488,
+      "sha256": "d371ca8780694bf1ad5f1d34259f79127fc2f714a6d8e59399add55441cb310e"
+    },
+    {
+      "file": "assets/generated/world/kit_gasolinera_anchor.glb",
+      "kind": "rig_anchor",
+      "anchor_mode": "empties",
+      "anchors": [
+        "anchor_root"
+      ],
+      "triangles": 0,
+      "vertices": 0,
+      "size_bytes": 180,
+      "sha256": "252d5ace2ad454d41e8ece99fcb891a113dc1d35b4d0119208e48d40f78a71dc"
+    }
+  ]
+}

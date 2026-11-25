@@ -67,6 +67,70 @@ TARGETS = [
         "manifest": "assets/manifests/esteem_interior.manifest.json",
         "anchor_mode": "armature",
     },
+    # Kits de POIs y mobiliario vial (F4.3): un target por familia de kit.
+    {
+        "asset_id": "world.poi.kit_gasolinera",
+        "script": "tools/blender/world_kits.py",
+        "spec": "data/world/kits_spec.json",
+        "manifest": "assets/manifests/kit_gasolinera.manifest.json",
+        "anchor_mode": "empties",
+        "output_dir": "assets/generated/world",
+        "args": ["--kit", "poi.kit_gasolinera"],
+    },
+    {
+        "asset_id": "world.poi.kit_motel",
+        "script": "tools/blender/world_kits.py",
+        "spec": "data/world/kits_spec.json",
+        "manifest": "assets/manifests/kit_motel.manifest.json",
+        "anchor_mode": "empties",
+        "output_dir": "assets/generated/world",
+        "args": ["--kit", "poi.kit_motel"],
+    },
+    {
+        "asset_id": "world.poi.kit_peaje",
+        "script": "tools/blender/world_kits.py",
+        "spec": "data/world/kits_spec.json",
+        "manifest": "assets/manifests/kit_peaje.manifest.json",
+        "anchor_mode": "empties",
+        "output_dir": "assets/generated/world",
+        "args": ["--kit", "poi.kit_peaje"],
+    },
+    {
+        "asset_id": "world.poi.kit_cruce",
+        "script": "tools/blender/world_kits.py",
+        "spec": "data/world/kits_spec.json",
+        "manifest": "assets/manifests/kit_cruce.manifest.json",
+        "anchor_mode": "empties",
+        "output_dir": "assets/generated/world",
+        "args": ["--kit", "poi.kit_cruce"],
+    },
+    {
+        "asset_id": "world.road.kit_sign",
+        "script": "tools/blender/world_kits.py",
+        "spec": "data/world/kits_spec.json",
+        "manifest": "assets/manifests/kit_sign.manifest.json",
+        "anchor_mode": "empties",
+        "output_dir": "assets/generated/world",
+        "args": ["--kit", "road.kit_sign"],
+    },
+    {
+        "asset_id": "world.road.kit_pole",
+        "script": "tools/blender/world_kits.py",
+        "spec": "data/world/kits_spec.json",
+        "manifest": "assets/manifests/kit_pole.manifest.json",
+        "anchor_mode": "empties",
+        "output_dir": "assets/generated/world",
+        "args": ["--kit", "road.kit_pole"],
+    },
+    {
+        "asset_id": "world.road.kit_billboard",
+        "script": "tools/blender/world_kits.py",
+        "spec": "data/world/kits_spec.json",
+        "manifest": "assets/manifests/kit_billboard.manifest.json",
+        "anchor_mode": "empties",
+        "output_dir": "assets/generated/world",
+        "args": ["--kit", "road.kit_billboard"],
+    },
 ]
 
 
@@ -85,7 +149,8 @@ def utc_now() -> str:
 def build_target(target: dict[str, Any], blender: Path) -> dict[str, Any]:
     script_path = ROOT / target["script"]
     spec_path = ROOT / target["spec"]
-    output_dir = ROOT / "assets" / "generated" / "vehicle"
+    output_dir = ROOT / target.get("output_dir", "assets/generated/vehicle")
+    output_prefix = target.get("output_dir", "assets/generated/vehicle")
     REPORT_DIR.mkdir(parents=True, exist_ok=True)
     report_path = REPORT_DIR / f"{target['asset_id'].replace('.', '_')}_report.json"
 
@@ -105,6 +170,7 @@ def build_target(target: dict[str, Any], blender: Path) -> dict[str, Any]:
         "--anchor-mode",
         target.get("anchor_mode", "armature"),
     ]
+    command.extend(target.get("args", []))
     print(f"[FACTORY] Ejecutando: {' '.join(command)}")
     completed = subprocess.run(
         command,
@@ -131,7 +197,7 @@ def build_target(target: dict[str, Any], blender: Path) -> dict[str, Any]:
         if not out_path.exists():
             raise RuntimeError(f"No se genero la salida {out_path}")
         record = dict(entry)
-        record["file"] = f"assets/generated/vehicle/{entry['file']}"
+        record["file"] = f"{output_prefix}/{entry['file']}"
         record["size_bytes"] = out_path.stat().st_size
         record["sha256"] = sha256_file(out_path)
         outputs.append(record)

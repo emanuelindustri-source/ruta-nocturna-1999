@@ -18,6 +18,7 @@ const LOAD_TIMEOUT_SECONDS := 30.0
 
 var contract: Dictionary = {}
 var manifest: Dictionary = {}
+var kit_library: WorldKitLibrary = null
 var sector_size_m := 800.0
 var ahead_sectors := 3
 var behind_sectors := 2
@@ -40,6 +41,7 @@ var total_build_ms := 0.0
 var build_count := 0
 
 var _sequence: Array[Dictionary] = []
+var _route_set := false
 var _current_index := 0
 var _manifest_by_key: Dictionary = {}
 var _desired: Dictionary = {}
@@ -49,6 +51,8 @@ var _pending: Dictionary = {}
 var _queue: Array[Dictionary] = []
 var _ready: Array[Dictionary] = []
 var _loaded_triangles := 0
+var _loaded_decor_triangles := 0
+var _decor_by_key: Dictionary = {}
 var _initial_emitted := false
 var _initial_started_ms := 0
 var _frame := 0
@@ -89,6 +93,7 @@ func initialize(network: RouteNetwork, streaming_contract: Dictionary, sectors_m
 func set_route(sequence: Array[Dictionary], start_index: int = 0) -> void:
 	reset()
 	_sequence = sequence.duplicate(true)
+	_route_set = true
 	_current_index = clampi(start_index, 0, maxi(0, _sequence.size() - 1))
 	_initial_emitted = false
 	_initial_started_ms = Time.get_ticks_msec()
@@ -127,6 +132,8 @@ func reset() -> void:
 	_desired.clear()
 	_retention.clear()
 	_loaded_triangles = 0
+	_loaded_decor_triangles = 0
+	_decor_by_key.clear()
 	_initial_emitted = false
 	_failed_keys.clear()
 	state = "idle"
@@ -189,6 +196,7 @@ func stats() -> Dictionary:
 		"state": state,
 		"loaded_sectors": _loaded.size(),
 		"loaded_triangles": _loaded_triangles,
+		"loaded_decor_triangles": _loaded_decor_triangles,
 		"pending_requests": _pending.size(),
 		"queued_requests": _queue.size(),
 		"max_concurrent_requests_seen": max_concurrent_seen,
@@ -241,7 +249,7 @@ func _update_desired() -> void:
 			var key := str(_sequence[index].get("key", ""))
 			if key.is_empty() or not _desired.has(key) or priority_keys.has(key):
 				continue
-			if _loaded.has(key) or _pending_has_key(key):
+			if _loaded.has(key) or _pending_has_key(key) or _ready_has_key(key):
 				continue
 			var entry: Dictionary = _manifest_by_key.get(key, {})
 			if entry.is_empty():
@@ -256,7 +264,7 @@ func _ensure_desired_queued() -> void:
 	if _sequence.is_empty():
 		return
 	for key in _desired:
-		if _loaded.has(key) or _pending_has_key(key) or _queued_has_key(key) or _failed_keys.has(key):
+		if _loaded.has(key) or _pending_has_key(key) or _queued_has_key(key) or _ready_has_key(key) or _failed_keys.has(key):
 			continue
 		var entry: Dictionary = _manifest_by_key.get(key, {})
 		if entry.is_empty():
@@ -309,7 +317,7 @@ func _consume_ready() -> void:
 		var key := str(item.get("key", ""))
 		if not _desired.has(key):
 			continue
-		if _loaded.has(key):
+		if _loaded.has(key) or _ready_has_key(key):
 			continue
 		_ready.append(item)
 	while built < max_builds_per_frame and not _ready.is_empty():
@@ -319,12 +327,17 @@ func _consume_ready() -> void:
 
 func _build_sector(item: Dictionary) -> void:
 	var key := str(item.get("key", ""))
+	if _loaded.has(key):
+		return
 	var data := item.get("data") as WorldSectorData
 	if data == null or not data.is_valid():
 		_errors("sector corrupto: %s" % key)
 		_failed_keys[key] = true
 		return
 	var start := Time.get_ticks_usec()
+	var biome: Dictionary = {}
+	if kit_library != null:
+		biome = kit_library.biome_for_sector(data)
 	var node := WorldSectorBuilder.build_sector(
 		data,
 		_terrain_material,
@@ -332,12 +345,25 @@ func _build_sector(item: Dictionary) -> void:
 		_marking_material,
 		collision_layer,
 		collision_mask,
-		terrain_collision_stride
+		terrain_collision_stride,
+		biome
 	)
 	add_child(node)
 	_loaded[key] = node
 	var triangles := data.terrain_triangle_count + data.road_triangle_count + data.marking_vertices.size() / 3
 	_loaded_triangles += triangles
+	if kit_library != null and not biome.is_empty():
+		var lod_level := 2
+		var index := _sequence_index(key)
+		if index >= 0:
+			var distance := absi(index - _current_index)
+			lod_level = 0 if distance <= 1 else (1 if distance <= 3 else 2)
+		var decor_report := WorldSectorBuilder.build_sector_decor(
+			node, data, biome, kit_library, lod_level, kit_library.decor_budget()
+		)
+		var decor_triangles := int(decor_report.get("decor_triangles", 0))
+		_decor_by_key[key] = decor_triangles
+		_loaded_decor_triangles += decor_triangles
 	last_build_ms = float(Time.get_ticks_usec() - start) / 1000.0
 	total_build_ms += last_build_ms
 	build_count += 1
@@ -375,6 +401,8 @@ func _unload_sector(key: String) -> void:
 			_loaded_triangles - _sector_triangles_from_node(node)
 		)
 		node.queue_free()
+	_loaded_decor_triangles = maxi(0, _loaded_decor_triangles - int(_decor_by_key.get(key, 0)))
+	_decor_by_key.erase(key)
 	_loaded.erase(key)
 
 
@@ -400,6 +428,8 @@ func _sector_triangles_from_node(node: Node) -> int:
 
 func _check_initial_ready() -> void:
 	if _initial_emitted:
+		return
+	if not _route_set:
 		return
 	if _sequence.is_empty():
 		_initial_emitted = true
@@ -441,6 +471,13 @@ func _pending_has_key(key: String) -> bool:
 
 func _queued_has_key(key: String) -> bool:
 	for item in _queue:
+		if str(item.get("key", "")) == key:
+			return true
+	return false
+
+
+func _ready_has_key(key: String) -> bool:
+	for item in _ready:
 		if str(item.get("key", "")) == key:
 			return true
 	return false

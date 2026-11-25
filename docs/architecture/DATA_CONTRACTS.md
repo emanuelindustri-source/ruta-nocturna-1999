@@ -582,3 +582,47 @@ Reglas:
   la colisión, el punto de reaparición, el avance de 12 km y el cambio de ruta.
 - El detalle de arquitectura, presupuestos medidos y limitaciones está en
   `docs/architecture/WORLD_STREAMING.md`.
+
+## 21. Kits de biomas, POIs y presets de superficie (Fase 4.3)
+
+La capa visual del mundo es un contrato nuevo y aditivo:
+`data/schemas/world_biomes.json` (`schema_version: 1`,
+`contract_id: world.biomes`, `world_id: venezuela.1999`). Su JSON Schema vive en
+`data/schemas/json/world_biomes.schema.json`. **No modifica** `world_routes` v1
+ni `world_streaming` v1: los consume.
+
+| Archivo | Contenido |
+|---|---|
+| `data/schemas/world_biomes.json` | Seis biomas, props procedurales, POIs/mobiliario, presets agua/polvo/nieve, presupuestos, colocación, atribución, anti-softlock y QA |
+| `data/world/kits_spec.json` | Especificación paramétrica de las siete familias de kits bpy (piezas, materiales, LOD0/1/2 y ancla) |
+| `assets/generated/world/kit_*.glb` | Kits generados con `tools/blender/world_kits.py` (LOD0/1/2 + `anchor_root`) |
+| `assets/manifests/kit_*.manifest.json` | Manifiestos reproducibles (comando, hashes, licencia) |
+| `src/world/world_kit_library.gd` | Contrato, bioma por sector y carga threaded de kits |
+| `src/world/biome_decor_builder.gd` | Props procedurales con tres LODs |
+| `src/world/poi_manager.gd` | POIs de ruta con LOD por distancia y colisión opcional |
+| `shaders/world_water.gdshader` | Superficie de agua visual por bioma |
+
+Reglas:
+
+- Los contratos de F1–F4.2 no se tocan. Cambiar la estructura de `world.biomes`
+  exige subir `schema_version` y documentar la migración.
+- Los kits no contienen marcas reales (`brands_forbidden` obligatorio), ni
+  texto quemado en las mallas, ni texturas de la biblioteca externa. Las
+  etiquetas siguen siendo claves de localización.
+- La política LOD0/LOD1/LOD2 se valida tanto para los kits bpy
+  (`tools/validate_assets.py`, manifiestos) como para los props procedurales
+  (conteos reales en `WorldBiomesTest`, estrictamente decrecientes y dentro de
+  presupuesto).
+- La carga de kits usa `ResourceLoader.load_threaded_request()` con máximo dos
+  solicitudes y cero `load()` síncrono; se completa **antes** de activar el
+  streaming de sectores para no exceder el techo global de solicitudes.
+- El decorado por sector respeta `max_decor_triangles_per_sector` (620) con
+  subpresupuesto de mobiliario (300); terreno + vía + decor ≤ 3.000.
+- La colocación es determinista, nunca invade la vía (despeje ≥ 5,6 m) ni el
+  corredor de reaparición de F4.2; el anti-atasco completo sigue en F5.1.
+- Los presets `water`/`dust`/`snow` son visuales: no simulan clima (F4.4) ni
+  agarre/vadeo (F5.1) y no duplican `rain_surface_fx`.
+- La atribución ODbL de la red/sectores se conserva; los kits son arte propio
+  bajo CC BY-NC-SA 4.0 (`ASSET_LICENSE.md`).
+
+Detalle completo en `docs/architecture/WORLD_BIOMES.md`.

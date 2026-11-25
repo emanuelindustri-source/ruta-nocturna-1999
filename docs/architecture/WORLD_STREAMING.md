@@ -274,6 +274,12 @@ externa.
 
 ## 12. Handoff a F4.3
 
+**Consumido en F4.3 (`v0.4.2`)** con el contrato aditivo `world.biomes` v1 y la
+nota de arquitectura `docs/architecture/WORLD_BIOMES.md`: los materiales
+procedurales de terreno se tiñen por bioma, y el decorado, los POIs y el agua
+visual se añaden dentro del presupuesto de 3.000 triángulos por sector, sin
+cambiar este contrato ni la carga threaded.
+
 F4.3 (MiMo Pro) puede:
 
 - usar `WorldDirector` y `WorldSectorStreamer` como base para biomas y POIs;

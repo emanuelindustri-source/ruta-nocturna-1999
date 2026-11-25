@@ -4,7 +4,7 @@
   "root": "C:/Dev/fotos de ejemplo",
   "read_only": true,
   "scan_type": "full",
-  "last_full_scan_utc": "2026-11-22T18:53:38Z",
+  "last_full_scan_utc": "2026-11-24T11:39:46Z",
   "review_interval_days": 14,
   "review_gates": [
     "F2.2",
@@ -20,8 +20,8 @@
     "F10.2"
   ],
   "license_notice": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada.",
-  "file_count": 95,
-  "total_size_bytes": 386002354,
+  "file_count": 98,
+  "total_size_bytes": 697597539,
   "duplicate_groups": [
     {
       "sha256": "9534438acbf04fd8ff532f9a53b1ece7a989a26ffd421dd42d3569cbb15dc44f",
@@ -99,6 +99,93 @@
         "height": 388,
         "mode": "RGB",
         "format": "WEBP"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-6A6AE1723D",
+      "name": "[2009-09-25] Chevrolet Esteem 1999.mp4",
+      "relative_path": "[2009-09-25] Chevrolet Esteem 1999.mp4",
+      "extension": ".mp4",
+      "size_bytes": 1992162,
+      "modified_utc": "2026-11-23T16:10:30Z",
+      "sha256": "6a6ae1723d3ff0589d5d1d1b120d28160cdb6fcdee46b06d1dd89af5c5021701",
+      "category": "concept_video",
+      "kind": "motion_reference",
+      "tags": [
+        "ui",
+        "motion",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F9.2",
+        "F10.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "metadata_status": "video duration pending optional ffprobe/VLC review"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-F511D0214D",
+      "name": "[2021-12-01] Chevrolet Esteem.mp4",
+      "relative_path": "[2021-12-01] Chevrolet Esteem.mp4",
+      "extension": ".mp4",
+      "size_bytes": 35272784,
+      "modified_utc": "2026-11-23T16:11:21Z",
+      "sha256": "f511d0214db2b69b941a77e67939e40edd859ed6295afa2ca40ea1b94dc0aafd",
+      "category": "concept_video",
+      "kind": "motion_reference",
+      "tags": [
+        "ui",
+        "motion",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F9.2",
+        "F10.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "metadata_status": "video duration pending optional ffprobe/VLC review"
+      },
+      "notes": "",
+      "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."
+    },
+    {
+      "id": "REF-C44BE36C31",
+      "name": "[2023-04-19] chevrolet esteem, vehículo económico en gasolina y japones, el mejor sedan.mp4",
+      "relative_path": "[2023-04-19] chevrolet esteem, vehículo económico en gasolina y japones, el mejor sedan.mp4",
+      "extension": ".mp4",
+      "size_bytes": 274330239,
+      "modified_utc": "2026-11-23T16:12:43Z",
+      "sha256": "c44be36c3187489755596f3589d0bda937eeca9d06eace383c65d6fde2c9b82e",
+      "category": "concept_video",
+      "kind": "motion_reference",
+      "tags": [
+        "ui",
+        "motion",
+        "art_direction"
+      ],
+      "relevant_phases": [
+        "F1.1",
+        "F9.2",
+        "F10.2"
+      ],
+      "license_status": "reference_only_unverified",
+      "review_status": "pending_full_visual_review",
+      "duplicate_of": null,
+      "media": {
+        "metadata_status": "video duration pending optional ffprobe/VLC review"
       },
       "notes": "",
       "review_policy": "Material de referencia privado. No se redistribuye ni se usa como asset final sin licencia verificada."

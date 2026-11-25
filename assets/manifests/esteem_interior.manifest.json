@@ -4,13 +4,13 @@
   "content_status": "interior_definitive_pbr",
   "author": "Ruta Nocturna 1999 - asset factory (modelado parametrico, MiMo-V2.6-Pro)",
   "license": "CC BY-NC-SA 4.0 (arte 3D propio del proyecto). Ver ASSET_LICENSE.md. Sin texturas ni mallas de terceros.",
-  "created_utc": "2026-11-23T03:03:48Z",
+  "created_utc": "2026-11-24T19:55:50Z",
   "generator": {
     "tool": "tools/blender/build_assets.py",
     "script": "tools/blender/esteem_interior.py",
     "script_sha256": "f492e5c143e9735f06c44a7fe3fffcc873883aa2dcafdc03fb7e55d28b59f81f",
     "spec": "data/vehicle/interior_spec.json",
-    "spec_sha256": "5c29ed47f9ed05e81e74873c4358d9b6cb96ea70f2de5cc45e598b7f4edaea24",
+    "spec_sha256": "be66d8649208abeb30c070d18cb6e58017ff21322761cead7eef684326573842",
     "blender_version": "4.5.16 LTS",
     "blender_path": "C:\\Program Files\\Blender Foundation\\Blender 4.5\\blender.exe",
     "command": "C:\\Program Files\\Blender Foundation\\Blender 4.5\\blender.exe --background --factory-startup --python C:\\Dev\\RutaNocturna1999\\tools\\blender\\esteem_interior.py -- --spec C:\\Dev\\RutaNocturna1999\\data\\vehicle\\interior_spec.json --output-dir C:\\Dev\\RutaNocturna1999\\assets\\generated\\vehicle --report C:\\Dev\\RutaNocturna1999\\build\\logs\\blender\\vehicle_esteem_interior_report.json --anchor-mode armature",
@@ -177,7 +177,7 @@
         "visor_right"
       ],
       "size_bytes": 624216,
-      "sha256": "b7647d25f165228231999189f20f063fb9352b59a05c8f3278d94fa9cd9338f3"
+      "sha256": "bbe785cb32d57a47e9e0633cdca135710010836f127f3be4408ed1033dd21fcd"
     },
     {
       "file": "assets/generated/vehicle/esteem_interior_lod1.glb",
@@ -257,7 +257,7 @@
         "trunk_wall_right"
       ],
       "size_bytes": 155776,
-      "sha256": "795b689aae6d95329fad8f36d553a738162e479ddcd5bc1f1ca61063a9da9594"
+      "sha256": "e926940654e1000c4110727d6b9e481516ae9e15814754490dc8c34844c28413"
     },
     {
       "file": "assets/generated/vehicle/esteem_interior_lod2.glb",
@@ -308,7 +308,7 @@
         "trunk_wall_right"
       ],
       "size_bytes": 77896,
-      "sha256": "a850c120bc480aa367306790b829b601a846834f132bd779ac900dc16602627b"
+      "sha256": "db0245e786490687d70d9c46447260473bc677592b7ef4afb459c728e0187818"
     },
     {
       "file": "assets/generated/vehicle/esteem_interior_rig_anchor.glb",

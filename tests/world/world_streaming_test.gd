@@ -9,7 +9,7 @@ extends Node3D
 ## el límite de dos solicitudes, la ausencia de load() síncrono, la colisión y
 ## el punto de reaparición seguro.
 
-const EXPECTED_VERSION := "0.4.1"
+const EXPECTED_VERSION := "0.4.2"
 const CONTRACT_PATH := "res://data/schemas/world_streaming.json"
 const ROUTES_CONTRACT_PATH := "res://data/schemas/world_routes.json"
 const NETWORK_PATH := "res://data/content/world/route_network.json"

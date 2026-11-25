@@ -182,12 +182,12 @@
       "max_m": [
         0.73,
         1.05,
-        -0.3
+        -0.48
       ],
       "features": [
         "dash"
       ],
-      "note": "Mitad inferior del tablero en vinilo beige (adentro esteem.jpg)."
+      "note": "Mitad inferior del tablero en vinilo beige (adentro esteem.jpg). Correccion F4.3 (H7/H10): el fondo pasa de z=-0.30 a z=-0.48 para no sepultar el aro del volante ni la radio (el volante visible esta en z=-0.31 con el offset de interaccion); medida con tests/vehicle/_diag_cabin y validada visualmente."
     },
     {
       "id": "dashboard_upper",
@@ -201,12 +201,12 @@
       "max_m": [
         0.73,
         1.17,
-        -0.3
+        -0.48
       ],
       "features": [
         "dash"
       ],
-      "note": "Mitad superior del tablero en vinilo oscuro antirreflejo."
+      "note": "Mitad superior del tablero en vinilo oscuro antirreflejo. Correccion F4.3 (H7/H10): el fondo pasa de z=-0.30 a z=-0.48 (alineado con la cara del cuadro de instrumentos) porque la caja atravesaba el plano del volante y ocultaba media corona; medida con _diag_cabin y verificada en captura."
     },
     {
       "id": "dashboard_passenger_tray",

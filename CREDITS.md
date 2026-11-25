@@ -18,6 +18,7 @@ se añadirán con manifiesto de procedencia, licencia, hash y comando de generac
 | Godot Engine 4.7.2 | MIT | Motor |
 | Blender 4.5.16 LTS | GPL-2.0-or-later (herramienta) | Generación de arte 3D |
 | Terreno procedural propio (F4.2) | MIT del proyecto; sin addon nativo | Terreno, vía y streaming de sectores |
+| Kits de biomas y POIs (F4.3) | CC BY-NC-SA 4.0 (arte propio, `ASSET_LICENSE.md`) | Gasolineras, moteles, peajes, señalización, vegetación y agua visual |
 | OpenStreetMap / Overpass | ODbL 1.0 | Datos viales |
 | Fuentes Noto | SIL OFL 1.1 | Interfaz multilingüe |
 | Python, numpy, scipy, Pillow, pypdf | Licencias permisivas respectivas | Herramientas de producción |

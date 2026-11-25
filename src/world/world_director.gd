@@ -18,6 +18,8 @@ const DEFAULT_ROUTE := "route.carabobo_falcon"
 const DEFAULT_START_FRACTION := 0.02
 const STATS_INTERVAL := 0.25
 const RESPAWN_COLLISION_MASK := 1
+const KIT_LOAD_TIMEOUT_MS := 12000
+const REGION_IDS := ["carabobo", "falcon", "merida", "llanos", "amazonas", "delta"]
 
 @export var route_id: String = ""
 @export var tour_speed_mps := 35.0
@@ -28,6 +30,8 @@ var network := RouteNetwork.new()
 var streaming_contract: Dictionary = {}
 var routes_contract: Dictionary = {}
 var sectors_manifest: Dictionary = {}
+var kit_library := WorldKitLibrary.new()
+var poi_manager: PoiManager
 var route_ids: Array[String] = []
 var route_index := 0
 var network_load_ms := 0
@@ -43,6 +47,8 @@ var _loading_started_ms := 0
 var _stats_elapsed := 0.0
 var _paused := false
 var _sample_index := 0
+var _route_pending := -1
+var _kit_load_started_ms := 0
 var _vehicle: Node3D
 var _camera: Camera3D
 var _title_label: Label
@@ -61,6 +67,12 @@ func _ready() -> void:
 		_streamer.name = "SectorStreamer"
 		add_child(_streamer)
 	_streamer.initial_ready.connect(_on_initial_ready)
+	poi_manager = get_node_or_null("PoiManager") as PoiManager
+	if poi_manager == null:
+		poi_manager = PoiManager.new()
+		poi_manager.name = "PoiManager"
+		add_child(poi_manager)
+	poi_manager.library = kit_library
 	_vehicle = get_node_or_null("Vehicle") as Node3D
 	_camera = get_node_or_null("Camera3D") as Camera3D
 	_title_label = get_node_or_null("Overlay/Panel/Margin/VBox/Title") as Label
@@ -77,7 +89,9 @@ func _ready() -> void:
 	var initial := 0
 	if not route_id.is_empty():
 		initial = maxi(0, route_ids.find(route_id))
-	_activate_route(initial, start_fraction)
+	_route_pending = initial
+	_kit_load_started_ms = Time.get_ticks_msec()
+	kit_library.begin_kit_load()
 
 
 func _configure_ui() -> void:
@@ -118,6 +132,20 @@ func _load_world() -> bool:
 	if not _streamer.initialize(network, streaming_contract, sectors_manifest):
 		world_errors.append("No se pudo inicializar el streaming")
 		return false
+	if kit_library.load_contract():
+		var hubs := {}
+		for region in REGION_IDS:
+			var hub_id := network.region_hub(region)
+			if not hub_id.is_empty() and network.nodes.has(hub_id):
+				hubs[region] = network.node_game_position(hub_id)
+		kit_library.set_region_hubs(hubs)
+		_streamer.kit_library = kit_library
+		poi_manager.game_meters_per_km = 1000.0 * float(routes_contract.get("projection", {}).get("world_scale", 0.05))
+		print("[WORLD] BIOMES contract=%d hubs=%d" % [kit_library.contract.get("biomes", []).size(), hubs.size()])
+	else:
+		for error in kit_library.errors:
+			world_errors.append(error)
+		print("[WORLD] BIOMES degraded: kits no disponibles")
 	route_ids.clear()
 	for requirement in routes_contract.get("routes", []):
 		var id := str(requirement.get("id", ""))
@@ -155,6 +183,9 @@ func _activate_route(index: int, fraction: float = DEFAULT_START_FRACTION) -> vo
 	_update_vehicle()
 	var sector_index := _sector_index_for_distance(_progress_m)
 	_streamer.set_route(data.get("sequence", []), sector_index)
+	print("[WORLD] KITS %s" % kit_library.stats())
+	if poi_manager != null:
+		poi_manager.place_route(selected, data.get("points", PackedVector3Array()), data.get("cumulative", PackedFloat32Array()))
 	if _loading_label != null:
 		_loading_label.visible = true
 		_loading_label.text = tr("WORLD_LOADING")
@@ -195,6 +226,15 @@ func _on_initial_ready() -> void:
 
 
 func _process(delta: float) -> void:
+	if _route_pending >= 0:
+		kit_library.poll_kit_load()
+		if kit_library.is_kit_load_complete() or Time.get_ticks_msec() - _kit_load_started_ms > KIT_LOAD_TIMEOUT_MS:
+			if not kit_library.is_kit_load_complete():
+				world_errors.append("carga de kits incompleta; se continúa en modo degradado")
+			var pending := _route_pending
+			_route_pending = -1
+			_activate_route(pending, start_fraction)
+		return
 	if _route_data.is_empty():
 		return
 	if _world_ready and autotour and not _paused and tour_speed_mps > 0.0:
@@ -245,6 +285,10 @@ func _update_stats() -> void:
 		"load_ms": network_load_ms,
 		"pending": int(stats.get("pending_requests", 0)),
 	})
+	if _title_label != null:
+		var biome := kit_library.biome_for_position(_vehicle.global_position) if _vehicle != null else {}
+		var biome_name := tr(str(biome.get("name_key", ""))) if not biome.is_empty() else ""
+		_title_label.text = tr("WORLD_TITLE") if biome_name.is_empty() else "%s · %s" % [tr("WORLD_TITLE"), biome_name]
 	if _route_label != null and not _route_data.is_empty():
 		_route_label.text = tr("WORLD_ROUTE_LINE").format({
 			"index": route_index + 1,
@@ -413,6 +457,9 @@ func streaming_snapshot() -> Dictionary:
 	snapshot["total_m"] = float(_route_data.get("total_m", 0.0))
 	snapshot["route_sectors"] = _route_data.get("sequence", []).size()
 	snapshot["errors"] = world_errors.size() + int(snapshot.get("sector_errors", 0))
+	snapshot["kits"] = kit_library.stats()
+	if poi_manager != null:
+		snapshot["pois"] = poi_manager.stats()
 	return snapshot
 
 

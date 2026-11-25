@@ -27,6 +27,7 @@ PAIRS = {
     "autoload_dependencies": "autoload_dependencies",
     "world_routes": "world_routes",
     "world_streaming": "world_streaming",
+    "world_biomes": "world_biomes",
 }
 
 BLOCKOUT_SPEC = ROOT / "data" / "vehicle" / "blockout_spec.json"
@@ -961,6 +962,136 @@ def validate() -> tuple[list[str], list[str]]:
             warnings.extend(sector_warnings)
         except Exception as exc:  # noqa: BLE001
             errors.append(f"world_streaming: no se pudo validar los sectores: {exc}")
+
+    # Kits de biomas, POIs y mobiliario vial (F4.3): mapa de regiones, política
+    # de LOD, presupuestos frente a world.streaming, claridad de la vía
+    # (anti-softlock), familias de kits generados y claves de localización.
+    world_biomes = data.get("world_biomes", {})
+    if world_biomes:
+        biome_ids = [biome["id"] for biome in world_biomes["biomes"]]
+        for duplicate in duplicate_values(biome_ids):
+            errors.append(f"world_biomes: ID de bioma repetido {duplicate}")
+        expected_biomes = {
+            "biome.costa",
+            "biome.montana",
+            "biome.llanos",
+            "biome.selva",
+            "biome.delta",
+            "biome.industrial",
+        }
+        if set(biome_ids) != expected_biomes:
+            errors.append(f"world_biomes: los biomas deben ser exactamente {sorted(expected_biomes)}")
+
+        region_map = world_biomes["region_biome_map"]
+        routes_regions = {region["id"] for region in data["world_routes"]["regions"]}
+        if set(region_map) != routes_regions:
+            errors.append("world_biomes: region_biome_map no cubre exactamente las regiones de world_routes")
+        for region, biome_id in region_map.items():
+            if biome_id not in biome_ids:
+                errors.append(f"world_biomes: la región {region} apunta a un bioma inexistente {biome_id}")
+        for biome in world_biomes["biomes"]:
+            if region_map.get(biome["region"]) != biome["id"]:
+                errors.append(
+                    f"world_biomes: el bioma {biome['id']} no coincide con region_biome_map[{biome['region']}]"
+                )
+
+        prop_ids = {prop["id"] for prop in world_biomes["props"]}
+        kit_ids = {poi["kit_id"] for poi in world_biomes["pois"]} | prop_ids
+        min_clear = float(world_biomes["placement_rules"]["min_clear_road_m"])
+        for biome in world_biomes["biomes"]:
+            for entry in biome["decor"]:
+                if entry["prop"] not in prop_ids:
+                    errors.append(f"world_biomes: decor usa un prop inexistente {entry['prop']}")
+                if float(entry["min_lateral_m"]) < min_clear:
+                    errors.append(f"world_biomes: {biome['id']} decor {entry['prop']} invade la vía")
+            for entry in biome["roadside"]:
+                if entry["kit"] not in kit_ids:
+                    errors.append(f"world_biomes: roadside usa un kit inexistente {entry['kit']}")
+                if float(entry["min_lateral_m"]) < min_clear:
+                    errors.append(f"world_biomes: {biome['id']} roadside {entry['kit']} invade la vía")
+            for preset_name in ("water", "dust", "snow"):
+                if preset_name not in biome.get("surface_presets", {}):
+                    errors.append(f"world_biomes: {biome['id']} falta el preset {preset_name}")
+
+        for prop in world_biomes["props"]:
+            lods = [lod["id"] for lod in prop["lods"]]
+            if lods != ["lod0", "lod1", "lod2"]:
+                errors.append(f"world_biomes: {prop['id']} debe declarar LOD0/LOD1/LOD2; hay {lods}")
+            budgets_chain = [int(lod["max_triangles"]) for lod in prop["lods"]]
+            if not all(budgets_chain[i] > budgets_chain[i + 1] for i in range(len(budgets_chain) - 1)):
+                errors.append(f"world_biomes: presupuestos de LOD no decrecientes en {prop['id']}: {budgets_chain}")
+
+        poi_ids = [poi["id"] for poi in world_biomes["pois"]]
+        for duplicate in duplicate_values(poi_ids):
+            errors.append(f"world_biomes: ID de POI repetido {duplicate}")
+        for poi in world_biomes["pois"]:
+            lods = [lod["id"] for lod in poi["lods"]]
+            if lods != ["lod0", "lod1", "lod2"]:
+                errors.append(f"world_biomes: {poi['id']} debe declarar LOD0/LOD1/LOD2; hay {lods}")
+            budgets_chain = [int(lod["max_triangles"]) for lod in poi["lods"]]
+            if not all(budgets_chain[i] > budgets_chain[i + 1] for i in range(len(budgets_chain) - 1)):
+                errors.append(f"world_biomes: presupuestos de LOD no decrecientes en {poi['id']}: {budgets_chain}")
+            placement = poi["placement"]
+            if float(placement["min_clear_road_m"]) < min_clear:
+                errors.append(f"world_biomes: {poi['id']} puede invadir la vía")
+            if placement["mode"] == "route_interval" and float(placement.get("lateral_m", 0.0)) < min_clear:
+                errors.append(f"world_biomes: {poi['id']} se coloca demasiado cerca de la vía")
+            for biome_id in poi["biomes"]:
+                if biome_id not in biome_ids:
+                    errors.append(f"world_biomes: {poi['id']} referencia un bioma inexistente {biome_id}")
+            if not poi["brands_forbidden"]:
+                errors.append(f"world_biomes: {poi['id']} debe declarar brands_forbidden")
+
+        biome_budgets = world_biomes["budgets"]
+        streaming_budgets = data["world_streaming"]["budgets"]
+        terrain_triangles = int(biome_budgets["terrain_triangles_per_sector"])
+        road_observed = int(biome_budgets.get("road_triangles_per_sector_observed_f42", 328))
+        decor_triangles = int(biome_budgets["max_decor_triangles_per_sector"])
+        if terrain_triangles + road_observed + decor_triangles > int(biome_budgets["max_sector_triangles_total"]):
+            errors.append("world_biomes: terreno + vía + decor superan max_sector_triangles_total")
+        if int(biome_budgets["max_sector_triangles_total"]) > int(streaming_budgets.get("max_triangles_per_sector", 0)):
+            errors.append("world_biomes: max_sector_triangles_total excede el contrato world_streaming")
+        if int(biome_budgets.get("max_road_furniture_triangles_per_sector", 0)) > decor_triangles:
+            errors.append("world_biomes: el mobiliario vial excede el presupuesto de decor por sector")
+        if int(biome_budgets["max_kit_concurrent_load_requests"]) > int(
+            streaming_budgets.get("max_pending_requests", 2)
+        ):
+            errors.append("world_biomes: la carga de kits excede las 2 solicitudes simultáneas de world_streaming")
+        if int(biome_budgets.get("max_sector_builds_per_frame", 0)) != int(
+            streaming_budgets.get("max_sector_builds_per_frame", 1)
+        ):
+            errors.append("world_biomes: max_sector_builds_per_frame debe coincidir con world_streaming")
+
+        attribution = world_biomes["attribution"]
+        streaming_attribution = data["world_streaming"].get("attribution", {})
+        for field in ("dataset", "license", "copyright", "in_game_key", "license_file", "share_alike"):
+            if attribution.get(field) != streaming_attribution.get(field):
+                errors.append(f"world_biomes: la atribución {field} no coincide con world_streaming")
+
+        kits_spec_path = ROOT / str(world_biomes["data_files"].get("kits_spec", ""))
+        if not kits_spec_path.exists():
+            errors.append("world_biomes: falta la especificación de kits")
+        else:
+            kits_spec = load_json(kits_spec_path)
+            declared_kits = {poi["kit_id"] for poi in world_biomes["pois"] if poi["kind"] != "procedural"}
+            spec_kits = {kit["kit_id"] for kit in kits_spec.get("kits", [])}
+            for poi in world_biomes["pois"]:
+                if poi["kind"] in ("poi", "furniture") and poi["kit_id"] not in spec_kits:
+                    errors.append(f"world_biomes: {poi['id']} sin familia de kit en kits_spec ({poi['kit_id']})")
+            if len(spec_kits) != int(world_biomes["qa"].get("expected_kit_families", 0)):
+                errors.append("world_biomes: el número de familias de kits no coincide con qa.expected_kit_families")
+            for kit in kits_spec.get("kits", []):
+                chain = [int(lod["max_triangles"]) for lod in kit["lods"]]
+                if len(chain) != 3 or not all(chain[i] > chain[i + 1] for i in range(len(chain) - 1)):
+                    errors.append(f"world_biomes: kits_spec {kit['kit_id']} sin cadena LOD decreciente")
+
+        manifest_dir = ROOT / "assets" / "manifests"
+        kit_manifests = sorted(manifest_dir.glob("kit_*.manifest.json"))
+        if len(kit_manifests) != int(world_biomes["qa"].get("expected_kit_families", 0)):
+            errors.append(
+                f"world_biomes: se esperaban {world_biomes['qa'].get('expected_kit_families')} manifiestos "
+                f"de kits y hay {len(kit_manifests)}"
+            )
 
     return errors, warnings
 

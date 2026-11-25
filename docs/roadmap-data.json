@@ -2,11 +2,11 @@
   "project": "Ruta Nocturna: 1999",
   "repository": "emanuelindustri-source/ruta-nocturna-1999",
   "generated_from": "ROADMAP.md",
-  "source_sha256": "168628051b0a043ffdffacf2f89f4df83a047f93e2b98b5a73fbe3b059164438",
-  "current_version": "v0.4.1",
-  "version_file": "0.4.1",
-  "current_subphase": "4.2",
-  "global_status": "Fase 1, Fase 2, Fase 3, F4.1 y F4.2 completadas; siguiente gate F4.3",
+  "source_sha256": "c0b605f0aa9c1f557423dd60390873624c4acdbb5c5e4a56abbfeb318496bafb",
+  "current_version": "v0.4.2",
+  "version_file": "0.4.2",
+  "current_subphase": "4.3",
+  "global_status": "Fase 1, Fase 2, Fase 3, F4.1, F4.2 y F4.3 completadas; siguiente gate F4.4",
   "models": {
     "DS-R": "DeepSeek V4.1 Flash 1017 · Razonamiento",
     "DS-S": "DeepSeek V4.1 Flash 1017 · Estándar",
@@ -14,11 +14,11 @@
     "MiMo Flash": "MiMo-V2.6-Flash"
   },
   "summary": {
-    "completed": 15,
+    "completed": 16,
     "in_progress": 0,
-    "pending": 30,
+    "pending": 29,
     "total": 45,
-    "percent": 33.3
+    "percent": 35.6
   },
   "phases": [
     {
@@ -214,9 +214,9 @@
           "version": "v0.4.2",
           "model": "MiMo Pro",
           "model_label": "MiMo-V2.6-Pro",
-          "summary": "Kits de biomas, gasolineras, moteles, peajes, señalización, agua, polvo y nieve.",
-          "status": "pending",
-          "status_label": "Pendiente"
+          "summary": "Kits de biomas, gasolineras, moteles, peajes, señalización, agua, polvo y nieve. Validado y publicado.",
+          "status": "completed",
+          "status_label": "Completada"
         },
         {
           "id": "4.4",
@@ -232,9 +232,9 @@
       "status": "in_progress",
       "status_label": "En curso",
       "progress": {
-        "completed": 2,
+        "completed": 3,
         "in_progress": 0,
-        "pending": 2,
+        "pending": 1,
         "total": 4
       }
     },

@@ -1,0 +1,189 @@
+{
+  "asset_id": "world.road.kits",
+  "spec_version": 1,
+  "content_status": "generated",
+  "phase": "F4.3",
+  "note": "Especificación paramétrica de los kits de POIs y mobiliario vial de F4.3. Sin marcas reales, sin texto visible en las mallas (paneles en blanco) y sin texturas de la biblioteca externa. Los kits se generan con tools/blender/world_kits.py (bpy headless) y cada familia exporta LOD0/LOD1/LOD2 + ancla de origen.",
+  "reference_notes": [
+    "Referencia visual de gasolinera/motel/carretera: hojas de contacto de la biblioteca externa revisadas en F4.3 (REFERENCE_USAGE_LOG.md 2026-11-24). Solo inspiración de formas; ninguna textura, malla ni color se copia.",
+    "Las marcas reales (PDV, Chevrolet y otras) se omiten por AGENTS.md sección 11: marquesinas, rótulos y vallas son geometría neutra.",
+    "Cotas provisionales de diseño (provisional_design_value): no representan una instalación real concreta."
+  ],
+  "materials": {
+    "concrete": {"base_color": [0.42, 0.41, 0.39], "roughness": 0.9, "metallic": 0.0},
+    "paint_dark": {"base_color": [0.13, 0.17, 0.19], "roughness": 0.55, "metallic": 0.15},
+    "paint_light": {"base_color": [0.62, 0.6, 0.55], "roughness": 0.6, "metallic": 0.1},
+    "paint_accent": {"base_color": [0.35, 0.24, 0.2], "roughness": 0.55, "metallic": 0.1},
+    "metal_steel": {"base_color": [0.5, 0.52, 0.55], "roughness": 0.45, "metallic": 0.8},
+    "plastic_dark": {"base_color": [0.16, 0.16, 0.17], "roughness": 0.7, "metallic": 0.0},
+    "wood": {"base_color": [0.32, 0.25, 0.18], "roughness": 0.8, "metallic": 0.0},
+    "glass_dark": {"base_color": [0.08, 0.1, 0.12], "roughness": 0.15, "metallic": 0.3},
+    "emissive_lamp": {"base_color": [0.85, 0.78, 0.58], "roughness": 0.4, "metallic": 0.0, "emission": [1.0, 0.85, 0.6], "emission_energy": 1.4}
+  },
+  "rig_anchor": {
+    "armature_name": "WorldKitAnchor",
+    "root_bone": "anchor_root",
+    "anchors": [
+      {"id": "anchor_root", "position_m": [0.0, 0.0, 0.0], "note": "Origen en el suelo, centro del kit; PoiManager lo alinea con el borde de vía."}
+    ]
+  },
+  "kits": [
+    {
+      "kit_id": "poi.kit_gasolinera",
+      "asset_id": "world.poi.kit_gasolinera",
+      "anchor_mode": "empties",
+      "lods": [
+        {"id": "lod0", "max_triangles": 3200, "bevel_segments": 2, "segments": 12, "output": "kit_gasolinera_lod0.glb"},
+        {"id": "lod1", "max_triangles": 1100, "bevel_segments": 1, "segments": 8, "output": "kit_gasolinera_lod1.glb"},
+        {"id": "lod2", "max_triangles": 320, "bevel_segments": 0, "segments": 6, "output": "kit_gasolinera_lod2.glb"}
+      ],
+      "anchor_output": "kit_gasolinera_anchor.glb",
+      "parts": [
+        {"name": "canopy_roof", "kind": "box", "min_m": [-8.0, 5.0, -4.0], "max_m": [8.0, 5.8, 4.0], "material": "paint_light", "lod_min": 2},
+        {"name": "canopy_fascia", "kind": "box", "min_m": [-8.15, 4.6, -4.15], "max_m": [8.15, 5.0, 4.15], "material": "paint_accent", "lod_min": 1},
+        {"name": "column_0", "kind": "box", "min_m": [-7.3, 0.0, -3.3], "max_m": [-6.8, 5.0, -2.8], "material": "paint_dark", "lod_min": 2},
+        {"name": "column_1", "kind": "box", "min_m": [6.8, 0.0, -3.3], "max_m": [7.3, 5.0, -2.8], "material": "paint_dark", "lod_min": 2},
+        {"name": "column_2", "kind": "box", "min_m": [-7.3, 0.0, 2.8], "max_m": [-6.8, 5.0, 3.3], "material": "paint_dark", "lod_min": 2},
+        {"name": "column_3", "kind": "box", "min_m": [6.8, 0.0, 2.8], "max_m": [7.3, 5.0, 3.3], "material": "paint_dark", "lod_min": 2},
+        {"name": "island_0", "kind": "box", "min_m": [-2.4, 0.0, -1.4], "max_m": [2.4, 0.3, -0.2], "material": "concrete", "lod_min": 2},
+        {"name": "island_1", "kind": "box", "min_m": [-2.4, 0.0, 0.2], "max_m": [2.4, 0.3, 1.4], "material": "concrete", "lod_min": 2},
+        {"name": "pump_0", "kind": "box", "min_m": [-0.6, 0.3, -1.2], "max_m": [0.6, 1.9, -0.4], "material": "paint_light", "lod_min": 2},
+        {"name": "pump_1", "kind": "box", "min_m": [-0.6, 0.3, 0.4], "max_m": [0.6, 1.9, 1.2], "material": "paint_light", "lod_min": 2},
+        {"name": "pump_screen_0", "kind": "box", "min_m": [-0.4, 1.2, -1.25], "max_m": [0.4, 1.7, -1.15], "material": "glass_dark", "lod_min": 1},
+        {"name": "pump_screen_1", "kind": "box", "min_m": [-0.4, 1.2, 1.15], "max_m": [0.4, 1.7, 1.25], "material": "glass_dark", "lod_min": 1},
+        {"name": "shop_body", "kind": "box", "min_m": [-3.5, 0.0, -8.2], "max_m": [3.5, 3.4, -3.9], "material": "concrete", "lod_min": 2},
+        {"name": "shop_roof", "kind": "box", "min_m": [-3.9, 3.4, -8.6], "max_m": [3.9, 3.8, -3.5], "material": "paint_dark", "lod_min": 2},
+        {"name": "shop_window", "kind": "box", "min_m": [-2.6, 0.9, -3.95], "max_m": [2.6, 2.5, -3.85], "material": "glass_dark", "lod_min": 1},
+        {"name": "shop_door", "kind": "box", "min_m": [-0.6, 0.0, -3.95], "max_m": [0.6, 2.3, -3.8], "material": "plastic_dark", "lod_min": 1},
+        {"name": "lamp_0", "kind": "box", "min_m": [-1.2, 4.85, -1.6], "max_m": [1.2, 4.95, -1.2], "material": "emissive_lamp", "lod_min": 1},
+        {"name": "lamp_1", "kind": "box", "min_m": [-1.2, 4.85, 1.2], "max_m": [1.2, 4.95, 1.6], "material": "emissive_lamp", "lod_min": 1}
+      ]
+    },
+    {
+      "kit_id": "poi.kit_motel",
+      "asset_id": "world.poi.kit_motel",
+      "anchor_mode": "empties",
+      "lods": [
+        {"id": "lod0", "max_triangles": 2800, "bevel_segments": 2, "segments": 12, "output": "kit_motel_lod0.glb"},
+        {"id": "lod1", "max_triangles": 950, "bevel_segments": 1, "segments": 8, "output": "kit_motel_lod1.glb"},
+        {"id": "lod2", "max_triangles": 280, "bevel_segments": 0, "segments": 6, "output": "kit_motel_lod2.glb"}
+      ],
+      "anchor_output": "kit_motel_anchor.glb",
+      "parts": [
+        {"name": "building", "kind": "box", "min_m": [-6.0, 0.0, -3.0], "max_m": [6.0, 3.2, 3.0], "material": "paint_light", "lod_min": 2},
+        {"name": "roof_slab", "kind": "box", "min_m": [-6.5, 3.2, -3.5], "max_m": [6.5, 3.7, 3.5], "material": "paint_dark", "lod_min": 2},
+        {"name": "parapet_front", "kind": "box", "min_m": [-6.5, 3.7, 3.2], "max_m": [6.5, 4.1, 3.5], "material": "paint_accent", "lod_min": 1},
+        {"name": "porch_slab", "kind": "box", "min_m": [-5.5, 3.05, 3.0], "max_m": [5.5, 3.2, 4.6], "material": "paint_dark", "lod_min": 1},
+        {"name": "porch_post_0", "kind": "box", "min_m": [-5.3, 0.0, 4.3], "max_m": [-5.0, 3.05, 4.6], "material": "wood", "lod_min": 1},
+        {"name": "porch_post_1", "kind": "box", "min_m": [5.0, 0.0, 4.3], "max_m": [5.3, 3.05, 4.6], "material": "wood", "lod_min": 1},
+        {"name": "door_0", "kind": "box", "min_m": [-4.2, 0.0, 2.95], "max_m": [-3.2, 2.3, 3.05], "material": "wood", "lod_min": 1},
+        {"name": "door_1", "kind": "box", "min_m": [-0.5, 0.0, 2.95], "max_m": [0.5, 2.3, 3.05], "material": "wood", "lod_min": 1},
+        {"name": "door_2", "kind": "box", "min_m": [3.2, 0.0, 2.95], "max_m": [4.2, 2.3, 3.05], "material": "wood", "lod_min": 1},
+        {"name": "window_0", "kind": "box", "min_m": [-2.9, 1.0, 2.95], "max_m": [-1.3, 2.2, 3.05], "material": "glass_dark", "lod_min": 1},
+        {"name": "window_1", "kind": "box", "min_m": [1.3, 1.0, 2.95], "max_m": [2.9, 2.2, 3.05], "material": "glass_dark", "lod_min": 1},
+        {"name": "sign_post_0", "kind": "box", "min_m": [-3.4, 3.7, 3.2], "max_m": [-3.15, 5.6, 3.45], "material": "metal_steel", "lod_min": 2},
+        {"name": "sign_post_1", "kind": "box", "min_m": [3.15, 3.7, 3.2], "max_m": [3.4, 5.6, 3.45], "material": "metal_steel", "lod_min": 2},
+        {"name": "sign_panel", "kind": "box", "min_m": [-3.4, 4.8, 3.15], "max_m": [3.4, 6.0, 3.45], "material": "paint_accent", "lod_min": 2},
+        {"name": "lamp_glow", "kind": "box", "min_m": [-0.35, 2.5, 3.05], "max_m": [0.35, 2.8, 3.35], "material": "emissive_lamp", "lod_min": 1}
+      ]
+    },
+    {
+      "kit_id": "poi.kit_peaje",
+      "asset_id": "world.poi.kit_peaje",
+      "anchor_mode": "empties",
+      "lods": [
+        {"id": "lod0", "max_triangles": 2400, "bevel_segments": 2, "segments": 12, "output": "kit_peaje_lod0.glb"},
+        {"id": "lod1", "max_triangles": 820, "bevel_segments": 1, "segments": 8, "output": "kit_peaje_lod1.glb"},
+        {"id": "lod2", "max_triangles": 240, "bevel_segments": 0, "segments": 6, "output": "kit_peaje_lod2.glb"}
+      ],
+      "anchor_output": "kit_peaje_anchor.glb",
+      "parts": [
+        {"name": "island", "kind": "box", "min_m": [-3.0, 0.0, -7.0], "max_m": [3.0, 0.25, 7.0], "material": "concrete", "lod_min": 2},
+        {"name": "canopy_roof", "kind": "box", "min_m": [-3.4, 4.4, -4.0], "max_m": [3.4, 5.0, 4.0], "material": "paint_light", "lod_min": 2},
+        {"name": "column_0", "kind": "box", "min_m": [-3.2, 0.25, -3.6], "max_m": [-2.8, 4.4, -3.2], "material": "paint_dark", "lod_min": 2},
+        {"name": "column_1", "kind": "box", "min_m": [2.8, 0.25, -3.6], "max_m": [3.2, 4.4, -3.2], "material": "paint_dark", "lod_min": 2},
+        {"name": "booth_0", "kind": "box", "min_m": [-1.3, 0.25, -1.3], "max_m": [0.3, 2.9, 1.3], "material": "paint_light", "lod_min": 2},
+        {"name": "booth_window_0", "kind": "box", "min_m": [-1.35, 1.5, -0.9], "max_m": [-1.25, 2.5, 0.9], "material": "glass_dark", "lod_min": 1},
+        {"name": "booth_1", "kind": "box", "min_m": [-0.3, 0.25, -1.3], "max_m": [1.3, 2.9, 1.3], "material": "paint_light", "lod_min": 2},
+        {"name": "barrier_post", "kind": "box", "min_m": [1.7, 0.25, -0.25], "max_m": [2.15, 1.35, 0.25], "material": "paint_accent", "lod_min": 2},
+        {"name": "barrier_arm", "kind": "box", "min_m": [-3.6, 1.1, -0.09], "max_m": [1.75, 1.3, 0.09], "material": "paint_accent", "lod_min": 2},
+        {"name": "lamp_0", "kind": "box", "min_m": [-1.0, 4.25, -1.0], "max_m": [1.0, 4.35, -0.6], "material": "emissive_lamp", "lod_min": 1}
+      ]
+    },
+    {
+      "kit_id": "poi.kit_cruce",
+      "asset_id": "world.poi.kit_cruce",
+      "anchor_mode": "empties",
+      "lods": [
+        {"id": "lod0", "max_triangles": 1200, "bevel_segments": 2, "segments": 12, "output": "kit_cruce_lod0.glb"},
+        {"id": "lod1", "max_triangles": 420, "bevel_segments": 1, "segments": 8, "output": "kit_cruce_lod1.glb"},
+        {"id": "lod2", "max_triangles": 130, "bevel_segments": 0, "segments": 6, "output": "kit_cruce_lod2.glb"}
+      ],
+      "anchor_output": "kit_cruce_anchor.glb",
+      "parts": [
+        {"name": "post_0", "kind": "cylinder", "center_m": [-1.2, 1.3, -1.2], "radius_m": 0.07, "height_m": 2.6, "material": "metal_steel", "lod_min": 2},
+        {"name": "post_1", "kind": "cylinder", "center_m": [1.2, 1.3, -1.2], "radius_m": 0.07, "height_m": 2.6, "material": "metal_steel", "lod_min": 2},
+        {"name": "panel_0", "kind": "box", "min_m": [-1.75, 2.0, -1.28], "max_m": [-0.65, 2.85, -1.12], "material": "paint_light", "lod_min": 2},
+        {"name": "panel_1", "kind": "box", "min_m": [0.65, 2.0, -1.28], "max_m": [1.75, 2.85, -1.12], "material": "paint_light", "lod_min": 2},
+        {"name": "bollard_0", "kind": "cylinder", "center_m": [-1.6, 0.45, 1.4], "radius_m": 0.11, "height_m": 0.9, "material": "paint_accent", "lod_min": 1},
+        {"name": "bollard_1", "kind": "cylinder", "center_m": [1.6, 0.45, 1.4], "radius_m": 0.11, "height_m": 0.9, "material": "paint_accent", "lod_min": 1},
+        {"name": "lamp_head", "kind": "box", "min_m": [-0.3, 3.4, -1.45], "max_m": [0.3, 3.6, -1.15], "material": "emissive_lamp", "lod_min": 1}
+      ]
+    },
+    {
+      "kit_id": "road.kit_sign",
+      "asset_id": "world.road.kit_sign",
+      "anchor_mode": "empties",
+      "lods": [
+        {"id": "lod0", "max_triangles": 220, "bevel_segments": 1, "segments": 12, "output": "kit_sign_lod0.glb"},
+        {"id": "lod1", "max_triangles": 120, "bevel_segments": 0, "segments": 8, "output": "kit_sign_lod1.glb"},
+        {"id": "lod2", "max_triangles": 50, "bevel_segments": 0, "segments": 6, "output": "kit_sign_lod2.glb"}
+      ],
+      "anchor_output": "kit_sign_anchor.glb",
+      "parts": [
+        {"name": "post", "kind": "cylinder", "center_m": [0.0, 1.4, 0.0], "radius_m": 0.08, "height_m": 2.8, "material": "metal_steel", "lod_min": 2},
+        {"name": "panel_big", "kind": "box", "min_m": [-1.3, 1.9, -0.05], "max_m": [1.3, 3.1, 0.05], "material": "paint_light", "lod_min": 2},
+        {"name": "panel_small", "kind": "box", "min_m": [-0.85, 1.15, -0.05], "max_m": [0.85, 1.8, 0.05], "material": "paint_light", "lod_min": 1},
+        {"name": "base", "kind": "cylinder", "center_m": [0.0, 0.08, 0.0], "radius_m": 0.2, "height_m": 0.16, "material": "concrete", "lod_min": 1}
+      ]
+    },
+    {
+      "kit_id": "road.kit_pole",
+      "asset_id": "world.road.kit_pole",
+      "anchor_mode": "empties",
+      "lods": [
+        {"id": "lod0", "max_triangles": 300, "bevel_segments": 1, "segments": 12, "output": "kit_pole_lod0.glb"},
+        {"id": "lod1", "max_triangles": 140, "bevel_segments": 0, "segments": 8, "output": "kit_pole_lod1.glb"},
+        {"id": "lod2", "max_triangles": 50, "bevel_segments": 0, "segments": 6, "output": "kit_pole_lod2.glb"}
+      ],
+      "anchor_output": "kit_pole_anchor.glb",
+      "parts": [
+        {"name": "pole", "kind": "cylinder", "center_m": [0.0, 4.25, 0.0], "radius_m": 0.14, "height_m": 8.5, "material": "wood", "lod_min": 2},
+        {"name": "crossarm", "kind": "box", "min_m": [-1.1, 7.7, -0.07], "max_m": [1.1, 7.85, 0.07], "material": "wood", "lod_min": 2},
+        {"name": "insulator_0", "kind": "cylinder", "center_m": [-0.85, 7.95, 0.0], "radius_m": 0.06, "height_m": 0.2, "material": "plastic_dark", "lod_min": 1},
+        {"name": "insulator_1", "kind": "cylinder", "center_m": [0.85, 7.95, 0.0], "radius_m": 0.06, "height_m": 0.2, "material": "plastic_dark", "lod_min": 1},
+        {"name": "lamp_arm", "kind": "box", "min_m": [-1.35, 6.2, -0.05], "max_m": [0.0, 6.32, 0.05], "material": "metal_steel", "lod_min": 1},
+        {"name": "lamp_head", "kind": "box", "min_m": [-1.6, 6.05, -0.16], "max_m": [-1.1, 6.25, 0.16], "material": "emissive_lamp", "lod_min": 1}
+      ]
+    },
+    {
+      "kit_id": "road.kit_billboard",
+      "asset_id": "world.road.kit_billboard",
+      "anchor_mode": "empties",
+      "lods": [
+        {"id": "lod0", "max_triangles": 340, "bevel_segments": 1, "segments": 12, "output": "kit_billboard_lod0.glb"},
+        {"id": "lod1", "max_triangles": 140, "bevel_segments": 0, "segments": 8, "output": "kit_billboard_lod1.glb"},
+        {"id": "lod2", "max_triangles": 70, "bevel_segments": 0, "segments": 6, "output": "kit_billboard_lod2.glb"}
+      ],
+      "anchor_output": "kit_billboard_anchor.glb",
+      "parts": [
+        {"name": "leg_0", "kind": "cylinder", "center_m": [-2.2, 2.25, 0.0], "radius_m": 0.22, "height_m": 4.5, "material": "metal_steel", "lod_min": 2},
+        {"name": "leg_1", "kind": "cylinder", "center_m": [2.2, 2.25, 0.0], "radius_m": 0.22, "height_m": 4.5, "material": "metal_steel", "lod_min": 2},
+        {"name": "panel", "kind": "box", "min_m": [-3.2, 4.4, -0.12], "max_m": [3.2, 7.2, 0.12], "material": "paint_light", "lod_min": 2},
+        {"name": "frame_top", "kind": "box", "min_m": [-3.35, 7.1, -0.2], "max_m": [3.35, 7.35, 0.2], "material": "paint_dark", "lod_min": 1},
+        {"name": "frame_bottom", "kind": "box", "min_m": [-3.35, 4.15, -0.2], "max_m": [3.35, 4.4, 0.2], "material": "paint_dark", "lod_min": 1},
+        {"name": "catwalk", "kind": "box", "min_m": [-3.0, 4.0, 0.2], "max_m": [3.0, 4.12, 0.7], "material": "metal_steel", "lod_min": 1}
+      ]
+    }
+  ]
+}
